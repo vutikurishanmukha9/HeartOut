@@ -294,7 +294,10 @@ export default function Editor() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Writing Assistant */}
-            <WritingAssistant />
+            <WritingAssistant 
+              currentText={content}
+              onTextChange={setContent}
+            />
 
             {/* Publishing Options */}
             <Card>

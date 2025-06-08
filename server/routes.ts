@@ -4,6 +4,7 @@ import WebSocket, { WebSocketServer } from "ws";
 import Stripe from "stripe";
 import { storage } from "./storage";
 import { insertStorySchema, insertCommentSchema, insertTipSchema } from "@shared/schema";
+import { aiService } from "./ai";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
@@ -297,6 +298,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(tip);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
+    }
+  });
+
+  // AI Writing Assistant routes
+  app.post("/api/ai/story-ideas", async (req, res) => {
+    try {
+      const { prompt, count = 3 } = req.body;
+      if (!prompt) {
+        return res.status(400).json({ message: "Prompt is required" });
+      }
+      const ideas = await aiService.generateStoryIdeas(prompt, count);
+      res.json({ ideas });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/ai/writing-suggestions", async (req, res) => {
+    try {
+      const { text, type = "improve" } = req.body;
+      if (!text) {
+        return res.status(400).json({ message: "Text is required" });
+      }
+      const suggestions = await aiService.getWritingSuggestions(text, type);
+      res.json({ suggestions });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/ai/grammar-check", async (req, res) => {
+    try {
+      const { text } = req.body;
+      if (!text) {
+        return res.status(400).json({ message: "Text is required" });
+      }
+      const result = await aiService.checkGrammar(text);
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/ai/character", async (req, res) => {
+    try {
+      const { description } = req.body;
+      if (!description) {
+        return res.status(400).json({ message: "Character description is required" });
+      }
+      const character = await aiService.generateCharacter(description);
+      res.json({ character });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/ai/mood-analysis", async (req, res) => {
+    try {
+      const { text } = req.body;
+      if (!text) {
+        return res.status(400).json({ message: "Text is required" });
+      }
+      const analysis = await aiService.analyzeMood(text);
+      res.json({ analysis });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/ai/outline", async (req, res) => {
+    try {
+      const { premise, chapters = 10 } = req.body;
+      if (!premise) {
+        return res.status(400).json({ message: "Story premise is required" });
+      }
+      const outline = await aiService.generateOutline(premise, chapters);
+      res.json({ outline });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
     }
   });
 
