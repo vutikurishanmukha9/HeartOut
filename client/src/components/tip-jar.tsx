@@ -201,88 +201,113 @@ export default function TipJar({ isOpen, onClose, story, author }: TipJarProps) 
             </CardContent>
           </Card>
 
-          {/* Amount Selection */}
-          <div>
-            <label className="block text-sm font-medium mb-3">Choose tip amount</label>
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              {presetAmounts.map((preset) => (
-                <Button
-                  key={preset}
-                  variant={amount === preset ? "default" : "outline"}
-                  onClick={() => handleAmountSelect(preset)}
-                  className="flex items-center space-x-2"
-                >
-                  <DollarSign className="w-4 h-4" />
-                  <span>{preset}</span>
+          {!showPayment && (
+            <>
+              {/* Amount Selection */}
+              <div>
+                <label className="block text-sm font-medium mb-3">Choose tip amount</label>
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  {presetAmounts.map((preset) => (
+                    <Button
+                      key={preset}
+                      variant={amount === preset ? "default" : "outline"}
+                      onClick={() => handleAmountSelect(preset)}
+                      className="flex items-center space-x-2"
+                    >
+                      <DollarSign className="w-4 h-4" />
+                      <span>{preset}</span>
+                    </Button>
+                  ))}
+                </div>
+                
+                <div className="relative">
+                  <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Input
+                    type="number"
+                    placeholder="Custom amount"
+                    value={customAmount}
+                    onChange={(e) => handleCustomAmountChange(e.target.value)}
+                    className="pl-10"
+                    min="1"
+                    step="0.01"
+                  />
+                </div>
+              </div>
+
+              {/* Message */}
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Add a message (optional)
+                </label>
+                <Textarea
+                  placeholder="Thank you for this amazing story!"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  rows={3}
+                  maxLength={200}
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  {message.length}/200 characters
+                </p>
+              </div>
+
+              {/* Payment Info */}
+              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <CreditCard className="w-4 h-4 text-gray-500" />
+                  <span className="text-sm font-medium">Payment Details</span>
+                </div>
+                <p className="text-xs text-gray-600 dark:text-gray-300">
+                  Tips are processed securely through Stripe. You can pay with any major credit card or digital wallet.
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex space-x-3">
+                <Button variant="outline" onClick={onClose} className="flex-1">
+                  Cancel
                 </Button>
-              ))}
-            </div>
-            
-            <div className="relative">
-              <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <Input
-                type="number"
-                placeholder="Custom amount"
-                value={customAmount}
-                onChange={(e) => handleCustomAmountChange(e.target.value)}
-                className="pl-10"
-                min="1"
-                step="0.01"
-              />
-            </div>
-          </div>
+                <Button
+                  onClick={handleSubmit}
+                  disabled={!amount || amount <= 0 || isProcessing}
+                  className="flex-1 bg-warning hover:bg-warning/90"
+                >
+                  {isProcessing ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+                      <span>Setting up payment...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center space-x-2">
+                      <Heart className="w-4 h-4" />
+                      <span>Send ${amount?.toFixed(2) || "0.00"} Tip</span>
+                    </div>
+                  )}
+                </Button>
+              </div>
+            </>
+          )}
 
-          {/* Message */}
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Add a message (optional)
-            </label>
-            <Textarea
-              placeholder="Thank you for this amazing story!"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              rows={3}
-              maxLength={200}
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              {message.length}/200 characters
-            </p>
-          </div>
-
-          {/* Payment Info */}
-          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-            <div className="flex items-center space-x-2 mb-2">
-              <CreditCard className="w-4 h-4 text-gray-500" />
-              <span className="text-sm font-medium">Payment Details</span>
+          {/* Payment Form */}
+          {showPayment && clientSecret && amount && (
+            <div className="space-y-4">
+              <div className="text-center">
+                <p className="text-lg font-semibold">Complete Payment</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Sending ${amount.toFixed(2)} to {author?.username}
+                </p>
+              </div>
+              <Elements stripe={stripePromise} options={{ clientSecret }}>
+                <PaymentForm
+                  amount={amount}
+                  message={message}
+                  authorId={author?.id || 0}
+                  storyId={story.id}
+                  onSuccess={handlePaymentSuccess}
+                />
+              </Elements>
             </div>
-            <p className="text-xs text-gray-600 dark:text-gray-300">
-              Tips are processed securely through Stripe. You can pay with any major credit card or digital wallet.
-            </p>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex space-x-3">
-            <Button variant="outline" onClick={onClose} className="flex-1">
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSubmit}
-              disabled={!amount || amount <= 0 || isProcessing}
-              className="flex-1 bg-warning hover:bg-warning/90"
-            >
-              {isProcessing ? (
-                <div className="flex items-center space-x-2">
-                  <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                  <span>Processing...</span>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-2">
-                  <Heart className="w-4 h-4" />
-                  <span>Send ${amount?.toFixed(2) || "0.00"}</span>
-                </div>
-              )}
-            </Button>
-          </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
