@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Coffee, Heart, DollarSign, CreditCard } from "lucide-react";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +14,14 @@ import {
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+
+// Make sure to call `loadStripe` outside of a component's render to avoid
+// recreating the `Stripe` object on every render.
+if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
+  throw new Error('Missing required Stripe key: VITE_STRIPE_PUBLIC_KEY');
+}
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 interface TipJarProps {
   isOpen: boolean;
@@ -27,11 +37,69 @@ interface TipJarProps {
   };
 }
 
+const PaymentForm = ({ amount, message, authorId, storyId, onSuccess }: {
+  amount: number;
+  message: string;
+  authorId: number;
+  storyId: number;
+  onSuccess: () => void;
+}) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: window.location.origin,
+      },
+    });
+
+    if (error) {
+      toast({
+        title: "Payment Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Tip Sent Successfully!",
+        description: `Thank you for supporting this author with $${amount.toFixed(2)}!`,
+      });
+      onSuccess();
+    }
+
+    setIsSubmitting(false);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <PaymentElement />
+      <Button type="submit" disabled={!stripe || isSubmitting} className="w-full">
+        <CreditCard className="mr-2 h-4 w-4" />
+        {isSubmitting ? "Processing..." : `Send $${amount.toFixed(2)} Tip`}
+      </Button>
+    </form>
+  );
+};
+
 export default function TipJar({ isOpen, onClose, story, author }: TipJarProps) {
   const [amount, setAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState("");
   const [message, setMessage] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [clientSecret, setClientSecret] = useState("");
+  const [showPayment, setShowPayment] = useState(false);
   const { toast } = useToast();
 
   const presetAmounts = [5, 10, 25, 50];
@@ -61,32 +129,46 @@ export default function TipJar({ isOpen, onClose, story, author }: TipJarProps) 
       return;
     }
 
+    if (!author?.id) {
+      toast({
+        title: "Error",
+        description: "Author information not available.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsProcessing(true);
 
     try {
-      // In a real app, this would integrate with Stripe
-      // For now, we'll simulate the payment process
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      toast({
-        title: "Tip sent successfully!",
-        description: `$${amount.toFixed(2)} has been sent to ${author?.username}`,
+      const response = await apiRequest("POST", "/api/create-payment-intent", {
+        amount: amount,
+        storyId: story.id,
+        authorId: author.id,
+        message: message
       });
-
-      // Reset form
-      setAmount(null);
-      setCustomAmount("");
-      setMessage("");
-      onClose();
+      
+      const data = await response.json();
+      setClientSecret(data.clientSecret);
+      setShowPayment(true);
     } catch (error) {
       toast({
-        title: "Payment failed",
-        description: "There was an error processing your tip. Please try again.",
+        title: "Payment Setup Failed",
+        description: "There was an error setting up the payment. Please try again.",
         variant: "destructive"
       });
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handlePaymentSuccess = () => {
+    setAmount(null);
+    setCustomAmount("");
+    setMessage("");
+    setShowPayment(false);
+    setClientSecret("");
+    onClose();
   };
 
   return (

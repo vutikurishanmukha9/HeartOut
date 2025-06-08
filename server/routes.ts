@@ -1,8 +1,16 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import WebSocket, { WebSocketServer } from "ws";
+import Stripe from "stripe";
 import { storage } from "./storage";
 import { insertStorySchema, insertCommentSchema, insertTipSchema } from "@shared/schema";
+
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
+}
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2025-05-28.basil",
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // User routes
@@ -251,6 +259,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(analytics);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Stripe payment route for tips
+  app.post("/api/create-payment-intent", async (req, res) => {
+    try {
+      const { amount, storyId, authorId, message } = req.body;
+      
+      if (!amount || amount < 1) {
+        return res.status(400).json({ message: "Invalid amount" });
+      }
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // Convert to cents
+        currency: "usd",
+        metadata: {
+          storyId: storyId.toString(),
+          authorId: authorId.toString(),
+          message: message || ""
+        }
+      });
+
+      res.json({ clientSecret: paymentIntent.client_secret });
+    } catch (error: any) {
+      res
+        .status(500)
+        .json({ message: "Error creating payment intent: " + error.message });
     }
   });
 
