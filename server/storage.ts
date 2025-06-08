@@ -5,6 +5,8 @@ import {
   type InsertComment, type Challenge, type InsertChallenge, type Review, 
   type InsertReview, type Tip, type InsertTip, type Achievement, type InsertAchievement 
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc, sql, and } from "drizzle-orm";
 
 export interface IStorage {
   // Users
@@ -568,4 +570,248 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async updateUser(id: number, updates: Partial<User>): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set(updates)
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  async updateUserStripeInfo(id: number, customerId: string, subscriptionId?: string): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({ 
+        stripeCustomerId: customerId,
+        stripeSubscriptionId: subscriptionId || null
+      })
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  async getStory(id: number): Promise<Story | undefined> {
+    const [story] = await db.select().from(stories).where(eq(stories.id, id));
+    return story || undefined;
+  }
+
+  async getStoriesByAuthor(authorId: number): Promise<Story[]> {
+    return await db.select().from(stories).where(eq(stories.authorId, authorId)).orderBy(desc(stories.createdAt));
+  }
+
+  async getFeaturedStories(): Promise<Story[]> {
+    return await db.select().from(stories).where(eq(stories.status, "published")).orderBy(desc(stories.views)).limit(10);
+  }
+
+  async getStoriesByMood(mood: string): Promise<Story[]> {
+    return await db.select().from(stories).where(and(eq(stories.mood, mood), eq(stories.status, "published"))).orderBy(desc(stories.createdAt));
+  }
+
+  async getAllStories(limit: number = 20, offset: number = 0): Promise<Story[]> {
+    return await db.select().from(stories).where(eq(stories.status, "published")).orderBy(desc(stories.createdAt)).limit(limit).offset(offset);
+  }
+
+  async createStory(insertStory: InsertStory): Promise<Story> {
+    const [story] = await db
+      .insert(stories)
+      .values(insertStory)
+      .returning();
+    return story;
+  }
+
+  async updateStory(id: number, updates: Partial<Story>): Promise<Story> {
+    const [story] = await db
+      .update(stories)
+      .set(updates)
+      .where(eq(stories.id, id))
+      .returning();
+    return story;
+  }
+
+  async deleteStory(id: number): Promise<boolean> {
+    const result = await db.delete(stories).where(eq(stories.id, id));
+    return result.rowCount > 0;
+  }
+
+  async incrementStoryViews(id: number): Promise<void> {
+    await db
+      .update(stories)
+      .set({ views: sql`${stories.views} + 1` })
+      .where(eq(stories.id, id));
+  }
+
+  async getCommentsByStory(storyId: number): Promise<Comment[]> {
+    return await db.select().from(comments).where(eq(comments.storyId, storyId)).orderBy(desc(comments.createdAt));
+  }
+
+  async createComment(insertComment: InsertComment): Promise<Comment> {
+    const [comment] = await db
+      .insert(comments)
+      .values(insertComment)
+      .returning();
+    return comment;
+  }
+
+  async deleteComment(id: number): Promise<boolean> {
+    const result = await db.delete(comments).where(eq(comments.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getLikesByStory(storyId: number): Promise<number> {
+    const result = await db.select({ count: sql<number>`count(*)` }).from(likes).where(eq(likes.storyId, storyId));
+    return result[0]?.count || 0;
+  }
+
+  async hasUserLikedStory(userId: number, storyId: number): Promise<boolean> {
+    const [like] = await db.select().from(likes).where(and(eq(likes.userId, userId), eq(likes.storyId, storyId)));
+    return !!like;
+  }
+
+  async toggleLike(userId: number, storyId: number): Promise<boolean> {
+    const existingLike = await this.hasUserLikedStory(userId, storyId);
+    
+    if (existingLike) {
+      await db.delete(likes).where(and(eq(likes.userId, userId), eq(likes.storyId, storyId)));
+      return false;
+    } else {
+      await db.insert(likes).values({ userId, storyId });
+      return true;
+    }
+  }
+
+  async isFollowing(followerId: number, followingId: number): Promise<boolean> {
+    const [follow] = await db.select().from(follows).where(and(eq(follows.followerId, followerId), eq(follows.followingId, followingId)));
+    return !!follow;
+  }
+
+  async toggleFollow(followerId: number, followingId: number): Promise<boolean> {
+    const existingFollow = await this.isFollowing(followerId, followingId);
+    
+    if (existingFollow) {
+      await db.delete(follows).where(and(eq(follows.followerId, followerId), eq(follows.followingId, followingId)));
+      return false;
+    } else {
+      await db.insert(follows).values({ followerId, followingId });
+      return true;
+    }
+  }
+
+  async getFollowers(userId: number): Promise<User[]> {
+    const followers = await db
+      .select({ user: users })
+      .from(follows)
+      .innerJoin(users, eq(follows.followerId, users.id))
+      .where(eq(follows.followingId, userId));
+    return followers.map(f => f.user);
+  }
+
+  async getFollowing(userId: number): Promise<User[]> {
+    const following = await db
+      .select({ user: users })
+      .from(follows)
+      .innerJoin(users, eq(follows.followingId, users.id))
+      .where(eq(follows.followerId, userId));
+    return following.map(f => f.user);
+  }
+
+  async getActiveChallenge(): Promise<Challenge | undefined> {
+    const [challenge] = await db.select().from(challenges).where(eq(challenges.isActive, true));
+    return challenge || undefined;
+  }
+
+  async getAllChallenges(): Promise<Challenge[]> {
+    return await db.select().from(challenges).orderBy(desc(challenges.createdAt));
+  }
+
+  async createChallenge(insertChallenge: InsertChallenge): Promise<Challenge> {
+    const [challenge] = await db
+      .insert(challenges)
+      .values(insertChallenge)
+      .returning();
+    return challenge;
+  }
+
+  async getChallengeSubmissions(challengeId: number): Promise<any[]> {
+    return await db.select().from(challengeSubmissions).where(eq(challengeSubmissions.challengeId, challengeId));
+  }
+
+  async getReviewsForUser(userId: number): Promise<Review[]> {
+    return await db.select().from(reviews).where(eq(reviews.reviewerId, userId)).orderBy(desc(reviews.createdAt));
+  }
+
+  async getPendingReviews(userId: number): Promise<Review[]> {
+    return await db.select().from(reviews).where(and(eq(reviews.reviewerId, userId), eq(reviews.isCompleted, false))).orderBy(desc(reviews.createdAt));
+  }
+
+  async createReview(insertReview: InsertReview): Promise<Review> {
+    const [review] = await db
+      .insert(reviews)
+      .values(insertReview)
+      .returning();
+    return review;
+  }
+
+  async updateReview(id: number, updates: Partial<Review>): Promise<Review> {
+    const [review] = await db
+      .update(reviews)
+      .set(updates)
+      .where(eq(reviews.id, id))
+      .returning();
+    return review;
+  }
+
+  async getTipsByStory(storyId: number): Promise<Tip[]> {
+    return await db.select().from(tips).where(eq(tips.storyId, storyId)).orderBy(desc(tips.createdAt));
+  }
+
+  async getTipsByUser(userId: number): Promise<Tip[]> {
+    return await db.select().from(tips).where(eq(tips.toUserId, userId)).orderBy(desc(tips.createdAt));
+  }
+
+  async createTip(insertTip: InsertTip): Promise<Tip> {
+    const [tip] = await db
+      .insert(tips)
+      .values(insertTip)
+      .returning();
+    return tip;
+  }
+
+  async getUserAchievements(userId: number): Promise<Achievement[]> {
+    return await db.select().from(achievements).where(eq(achievements.userId, userId)).orderBy(desc(achievements.unlockedAt));
+  }
+
+  async createAchievement(insertAchievement: InsertAchievement): Promise<Achievement> {
+    const [achievement] = await db
+      .insert(achievements)
+      .values(insertAchievement)
+      .returning();
+    return achievement;
+  }
+}
+
+export const storage = new DatabaseStorage();
