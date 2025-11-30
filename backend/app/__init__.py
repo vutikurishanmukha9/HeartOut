@@ -14,7 +14,7 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
-    limiter.init_app(app)
+    # limiter.init_app(app)  # Disabled for development without Redis
     socketio.init_app(app, cors_allowed_origins="*", async_mode='threading')
     
     # CORS configuration
@@ -24,12 +24,10 @@ def create_app(config_class=Config):
     # Register blueprints
     from app.blueprints.auth import bp as auth_bp
     from app.blueprints.posts import bp as posts_bp
-    from app.blueprints.calls import bp as calls_bp
     from app.blueprints.admin import bp as admin_bp
     
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(posts_bp, url_prefix='/api/posts')
-    app.register_blueprint(calls_bp, url_prefix='/api/calls')
     app.register_blueprint(admin_bp, url_prefix='/api/admin')
     
     # Error handlers
@@ -46,12 +44,12 @@ def create_app(config_class=Config):
     if not app.debug and not app.testing:
         if not os.path.exists('logs'):
             os.mkdir('logs')
-        file_handler = RotatingFileHandler('logs/heartout.log', maxBytes=10240, backupCount=10)
+        file_handler = RotatingFileHandler('logs/storytelling.log', maxBytes=10240, backupCount=10)
         file_handler.setFormatter(logging.Formatter(
             '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
         file_handler.setLevel(logging.INFO)
         app.logger.addHandler(file_handler)
         app.logger.setLevel(logging.INFO)
-        app.logger.info('HeartOut startup')
+        app.logger.info('Storytelling Platform startup')
     
     return app

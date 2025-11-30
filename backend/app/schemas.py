@@ -1,5 +1,5 @@
 from marshmallow import Schema, fields, validate, post_load
-from app.models import UserRole, PostStatus, SeverityLevel
+from app.models import UserRole, PostStatus, StoryType
 
 class UserRegistrationSchema(Schema):
     username = fields.Str(required=True, validate=validate.Length(min=3, max=80))
@@ -15,17 +15,16 @@ class UserLoginSchema(Schema):
 class PostCreationSchema(Schema):
     title = fields.Str(required=True, validate=validate.Length(min=1, max=200))
     content = fields.Str(required=True, validate=validate.Length(min=1))
-    is_anonymous = fields.Bool(missing=True)
-    is_seeking_help = fields.Bool(missing=False)
-    severity_level = fields.Str(validate=validate.OneOf([level.value for level in SeverityLevel]), missing='low')
-    tags = fields.List(fields.Str(), missing=[])
-    status = fields.Str(validate=validate.OneOf([status.value for status in PostStatus]), missing='draft')
+    is_anonymous = fields.Bool(load_default=True)
+    story_type = fields.Str(validate=validate.OneOf([st.value for st in StoryType]), load_default='other')
+    tags = fields.List(fields.Str(), load_default=[])
+    status = fields.Str(validate=validate.OneOf([status.value for status in PostStatus]), load_default='draft')
 
 class CommentCreationSchema(Schema):
     content = fields.Str(required=True, validate=validate.Length(min=1))
-    is_anonymous = fields.Bool(missing=True)
+    is_anonymous = fields.Bool(load_default=True)
     parent_id = fields.Str(allow_none=True)
 
 class SupportSchema(Schema):
-    support_type = fields.Str(validate=validate.OneOf(['heart', 'hug', 'strength', 'hope']), missing='heart')
+    support_type = fields.Str(validate=validate.OneOf(['heart', 'applause', 'bookmark']), load_default='heart')
     message = fields.Str(validate=validate.Length(max=500))

@@ -8,7 +8,7 @@ class UserRole(Enum):
     USER = "user"
     ADMIN = "admin"
     MODERATOR = "moderator"
-    COUNSELOR = "counselor"
+    AUTHOR = "author"  # Changed from COUNSELOR to AUTHOR for storytelling platform
 
 class PostStatus(Enum):
     DRAFT = "draft"
@@ -16,11 +16,13 @@ class PostStatus(Enum):
     FLAGGED = "flagged"
     REMOVED = "removed"
 
-class SeverityLevel(Enum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
-    CRITICAL = "critical"
+class StoryType(Enum):
+    ACHIEVEMENT = "achievement"
+    REGRET = "regret"
+    UNSENT_LETTER = "unsent_letter"
+    SACRIFICE = "sacrifice"
+    LIFE_STORY = "life_story"
+    OTHER = "other"
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -42,10 +44,11 @@ class User(db.Model):
     age_range = db.Column(db.String(20))
     preferred_anonymity = db.Column(db.Boolean, default=True)
     
-    # Mental health specific fields
-    crisis_contact_number = db.Column(db.String(20))
-    emergency_contact_name = db.Column(db.String(100))
-    emergency_contact_number = db.Column(db.String(20))
+    # Author/Storytelling specific fields
+    author_bio = db.Column(db.Text)  # Detailed author biography
+    website_url = db.Column(db.String(200))  # Author's website
+    social_links = db.Column(db.JSON)  # Social media links
+    is_featured_author = db.Column(db.Boolean, default=False)
     
     # Relationships
     posts = db.relationship('Post', backref='author', lazy='dynamic', cascade='all, delete-orphan')
@@ -69,7 +72,8 @@ class User(db.Model):
             'created_at': self.created_at.isoformat(),
             'bio': self.bio,
             'age_range': self.age_range,
-            'preferred_anonymity': self.preferred_anonymity
+            'preferred_anonymity': self.preferred_anonymity,
+            'is_featured_author': self.is_featured_author
         }
         
         if include_sensitive:
@@ -77,9 +81,10 @@ class User(db.Model):
                 'email': self.email,
                 'is_verified': self.is_verified,
                 'last_login': self.last_login.isoformat() if self.last_login else None,
-                'crisis_contact_number': self.crisis_contact_number,
-                'emergency_contact_name': self.emergency_contact_name,
-                'emergency_contact_number': self.emergency_contact_number
+                'author_bio': self.author_bio,
+                'website_url': self.website_url,
+                'social_links': self.social_links or {},
+                'total_stories': self.posts.filter_by(status=PostStatus.PUBLISHED).count()
             })
         
         return data
@@ -92,20 +97,23 @@ class Post(db.Model):
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
     status = db.Column(db.Enum(PostStatus), default=PostStatus.DRAFT, nullable=False)
-    severity_level = db.Column(db.Enum(SeverityLevel), default=SeverityLevel.LOW)
+    story_type = db.Column(db.Enum(StoryType), default=StoryType.OTHER, nullable=False)
     is_anonymous = db.Column(db.Boolean, default=True)
-    is_seeking_help = db.Column(db.Boolean, default=False)
     tags = db.Column(db.JSON)  # Store as JSON array
+    
+    # Storytelling specific fields
+    reading_time = db.Column(db.Integer, default=0)  # Estimated reading time in minutes
+    view_count = db.Column(db.Integer, default=0)
+    is_featured = db.Column(db.Boolean, default=False)
+    featured_at = db.Column(db.DateTime)
     
     # Timestamps
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     published_at = db.Column(db.DateTime)
     
-    # Moderation fields
-    moderation_score = db.Column(db.Float)
+    # Moderation fields (lighter moderation for storytelling)
     flagged_count = db.Column(db.Integer, default=0)
-    auto_flagged = db.Column(db.Boolean, default=False)
     
     # Foreign keys
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -120,10 +128,12 @@ class Post(db.Model):
             'title': self.title,
             'content': self.content,
             'status': self.status.value,
-            'severity_level': self.severity_level.value,
+            'story_type': self.story_type.value,
             'is_anonymous': self.is_anonymous,
-            'is_seeking_help': self.is_seeking_help,
             'tags': self.tags or [],
+            'reading_time': self.reading_time,
+            'view_count': self.view_count,
+            'is_featured': self.is_featured,
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat(),
             'published_at': self.published_at.isoformat() if self.published_at else None,
@@ -189,7 +199,7 @@ class Support(db.Model):
     __tablename__ = 'supports'
     
     id = db.Column(db.Integer, primary_key=True)
-    support_type = db.Column(db.String(50), default='heart')  # heart, hug, etc.
+    support_type = db.Column(db.String(50), default='heart')  # heart, applause, bookmark
     message = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     
@@ -210,53 +220,3 @@ class Support(db.Model):
                 'display_name': self.giver.display_name
             }
         }
-
-class CallSession(db.Model):
-    __tablename__ = 'call_sessions'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    public_id = db.Column(db.String(36), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
-    room_id = db.Column(db.String(100), unique=True, nullable=False)
-    is_active = db.Column(db.Boolean, default=True)
-    is_emergency = db.Column(db.Boolean, default=False)
-    max_participants = db.Column(db.Integer, default=2)
-    
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
-    ended_at = db.Column(db.DateTime)
-    
-    # Foreign keys
-    creator_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    
-    # Relationship
-    creator = db.relationship('User', backref='created_calls')
-    participants = db.relationship('CallParticipant', backref='session', lazy='dynamic', cascade='all, delete-orphan')
-    
-    def to_dict(self):
-        return {
-            'id': self.public_id,
-            'room_id': self.room_id,
-            'is_active': self.is_active,
-            'is_emergency': self.is_emergency,
-            'max_participants': self.max_participants,
-            'participant_count': self.participants.count(),
-            'created_at': self.created_at.isoformat(),
-            'creator': {
-                'id': self.creator.public_id,
-                'username': self.creator.username
-            }
-        }
-
-class CallParticipant(db.Model):
-    __tablename__ = 'call_participants'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    joined_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
-    left_at = db.Column(db.DateTime)
-    is_active = db.Column(db.Boolean, default=True)
-    
-    # Foreign keys
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    session_id = db.Column(db.Integer, db.ForeignKey('call_sessions.id'), nullable=False)
-    
-    # Relationships
-    user = db.relationship('User', backref='call_participations')
