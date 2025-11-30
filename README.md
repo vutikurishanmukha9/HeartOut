@@ -182,8 +182,6 @@ The platform provides a RESTful API with the following main endpoints:
 - `GET /api/admin/users` - User management
 - `POST /api/admin/moderate` - Content moderation actions
 
-For detailed API documentation, see `docs/API.md`.
-
 ## Future Enhancements
 
 HeartOut is actively being developed with several exciting features planned for future releases:
@@ -247,16 +245,9 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 HeartOut was built with the vision of creating a meaningful space for authentic human stories. Special thanks to all early testers and contributors who helped shape this platform.
 
-## Contact
-
-For questions, suggestions, or feedback:
-- Website: Coming soon
-- Email: contact@heartout.com
-- Twitter: @HeartOutStories
-
 ## Roadmap to Launch
 
-The platform is currently in beta testing with a planned public launch in the coming weeks. We are actively working on:
+The platform is currently in beta testing with a planned public launch in the coming weeks. I am actively working on:
 
 - Final security audits and penetration testing
 - Performance optimization and load testing

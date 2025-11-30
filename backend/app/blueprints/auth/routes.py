@@ -1,9 +1,11 @@
 from flask import request, jsonify, current_app
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
+from flask_wtf.csrf import CSRFProtect
 from app.blueprints.auth import bp
-from app.extensions import db, limiter
+from app.extensions import db, limiter, csrf
 from app.models import User, UserRole
 from app.schemas import UserRegistrationSchema, UserLoginSchema
+from app.utils.password_validator import validate_password, get_password_requirements
 from marshmallow import ValidationError
 from datetime import datetime, timezone
 
@@ -11,6 +13,7 @@ from datetime import datetime, timezone
 jwt_blocklist = set()
 
 @bp.route('/register', methods=['POST'])
+@csrf.exempt  # Exempt registration from CSRF (public endpoint)
 @limiter.limit("5 per minute")
 def register():
     try:
@@ -18,6 +21,14 @@ def register():
         data = schema.load(request.json)
     except ValidationError as err:
         return jsonify({'errors': err.messages}), 400
+    
+    # Validate password strength
+    is_valid, error_message = validate_password(data['password'])
+    if not is_valid:
+        return jsonify({
+            'error': error_message,
+            'requirements': get_password_requirements()
+        }), 400
     
     # Check if user already exists
     if User.query.filter_by(email=data['email']).first():
@@ -56,6 +67,7 @@ def register():
         return jsonify({'error': 'Registration failed'}), 500
 
 @bp.route('/login', methods=['POST'])
+@csrf.exempt  # Exempt login from CSRF (public endpoint)
 @limiter.limit("10 per minute")
 def login():
     try:

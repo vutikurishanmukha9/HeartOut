@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from app.extensions import db, migrate, jwt, limiter, socketio
+from app.extensions import db, migrate, jwt, limiter, csrf
 from app.config import Config
 import logging
 from logging.handlers import RotatingFileHandler
@@ -14,11 +14,11 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
-    # limiter.init_app(app)  # Disabled for development without Redis
-    socketio.init_app(app, cors_allowed_origins="*", async_mode='threading')
+    limiter.init_app(app)
+    csrf.init_app(app)
     
     # CORS configuration
-    CORS(app, origins=["http://localhost:3000", "http://localhost:5173"], 
+    CORS(app, origins=app.config['CORS_ORIGINS'], 
          supports_credentials=True)
     
     # Register blueprints

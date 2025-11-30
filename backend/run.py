@@ -1,6 +1,6 @@
 # backend/run.py
 #!/usr/bin/env python3
-from app import create_app, socketio
+from app import create_app
 from app.extensions import db
 import os
 
@@ -19,9 +19,8 @@ def make_shell_context():
     }
 
 if __name__ == '__main__':
-    # Use SocketIO's run method for WebSocket support
-    socketio.run(
-        app,
+    # Use standard Flask run
+    app.run(
         host='0.0.0.0',
         port=int(os.environ.get('PORT', 5000)),
         debug=os.environ.get('FLASK_ENV') == 'development'
