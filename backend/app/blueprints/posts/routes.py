@@ -9,7 +9,7 @@ from marshmallow import ValidationError
 from datetime import datetime, timezone
 from sqlalchemy import desc, func
 
-@bp.route('/', methods=['POST'])
+@bp.route('', methods=['POST'])
 @jwt_required()
 @limiter.limit("10 per hour")
 def create_story():

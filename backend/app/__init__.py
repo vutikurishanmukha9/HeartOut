@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from app.extensions import db, migrate, jwt, limiter, csrf
+from app.extensions import db, migrate, jwt, limiter
 from app.config import Config
 import logging
 from logging.handlers import RotatingFileHandler
@@ -15,7 +15,6 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     jwt.init_app(app)
     limiter.init_app(app)
-    csrf.init_app(app)
     
     # CORS configuration
     CORS(app, origins=app.config['CORS_ORIGINS'], 
