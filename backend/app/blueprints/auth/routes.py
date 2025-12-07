@@ -1,6 +1,5 @@
 from flask import request, jsonify, current_app
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
-from flask_wtf.csrf import CSRFProtect
 from app.blueprints.auth import bp
 from app.extensions import db, limiter
 from app.models import User, UserRole
@@ -10,7 +9,9 @@ from marshmallow import ValidationError
 from datetime import datetime, timezone
 
 # JWT blocklist for logout functionality
+# TODO: For production, use Redis or database table
 jwt_blocklist = set()
+
 
 @bp.route('/register', methods=['POST'])
 @limiter.limit("5 per minute")
@@ -177,8 +178,13 @@ def change_password():
     if not user.check_password(current_password):
         return jsonify({'error': 'Current password is incorrect'}), 401
     
-    if len(new_password) < 8:
-        return jsonify({'error': 'New password must be at least 8 characters'}), 400
+    # Use full password validation
+    is_valid, error_message = validate_password(new_password)
+    if not is_valid:
+        return jsonify({
+            'error': error_message,
+            'requirements': get_password_requirements()
+        }), 400
     
     user.set_password(new_password)
     
@@ -190,7 +196,35 @@ def change_password():
         current_app.logger.error(f"Password change error: {str(e)}")
         return jsonify({'error': 'Password change failed'}), 500
 
-# Check if JWT is in blocklist
-@bp.before_app_request
-def check_if_token_revoked():
-    pass
+
+# ========== NEW: User Statistics Endpoint ==========
+@bp.route('/stats', methods=['GET'])
+@jwt_required()
+def get_user_stats():
+    """Get current user's statistics"""
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(public_id=current_user_id).first()
+    
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    
+    from app.services.story_service import StoryService
+    stats = StoryService.get_user_stats(user)
+    
+    return jsonify({'stats': stats})
+
+
+# ========== JWT Blocklist Check ==========
+def is_token_revoked(jwt_header, jwt_payload):
+    """Check if a JWT token has been revoked"""
+    from app.models import TokenBlocklist
+    jti = jwt_payload['jti']
+    
+    # First check in-memory cache for quick lookup
+    if jti in jwt_blocklist:
+        return True
+    
+    # Then check database for persistent storage
+    token = TokenBlocklist.query.filter_by(jti=jti).first()
+    return token is not None
+

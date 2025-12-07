@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- H in black - positioned left -->
+  <text x="0" y="22" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#000000">H</text>
+  <!-- O in red - positioned right with spacing -->
+  <text x="16" y="22" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#ef4444">O</text>
+</svg>

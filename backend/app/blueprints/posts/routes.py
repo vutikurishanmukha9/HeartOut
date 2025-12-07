@@ -5,9 +5,12 @@ from app.extensions import db, limiter
 from app.models import User, Post, Comment, Support, PostStatus, StoryType
 from app.schemas import PostCreationSchema, CommentCreationSchema, SupportSchema
 from app.utils.reading_time import calculate_reading_time, get_excerpt
+from app.utils.decorators import get_current_user
+from app.services.story_service import StoryService
 from marshmallow import ValidationError
 from datetime import datetime, timezone
-from sqlalchemy import desc, func
+from sqlalchemy import desc, func, or_
+
 
 @bp.route('', methods=['POST'])
 @jwt_required()
@@ -26,34 +29,12 @@ def create_story():
     except ValidationError as err:
         return jsonify({'errors': err.messages}), 400
     
-    # Calculate reading time
-    reading_time = calculate_reading_time(data['content'])
-    
-    # Create new story
-    story = Post(
-        title=data['title'],
-        content=data['content'],
-        story_type=StoryType(data.get('story_type', 'other')),
-        is_anonymous=data.get('is_anonymous', True),
-        tags=data.get('tags', []),
-        status=PostStatus(data.get('status', 'draft')),
-        reading_time=reading_time,
-        user_id=user.id
-    )
-    
-    # Set published_at if publishing immediately
-    if story.status == PostStatus.PUBLISHED:
-        story.published_at = datetime.now(timezone.utc)
-    
     try:
-        db.session.add(story)
-        db.session.commit()
-        
+        story = StoryService.create_story(user, data)
         return jsonify({
             'message': 'Story created successfully',
             'story': story.to_dict()
         }), 201
-        
     except Exception as e:
         db.session.rollback()
         current_app.logger.error(f"Story creation error: {str(e)}")
@@ -63,45 +44,25 @@ def create_story():
 @bp.route('/', methods=['GET'])
 def get_stories():
     """Get list of published stories with optional filtering"""
-    # Query parameters
     story_type = request.args.get('story_type')
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 20, type=int)
-    sort_by = request.args.get('sort_by', 'latest')  # latest, trending, most_viewed
+    sort_by = request.args.get('sort_by', 'latest')
     
-    # Base query - only published stories
-    query = Post.query.filter_by(status=PostStatus.PUBLISHED)
-    
-    # Filter by story type
-    if story_type:
-        try:
-            query = query.filter_by(story_type=StoryType(story_type))
-        except ValueError:
-            return jsonify({'error': 'Invalid story type'}), 400
-    
-    # Sorting
-    if sort_by == 'trending':
-        # Trending: most reactions in last 7 days
-        query = query.outerjoin(Support).group_by(Post.id).order_by(
-            desc(func.count(Support.id))
-        )
-    elif sort_by == 'most_viewed':
-        query = query.order_by(desc(Post.view_count))
-    else:  # latest
-        query = query.order_by(desc(Post.published_at))
-    
-    # Paginate
-    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
-    
-    stories = [story.to_dict() for story in pagination.items]
-    
-    return jsonify({
-        'stories': stories,
-        'total': pagination.total,
-        'page': page,
-        'per_page': per_page,
-        'total_pages': pagination.pages
-    })
+    try:
+        filters = {'story_type': story_type} if story_type else None
+        pagination = StoryService.get_stories(filters, page, per_page, sort_by)
+        
+        return jsonify({
+            'stories': [story.to_dict() for story in pagination.items],
+            'total': pagination.total,
+            'page': page,
+            'per_page': per_page,
+            'total_pages': pagination.pages
+        })
+    except Exception as e:
+        current_app.logger.error(f"Get stories error: {str(e)}")
+        return jsonify({'error': 'Failed to fetch stories'}), 500
 
 
 @bp.route('/featured', methods=['GET'])
@@ -115,6 +76,58 @@ def get_featured_stories():
     return jsonify({
         'featured_stories': [story.to_dict() for story in stories]
     })
+
+
+# ========== NEW: Drafts Endpoint ==========
+@bp.route('/drafts', methods=['GET'])
+@jwt_required()
+def get_user_drafts():
+    """Get current user's draft stories"""
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(public_id=current_user_id).first()
+    
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
+    
+    pagination = StoryService.get_user_drafts(user, page, per_page)
+    
+    return jsonify({
+        'drafts': [story.to_dict() for story in pagination.items],
+        'total': pagination.total,
+        'page': page,
+        'per_page': per_page,
+        'total_pages': pagination.pages
+    })
+
+
+# ========== NEW: Search Endpoint ==========
+@bp.route('/search', methods=['GET'])
+def search_stories():
+    """Search stories by title or content"""
+    query = request.args.get('q', '').strip()
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
+    
+    if not query or len(query) < 2:
+        return jsonify({'error': 'Search query must be at least 2 characters'}), 400
+    
+    try:
+        pagination = StoryService.search_stories(query, page, per_page)
+        
+        return jsonify({
+            'results': [story.to_dict() for story in pagination.items],
+            'query': query,
+            'total': pagination.total,
+            'page': page,
+            'per_page': per_page,
+            'total_pages': pagination.pages
+        })
+    except Exception as e:
+        current_app.logger.error(f"Search error: {str(e)}")
+        return jsonify({'error': 'Search failed'}), 500
 
 
 @bp.route('/category/<story_type>', methods=['GET'])
@@ -154,7 +167,6 @@ def get_story(story_id):
         return jsonify({'error': 'Story not found'}), 404
     
     if story.status != PostStatus.PUBLISHED:
-        # Only allow author to view unpublished stories
         try:
             current_user_id = get_jwt_identity()
             if not current_user_id or story.author.public_id != current_user_id:
@@ -163,8 +175,7 @@ def get_story(story_id):
             return jsonify({'error': 'Story not found'}), 404
     
     # Increment view count
-    story.view_count += 1
-    db.session.commit()
+    StoryService.increment_view_count(story)
     
     return jsonify({'story': story.to_dict()})
 
@@ -184,7 +195,6 @@ def update_story(story_id):
     if not story:
         return jsonify({'error': 'Story not found'}), 404
     
-    # Check if user is the author
     if story.user_id != user.id:
         return jsonify({'error': 'Unauthorized'}), 403
     
@@ -194,30 +204,11 @@ def update_story(story_id):
     except ValidationError as err:
         return jsonify({'errors': err.messages}), 400
     
-    # Update fields
-    story.title = data.get('title', story.title)
-    story.content = data.get('content', story.content)
-    story.story_type = StoryType(data.get('story_type', story.story_type.value))
-    story.is_anonymous = data.get('is_anonymous', story.is_anonymous)
-    story.tags = data.get('tags', story.tags)
-    
-    # Recalculate reading time if content changed
-    if 'content' in data:
-        story.reading_time = calculate_reading_time(data['content'])
-    
-    # Update status
-    new_status = PostStatus(data.get('status', story.status.value))
-    if new_status == PostStatus.PUBLISHED and story.status != PostStatus.PUBLISHED:
-        story.published_at = datetime.now(timezone.utc)
-    story.status = new_status
-    
-    story.updated_at = datetime.now(timezone.utc)
-    
     try:
-        db.session.commit()
+        updated_story = StoryService.update_story(story, user, data)
         return jsonify({
             'message': 'Story updated successfully',
-            'story': story.to_dict()
+            'story': updated_story.to_dict()
         })
     except Exception as e:
         db.session.rollback()
@@ -240,13 +231,11 @@ def delete_story(story_id):
     if not story:
         return jsonify({'error': 'Story not found'}), 404
     
-    # Check if user is the author
     if story.user_id != user.id:
         return jsonify({'error': 'Unauthorized'}), 403
     
     try:
-        db.session.delete(story)
-        db.session.commit()
+        StoryService.delete_story(story, user)
         return jsonify({'message': 'Story deleted successfully'})
     except Exception as e:
         db.session.rollback()
@@ -283,7 +272,6 @@ def add_comment(story_id):
         post_id=story.id
     )
     
-    # Handle parent comment for nested replies
     if data.get('parent_id'):
         parent = Comment.query.filter_by(public_id=data['parent_id']).first()
         if parent and parent.post_id == story.id:
@@ -310,7 +298,6 @@ def get_comments(story_id):
     if not story:
         return jsonify({'error': 'Story not found'}), 404
     
-    # Get top-level comments (no parent)
     comments = Comment.query.filter_by(
         post_id=story.id,
         parent_id=None
@@ -375,6 +362,54 @@ def react_to_story(story_id):
         return jsonify({'error': 'Reaction creation failed'}), 500
 
 
+# ========== NEW: Toggle Reaction Endpoint ==========
+@bp.route('/<story_id>/toggle-react', methods=['POST'])
+@jwt_required()
+@limiter.limit("60 per hour")
+def toggle_reaction(story_id):
+    """Toggle reaction - add if not exists, remove if exists"""
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(public_id=current_user_id).first()
+    
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    
+    story = Post.query.filter_by(public_id=story_id, status=PostStatus.PUBLISHED).first()
+    
+    if not story:
+        return jsonify({'error': 'Story not found'}), 404
+    
+    try:
+        schema = SupportSchema()
+        data = schema.load(request.json or {})
+    except ValidationError as err:
+        return jsonify({'errors': err.messages}), 400
+    
+    support_type = data.get('support_type', 'heart')
+    message = data.get('message')
+    
+    try:
+        result = StoryService.toggle_reaction(story, user, support_type, message)
+        
+        if result['action'] == 'removed':
+            return jsonify({
+                'message': 'Reaction removed',
+                'action': 'removed',
+                'support_count': result['support_count']
+            })
+        else:
+            return jsonify({
+                'message': 'Reaction added',
+                'action': 'added',
+                'reaction': result['reaction'].to_dict(),
+                'support_count': result['support_count']
+            }), 201
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Toggle reaction error: {str(e)}")
+        return jsonify({'error': 'Toggle reaction failed'}), 500
+
+
 @bp.route('/user/<user_id>/stories', methods=['GET'])
 def get_user_stories(user_id):
     """Get all published stories by a specific user"""
@@ -386,7 +421,6 @@ def get_user_stories(user_id):
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 20, type=int)
     
-    # Only show non-anonymous published stories
     pagination = Post.query.filter_by(
         user_id=user.id,
         status=PostStatus.PUBLISHED,
