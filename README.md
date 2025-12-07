@@ -1,263 +1,218 @@
 # HeartOut - Personal Storytelling Platform
 
-A modern web platform designed for authentic storytelling and personal expression. HeartOut provides a safe, supportive space where people can share their life experiences, achievements, regrets, and untold stories with a community that values genuine human connection.
+<div align="center">
 
-## About the Project
+![HeartOut Logo](frontend/public/heart.svg)
 
-HeartOut was created to address the need for a dedicated platform where individuals can express themselves freely without the noise and superficiality often found on traditional social media. Whether you want to celebrate an achievement, share a lesson learned from regret, write an unsent letter, or document your life journey, HeartOut provides the tools and community to support your storytelling.
+**Where every story matters.**
 
-This platform is currently in active development and will be launching to the public in the coming weeks.
+A modern, premium storytelling platform for authentic personal expression.
 
-## Core Features
+[![GitHub](https://img.shields.io/badge/GitHub-vutikurishanmukha9%2FHeartOut-blue)](https://github.com/vutikurishanmukha9/HeartOut)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
+[![React](https://img.shields.io/badge/React-18+-61DAFB.svg)](https://react.dev)
 
-### Story Categories
+</div>
 
-The platform supports multiple story types to accommodate different forms of personal expression:
+---
 
-- **Achievements**: Celebrate your victories, milestones, and accomplishments
-- **Regrets**: Share lessons learned from difficult experiences
-- **Unsent Letters**: Express words that were never said
-- **Sacrifices**: Document what you gave up and why it mattered
-- **Life Stories**: Share your complete journey or significant chapters
-- **Other**: Uncategorized personal narratives
+## ✨ Features
 
-### User Experience
+### 📖 Story Categories
+| Category | Description |
+|----------|-------------|
+| 🏆 **Achievements** | Celebrate victories and milestones |
+| 💜 **Regrets** | Share lessons from difficult experiences |
+| 💌 **Unsent Letters** | Express words never said |
+| 🤝 **Sacrifices** | Document what you gave up |
+| 📚 **Life Stories** | Share your personal journey |
+| ✨ **Other** | Uncategorized narratives |
 
-- **Clean, Modern Interface**: Intuitive design built with React and Tailwind CSS
-- **Anonymous Posting**: Option to share stories without revealing your identity
-- **Rich Text Editor**: Comprehensive writing tools with word count and formatting
-- **Reading Time Estimates**: Automatically calculated for each story
-- **Engagement Features**: Reactions, comments, and bookmarking
-- **Draft Management**: Save and continue working on unfinished stories
-- **Responsive Design**: Seamless experience across desktop, tablet, and mobile devices
+### 🎨 Premium UI
+- **Glass Morphism Design** - Modern, translucent components
+- **Warm Sunset Palette** - Coral, amber, and rose tones
+- **Micro-animations** - Smooth transitions and hover effects
+- **Dark Mode** - Eye-friendly reading experience
+- **Responsive** - Works on desktop, tablet, and mobile
 
-### Community Features
+### 💡 Key Features
+- ✅ Anonymous posting option
+- ✅ 5 reaction types (❤️ Love, 🏆 Inspiring, 🔖 Save, 🤗 Hug, ✨ Mind-blown)
+- ✅ Draft management
+- ✅ Story search
+- ✅ User statistics
+- ✅ Reading time estimates
+- ✅ Comment system
 
-- **Story Discovery**: Browse stories by category, trending topics, or latest posts
-- **User Profiles**: Customizable profiles with author bios and story collections
-- **Search Functionality**: Find stories by keywords, tags, or authors
-- **Content Moderation**: Admin tools to maintain a safe, respectful community
+---
 
-## Technology Stack
+## 🛠 Tech Stack
 
 ### Backend
-
-- **Framework**: Flask (Python)
-- **Database**: SQLite for development, PostgreSQL-ready for production
-- **Authentication**: JWT-based secure authentication
-- **API**: RESTful API architecture
-- **Migrations**: Flask-Migrate for database version control
+| Technology | Purpose |
+|------------|---------|
+| Flask | Python web framework |
+| SQLAlchemy | Database ORM |
+| JWT | Authentication |
+| Marshmallow | Validation |
+| Flask-Limiter | Rate limiting |
 
 ### Frontend
+| Technology | Purpose |
+|------------|---------|
+| React 18 | UI framework |
+| Vite | Build tool |
+| Tailwind CSS | Styling |
+| Lucide React | Icons |
+| React Router | Navigation |
 
-- **Framework**: React 18 with Vite
-- **Routing**: React Router v6
-- **Styling**: Tailwind CSS with custom design system
-- **State Management**: React Context API
-- **Notifications**: React Hot Toast
-- **Icons**: Lucide React
+---
 
-### Development Tools
-
-- **Version Control**: Git
-- **Package Management**: npm (frontend), pip (backend)
-- **Code Quality**: ESLint, Prettier
-- **Containerization**: Docker and Docker Compose ready
-
-## Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-
-- Python 3.11 or higher
-- Node.js 18 or higher
+- Python 3.11+
+- Node.js 18+
 - Git
 
 ### Installation
 
-1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/HeartOut.git
+# Clone repository
+git clone https://github.com/vutikurishanmukha9/HeartOut.git
 cd HeartOut
-```
 
-2. Set up the backend:
-```bash
+# Backend setup
 cd backend
 python -m venv venv
-.\venv\Scripts\activate  # On Windows
-source venv/bin/activate  # On macOS/Linux
+.\venv\Scripts\activate  # Windows
+source venv/bin/activate  # macOS/Linux
 pip install -r requirements.txt
-```
-
-3. Configure environment variables:
-```bash
-# Create backend/.env file
-cp backend/.env.example backend/.env
-# Edit the .env file with your configuration
-```
-
-4. Initialize the database:
-```bash
+cp .env.example .env
 flask db upgrade
-```
 
-5. Set up the frontend:
-```bash
+# Frontend setup
 cd ../frontend
 npm install
 ```
 
-6. Configure frontend environment:
-```bash
-# Create frontend/.env file
-cp frontend/.env.example frontend/.env
-```
+### Running
 
-### Running the Application
-
-1. Start the backend server:
 ```bash
+# Terminal 1 - Backend (http://localhost:5000)
 cd backend
 .\venv\Scripts\activate
 python run.py
-```
-The backend will run on `http://localhost:5000`
 
-2. Start the frontend development server:
-```bash
+# Terminal 2 - Frontend (http://localhost:5173)
 cd frontend
 npm run dev
 ```
-The frontend will run on `http://localhost:5173`
 
-3. Open your browser and navigate to `http://localhost:5173`
+---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 HeartOut/
 ├── backend/
 │   ├── app/
-│   │   ├── blueprints/      # API route modules
-│   │   ├── models.py         # Database models
-│   │   ├── schemas.py        # Data validation schemas
-│   │   └── config.py         # Application configuration
-│   ├── migrations/           # Database migrations
-│   ├── requirements.txt      # Python dependencies
-│   └── run.py               # Application entry point
+│   │   ├── blueprints/     # API routes (auth, posts, admin)
+│   │   ├── services/       # Business logic layer
+│   │   ├── utils/          # Decorators, errors, validators
+│   │   ├── models.py       # Database models
+│   │   └── schemas.py      # Request validation
+│   └── migrations/
 ├── frontend/
 │   ├── src/
-│   │   ├── components/      # Reusable React components
-│   │   ├── pages/           # Page components
-│   │   ├── context/         # React Context providers
-│   │   ├── routes/          # Route configurations
-│   │   └── App.jsx          # Main application component
-│   ├── package.json         # Node dependencies
-│   └── vite.config.js       # Vite configuration
-├── docs/                    # Documentation
-├── docker-compose.yml       # Docker orchestration
-└── README.md               # This file
+│   │   ├── components/     # Reusable UI components
+│   │   ├── pages/          # Page components
+│   │   ├── context/        # Auth & Theme providers
+│   │   └── routes/         # Route configurations
+│   └── public/             # Static assets
+└── README.md
 ```
-
-## API Documentation
-
-The platform provides a RESTful API with the following main endpoints:
-
-### Authentication
-- `POST /api/auth/register` - Create a new user account
-- `POST /api/auth/login` - Authenticate and receive JWT token
-- `GET /api/auth/profile` - Get current user profile
-- `PUT /api/auth/profile` - Update user profile
-
-### Posts
-- `GET /api/posts` - Retrieve all published stories
-- `GET /api/posts/:id` - Get a specific story
-- `POST /api/posts` - Create a new story
-- `PUT /api/posts/:id` - Update a story
-- `DELETE /api/posts/:id` - Delete a story
-- `GET /api/posts/drafts` - Get user's draft stories
-
-### Admin
-- `GET /api/admin/stats` - Platform statistics
-- `GET /api/admin/users` - User management
-- `POST /api/admin/moderate` - Content moderation actions
-
-## Future Enhancements
-
-HeartOut is actively being developed with several exciting features planned for future releases:
-
-### Phase 1: Enhanced User Experience (Weeks 1-4)
-- Advanced text editor with markdown support
-- Story versioning and edit history
-- Enhanced search with filters and sorting
-- User following and personalized feeds
-- Email notifications for interactions
-
-### Phase 2: Community Features (Weeks 5-8)
-- Story collections and playlists
-- Collaborative storytelling features
-- Story challenges and prompts
-- Featured stories and editor's picks
-- Community guidelines and reporting system
-
-### Phase 3: Multimedia Support (Weeks 9-12)
-- Image uploads for stories
-- Audio story narration
-- Video story integration
-- Story cover images
-- Media gallery management
-
-### Phase 4: Advanced Features (Weeks 13-16)
-- AI-powered writing suggestions
-- Story analytics and insights
-- Export stories to PDF/ePub
-- Multi-language support
-- Mobile applications (iOS and Android)
-
-### Phase 5: Monetization and Sustainability (Weeks 17-20)
-- Premium membership tiers
-- Creator monetization options
-- Sponsored story opportunities
-- Donation and tipping system
-- Ad-free experience for supporters
-
-### Long-term Vision
-- Integration with publishing platforms
-- Story contests and awards
-- Virtual storytelling events
-- Podcast integration
-- Book compilation services
-- Therapeutic writing programs partnership
-
-## Contributing
-
-We welcome contributions from the community. Please read our contributing guidelines before submitting pull requests.
-
-## Security
-
-If you discover any security vulnerabilities, please email security@heartout.com instead of using the issue tracker.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-HeartOut was built with the vision of creating a meaningful space for authentic human stories. Special thanks to all early testers and contributors who helped shape this platform.
-
-## Roadmap to Launch
-
-The platform is currently in beta testing with a planned public launch in the coming weeks. I am actively working on:
-
-- Final security audits and penetration testing
-- Performance optimization and load testing
-- User experience refinement based on beta feedback
-- Content moderation system implementation
-- Legal compliance and privacy policy finalization
-- Marketing and community building initiatives
-
-Stay tuned for our official launch announcement!
 
 ---
 
-Built with care for authentic storytelling. HeartOut - Where every story matters.
+## 🔌 API Endpoints
+
+### Authentication
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Create account |
+| POST | `/api/auth/login` | Login |
+| GET | `/api/auth/profile` | Get profile |
+| PUT | `/api/auth/profile` | Update profile |
+| GET | `/api/auth/stats` | User statistics |
+
+### Stories
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/posts` | List stories |
+| POST | `/api/posts` | Create story |
+| GET | `/api/posts/:id` | Get story |
+| PUT | `/api/posts/:id` | Update story |
+| DELETE | `/api/posts/:id` | Delete story |
+| GET | `/api/posts/drafts` | User drafts |
+| GET | `/api/posts/search` | Search stories |
+| POST | `/api/posts/:id/toggle-react` | Toggle reaction |
+
+---
+
+## 🔒 Security Features
+
+- ✅ JWT-based authentication
+- ✅ Persistent token blocklist
+- ✅ Password strength validation
+- ✅ Rate limiting
+- ✅ Input validation with Marshmallow
+- ✅ Centralized error handling
+
+---
+
+## 📈 Recent Updates
+
+### v2.0 - Premium Upgrade
+- 🎨 Complete UI redesign with glass morphism
+- ❤️ 5 premium reaction types
+- 🔍 Story search endpoint
+- 📊 User statistics endpoint
+- 🔐 18 backend security improvements
+- 📝 Enhanced schema validations
+- 🏗️ Service layer architecture
+
+---
+
+## 🗺 Roadmap
+
+| Phase | Features | Status |
+|-------|----------|--------|
+| Phase 1 | Core features, story CRUD | ✅ Complete |
+| Phase 2 | Premium UI upgrade | ✅ Complete |
+| Phase 3 | Search, reactions, stats | ✅ Complete |
+| Phase 4 | Email notifications | 🔄 Planned |
+| Phase 5 | Mobile app | 🔄 Planned |
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read our contributing guidelines before submitting pull requests.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+
+**HeartOut** - Where every story matters.
+
+Built with ❤️ for authentic storytelling.
+
+</div>
