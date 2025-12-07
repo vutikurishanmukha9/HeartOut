@@ -2,8 +2,6 @@
 
 <div align="center">
 
-![HeartOut Logo](frontend/public/heart.svg)
-
 **Where every story matters.**
 
 A modern, premium storytelling platform for authentic personal expression.
@@ -17,37 +15,37 @@ A modern, premium storytelling platform for authentic personal expression.
 
 ---
 
-## ✨ Features
+## Features
 
-### 📖 Story Categories
+### Story Categories
 | Category | Description |
 |----------|-------------|
-| 🏆 **Achievements** | Celebrate victories and milestones |
-| 💜 **Regrets** | Share lessons from difficult experiences |
-| 💌 **Unsent Letters** | Express words never said |
-| 🤝 **Sacrifices** | Document what you gave up |
-| 📚 **Life Stories** | Share your personal journey |
-| ✨ **Other** | Uncategorized narratives |
+| **Achievements** | Celebrate victories and milestones |
+| **Regrets** | Share lessons from difficult experiences |
+| **Unsent Letters** | Express words never said |
+| **Sacrifices** | Document what you gave up |
+| **Life Stories** | Share your personal journey |
+| **Other** | Uncategorized narratives |
 
-### 🎨 Premium UI
+### Premium UI
 - **Glass Morphism Design** - Modern, translucent components
 - **Warm Sunset Palette** - Coral, amber, and rose tones
 - **Micro-animations** - Smooth transitions and hover effects
 - **Dark Mode** - Eye-friendly reading experience
 - **Responsive** - Works on desktop, tablet, and mobile
 
-### 💡 Key Features
-- ✅ Anonymous posting option
-- ✅ 5 reaction types (❤️ Love, 🏆 Inspiring, 🔖 Save, 🤗 Hug, ✨ Mind-blown)
-- ✅ Draft management
-- ✅ Story search
-- ✅ User statistics
-- ✅ Reading time estimates
-- ✅ Comment system
+### Key Features
+- Anonymous posting option
+- 5 reaction types (Love, Inspiring, Save, Hug, Mind-blown)
+- Draft management
+- Story search
+- User statistics
+- Reading time estimates
+- Comment system
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Backend
 | Technology | Purpose |
@@ -69,7 +67,7 @@ A modern, premium storytelling platform for authentic personal expression.
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Python 3.11+
@@ -112,7 +110,7 @@ npm run dev
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 HeartOut/
@@ -136,7 +134,7 @@ HeartOut/
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Authentication
 | Method | Endpoint | Description |
@@ -161,49 +159,49 @@ HeartOut/
 
 ---
 
-## 🔒 Security Features
+## Security Features
 
-- ✅ JWT-based authentication
-- ✅ Persistent token blocklist
-- ✅ Password strength validation
-- ✅ Rate limiting
-- ✅ Input validation with Marshmallow
-- ✅ Centralized error handling
+- JWT-based authentication
+- Persistent token blocklist
+- Password strength validation
+- Rate limiting
+- Input validation with Marshmallow
+- Centralized error handling
 
 ---
 
-## 📈 Recent Updates
+## Recent Updates
 
 ### v2.0 - Premium Upgrade
-- 🎨 Complete UI redesign with glass morphism
-- ❤️ 5 premium reaction types
-- 🔍 Story search endpoint
-- 📊 User statistics endpoint
-- 🔐 18 backend security improvements
-- 📝 Enhanced schema validations
-- 🏗️ Service layer architecture
+- Complete UI redesign with glass morphism
+- 5 premium reaction types
+- Story search endpoint
+- User statistics endpoint
+- 18 backend security improvements
+- Enhanced schema validations
+- Service layer architecture
 
 ---
 
-## 🗺 Roadmap
+## Roadmap
 
 | Phase | Features | Status |
 |-------|----------|--------|
-| Phase 1 | Core features, story CRUD | ✅ Complete |
-| Phase 2 | Premium UI upgrade | ✅ Complete |
-| Phase 3 | Search, reactions, stats | ✅ Complete |
-| Phase 4 | Email notifications | 🔄 Planned |
-| Phase 5 | Mobile app | 🔄 Planned |
+| Phase 1 | Core features, story CRUD | Complete |
+| Phase 2 | Premium UI upgrade | Complete |
+| Phase 3 | Search, reactions, stats | Complete |
+| Phase 4 | Email notifications | Planned |
+| Phase 5 | Mobile app | Planned |
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please read our contributing guidelines before submitting pull requests.
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
@@ -213,6 +211,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **HeartOut** - Where every story matters.
 
-Built with ❤️ for authentic storytelling.
+Built with care for authentic storytelling.
 
 </div>
