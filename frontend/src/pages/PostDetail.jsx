@@ -1,32 +1,56 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Clock, Eye, Calendar, Share2, Bookmark, MessageCircle, ArrowLeft } from 'lucide-react';
 import { storyTypes } from '../components/StoryTypeSelector';
 import ReactionButton from '../components/SupportButton';
+import { AuthContext } from '../context/AuthContext';
 
 export default function PostDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
     const [story, setStory] = useState(null);
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [commentText, setCommentText] = useState('');
     const [isAnonymousComment, setIsAnonymousComment] = useState(true);
+    const [userReaction, setUserReaction] = useState(null);
+    const [supportCount, setSupportCount] = useState(0);
 
     useEffect(() => {
         fetchStory();
         fetchComments();
-    }, [id]);
+        if (user) {
+            fetchUserReaction();
+        }
+    }, [id, user]);
 
     const fetchStory = async () => {
         try {
             const response = await fetch(`/api/posts/${id}`);
             const data = await response.json();
             setStory(data.story);
+            setSupportCount(data.story?.support_count || 0);
         } catch (error) {
             console.error('Failed to fetch story:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchUserReaction = async () => {
+        try {
+            const response = await fetch(`/api/posts/${id}/my-reaction`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setUserReaction(data.reaction_type);
+            }
+        } catch (error) {
+            console.error('Failed to fetch user reaction:', error);
         }
     };
 
@@ -41,8 +65,13 @@ export default function PostDetail() {
     };
 
     const handleReact = async (type) => {
+        if (!user) {
+            navigate('/auth/login');
+            return;
+        }
+
         try {
-            const response = await fetch(`/api/posts/${id}/react`, {
+            const response = await fetch(`/api/posts/${id}/toggle-react`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -52,7 +81,9 @@ export default function PostDetail() {
             });
 
             if (response.ok) {
-                fetchStory(); // Refresh to get updated counts
+                const data = await response.json();
+                setUserReaction(data.user_reaction);
+                setSupportCount(data.support_count);
             }
         } catch (error) {
             console.error('Failed to react:', error);
@@ -219,8 +250,9 @@ export default function PostDetail() {
                 <div className="flex items-center gap-4 py-6 border-y border-gray-200 dark:border-gray-700 mb-8">
                     <ReactionButton
                         storyId={story.id}
-                        currentReaction={null}
+                        currentReaction={userReaction}
                         onReact={handleReact}
+                        supportCount={supportCount}
                     />
 
                     <button

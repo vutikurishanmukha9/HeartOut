@@ -180,6 +180,33 @@ def get_story(story_id):
     return jsonify({'story': story.to_dict()})
 
 
+@bp.route('/<story_id>/my-reaction', methods=['GET'])
+@jwt_required()
+def get_my_reaction(story_id):
+    """Get current user's reaction on a story"""
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(public_id=current_user_id).first()
+    
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    
+    story = Post.query.filter_by(public_id=story_id).first()
+    
+    if not story:
+        return jsonify({'error': 'Story not found'}), 404
+    
+    # Find user's reaction on this story
+    reaction = Support.query.filter_by(
+        giver_id=user.id,
+        post_id=story.id
+    ).first()
+    
+    return jsonify({
+        'reaction_type': reaction.support_type if reaction else None,
+        'has_reacted': reaction is not None
+    })
+
+
 @bp.route('/<story_id>', methods=['PUT'])
 @jwt_required()
 def update_story(story_id):

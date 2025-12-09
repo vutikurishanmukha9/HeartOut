@@ -157,18 +157,36 @@ class StoryService:
     
     @staticmethod
     def toggle_reaction(story, user, support_type='heart', message=None):
-        """Toggle a reaction on a story - add if not exists, remove if exists"""
+        """Toggle a reaction on a story - each user can only have ONE reaction per story"""
+        # Check if user already has ANY reaction on this story
         existing = Support.query.filter_by(
             giver_id=user.id,
-            post_id=story.id,
-            support_type=support_type
+            post_id=story.id
         ).first()
         
         if existing:
-            db.session.delete(existing)
-            db.session.commit()
-            return {'action': 'removed', 'support_count': story.supports.count()}
+            if existing.support_type == support_type:
+                # Same reaction type - remove it (toggle off)
+                db.session.delete(existing)
+                db.session.commit()
+                return {
+                    'action': 'removed', 
+                    'support_count': story.supports.count(),
+                    'user_reaction': None
+                }
+            else:
+                # Different reaction type - update it
+                existing.support_type = support_type
+                existing.message = message
+                db.session.commit()
+                return {
+                    'action': 'changed', 
+                    'reaction': existing, 
+                    'support_count': story.supports.count(),
+                    'user_reaction': support_type
+                }
         else:
+            # No existing reaction - add new one
             reaction = Support(
                 support_type=support_type,
                 message=message,
@@ -178,7 +196,12 @@ class StoryService:
             )
             db.session.add(reaction)
             db.session.commit()
-            return {'action': 'added', 'reaction': reaction, 'support_count': story.supports.count()}
+            return {
+                'action': 'added', 
+                'reaction': reaction, 
+                'support_count': story.supports.count(),
+                'user_reaction': support_type
+            }
     
     @staticmethod
     def get_user_stats(user):
