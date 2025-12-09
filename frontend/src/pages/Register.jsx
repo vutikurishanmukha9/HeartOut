@@ -62,17 +62,10 @@ export default function Register() {
 
     const passwordStrength = getPasswordStrength(formData.password);
 
-    const features = [
-        'Share your personal stories anonymously',
-        'Connect with like-minded storytellers',
-        'Get support and encouragement',
-        'Build your storytelling portfolio'
-    ];
-
     return (
         <div className="min-h-screen flex">
             {/* Left Side - Decorative */}
-            <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500 relative overflow-hidden">
+            <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-rose-600 via-purple-700 to-indigo-800 relative overflow-hidden">
                 {/* Animated Background Elements */}
                 <div className="absolute inset-0">
                     <div className="absolute top-20 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-float" />
@@ -81,54 +74,50 @@ export default function Register() {
                 </div>
 
                 {/* Content */}
-                <div className="relative z-10 flex flex-col justify-center px-16 text-white">
-                    <div className="mb-8">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-sm">
-                                <Heart className="w-8 h-8" />
+                <div className="relative z-10 flex flex-col justify-center px-10 py-8 text-white h-full">
+                    {/* Logo */}
+                    <div className="mb-6">
+                        <div className="flex items-center gap-4 mb-4">
+                            <div className="p-4 bg-gradient-to-br from-orange-400 via-rose-400 to-purple-500 rounded-2xl shadow-lg">
+                                <Heart className="w-10 h-10 text-white" />
                             </div>
-                            <span className="text-3xl font-bold">HeartOut</span>
+                            <span className="text-4xl font-bold">
+                                <span className="text-gray-900">Heart</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-rose-400">Out</span>
+                            </span>
                         </div>
-                        <h2 className="text-4xl font-bold mb-4">
-                            Your stories matter.
+                        <h2 className="text-3xl font-bold leading-tight">
+                            Don't Hold It In. Heart It Out.
                         </h2>
-                        <p className="text-xl text-white/80">
-                            Join thousands sharing their authentic experiences.
-                        </p>
                     </div>
 
                     {/* Feature List */}
-                    <div className="space-y-4">
-                        {features.map((feature, index) => (
-                            <div
-                                key={index}
-                                className="flex items-center gap-3 animate-slide-up"
-                                style={{ animationDelay: `${index * 0.1}s` }}
-                            >
-                                <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-                                    <Check className="w-4 h-4" />
-                                </div>
-                                <span className="text-white/90">{feature}</span>
-                            </div>
-                        ))}
+                    <div className="space-y-3">
+                        <p className="text-base text-white/90">
+                            <span className="font-bold">Send the Unsent:</span>{' '}
+                            <span className="font-light">Post the text, letter, or apology you never delivered.</span>
+                        </p>
+                        <p className="text-base text-white/90">
+                            <span className="font-bold">Claim Your Wins:</span>{' '}
+                            <span className="font-light">Shout out the achievements you usually celebrate alone.</span>
+                        </p>
+                        <p className="text-base text-white/90">
+                            <span className="font-bold">Vent Your Regrets:</span>{' '}
+                            <span className="font-light">Turn your painful mistakes into shared lessons.</span>
+                        </p>
+                        <p className="text-base text-white/90">
+                            <span className="font-bold">Reveal the Cost:</span>{' '}
+                            <span className="font-light">Share the sacrifices behind your success.</span>
+                        </p>
+                        <p className="text-base text-white/90">
+                            <span className="font-bold">Be Unapologetic:</span>{' '}
+                            <span className="font-light">No filters. No judgment. Just your life story.</span>
+                        </p>
                     </div>
 
-                    {/* Social Proof */}
-                    <div className="mt-12 pt-8 border-t border-white/20">
-                        <div className="flex items-center gap-4">
-                            <div className="flex -space-x-3">
-                                {[...Array(5)].map((_, i) => (
-                                    <div
-                                        key={i}
-                                        className="w-10 h-10 rounded-full bg-gradient-to-br from-white/30 to-white/10 border-2 border-white/50"
-                                    />
-                                ))}
-                            </div>
-                            <div>
-                                <p className="font-semibold">Join 10,000+ storytellers</p>
-                                <p className="text-sm text-white/70">Sharing stories every day</p>
-                            </div>
-                        </div>
+                    {/* Footer */}
+                    <div className="mt-6 pt-6 border-t border-white/20">
+                        <p className="text-lg font-bold">Your voice has found its home.</p>
                     </div>
                 </div>
             </div>
@@ -229,8 +218,8 @@ export default function Register() {
                                             <div
                                                 key={i}
                                                 className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${i < passwordStrength.strength
-                                                        ? passwordStrength.color
-                                                        : 'bg-gray-200 dark:bg-gray-700'
+                                                    ? passwordStrength.color
+                                                    : 'bg-gray-200 dark:bg-gray-700'
                                                     }`}
                                             />
                                         ))}
