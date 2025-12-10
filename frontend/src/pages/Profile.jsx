@@ -245,19 +245,23 @@ export default function Profile() {
                         </div>
                     </div>
 
-                    {/* Story Stats with Pie Chart */}
+                    {/* Story Analytics Section - Clean Redesign */}
                     <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-                                <span className="inline-flex p-2 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500">
-                                    <BookOpen className="w-5 h-5 text-white" />
-                                </span>
-                                Your Story Analytics
-                            </h3>
+                        {/* Header */}
+                        <div className="flex items-center justify-between mb-8">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 rounded-2xl bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 shadow-lg shadow-purple-500/25">
+                                    <BookOpen className="w-6 h-6 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Story Analytics</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Your writing journey at a glance</p>
+                                </div>
+                            </div>
                             {selectedCategory && (
                                 <button
                                     onClick={() => setSelectedCategory(null)}
-                                    className="flex items-center gap-2 px-4 py-2 text-sm bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:shadow-md transition-all duration-300"
+                                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
                                 >
                                     <X className="w-4 h-4" />
                                     Clear Filter
@@ -265,135 +269,204 @@ export default function Profile() {
                             )}
                         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            {/* Pie Chart */}
-                            <div className="relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 p-8 shadow-lg overflow-hidden">
-                                {/* Decorative background */}
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-500/10 to-accent-500/10 rounded-full blur-2xl" />
-                                <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-br from-secondary-500/10 to-primary-500/10 rounded-full blur-2xl" />
-
-                                <h4 className="relative text-lg font-semibold text-gray-800 dark:text-gray-200 mb-6 text-center">
-                                    Story Distribution
-                                </h4>
-
-                                {stories.length > 0 ? (
-                                    <div className="relative">
-                                        <ResponsiveContainer width="100%" height={280}>
-                                            <PieChart>
-                                                <defs>
-                                                    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                                                        <feDropShadow dx="0" dy="4" stdDeviation="8" floodOpacity="0.2" />
-                                                    </filter>
-                                                </defs>
-                                                <Pie
-                                                    data={storyTypes.map(type => ({
-                                                        name: type.label,
-                                                        value: storiesByType[type.value] || 0,
-                                                        type: type.value,
-                                                    })).filter(d => d.value > 0)}
-                                                    cx="50%"
-                                                    cy="50%"
-                                                    innerRadius={70}
-                                                    outerRadius={100}
-                                                    paddingAngle={4}
-                                                    dataKey="value"
-                                                    onClick={(data) => setSelectedCategory(data.type)}
-                                                    style={{ cursor: 'pointer', filter: 'url(#shadow)' }}
-                                                >
-                                                    {storyTypes.map((type, index) => (
-                                                        <Cell
-                                                            key={`cell-${index}`}
-                                                            fill={type.value === 'achievement' ? '#f97316' :
-                                                                type.value === 'regret' ? '#ec4899' :
-                                                                    type.value === 'unsent_letter' ? '#f43f5e' :
-                                                                        type.value === 'sacrifice' ? '#10b981' :
-                                                                            type.value === 'life_story' ? '#3b82f6' : '#8b5cf6'}
-                                                            stroke={selectedCategory === type.value ? '#ffffff' : 'transparent'}
-                                                            strokeWidth={selectedCategory === type.value ? 4 : 0}
-                                                        />
-                                                    ))}
-                                                </Pie>
-                                                <Tooltip
-                                                    contentStyle={{
-                                                        backgroundColor: 'rgba(17, 24, 39, 0.95)',
-                                                        border: 'none',
-                                                        borderRadius: '12px',
-                                                        color: '#fff',
-                                                        padding: '12px 16px',
-                                                        boxShadow: '0 10px 40px rgba(0,0,0,0.3)'
-                                                    }}
-                                                    formatter={(value, name) => [`${value} stories`, name]}
-                                                />
-                                            </PieChart>
-                                        </ResponsiveContainer>
-
-                                        {/* Center label */}
-                                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
-                                            <div className="bg-white dark:bg-gray-800 rounded-full p-5 shadow-xl border-4 border-orange-400">
-                                                <p className="text-5xl font-extrabold text-orange-500">
-                                                    {stories.length}
-                                                </p>
-                                                <p className="text-sm text-pink-500 font-bold uppercase tracking-wider">
-                                                    Stories
-                                                </p>
+                        {/* Stats Cards Row */}
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+                            {storyTypes.map((type) => {
+                                const Icon = type.icon;
+                                const count = storiesByType[type.value] || 0;
+                                const isSelected = selectedCategory === type.value;
+                                return (
+                                    <button
+                                        key={type.value}
+                                        onClick={() => setSelectedCategory(isSelected ? null : type.value)}
+                                        className={`
+                                            relative p-4 rounded-xl border-2 text-center transition-all duration-200
+                                            ${isSelected
+                                                ? 'border-violet-500 bg-violet-50 dark:bg-violet-900/20 shadow-lg shadow-violet-500/20 scale-105'
+                                                : count > 0
+                                                    ? 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-violet-300 dark:hover:border-violet-600 hover:shadow-md'
+                                                    : 'border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 opacity-50 cursor-default'
+                                            }
+                                        `}
+                                        disabled={count === 0}
+                                    >
+                                        <div className={`inline-flex p-2.5 rounded-xl bg-gradient-to-br ${type.color} mb-2 shadow-md`}>
+                                            <Icon className="w-5 h-5 text-white" />
+                                        </div>
+                                        <p className={`text-2xl font-bold ${isSelected ? 'text-violet-600 dark:text-violet-400' : 'text-gray-900 dark:text-white'}`}>
+                                            {count}
+                                        </p>
+                                        <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{type.label}</p>
+                                        {isSelected && (
+                                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-violet-500 rounded-full flex items-center justify-center">
+                                                <div className="w-2 h-2 bg-white rounded-full" />
                                             </div>
+                                        )}
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {/* Pie Chart Card - Reference Design */}
+                        {stories.length > 0 && (
+                            <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 p-8 shadow-xl">
+                                <div className="flex flex-col lg:flex-row items-center gap-12">
+                                    {/* Chart with custom labels */}
+                                    <div className="w-full lg:w-1/2 flex justify-center">
+                                        <div className="relative" style={{ width: 320, height: 320 }}>
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <PieChart>
+                                                    <defs>
+                                                        {/* Gradient definitions for 3D effect */}
+                                                        <linearGradient id="greenGrad" x1="0" y1="0" x2="1" y2="1">
+                                                            <stop offset="0%" stopColor="#34d399" />
+                                                            <stop offset="100%" stopColor="#059669" />
+                                                        </linearGradient>
+                                                        <linearGradient id="blueGrad" x1="0" y1="0" x2="1" y2="1">
+                                                            <stop offset="0%" stopColor="#60a5fa" />
+                                                            <stop offset="100%" stopColor="#2563eb" />
+                                                        </linearGradient>
+                                                        <linearGradient id="grayGrad" x1="0" y1="0" x2="1" y2="1">
+                                                            <stop offset="0%" stopColor="#9ca3af" />
+                                                            <stop offset="100%" stopColor="#6b7280" />
+                                                        </linearGradient>
+                                                        <linearGradient id="redGrad" x1="0" y1="0" x2="1" y2="1">
+                                                            <stop offset="0%" stopColor="#f87171" />
+                                                            <stop offset="100%" stopColor="#dc2626" />
+                                                        </linearGradient>
+                                                        <linearGradient id="yellowGrad" x1="0" y1="0" x2="1" y2="1">
+                                                            <stop offset="0%" stopColor="#fcd34d" />
+                                                            <stop offset="100%" stopColor="#f59e0b" />
+                                                        </linearGradient>
+                                                        <linearGradient id="lightGrayGrad" x1="0" y1="0" x2="1" y2="1">
+                                                            <stop offset="0%" stopColor="#e5e7eb" />
+                                                            <stop offset="100%" stopColor="#d1d5db" />
+                                                        </linearGradient>
+                                                        {/* Shadow filter */}
+                                                        <filter id="chartShadow" x="-20%" y="-20%" width="140%" height="140%">
+                                                            <feDropShadow dx="0" dy="4" stdDeviation="8" floodOpacity="0.15" />
+                                                        </filter>
+                                                    </defs>
+                                                    <Pie
+                                                        data={storyTypes.map(type => ({
+                                                            name: type.label,
+                                                            value: storiesByType[type.value] || 0,
+                                                            type: type.value,
+                                                            chartColor: type.chartColor
+                                                        })).filter(d => d.value > 0)}
+                                                        cx="50%"
+                                                        cy="50%"
+                                                        innerRadius={80}
+                                                        outerRadius={140}
+                                                        paddingAngle={3}
+                                                        dataKey="value"
+                                                        onClick={(data) => setSelectedCategory(data.type)}
+                                                        style={{ cursor: 'pointer', filter: 'url(#chartShadow)' }}
+                                                        stroke="none"
+                                                        label={({ cx, cy, midAngle, innerRadius, outerRadius, value, index }) => {
+                                                            const RADIAN = Math.PI / 180;
+                                                            const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                                                            const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                                                            const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                                                            const percentage = ((value / stories.length) * 100).toFixed(1);
+
+                                                            return (
+                                                                <g>
+                                                                    <rect
+                                                                        x={x - 28}
+                                                                        y={y - 14}
+                                                                        width={56}
+                                                                        height={28}
+                                                                        rx={6}
+                                                                        fill="rgba(17, 24, 39, 0.85)"
+                                                                    />
+                                                                    <text
+                                                                        x={x}
+                                                                        y={y}
+                                                                        fill="white"
+                                                                        textAnchor="middle"
+                                                                        dominantBaseline="central"
+                                                                        className="text-sm font-bold"
+                                                                        style={{ fontSize: '14px', fontWeight: 'bold' }}
+                                                                    >
+                                                                        {percentage}
+                                                                    </text>
+                                                                </g>
+                                                            );
+                                                        }}
+                                                        labelLine={false}
+                                                    >
+                                                        {storyTypes.map((type, index) => (
+                                                            <Cell
+                                                                key={`cell-${index}`}
+                                                                fill={
+                                                                    type.value === 'achievement' ? 'url(#greenGrad)' :
+                                                                        type.value === 'regret' ? 'url(#blueGrad)' :
+                                                                            type.value === 'unsent_letter' ? 'url(#grayGrad)' :
+                                                                                type.value === 'sacrifice' ? 'url(#redGrad)' :
+                                                                                    type.value === 'life_story' ? 'url(#yellowGrad)' : 'url(#lightGrayGrad)'
+                                                                }
+                                                            />
+                                                        ))}
+                                                    </Pie>
+                                                    <Tooltip
+                                                        content={({ active, payload }) => {
+                                                            if (active && payload && payload.length) {
+                                                                const percentage = ((payload[0].value / stories.length) * 100).toFixed(1);
+                                                                return (
+                                                                    <div className="bg-gray-900 text-white px-5 py-4 rounded-2xl shadow-2xl border border-gray-700">
+                                                                        <p className="font-bold text-lg">{payload[0].name}</p>
+                                                                        <p className="text-gray-300 text-sm mt-1">{payload[0].value} {payload[0].value === 1 ? 'story' : 'stories'} ({percentage}%)</p>
+                                                                    </div>
+                                                                );
+                                                            }
+                                                            return null;
+                                                        }}
+                                                    />
+                                                </PieChart>
+                                            </ResponsiveContainer>
                                         </div>
                                     </div>
-                                ) : (
-                                    <div className="h-72 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
-                                        <BookOpen className="w-16 h-16 mb-4 opacity-50" />
-                                        <p className="text-lg font-medium">No stories yet</p>
-                                        <p className="text-sm">Start writing to see your analytics!</p>
+
+                                    {/* Legend and Stats */}
+                                    <div className="w-full lg:w-1/2 space-y-6">
+                                        <div className="text-center lg:text-left">
+                                            <p className="text-6xl font-black text-gray-900 dark:text-white">{stories.length}</p>
+                                            <p className="text-xl text-gray-500 dark:text-gray-400 mt-1">Total Stories</p>
+                                        </div>
+
+                                        <div className="space-y-4">
+                                            {storyTypes.filter(type => (storiesByType[type.value] || 0) > 0).map((type) => {
+                                                const count = storiesByType[type.value] || 0;
+                                                const percentage = ((count / stories.length) * 100).toFixed(1);
+                                                return (
+                                                    <button
+                                                        key={type.value}
+                                                        onClick={() => setSelectedCategory(selectedCategory === type.value ? null : type.value)}
+                                                        className={`w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-200 ${selectedCategory === type.value
+                                                                ? 'bg-gray-100 dark:bg-gray-700 shadow-md scale-102'
+                                                                : 'hover:bg-gray-50 dark:hover:bg-gray-800'
+                                                            }`}
+                                                    >
+                                                        <div
+                                                            className="w-5 h-5 rounded-lg flex-shrink-0 shadow-sm"
+                                                            style={{ backgroundColor: type.chartColor }}
+                                                        />
+                                                        <span className="flex-1 text-left font-medium text-gray-800 dark:text-gray-200">{type.label}</span>
+                                                        <span className="text-lg font-bold text-gray-900 dark:text-white">{count}</span>
+                                                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400 w-16 text-right">{percentage}%</span>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+
+                                        <p className="text-center lg:text-left text-sm text-gray-500 dark:text-gray-400 italic">
+                                            Click on a slice or legend to filter stories
+                                        </p>
                                     </div>
-                                )}
-
-                                <p className="relative text-center text-sm text-gray-500 dark:text-gray-400 mt-4 font-medium">
-                                    Click on a slice to filter stories
-                                </p>
+                                </div>
                             </div>
-
-                            {/* Category Cards */}
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                {storyTypes.map((type) => {
-                                    const Icon = type.icon;
-                                    const count = storiesByType[type.value] || 0;
-                                    const isSelected = selectedCategory === type.value;
-                                    const hasStories = count > 0;
-                                    return (
-                                        <button
-                                            key={type.value}
-                                            onClick={() => setSelectedCategory(isSelected ? null : type.value)}
-                                            className={`
-                                                relative p-5 rounded-2xl border-2 text-center transition-all duration-300 group overflow-hidden
-                                                ${isSelected
-                                                    ? `${type.bgColor} ${type.borderColor} shadow-xl scale-105`
-                                                    : hasStories
-                                                        ? `bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:shadow-lg hover:scale-102 hover:border-gray-300 dark:hover:border-gray-600`
-                                                        : 'bg-gray-50 dark:bg-gray-900 border-gray-100 dark:border-gray-800 opacity-60'
-                                                }
-                                            `}
-                                        >
-                                            {/* Hover gradient overlay */}
-                                            <div className={`absolute inset-0 bg-gradient-to-br ${type.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
-
-                                            <div className={`relative inline-flex p-3 rounded-xl bg-gradient-to-br ${type.color} mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                                                <Icon className="w-6 h-6 text-white" />
-                                            </div>
-                                            <p className={`relative text-3xl font-bold mb-1 ${isSelected ? type.textColor : 'text-gray-900 dark:text-white'}`}>
-                                                {count}
-                                            </p>
-                                            <p className={`relative text-sm font-medium ${isSelected ? type.textColor : 'text-gray-600 dark:text-gray-400'}`}>
-                                                {type.label}
-                                            </p>
-
-                                            {isSelected && (
-                                                <div className="absolute top-2 right-2 w-3 h-3 rounded-full bg-white shadow-md animate-pulse" />
-                                            )}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
+                        )}
                     </div>
                 </div>
 

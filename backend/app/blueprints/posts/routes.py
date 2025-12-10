@@ -422,14 +422,16 @@ def toggle_reaction(story_id):
             return jsonify({
                 'message': 'Reaction removed',
                 'action': 'removed',
-                'support_count': result['support_count']
+                'support_count': result['support_count'],
+                'user_reaction': None
             })
         else:
             return jsonify({
-                'message': 'Reaction added',
-                'action': 'added',
-                'reaction': result['reaction'].to_dict(),
-                'support_count': result['support_count']
+                'message': f"Reaction {result['action']}",
+                'action': result['action'],
+                'reaction': result['reaction'].to_dict() if result.get('reaction') else None,
+                'support_count': result['support_count'],
+                'user_reaction': result['user_reaction']
             }), 201
     except Exception as e:
         db.session.rollback()

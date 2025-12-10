@@ -7,66 +7,72 @@ const storyTypes = [
         label: 'Achievement',
         icon: Trophy,
         description: 'Celebrate your victories and milestones',
-        color: 'from-amber-500 to-yellow-600',
-        bgColor: 'bg-amber-50 dark:bg-amber-900/20',
-        borderColor: 'border-amber-200 dark:border-amber-800',
-        textColor: 'text-amber-700 dark:text-amber-300',
-        shadowColor: 'shadow-amber-500/20'
+        color: 'from-emerald-500 to-green-600',
+        bgColor: 'bg-emerald-50 dark:bg-emerald-900/20',
+        borderColor: 'border-emerald-200 dark:border-emerald-800',
+        textColor: 'text-emerald-700 dark:text-emerald-300',
+        shadowColor: 'shadow-emerald-500/20',
+        chartColor: '#10b981'
     },
     {
         value: 'regret',
         label: 'Regret',
         icon: Heart,
         description: 'Lessons learned from experiences',
-        color: 'from-indigo-500 to-purple-600',
-        bgColor: 'bg-indigo-50 dark:bg-indigo-900/20',
-        borderColor: 'border-indigo-200 dark:border-indigo-800',
-        textColor: 'text-indigo-700 dark:text-indigo-300',
-        shadowColor: 'shadow-indigo-500/20'
+        color: 'from-blue-500 to-indigo-600',
+        bgColor: 'bg-blue-50 dark:bg-blue-900/20',
+        borderColor: 'border-blue-200 dark:border-blue-800',
+        textColor: 'text-blue-700 dark:text-blue-300',
+        shadowColor: 'shadow-blue-500/20',
+        chartColor: '#3b82f6'
     },
     {
         value: 'unsent_letter',
         label: 'Unsent Letter',
         icon: Mail,
         description: 'Words you never got to say',
-        color: 'from-rose-500 to-pink-600',
-        bgColor: 'bg-rose-50 dark:bg-rose-900/20',
-        borderColor: 'border-rose-200 dark:border-rose-800',
-        textColor: 'text-rose-700 dark:text-rose-300',
-        shadowColor: 'shadow-rose-500/20'
+        color: 'from-gray-500 to-slate-600',
+        bgColor: 'bg-gray-50 dark:bg-gray-900/20',
+        borderColor: 'border-gray-200 dark:border-gray-800',
+        textColor: 'text-gray-700 dark:text-gray-300',
+        shadowColor: 'shadow-gray-500/20',
+        chartColor: '#6b7280'
     },
     {
         value: 'sacrifice',
         label: 'Sacrifice',
         icon: HeartHandshake,
         description: 'What you gave up for others',
-        color: 'from-emerald-500 to-teal-600',
-        bgColor: 'bg-emerald-50 dark:bg-emerald-900/20',
-        borderColor: 'border-emerald-200 dark:border-emerald-800',
-        textColor: 'text-emerald-700 dark:text-emerald-300',
-        shadowColor: 'shadow-emerald-500/20'
+        color: 'from-red-500 to-rose-600',
+        bgColor: 'bg-red-50 dark:bg-red-900/20',
+        borderColor: 'border-red-200 dark:border-red-800',
+        textColor: 'text-red-700 dark:text-red-300',
+        shadowColor: 'shadow-red-500/20',
+        chartColor: '#ef4444'
     },
     {
         value: 'life_story',
         label: 'Life Story',
         icon: BookOpen,
         description: 'Your personal journey and growth',
-        color: 'from-blue-500 to-cyan-600',
-        bgColor: 'bg-blue-50 dark:bg-blue-900/20',
-        borderColor: 'border-blue-200 dark:border-blue-800',
-        textColor: 'text-blue-700 dark:text-blue-300',
-        shadowColor: 'shadow-blue-500/20'
+        color: 'from-amber-500 to-yellow-600',
+        bgColor: 'bg-amber-50 dark:bg-amber-900/20',
+        borderColor: 'border-amber-200 dark:border-amber-800',
+        textColor: 'text-amber-700 dark:text-amber-300',
+        shadowColor: 'shadow-amber-500/20',
+        chartColor: '#f59e0b'
     },
     {
         value: 'other',
         label: 'Other',
         icon: Sparkles,
         description: 'Stories that don\'t fit a category',
-        color: 'from-gray-500 to-slate-600',
+        color: 'from-gray-300 to-gray-400',
         bgColor: 'bg-gray-50 dark:bg-gray-900/20',
         borderColor: 'border-gray-200 dark:border-gray-800',
-        textColor: 'text-gray-700 dark:text-gray-300',
-        shadowColor: 'shadow-gray-500/20'
+        textColor: 'text-gray-600 dark:text-gray-400',
+        shadowColor: 'shadow-gray-400/20',
+        chartColor: '#d1d5db'
     }
 ];
 

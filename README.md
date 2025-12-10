@@ -31,17 +31,20 @@ A modern, premium storytelling platform for authentic personal expression.
 - **Glass Morphism Design** - Modern, translucent components
 - **Warm Sunset Palette** - Coral, amber, and rose tones
 - **Micro-animations** - Smooth transitions and hover effects
-- **Dark Mode** - Eye-friendly reading experience
+- **Dark Mode** - Persistent eye-friendly reading experience
 - **Responsive** - Works on desktop, tablet, and mobile
 
 ### Key Features
 - Anonymous posting option
 - 5 reaction types (Love, Inspiring, Save, Hug, Mind-blown)
+- **Story Analytics Dashboard** - Interactive pie chart with category breakdown
 - Draft management
 - Story search
 - User statistics
 - Reading time estimates
 - Comment system
+- **Post deletion** - Authors can delete their own stories
+- **Profile page** - User profiles with story filtering by category
 
 ---
 
@@ -64,6 +67,7 @@ A modern, premium storytelling platform for authentic personal expression.
 | Tailwind CSS | Styling |
 | Lucide React | Icons |
 | React Router | Navigation |
+| **Recharts** | Data visualization |
 
 ---
 
@@ -171,6 +175,15 @@ HeartOut/
 ---
 
 ## Recent Updates
+
+### v2.1 - Story Analytics & Improvements
+- **Story Analytics Dashboard** - Interactive donut pie chart on Profile page
+- Category filtering with clickable slices and legend
+- Gradient fills with 3D reflection effects
+- Dark mode persistence fix (no flash on page load)
+- Post deletion by authors
+- Reaction toggle fix (changing reactions now works correctly)
+- New color scheme: Green (Achievements), Blue (Regrets), Gray (Unsent Letters), Red (Sacrifices), Yellow (Life Stories)
 
 ### v2.0 - Premium Upgrade
 - Complete UI redesign with glass morphism
