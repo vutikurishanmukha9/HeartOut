@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Globe, Mail, BookOpen, Edit, Award } from 'lucide-react';
+import { Globe, Mail, BookOpen, Edit, Award, X } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import StoryCard from '../components/PostCard';
 import { storyTypes } from '../components/StoryTypeSelector';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 export default function Profile() {
     const { userId } = useParams();
@@ -12,6 +13,7 @@ export default function Profile() {
     const [stories, setStories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [formData, setFormData] = useState({
         display_name: '',
         bio: '',
@@ -243,62 +245,219 @@ export default function Profile() {
                         </div>
                     </div>
 
-                    {/* Story Stats */}
+                    {/* Story Stats with Pie Chart */}
                     <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                            Stories by Category
-                        </h3>
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                            {storyTypes.map((type) => {
-                                const Icon = type.icon;
-                                const count = storiesByType[type.value] || 0;
-                                return (
-                                    <div
-                                        key={type.value}
-                                        className={`p-4 rounded-lg ${type.bgColor} ${type.borderColor} border text-center`}
-                                    >
-                                        <div className={`inline-flex p-2 rounded-lg bg-gradient-to-br ${type.color} mb-2`}>
-                                            <Icon className="w-5 h-5 text-white" />
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+                                <span className="inline-flex p-2 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500">
+                                    <BookOpen className="w-5 h-5 text-white" />
+                                </span>
+                                Your Story Analytics
+                            </h3>
+                            {selectedCategory && (
+                                <button
+                                    onClick={() => setSelectedCategory(null)}
+                                    className="flex items-center gap-2 px-4 py-2 text-sm bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:shadow-md transition-all duration-300"
+                                >
+                                    <X className="w-4 h-4" />
+                                    Clear Filter
+                                </button>
+                            )}
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            {/* Pie Chart */}
+                            <div className="relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 p-8 shadow-lg overflow-hidden">
+                                {/* Decorative background */}
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-500/10 to-accent-500/10 rounded-full blur-2xl" />
+                                <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-br from-secondary-500/10 to-primary-500/10 rounded-full blur-2xl" />
+
+                                <h4 className="relative text-lg font-semibold text-gray-800 dark:text-gray-200 mb-6 text-center">
+                                    Story Distribution
+                                </h4>
+
+                                {stories.length > 0 ? (
+                                    <div className="relative">
+                                        <ResponsiveContainer width="100%" height={280}>
+                                            <PieChart>
+                                                <defs>
+                                                    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                                                        <feDropShadow dx="0" dy="4" stdDeviation="8" floodOpacity="0.2" />
+                                                    </filter>
+                                                </defs>
+                                                <Pie
+                                                    data={storyTypes.map(type => ({
+                                                        name: type.label,
+                                                        value: storiesByType[type.value] || 0,
+                                                        type: type.value,
+                                                    })).filter(d => d.value > 0)}
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    innerRadius={70}
+                                                    outerRadius={100}
+                                                    paddingAngle={4}
+                                                    dataKey="value"
+                                                    onClick={(data) => setSelectedCategory(data.type)}
+                                                    style={{ cursor: 'pointer', filter: 'url(#shadow)' }}
+                                                >
+                                                    {storyTypes.map((type, index) => (
+                                                        <Cell
+                                                            key={`cell-${index}`}
+                                                            fill={type.value === 'achievement' ? '#f97316' :
+                                                                type.value === 'regret' ? '#ec4899' :
+                                                                    type.value === 'unsent_letter' ? '#f43f5e' :
+                                                                        type.value === 'sacrifice' ? '#10b981' :
+                                                                            type.value === 'life_story' ? '#3b82f6' : '#8b5cf6'}
+                                                            stroke={selectedCategory === type.value ? '#ffffff' : 'transparent'}
+                                                            strokeWidth={selectedCategory === type.value ? 4 : 0}
+                                                        />
+                                                    ))}
+                                                </Pie>
+                                                <Tooltip
+                                                    contentStyle={{
+                                                        backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                                                        border: 'none',
+                                                        borderRadius: '12px',
+                                                        color: '#fff',
+                                                        padding: '12px 16px',
+                                                        boxShadow: '0 10px 40px rgba(0,0,0,0.3)'
+                                                    }}
+                                                    formatter={(value, name) => [`${value} stories`, name]}
+                                                />
+                                            </PieChart>
+                                        </ResponsiveContainer>
+
+                                        {/* Center label */}
+                                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
+                                            <div className="bg-white dark:bg-gray-800 rounded-full p-5 shadow-xl border-4 border-orange-400">
+                                                <p className="text-5xl font-extrabold text-orange-500">
+                                                    {stories.length}
+                                                </p>
+                                                <p className="text-sm text-pink-500 font-bold uppercase tracking-wider">
+                                                    Stories
+                                                </p>
+                                            </div>
                                         </div>
-                                        <p className={`text-2xl font-bold ${type.textColor}`}>{count}</p>
-                                        <p className="text-xs text-gray-600 dark:text-gray-400">{type.label}</p>
                                     </div>
-                                );
-                            })}
+                                ) : (
+                                    <div className="h-72 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
+                                        <BookOpen className="w-16 h-16 mb-4 opacity-50" />
+                                        <p className="text-lg font-medium">No stories yet</p>
+                                        <p className="text-sm">Start writing to see your analytics!</p>
+                                    </div>
+                                )}
+
+                                <p className="relative text-center text-sm text-gray-500 dark:text-gray-400 mt-4 font-medium">
+                                    Click on a slice to filter stories
+                                </p>
+                            </div>
+
+                            {/* Category Cards */}
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                {storyTypes.map((type) => {
+                                    const Icon = type.icon;
+                                    const count = storiesByType[type.value] || 0;
+                                    const isSelected = selectedCategory === type.value;
+                                    const hasStories = count > 0;
+                                    return (
+                                        <button
+                                            key={type.value}
+                                            onClick={() => setSelectedCategory(isSelected ? null : type.value)}
+                                            className={`
+                                                relative p-5 rounded-2xl border-2 text-center transition-all duration-300 group overflow-hidden
+                                                ${isSelected
+                                                    ? `${type.bgColor} ${type.borderColor} shadow-xl scale-105`
+                                                    : hasStories
+                                                        ? `bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:shadow-lg hover:scale-102 hover:border-gray-300 dark:hover:border-gray-600`
+                                                        : 'bg-gray-50 dark:bg-gray-900 border-gray-100 dark:border-gray-800 opacity-60'
+                                                }
+                                            `}
+                                        >
+                                            {/* Hover gradient overlay */}
+                                            <div className={`absolute inset-0 bg-gradient-to-br ${type.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
+
+                                            <div className={`relative inline-flex p-3 rounded-xl bg-gradient-to-br ${type.color} mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                                                <Icon className="w-6 h-6 text-white" />
+                                            </div>
+                                            <p className={`relative text-3xl font-bold mb-1 ${isSelected ? type.textColor : 'text-gray-900 dark:text-white'}`}>
+                                                {count}
+                                            </p>
+                                            <p className={`relative text-sm font-medium ${isSelected ? type.textColor : 'text-gray-600 dark:text-gray-400'}`}>
+                                                {type.label}
+                                            </p>
+
+                                            {isSelected && (
+                                                <div className="absolute top-2 right-2 w-3 h-3 rounded-full bg-white shadow-md animate-pulse" />
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Stories Grid */}
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                        Published Stories
-                    </h2>
-                    {stories.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {stories.map((story) => (
-                                <StoryCard key={story.id} story={story} />
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-                            <BookOpen className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" />
-                            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                                No stories yet
-                            </h3>
-                            <p className="text-gray-600 dark:text-gray-400 mb-4">
-                                {isOwnProfile ? "Start sharing your stories with the world!" : "This author hasn't published any stories yet."}
-                            </p>
-                            {isOwnProfile && (
-                                <Link
-                                    to="/feed/create"
-                                    className="inline-block px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-                                >
-                                    Write Your First Story
-                                </Link>
-                            )}
-                        </div>
-                    )}
+                    <div className="flex items-center gap-3 mb-6">
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                            {selectedCategory
+                                ? `${storyTypes.find(t => t.value === selectedCategory)?.label || 'Filtered'} Stories`
+                                : 'Published Stories'
+                            }
+                        </h2>
+                        {selectedCategory && (
+                            <span className="px-3 py-1 text-sm bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full">
+                                {stories.filter(s => s.story_type === selectedCategory).length} stories
+                            </span>
+                        )}
+                    </div>
+                    {(() => {
+                        const filteredStories = selectedCategory
+                            ? stories.filter(s => s.story_type === selectedCategory)
+                            : stories;
+
+                        return filteredStories.length > 0 ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {filteredStories.map((story) => (
+                                    <StoryCard key={story.id} story={story} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+                                <BookOpen className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" />
+                                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                                    {selectedCategory
+                                        ? `No ${storyTypes.find(t => t.value === selectedCategory)?.label || ''} stories yet`
+                                        : 'No stories yet'
+                                    }
+                                </h3>
+                                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                                    {selectedCategory
+                                        ? 'Try selecting a different category or clear the filter.'
+                                        : isOwnProfile
+                                            ? "Start sharing your stories with the world!"
+                                            : "This author hasn't published any stories yet."
+                                    }
+                                </p>
+                                {selectedCategory ? (
+                                    <button
+                                        onClick={() => setSelectedCategory(null)}
+                                        className="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                                    >
+                                        Clear Filter
+                                    </button>
+                                ) : isOwnProfile && (
+                                    <Link
+                                        to="/feed/create"
+                                        className="inline-block px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                                    >
+                                        Write Your First Story
+                                    </Link>
+                                )}
+                            </div>
+                        );
+                    })()}
                 </div>
             </div>
         </div>

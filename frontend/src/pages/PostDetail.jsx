@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Clock, Eye, Calendar, Share2, Bookmark, MessageCircle, ArrowLeft } from 'lucide-react';
+import { Clock, Eye, Calendar, Share2, Bookmark, MessageCircle, ArrowLeft, Trash2, Edit } from 'lucide-react';
 import { storyTypes } from '../components/StoryTypeSelector';
 import ReactionButton from '../components/SupportButton';
 import { AuthContext } from '../context/AuthContext';
@@ -128,6 +128,34 @@ export default function PostDetail() {
             alert('Link copied to clipboard!');
         }
     };
+
+    const handleDelete = async () => {
+        if (!confirm('Are you sure you want to delete this story? This action cannot be undone.')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/posts/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                }
+            });
+
+            if (response.ok) {
+                alert('Story deleted successfully');
+                navigate('/feed');
+            } else {
+                const data = await response.json();
+                alert(data.error || 'Failed to delete story');
+            }
+        } catch (error) {
+            console.error('Failed to delete story:', error);
+            alert('Failed to delete story');
+        }
+    };
+
+    const isAuthor = user && story?.author?.id === user.public_id;
 
     if (loading) {
         return (
@@ -267,6 +295,26 @@ export default function PostDetail() {
                         <MessageCircle className="w-5 h-5" />
                         <span>{story.comment_count} comments</span>
                     </div>
+
+                    {/* Author Actions - Edit/Delete */}
+                    {isAuthor && (
+                        <div className="ml-auto flex items-center gap-2">
+                            <button
+                                onClick={() => navigate(`/edit/${story.id}`)}
+                                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-blue-300 dark:border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
+                            >
+                                <Edit className="w-4 h-4" />
+                                Edit
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                                Delete
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 {/* Comments Section */}

@@ -8,6 +8,30 @@
     <title>HeartOut - Personal Storytelling Platform</title>
   </head>
   <body>
+    <script>
+      // Apply theme immediately to prevent flash
+      (function() {
+        try {
+          const saved = localStorage.getItem('heartout-theme-preferences');
+          if (saved) {
+            const prefs = JSON.parse(saved);
+            const theme = prefs.theme;
+            if (theme === 'dark') {
+              document.documentElement.classList.add('dark');
+            } else if (theme === 'light') {
+              document.documentElement.classList.add('light');
+            } else {
+              // Auto - check system preference
+              if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+              } else {
+                document.documentElement.classList.add('light');
+              }
+            }
+          }
+        } catch (e) {}
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

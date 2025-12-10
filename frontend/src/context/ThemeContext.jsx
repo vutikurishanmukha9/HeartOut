@@ -7,11 +7,31 @@ const THEMES = {
   AUTO: 'auto'
 }
 
+// Get initial theme from localStorage to prevent flash
+const getInitialTheme = () => {
+  try {
+    const saved = localStorage.getItem('heartout-theme-preferences');
+    if (saved) {
+      const prefs = JSON.parse(saved);
+      const theme = prefs.theme || THEMES.AUTO;
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? THEMES.DARK : THEMES.LIGHT;
+      const effectiveTheme = theme === THEMES.AUTO ? systemTheme : theme;
+      return { theme, systemTheme, effectiveTheme };
+    }
+  } catch (e) {
+    console.error('Error loading initial theme:', e);
+  }
+  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? THEMES.DARK : THEMES.LIGHT;
+  return { theme: THEMES.AUTO, systemTheme, effectiveTheme: systemTheme };
+}
+
+const initialTheme = getInitialTheme();
+
 // Initial state
 const initialState = {
-  theme: THEMES.AUTO,
-  systemTheme: 'light',
-  effectiveTheme: 'light',
+  theme: initialTheme.theme,
+  systemTheme: initialTheme.systemTheme,
+  effectiveTheme: initialTheme.effectiveTheme,
   fontSize: 'medium',
   reducedMotion: false,
   highContrast: false,
@@ -41,7 +61,7 @@ const themeReducer = (state, action) => {
     case THEME_ACTIONS.SET_THEME: {
       const newTheme = action.payload
       const effectiveTheme = newTheme === THEMES.AUTO ? state.systemTheme : newTheme
-      
+
       return {
         ...state,
         theme: newTheme,
@@ -52,7 +72,7 @@ const themeReducer = (state, action) => {
     case THEME_ACTIONS.SET_SYSTEM_THEME: {
       const systemTheme = action.payload
       const effectiveTheme = state.theme === THEMES.AUTO ? systemTheme : state.theme
-      
+
       return {
         ...state,
         systemTheme,
@@ -119,30 +139,30 @@ export const ThemeProvider = ({ children }) => {
         const saved = localStorage.getItem('heartout-theme-preferences')
         if (saved) {
           const preferences = JSON.parse(saved)
-          
+
           // Set theme
           if (preferences.theme) {
             dispatch({ type: THEME_ACTIONS.SET_THEME, payload: preferences.theme })
           }
-          
+
           // Set font size
           if (preferences.fontSize) {
             dispatch({ type: THEME_ACTIONS.SET_FONT_SIZE, payload: preferences.fontSize })
           }
-          
+
           // Set accessibility options
           if (preferences.reducedMotion) {
             dispatch({ type: THEME_ACTIONS.TOGGLE_REDUCED_MOTION })
           }
-          
+
           if (preferences.highContrast) {
             dispatch({ type: THEME_ACTIONS.TOGGLE_HIGH_CONTRAST })
           }
-          
+
           if (preferences.colorBlindFriendly) {
             dispatch({ type: THEME_ACTIONS.TOGGLE_COLOR_BLIND_FRIENDLY })
           }
-          
+
           // Set other preferences
           if (preferences.preferences) {
             dispatch({
@@ -162,7 +182,7 @@ export const ThemeProvider = ({ children }) => {
   // Detect system theme changes
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    
+
     const handleChange = (e) => {
       dispatch({
         type: THEME_ACTIONS.SET_SYSTEM_THEME,
@@ -178,14 +198,14 @@ export const ThemeProvider = ({ children }) => {
 
     // Listen for changes
     mediaQuery.addEventListener('change', handleChange)
-    
+
     return () => mediaQuery.removeEventListener('change', handleChange)
   }, [])
 
   // Detect system motion preferences
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-    
+
     if (mediaQuery.matches && !state.reducedMotion) {
       dispatch({ type: THEME_ACTIONS.TOGGLE_REDUCED_MOTION })
     }
@@ -202,7 +222,7 @@ export const ThemeProvider = ({ children }) => {
         colorBlindFriendly: state.colorBlindFriendly,
         preferences: state.preferences
       }
-      
+
       localStorage.setItem('heartout-theme-preferences', JSON.stringify(preferences))
     } catch (error) {
       console.error('Error saving theme preferences:', error)
@@ -212,41 +232,41 @@ export const ThemeProvider = ({ children }) => {
   // Apply theme classes to document
   useEffect(() => {
     const root = document.documentElement
-    
+
     // Theme class
     root.className = root.className.replace(/\b(light|dark)\b/g, '')
     root.classList.add(state.effectiveTheme)
-    
+
     // Font size class
     root.className = root.className.replace(/\bfont-size-(small|medium|large|xl)\b/g, '')
     root.classList.add(`font-size-${state.fontSize}`)
-    
+
     // Accessibility classes
     if (state.reducedMotion) {
       root.classList.add('reduce-motion')
     } else {
       root.classList.remove('reduce-motion')
     }
-    
+
     if (state.highContrast) {
       root.classList.add('high-contrast')
     } else {
       root.classList.remove('high-contrast')
     }
-    
+
     if (state.colorBlindFriendly) {
       root.classList.add('color-blind-friendly')
     } else {
       root.classList.remove('color-blind-friendly')
     }
-    
+
     // Preference classes
     root.className = root.className.replace(/\bacent-\w+\b/g, '')
     root.classList.add(`accent-${state.preferences.accentColor}`)
-    
+
     root.className = root.className.replace(/\bradius-\w+\b/g, '')
     root.classList.add(`radius-${state.preferences.borderRadius}`)
-    
+
     root.className = root.className.replace(/\bdensity-\w+\b/g, '')
     root.classList.add(`density-${state.preferences.density}`)
   }, [state])
