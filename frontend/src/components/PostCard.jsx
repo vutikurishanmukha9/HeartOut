@@ -2,15 +2,17 @@ import React from 'react';
 import { Heart, MessageCircle, Clock, Eye, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { storyTypes } from './StoryTypeSelector';
+import { sanitizeText } from '../utils/sanitize';
 
 export default function StoryCard({ story, index = 0 }) {
     const storyType = storyTypes.find(t => t.value === story.story_type) || storyTypes[storyTypes.length - 1];
     const Icon = storyType.icon;
 
-    // Get excerpt (first 150 characters)
-    const excerpt = story.content.length > 150
-        ? story.content.substring(0, 150) + '...'
-        : story.content;
+    // Get excerpt (first 150 characters) - sanitized to prevent XSS
+    const safeContent = sanitizeText(story.content);
+    const excerpt = safeContent.length > 150
+        ? safeContent.substring(0, 150) + '...'
+        : safeContent;
 
     // Format date nicely
     const formatDate = (dateString) => {

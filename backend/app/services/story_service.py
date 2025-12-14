@@ -1,6 +1,7 @@
 """Story service layer for business logic separation"""
 from datetime import datetime, timezone
 from sqlalchemy import desc, func, or_
+from sqlalchemy.orm import joinedload, selectinload
 from app.extensions import db
 from app.models import Post, PostStatus, StoryType, Support, Comment, User
 from app.utils.reading_time import calculate_reading_time
@@ -36,8 +37,12 @@ class StoryService:
     
     @staticmethod
     def get_story_by_id(story_id, user=None):
-        """Get a story by its public ID"""
-        story = Post.query.filter_by(public_id=story_id).first()
+        """Get a story by its public ID with eager loading to prevent N+1 queries"""
+        story = Post.query.options(
+            joinedload(Post.author),
+            selectinload(Post.supports),
+            selectinload(Post.comments)
+        ).filter_by(public_id=story_id).first()
         
         if not story:
             raise NotFoundError('Story')
@@ -52,7 +57,10 @@ class StoryService:
     @staticmethod
     def get_stories(filters=None, page=1, per_page=20, sort_by='latest'):
         """Get paginated list of published stories with optional filtering"""
-        query = Post.query.filter_by(status=PostStatus.PUBLISHED)
+        # Use eager loading to prevent N+1 queries
+        query = Post.query.options(
+            joinedload(Post.author)
+        ).filter_by(status=PostStatus.PUBLISHED)
         
         if filters:
             if filters.get('story_type'):

@@ -11,6 +11,11 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     
+    # Validate environment variables (skip in testing)
+    if not app.config.get('TESTING'):
+        from app.utils.validate_env import validate_environment
+        validate_environment(app)
+    
     # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)

@@ -4,6 +4,7 @@ import { Clock, Eye, Calendar, Share2, Bookmark, MessageCircle, ArrowLeft, Trash
 import { storyTypes } from '../components/StoryTypeSelector';
 import ReactionButton from '../components/SupportButton';
 import { AuthContext } from '../context/AuthContext';
+import { sanitizeText } from '../utils/sanitize';
 
 export default function PostDetail() {
     const { id } = useParams();
@@ -270,7 +271,7 @@ export default function PostDetail() {
                 {/* Story Content */}
                 <div className="prose prose-lg dark:prose-invert max-w-none mb-12">
                     <div className="text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap">
-                        {story.content}
+                        {sanitizeText(story.content)}
                     </div>
                 </div>
 

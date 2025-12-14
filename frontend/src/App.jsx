@@ -1,14 +1,29 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthContext } from './context/AuthContext';
 import { ThemeContext } from './context/ThemeContext';
-import AuthRoutes from './routes/AuthRoutes';
-import FeedRoutes from './routes/FeedRoutes';
-import AdminRoutes from './routes/AdminRoutes';
-import ProfileRoutes from './routes/ProfileRoutes';
-import Support from './pages/Support';
 import Navbar from './components/Navbar';
 import SupportFloatingButton from './components/SupportFloatingButton';
+import ErrorBoundary, { RouteErrorBoundary } from './components/ErrorBoundary';
+
+// Lazy load routes for better performance
+const AuthRoutes = lazy(() => import('./routes/AuthRoutes'));
+const FeedRoutes = lazy(() => import('./routes/FeedRoutes'));
+const AdminRoutes = lazy(() => import('./routes/AdminRoutes'));
+const ProfileRoutes = lazy(() => import('./routes/ProfileRoutes'));
+const Support = lazy(() => import('./pages/Support'));
+
+// Loading component for Suspense fallback
+function RouteLoader() {
+  return (
+    <div className="min-h-[400px] flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-12 h-12 border-4 border-primary-200 rounded-full animate-spin border-t-primary-600 mx-auto"></div>
+        <p className="mt-4 text-gray-500 dark:text-gray-400 text-sm">Loading...</p>
+      </div>
+    </div>
+  );
+}
 
 function App() {
   const auth = useContext(AuthContext);
@@ -53,45 +68,69 @@ function App() {
   const showNavbar = isAuthenticated && !isAuthPage;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
-      {showNavbar && <Navbar />}
+    <ErrorBoundary>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+        {showNavbar && <Navbar />}
 
-      <main className={`${showNavbar ? 'pt-16' : ''} transition-all duration-200`}>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/auth/*" element={<AuthRoutes />} />
-          <Route path="/support" element={<Support />} />
+        <main className={`${showNavbar ? 'pt-16' : ''} transition-all duration-200`}>
+          <Suspense fallback={<RouteLoader />}>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/auth/*" element={
+                <RouteErrorBoundary routeName="authentication">
+                  <AuthRoutes />
+                </RouteErrorBoundary>
+              } />
+              <Route path="/support" element={
+                <RouteErrorBoundary routeName="support">
+                  <Support />
+                </RouteErrorBoundary>
+              } />
 
-          {/* Redirect legacy auth routes */}
-          <Route path="/login" element={<Navigate to="/auth/login" replace />} />
-          <Route path="/register" element={<Navigate to="/auth/register" replace />} />
+              {/* Redirect legacy auth routes */}
+              <Route path="/login" element={<Navigate to="/auth/login" replace />} />
+              <Route path="/register" element={<Navigate to="/auth/register" replace />} />
 
-          {/* Protected routes */}
-          {isAuthenticated ? (
-            <>
-              <Route path="/feed/*" element={<FeedRoutes />} />
-              <Route path="/profile/*" element={<ProfileRoutes />} />
-              {user?.role === 'admin' && (
-                <Route path="/admin/*" element={<AdminRoutes />} />
+              {/* Protected routes */}
+              {isAuthenticated ? (
+                <>
+                  <Route path="/feed/*" element={
+                    <RouteErrorBoundary routeName="feed">
+                      <FeedRoutes />
+                    </RouteErrorBoundary>
+                  } />
+                  <Route path="/profile/*" element={
+                    <RouteErrorBoundary routeName="profile">
+                      <ProfileRoutes />
+                    </RouteErrorBoundary>
+                  } />
+                  {user?.role === 'admin' && (
+                    <Route path="/admin/*" element={
+                      <RouteErrorBoundary routeName="admin">
+                        <AdminRoutes />
+                      </RouteErrorBoundary>
+                    } />
+                  )}
+
+                  {/* Default redirect for authenticated users */}
+                  <Route path="/" element={<Navigate to="/feed" replace />} />
+                  <Route path="*" element={<Navigate to="/feed" replace />} />
+                </>
+              ) : (
+                <>
+                  {/* Redirect to auth for unauthenticated users */}
+                  <Route path="/" element={<Navigate to="/auth/login" replace />} />
+                  <Route path="*" element={<Navigate to="/auth/login" replace />} />
+                </>
               )}
+            </Routes>
+          </Suspense>
+        </main>
 
-              {/* Default redirect for authenticated users */}
-              <Route path="/" element={<Navigate to="/feed" replace />} />
-              <Route path="*" element={<Navigate to="/feed" replace />} />
-            </>
-          ) : (
-            <>
-              {/* Redirect to auth for unauthenticated users */}
-              <Route path="/" element={<Navigate to="/auth/login" replace />} />
-              <Route path="*" element={<Navigate to="/auth/login" replace />} />
-            </>
-          )}
-        </Routes>
-      </main>
-
-      {/* Floating Support Button - visible on all pages except auth */}
-      {!isAuthPage && <SupportFloatingButton />}
-    </div>
+        {/* Floating Support Button - visible on all pages except auth */}
+        {!isAuthPage && <SupportFloatingButton />}
+      </div>
+    </ErrorBoundary>
   );
 }
 

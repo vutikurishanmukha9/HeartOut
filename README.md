@@ -166,12 +166,36 @@ HeartOut/
 
 ## Security Features
 
-- JWT-based authentication
-- Persistent token blocklist
-- Password strength validation
-- Rate limiting
-- Input validation with Marshmallow
-- Centralized error handling
+### Authentication & Authorization
+- **JWT-based authentication** with access and refresh tokens
+- **Persistent token blocklist** for secure logout
+- **Strong password validation** (8+ chars, upper/lower/number/special)
+- **Environment variable validation** on startup
+
+### Input Protection
+- **XSS Prevention** with DOMPurify sanitization
+- **Input validation** with Marshmallow schemas
+- **SQL injection protection** via SQLAlchemy ORM
+
+### Rate Limiting
+- **Redis-backed rate limiting** for production (distributed)
+- **Memory fallback** for development
+- Default: 200/day, 50/hour per IP
+
+### Error Handling
+- **Centralized error handlers** with consistent responses
+- **React Error Boundaries** for graceful UI failures
+- **Detailed logging** with rotating file handler
+
+### Production Configuration
+Set these environment variables for production:
+```bash
+SECRET_KEY=<32+ char secret>
+JWT_SECRET_KEY=<32+ char secret>
+REDIS_URL=redis://localhost:6379/0
+DATABASE_URL=postgresql://...
+FLASK_ENV=production
+```
 
 ---
 
@@ -210,6 +234,15 @@ npm test
 
 ## Recent Updates
 
+### v2.4 - Security & Performance
+- **XSS Protection** - DOMPurify sanitization for all user content
+- **Redis Rate Limiting** - Production-ready distributed rate limiting
+- **Environment Validation** - Startup validation with secure fallbacks
+- **React Error Boundaries** - Graceful error handling in UI
+- **Lazy Route Loading** - Improved initial load performance
+- **N+1 Query Fixes** - SQLAlchemy eager loading for stories
+- **Complete Pagination Metadata** - Added has_next, has_prev, next/prev_page
+
 ### v2.3 - Testing & UI Improvements
 - **Comprehensive Test Suite** - 85 tests covering backend and frontend
 - **Navbar Support Button** - Quick access to mental health resources
@@ -217,6 +250,7 @@ npm test
 - **Navbar Active State Fix** - Correct highlighting for Drafts page
 - Backend tests with pytest (29 tests)
 - Frontend tests with Vitest (56 tests)
+
 
 ### v2.2 - Mental Health Support Integration
 - **Tele MANAS Helpline** - Government of India 24/7 free helpline (14416 / 1800-891-4416)
