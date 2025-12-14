@@ -45,6 +45,7 @@ A modern, premium storytelling platform for authentic personal expression.
 - Comment system
 - **Post deletion** - Authors can delete their own stories
 - **Profile page** - User profiles with story filtering by category
+- **Mental Health Support** - Integrated helplines (Tele MANAS, iCall) with floating button
 
 ---
 
@@ -176,6 +177,15 @@ HeartOut/
 
 ## Recent Updates
 
+### v2.2 - Mental Health Support Integration
+- **Tele MANAS Helpline** - Government of India 24/7 free helpline (14416 / 1800-891-4416)
+- **iCall Helpline** - TISS mental health support (9152987821)
+- Floating "Need Support?" button with quick access panel
+- Dedicated `/support` page with helplines and resources
+- Click-to-call functionality for mobile users
+- Copy number buttons for desktop users
+- Emergency information and additional resources
+
 ### v2.1 - Story Analytics & Improvements
 - **Story Analytics Dashboard** - Interactive donut pie chart on Profile page
 - Category filtering with clickable slices and legend
@@ -184,6 +194,7 @@ HeartOut/
 - Post deletion by authors
 - Reaction toggle fix (changing reactions now works correctly)
 - New color scheme: Green (Achievements), Blue (Regrets), Gray (Unsent Letters), Red (Sacrifices), Yellow (Life Stories)
+
 
 ### v2.0 - Premium Upgrade
 - Complete UI redesign with glass morphism

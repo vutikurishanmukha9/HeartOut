@@ -6,7 +6,9 @@ import AuthRoutes from './routes/AuthRoutes';
 import FeedRoutes from './routes/FeedRoutes';
 import AdminRoutes from './routes/AdminRoutes';
 import ProfileRoutes from './routes/ProfileRoutes';
+import Support from './pages/Support';
 import Navbar from './components/Navbar';
+import SupportFloatingButton from './components/SupportFloatingButton';
 
 function App() {
   const auth = useContext(AuthContext);
@@ -58,6 +60,7 @@ function App() {
         <Routes>
           {/* Public routes */}
           <Route path="/auth/*" element={<AuthRoutes />} />
+          <Route path="/support" element={<Support />} />
 
           {/* Redirect legacy auth routes */}
           <Route path="/login" element={<Navigate to="/auth/login" replace />} />
@@ -85,6 +88,9 @@ function App() {
           )}
         </Routes>
       </main>
+
+      {/* Floating Support Button - visible on all pages except auth */}
+      {!isAuthPage && <SupportFloatingButton />}
     </div>
   );
 }
