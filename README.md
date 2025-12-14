@@ -175,7 +175,48 @@ HeartOut/
 
 ---
 
+## Testing
+
+### Backend Tests (pytest)
+```bash
+cd backend
+.\venv\Scripts\activate
+pytest -v
+```
+
+| Test Suite | Tests | Coverage |
+|------------|-------|----------|
+| Authentication | 9 | Login, Register, Profile, Logout |
+| Stories | 14 | CRUD, Drafts, Filtering |
+| Reactions | 6 | Add, Toggle, Types |
+
+### Frontend Tests (Vitest)
+```bash
+cd frontend
+npm test
+```
+
+| Test Suite | Tests | Coverage |
+|------------|-------|----------|
+| Utils | 17 | Validation, Dates, Errors |
+| HelplineCard | 13 | Rendering, Links, Data |
+| StoryTypeSelector | 10 | Selection, Rendering |
+| SupportButton | 9 | Reactions, Dropdown |
+| AuthContext | 7 | Provider, State |
+
+**Total: 85 tests with 100% pass rate**
+
+---
+
 ## Recent Updates
+
+### v2.3 - Testing & UI Improvements
+- **Comprehensive Test Suite** - 85 tests covering backend and frontend
+- **Navbar Support Button** - Quick access to mental health resources
+- **Profile Dropdown Fix** - Click outside to close
+- **Navbar Active State Fix** - Correct highlighting for Drafts page
+- Backend tests with pytest (29 tests)
+- Frontend tests with Vitest (56 tests)
 
 ### v2.2 - Mental Health Support Integration
 - **Tele MANAS Helpline** - Government of India 24/7 free helpline (14416 / 1800-891-4416)

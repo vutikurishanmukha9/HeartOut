@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
@@ -16,6 +16,7 @@ import {
   Sun,
   Shield,
   Heart,
+  HeartHandshake,
   FileText,
   Sparkles
 } from 'lucide-react';
@@ -31,8 +32,27 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
+  const profileMenuRef = useRef(null);
+
+  // Close profile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+
+    if (isProfileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isProfileMenuOpen]);
+
   const navItems = [
-    { name: 'Feed', href: '/feed', icon: Home, active: location.pathname.startsWith('/feed') && location.pathname !== '/feed/create' },
+    { name: 'Feed', href: '/feed', icon: Home, active: location.pathname.startsWith('/feed') && location.pathname !== '/feed/create' && location.pathname !== '/feed/drafts' },
     { name: 'Create', href: '/feed/create', icon: PlusCircle, active: location.pathname === '/feed/create' },
     { name: 'Drafts', href: '/feed/drafts', icon: FileText, active: location.pathname === '/feed/drafts' }
   ];
@@ -123,6 +143,15 @@ const Navbar = () => {
 
             {/* Right Side Icons */}
             <div className="flex items-center space-x-2">
+              {/* Support */}
+              <Link
+                to="/support"
+                className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all duration-300 group"
+                title="Need Support?"
+              >
+                <HeartHandshake className="w-5 h-5 group-hover:text-rose-500 transition-colors" />
+              </Link>
+
               {/* Notifications */}
               <button className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-300 group">
                 <Bell className="w-5 h-5 group-hover:text-primary-500 transition-colors" />
@@ -142,7 +171,7 @@ const Navbar = () => {
               </button>
 
               {/* Profile Menu */}
-              <div className="relative">
+              <div className="relative" ref={profileMenuRef}>
                 <button
                   onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                   className="flex items-center space-x-2 p-1 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-300"

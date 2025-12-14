@@ -21,7 +21,7 @@ class UserRegistrationSchema(Schema):
     age_range = fields.Str(validate=validate.OneOf(['13-17', '18-24', '25-34', '35-44', '45-54', '55+']))
     
     @validates('email')
-    def validate_email_domain(self, value):
+    def validate_email_domain(self, value, **kwargs):
         """Additional email validation"""
         # Block common disposable email domains
         disposable_domains = ['tempmail.com', 'throwaway.com', '10minutemail.com']
@@ -68,7 +68,7 @@ class PostCreationSchema(Schema):
     )
     
     @validates('tags')
-    def validate_tags(self, value):
+    def validate_tags(self, value, **kwargs):
         """Validate each tag format"""
         for tag in value:
             if not re.match(r'^[a-zA-Z0-9_-]+$', tag):
