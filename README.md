@@ -201,34 +201,93 @@ FLASK_ENV=production
 
 ## Testing
 
-### Backend Tests (pytest)
+### Unit Tests
+
+#### Backend (pytest)
 ```bash
 cd backend
 .\venv\Scripts\activate
 pytest -v
 ```
 
-| Test Suite | Tests | Coverage |
-|------------|-------|----------|
+| Test Suite | Tests | Description |
+|------------|-------|-------------|
 | Authentication | 9 | Login, Register, Profile, Logout |
 | Stories | 14 | CRUD, Drafts, Filtering |
 | Reactions | 6 | Add, Toggle, Types |
 
-### Frontend Tests (Vitest)
+#### Frontend (Vitest)
 ```bash
 cd frontend
 npm test
 ```
 
-| Test Suite | Tests | Coverage |
-|------------|-------|----------|
+| Test Suite | Tests | Description |
+|------------|-------|-------------|
 | Utils | 17 | Validation, Dates, Errors |
 | HelplineCard | 13 | Rendering, Links, Data |
 | StoryTypeSelector | 10 | Selection, Rendering |
 | SupportButton | 9 | Reactions, Dropdown |
 | AuthContext | 7 | Provider, State |
 
-**Total: 85 tests with 100% pass rate**
+### Integration Tests
+Complete user flow tests covering end-to-end journeys.
+```bash
+cd backend
+pytest tests/test_integration.py -v
+```
+
+| Flow | Description |
+|------|-------------|
+| Registration to First Story | Register, login, create story, view |
+| Story Interactions | Create, react, comment workflow |
+| Draft to Publish | Draft creation, editing, publishing |
+| Search and Filter | Category filtering, search |
+
+### E2E Tests (Playwright)
+Browser-based end-to-end tests.
+```bash
+cd frontend
+npm run test:e2e           # Headless
+npm run test:e2e:headed    # With browser
+npm run test:e2e:ui        # Interactive UI
+```
+
+| Spec | Tests |
+|------|-------|
+| auth.spec.js | Registration, Login, Logout, Validation |
+| stories.spec.js | Create, View, React, Comment |
+
+### Load Tests (Locust)
+Performance and load testing.
+```bash
+cd backend
+pip install locust
+locust -f tests/test_load.py --host=http://localhost:5000
+# Open http://localhost:8089 for web UI
+```
+
+| User Type | Behavior |
+|-----------|----------|
+| ReadOnlyUser | Browsing, viewing stories (3x weight) |
+| ActiveUser | Creating content, reactions, comments |
+| HeavyUser | Pagination stress, category filtering |
+
+### Security Tests
+Penetration testing for common vulnerabilities.
+```bash
+cd backend
+pytest tests/test_security.py -v
+```
+
+| Category | Tests |
+|----------|-------|
+| XSS Prevention | Script injection, event handlers |
+| SQL Injection | Login, search, path injection |
+| Authentication | JWT validation, password strength |
+| Authorization | Cross-user edit/delete prevention |
+| Input Validation | Oversized content, invalid types |
+
 
 ---
 
