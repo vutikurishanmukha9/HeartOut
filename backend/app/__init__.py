@@ -22,9 +22,12 @@ def create_app(config_class=Config):
     jwt.init_app(app)
     limiter.init_app(app)
     
-    # CORS configuration
-    CORS(app, origins=app.config['CORS_ORIGINS'], 
-         supports_credentials=True)
+    # CORS configuration - allow all origins if wildcard, specific otherwise
+    cors_origins = app.config.get('CORS_ORIGINS', ['*'])
+    if cors_origins == ['*'] or '*' in cors_origins:
+        CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+    else:
+        CORS(app, origins=cors_origins, supports_credentials=True)
     
     # Register JWT token blocklist callback
     from app.blueprints.auth.routes import is_token_revoked
