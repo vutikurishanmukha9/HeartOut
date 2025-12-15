@@ -25,15 +25,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy backend code
 COPY backend/ .
 
-# Create startup script that runs migrations
-RUN echo '#!/bin/bash\nflask db upgrade 2>/dev/null || python -c "from app import create_app; from app.extensions import db; app = create_app(); app.app_context().push(); db.create_all(); print(\"Tables created!\")"\nexec gunicorn --bind 0.0.0.0:${PORT:-5000} --workers 2 --threads 4 "app:create_app()"' > /app/start.sh && chmod +x /app/start.sh
-
-# Expose port
-EXPOSE 5000
+# Expose port (Render provides PORT env var)
+EXPOSE 10000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-5000}/api/auth/health || exit 1
+    CMD curl -f http://localhost:${PORT:-10000}/api/auth/health || exit 1
 
-# Run startup script (migrations + gunicorn)
-CMD ["/bin/bash", "/app/start.sh"]
+# Start command - create tables if needed, then run gunicorn
+CMD python -c "from app import create_app; from app.extensions import db; app = create_app(); app.app_context().push(); db.create_all(); print('Tables ready!')" && \
+    gunicorn --bind 0.0.0.0:${PORT:-10000} --workers 2 --threads 4 "app:create_app()"
