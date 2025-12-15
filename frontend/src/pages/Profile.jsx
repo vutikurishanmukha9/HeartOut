@@ -5,6 +5,7 @@ import { AuthContext } from '../context/AuthContext';
 import StoryCard from '../components/PostCard';
 import { storyTypes } from '../components/StoryTypeSelector';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { getApiUrl } from '../config/api';
 
 export default function Profile() {
     const { userId } = useParams();
@@ -35,7 +36,7 @@ export default function Profile() {
 
     const fetchOwnProfile = async () => {
         try {
-            const response = await fetch('/api/auth/profile', {
+            const response = await fetch(getApiUrl('/api/auth/profile'), {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`
                 }
@@ -58,7 +59,7 @@ export default function Profile() {
 
     const fetchUserProfile = async () => {
         try {
-            const response = await fetch(`/api/posts/user/${userId}/stories`);
+            const response = await fetch(getApiUrl(`/api/posts/user/${userId}/stories`));
             const data = await response.json();
             setProfile(data.author);
         } catch (error) {
@@ -71,8 +72,8 @@ export default function Profile() {
     const fetchUserStories = async () => {
         try {
             const endpoint = isOwnProfile
-                ? '/api/posts?status=published'
-                : `/api/posts/user/${userId}/stories`;
+                ? getApiUrl('/api/posts?status=published')
+                : getApiUrl(`/api/posts/user/${userId}/stories`);
 
             const headers = isOwnProfile
                 ? { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` }
@@ -88,7 +89,7 @@ export default function Profile() {
 
     const handleUpdateProfile = async () => {
         try {
-            const response = await fetch('/api/auth/profile', {
+            const response = await fetch(getApiUrl('/api/auth/profile'), {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -444,8 +445,8 @@ export default function Profile() {
                                                         key={type.value}
                                                         onClick={() => setSelectedCategory(selectedCategory === type.value ? null : type.value)}
                                                         className={`w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-200 ${selectedCategory === type.value
-                                                                ? 'bg-gray-100 dark:bg-gray-700 shadow-md scale-102'
-                                                                : 'hover:bg-gray-50 dark:hover:bg-gray-800'
+                                                            ? 'bg-gray-100 dark:bg-gray-700 shadow-md scale-102'
+                                                            : 'hover:bg-gray-50 dark:hover:bg-gray-800'
                                                             }`}
                                                     >
                                                         <div

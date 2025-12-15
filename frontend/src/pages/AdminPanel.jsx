@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Users, FileText, Flag, TrendingUp, Shield } from 'lucide-react';
+import { getApiUrl } from '../config/api';
 
 export default function AdminPanel() {
     const [stats, setStats] = useState({
@@ -17,7 +18,7 @@ export default function AdminPanel() {
     const fetchStats = async () => {
         try {
             const token = localStorage.getItem('access_token');
-            const response = await fetch('/api/admin/stats', {
+            const response = await fetch(getApiUrl('/api/admin/stats'), {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

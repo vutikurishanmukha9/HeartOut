@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Trash2, Edit, Clock } from 'lucide-react';
+import { getApiUrl } from '../config/api';
 
 export default function Drafts() {
     const [drafts, setDrafts] = useState([]);
@@ -13,7 +14,7 @@ export default function Drafts() {
     const fetchDrafts = async () => {
         try {
             const token = localStorage.getItem('access_token');
-            const response = await fetch('/api/posts/drafts', {
+            const response = await fetch(getApiUrl('/api/posts/drafts'), {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -35,7 +36,7 @@ export default function Drafts() {
 
         try {
             const token = localStorage.getItem('access_token');
-            const response = await fetch(`/api/posts/${id}`, {
+            const response = await fetch(getApiUrl(`/api/posts/${id}`), {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { PenTool, Save, Send, ArrowLeft, Sparkles, Clock, Hash, Check, X, Heart, Lightbulb, AlertCircle } from 'lucide-react';
 import StoryTypeSelector from '../components/StoryTypeSelector';
 import AnonymousToggle from '../components/AnonymousToggle';
+import { getApiUrl } from '../config/api';
 
 export default function CreatePost() {
     const navigate = useNavigate();
@@ -42,7 +43,7 @@ export default function CreatePost() {
 
         setSubmitting(true);
         try {
-            const response = await fetch('/api/posts', {
+            const response = await fetch(getApiUrl('/api/posts'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

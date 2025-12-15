@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import { getApiUrl } from '../config/api';
 
 export const AuthContext = createContext(null);
 
@@ -17,7 +18,7 @@ export function AuthProvider({ children }) {
 
   const fetchProfile = async (token) => {
     try {
-      const response = await fetch('/api/auth/profile', {
+      const response = await fetch(getApiUrl('/api/auth/profile'), {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -35,7 +36,7 @@ export function AuthProvider({ children }) {
   };
 
   const login = async (email, password) => {
-    const response = await fetch('/api/auth/login', {
+    const response = await fetch(getApiUrl('/api/auth/login'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -53,7 +54,7 @@ export function AuthProvider({ children }) {
   };
 
   const register = async (userData) => {
-    const response = await fetch('/api/auth/register', {
+    const response = await fetch(getApiUrl('/api/auth/register'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
@@ -80,19 +81,40 @@ export function AuthProvider({ children }) {
   const hasPermission = (permission) => {
     if (!user) return false;
     if (user.role === 'admin') return true;
-    if (user.role === 'moderator' && permission === 'moderate_content') return true;
     return false;
+  };
+
+  const updateProfile = async (profileData) => {
+    const token = localStorage.getItem('access_token');
+    const response = await fetch(getApiUrl('/api/auth/profile'), {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(profileData)
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setUser(data.user);
+      return { success: true };
+    } else {
+      const error = await response.json();
+      return { success: false, error: error.error };
+    }
   };
 
   return (
     <AuthContext.Provider value={{
       user,
       loading,
-      isAuthenticated,
-      hasPermission,
       login,
       register,
-      logout
+      logout,
+      isAuthenticated,
+      hasPermission,
+      updateProfile
     }}>
       {children}
     </AuthContext.Provider>

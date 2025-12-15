@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, TrendingUp, Star, ArrowRight, BookOpen, Heart } from 'lucide-react';
 import StoryCard from '../components/PostCard';
 import StoryTypeSelector from '../components/StoryTypeSelector';
+import { getApiUrl } from '../config/api';
 
 export default function Feed() {
     const [stories, setStories] = useState([]);
@@ -27,7 +28,7 @@ export default function Feed() {
                 params.append('story_type', selectedCategory);
             }
 
-            const response = await fetch(`/api/posts?${params}`);
+            const response = await fetch(getApiUrl(`/api/posts?${params}`));
             const data = await response.json();
             setStories(data.stories || []);
         } catch (error) {

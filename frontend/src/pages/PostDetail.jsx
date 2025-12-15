@@ -5,6 +5,7 @@ import { storyTypes } from '../components/StoryTypeSelector';
 import ReactionButton from '../components/SupportButton';
 import { AuthContext } from '../context/AuthContext';
 import { sanitizeText } from '../utils/sanitize';
+import { getApiUrl } from '../config/api';
 
 export default function PostDetail() {
     const { id } = useParams();
@@ -28,7 +29,7 @@ export default function PostDetail() {
 
     const fetchStory = async () => {
         try {
-            const response = await fetch(`/api/posts/${id}`);
+            const response = await fetch(getApiUrl(`/api/posts/${id}`));
             const data = await response.json();
             setStory(data.story);
             setSupportCount(data.story?.support_count || 0);
@@ -41,7 +42,7 @@ export default function PostDetail() {
 
     const fetchUserReaction = async () => {
         try {
-            const response = await fetch(`/api/posts/${id}/my-reaction`, {
+            const response = await fetch(getApiUrl(`/api/posts/${id}/my-reaction`), {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`
                 }
@@ -57,7 +58,7 @@ export default function PostDetail() {
 
     const fetchComments = async () => {
         try {
-            const response = await fetch(`/api/posts/${id}/comments`);
+            const response = await fetch(getApiUrl(`/api/posts/${id}/comments`));
             const data = await response.json();
             setComments(data.comments || []);
         } catch (error) {
@@ -72,7 +73,7 @@ export default function PostDetail() {
         }
 
         try {
-            const response = await fetch(`/api/posts/${id}/toggle-react`, {
+            const response = await fetch(getApiUrl(`/api/posts/${id}/toggle-react`), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -95,7 +96,7 @@ export default function PostDetail() {
         if (!commentText.trim()) return;
 
         try {
-            const response = await fetch(`/api/posts/${id}/comments`, {
+            const response = await fetch(getApiUrl(`/api/posts/${id}/comments`), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -136,7 +137,7 @@ export default function PostDetail() {
         }
 
         try {
-            const response = await fetch(`/api/posts/${id}`, {
+            const response = await fetch(getApiUrl(`/api/posts/${id}`), {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`
