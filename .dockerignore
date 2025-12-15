@@ -1,0 +1,21 @@
+# Ignore unnecessary files
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.env
+.env.local
+*.db
+*.sqlite
+.git
+.gitignore
+*.md
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+logs/
+*.log
