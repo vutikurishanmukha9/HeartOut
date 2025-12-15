@@ -341,6 +341,68 @@ pytest tests/test_security.py -v
 
 ---
 
+## Deployment
+
+### Quick Deploy to Render
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+
+1. Fork this repository
+2. Connect your GitHub to Render
+3. Create a new **Blueprint** and select this repo
+4. Render will auto-detect `render.yaml` and create:
+   - PostgreSQL database
+   - Backend API service
+   - Frontend static site
+
+### Quick Deploy to Railway
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template)
+
+1. Fork this repository
+2. Create new project on Railway
+3. Add PostgreSQL database
+4. Deploy from GitHub repo
+5. Set environment variables:
+   - `SECRET_KEY`
+   - `JWT_SECRET_KEY`
+   - `DATABASE_URL` (auto-set by Railway)
+
+### Manual Deployment
+
+#### Backend (Render/Railway/Heroku)
+```bash
+# Environment variables required:
+SECRET_KEY=<32+ char secret>
+JWT_SECRET_KEY=<32+ char secret>
+DATABASE_URL=postgresql://...
+FLASK_ENV=production
+CORS_ORIGINS=https://your-frontend-domain.com
+
+# Optional:
+REDIS_URL=redis://...  # For distributed rate limiting
+```
+
+#### Frontend (Vercel/Netlify/Render)
+```bash
+# Build command:
+npm run build
+
+# Publish directory:
+dist
+
+# Environment variable:
+VITE_API_URL=https://your-backend-api.com
+```
+
+### Deployment Files
+| File | Purpose |
+|------|---------|
+| `render.yaml` | Render Blueprint (auto-deploy) |
+| `railway.toml` | Railway configuration |
+| `Procfile` | Heroku/Railway process file |
+| `runtime.txt` | Python version specification |
+
+---
+
 ## Roadmap
 
 | Phase | Features | Status |
@@ -348,8 +410,9 @@ pytest tests/test_security.py -v
 | Phase 1 | Core features, story CRUD | Complete |
 | Phase 2 | Premium UI upgrade | Complete |
 | Phase 3 | Search, reactions, stats | Complete |
-| Phase 4 | Email notifications | Planned |
-| Phase 5 | Mobile app | Planned |
+| Phase 4 | Cloud deployment | Complete |
+| Phase 5 | Email notifications | Planned |
+| Phase 6 | Mobile app | Planned |
 
 ---
 

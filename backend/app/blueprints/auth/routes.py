@@ -13,6 +13,16 @@ from datetime import datetime, timezone
 jwt_blocklist = set()
 
 
+@bp.route('/health', methods=['GET'])
+def health_check():
+    """Health check endpoint for deployment platforms"""
+    return jsonify({
+        'status': 'healthy',
+        'service': 'heartout-api',
+        'version': '2.4.0'
+    })
+
+
 @bp.route('/register', methods=['POST'])
 @limiter.limit("5 per minute")
 def register():

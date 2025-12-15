@@ -26,8 +26,12 @@ class Config:
     WTF_CSRF_TIME_LIMIT = None  # No time limit for CSRF tokens
     WTF_CSRF_SSL_STRICT = os.environ.get('FLASK_ENV') == 'production'  # Require HTTPS in production
     
-    # Database
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///heartout.db'
+    # Database - Handle Render/Railway postgres:// URL format
+    database_url = os.environ.get('DATABASE_URL', 'sqlite:///heartout.db')
+    # Fix for SQLAlchemy 1.4+ which requires postgresql:// instead of postgres://
+    if database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    SQLALCHEMY_DATABASE_URI = database_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # JWT Configuration
@@ -51,3 +55,23 @@ class Config:
     PASSWORD_REQUIRE_DIGIT = True
     PASSWORD_REQUIRE_SPECIAL = True
     PASSWORD_SPECIAL_CHARS = "!@#$%^&*()_+-=[]{}|;:,.<>?"
+
+
+class ProductionConfig(Config):
+    """Production configuration"""
+    DEBUG = False
+    TESTING = False
+    
+
+class DevelopmentConfig(Config):
+    """Development configuration"""
+    DEBUG = True
+    TESTING = False
+
+
+class TestingConfig(Config):
+    """Testing configuration"""
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    WTF_CSRF_ENABLED = False
+    RATELIMIT_ENABLED = False
