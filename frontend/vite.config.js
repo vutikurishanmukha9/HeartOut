@@ -12,12 +12,7 @@ export default defineConfig(({ mode }) => {
         build: {
             outDir: 'dist',
             sourcemap: mode !== 'production',
-            minify: 'terser',
-            terserOptions: {
-                compress: {
-                    drop_console: mode === 'production',
-                },
-            },
+            minify: 'esbuild',  // Use built-in esbuild minifier (no extra install needed)
         },
 
         // Test configuration
