@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, PlusSquare, User, Search, Compass } from 'lucide-react';
+import { Home, PlusSquare, User, HeartHandshake, FileText } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 
 /**
@@ -28,10 +28,10 @@ export default function MobileBottomNav() {
 
     const navItems = [
         { path: '/feed', icon: Home, label: 'Home' },
-        { path: '/feed/discover', icon: Compass, label: 'Discover' },
+        { path: '/feed/drafts', icon: FileText, label: 'Drafts' },
         { path: '/feed/create', icon: PlusSquare, label: 'Create', isCreate: true },
-        { path: '/feed/search', icon: Search, label: 'Search' },
-        { path: '/feed/profile', icon: User, label: 'Profile' },
+        { path: '/support', icon: HeartHandshake, label: 'Support' },
+        { path: '/profile', icon: User, label: 'Profile' },
     ];
 
     return (
