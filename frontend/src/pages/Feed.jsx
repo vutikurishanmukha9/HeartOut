@@ -47,8 +47,8 @@ export default function Feed() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-rose-50/50 via-orange-50/30 to-purple-50/50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
 
-            {/* Hero Section */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-primary-500/10 via-secondary-500/10 to-accent-500/10 dark:from-primary-900/20 dark:via-secondary-900/20 dark:to-accent-900/20 border-b border-white/20 dark:border-gray-800">
+            {/* Hero Section - extends to fill any gap */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-primary-500/10 via-secondary-500/10 to-accent-500/10 dark:from-primary-900/20 dark:via-secondary-900/20 dark:to-accent-900/20 border-b border-white/20 dark:border-gray-800 -mt-px">
                 {/* Floating Decorative Elements */}
                 <div className="absolute top-10 left-10 w-72 h-72 bg-primary-400/20 rounded-full blur-3xl animate-float" />
                 <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent-400/20 rounded-full blur-3xl animate-float-slow" />
