@@ -40,7 +40,7 @@ export default function Login() {
     return (
         <div className="min-h-screen flex">
             {/* Left Side - Form */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gradient-to-br from-rose-50/50 to-purple-50/50 dark:from-gray-900 dark:to-gray-800">
+            <div className="w-full lg:w-1/2 flex items-center justify-center px-4 py-6 sm:p-8 bg-gradient-to-br from-rose-50/50 to-purple-50/50 dark:from-gray-900 dark:to-gray-800 min-h-screen lg:min-h-0 safe-area-top safe-area-bottom">
                 <div className="w-full max-w-md animate-slide-up">
                     {/* Logo */}
                     <div className="text-center mb-8">

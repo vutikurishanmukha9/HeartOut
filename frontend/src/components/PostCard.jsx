@@ -29,19 +29,20 @@ export default function StoryCard({ story, index = 0 }) {
     return (
         <Link
             to={`/feed/story/${story.id}`}
-            className="block group"
+            className="block group touch-manipulation"
             style={{ animationDelay: `${index * 0.1}s` }}
         >
             <article className={`
                 relative overflow-hidden
                 bg-white/80 dark:bg-gray-800/80 
                 backdrop-blur-sm
-                rounded-2xl 
+                rounded-xl md:rounded-2xl 
                 border border-white/50 dark:border-gray-700/50
                 shadow-card
                 transition-all duration-500 ease-out
                 hover:shadow-glow-lg
                 animate-slide-up
+                active:scale-[0.98] md:active:scale-100
             `}>
                 {/* Gradient Overlay on Hover */}
                 <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 via-transparent to-accent-500/0 group-hover:from-primary-500/5 group-hover:to-accent-500/5 transition-all duration-500 pointer-events-none" />

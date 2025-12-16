@@ -54,7 +54,7 @@ export default function Feed() {
                 <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent-400/20 rounded-full blur-3xl animate-float-slow" />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-secondary-400/10 rounded-full blur-2xl" />
 
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16 lg:py-24">
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
                         {/* Left Content */}
                         <div className="flex-1 text-center lg:text-left animate-slide-up">
@@ -63,12 +63,12 @@ export default function Feed() {
                                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Stories that touch hearts</span>
                             </div>
 
-                            <h1 className="text-5xl lg:text-6xl font-bold mb-6">
+                            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6">
                                 <span className="text-gray-900 dark:text-white">Discover </span>
                                 <span className="text-gradient">Real Stories</span>
                             </h1>
 
-                            <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-xl">
+                            <p className="text-base md:text-xl text-gray-600 dark:text-gray-400 mb-6 md:mb-8 max-w-xl">
                                 From achievements to life lessons, explore authentic narratives from people around the world.
                             </p>
 
@@ -112,57 +112,61 @@ export default function Feed() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 {/* Filters Section */}
                 <div className="mb-10 space-y-4">
-                    {/* Sort Options - Premium Pills */}
-                    <div className="flex flex-wrap items-center gap-3">
-                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400 w-20">Sort by:</span>
-                        {sortOptions.map((option) => {
-                            const Icon = option.icon;
-                            const isActive = sortBy === option.value;
-                            return (
-                                <button
-                                    key={option.value}
-                                    onClick={() => setSortBy(option.value)}
-                                    className={`
+                    {/* Sort Options - Horizontal Scroll on Mobile */}
+                    <div className="-mx-4 px-4 md:mx-0 md:px-0 overflow-x-auto scrollbar-hide">
+                        <div className="flex items-center gap-2 md:gap-3 min-w-max pb-2">
+                            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 shrink-0">Sort:</span>
+                            {sortOptions.map((option) => {
+                                const Icon = option.icon;
+                                const isActive = sortBy === option.value;
+                                return (
+                                    <button
+                                        key={option.value}
+                                        onClick={() => setSortBy(option.value)}
+                                        className={`
                                         flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all duration-300
                                         ${isActive
-                                            ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg shadow-primary-500/30 scale-105'
-                                            : 'bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-primary-400 hover:shadow-md'
-                                        }
+                                                ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg shadow-primary-500/30 scale-105'
+                                                : 'bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-primary-400 hover:shadow-md'
+                                            }
                                     `}
-                                >
-                                    <Icon className="w-4 h-4" />
-                                    {option.label}
-                                </button>
-                            );
-                        })}
+                                    >
+                                        <Icon className="w-4 h-4" />
+                                        {option.label}
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
 
-                    {/* Category Filters */}
-                    <div className="flex flex-wrap items-center gap-3">
-                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400 w-20">Category:</span>
-                        <button
-                            onClick={() => setSelectedCategory('all')}
-                            className={`
+                    {/* Category Filters - Horizontal Scroll on Mobile */}
+                    <div className="-mx-4 px-4 md:mx-0 md:px-0 overflow-x-auto scrollbar-hide">
+                        <div className="flex items-center gap-2 md:gap-3 min-w-max pb-2">
+                            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 shrink-0">Type:</span>
+                            <button
+                                onClick={() => setSelectedCategory('all')}
+                                className={`
                                 px-5 py-2.5 rounded-xl font-medium transition-all duration-300
                                 ${selectedCategory === 'all'
-                                    ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-lg'
-                                    : 'bg-white/80 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-400'
-                                }
+                                        ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-lg'
+                                        : 'bg-white/80 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-400'
+                                    }
                             `}
-                        >
-                            All Stories
-                        </button>
-                        <StoryTypeSelector
-                            selected={selectedCategory === 'all' ? '' : selectedCategory}
-                            onChange={setSelectedCategory}
-                            variant="tabs"
-                        />
+                            >
+                                All Stories
+                            </button>
+                            <StoryTypeSelector
+                                selected={selectedCategory === 'all' ? '' : selectedCategory}
+                                onChange={setSelectedCategory}
+                                variant="tabs"
+                            />
+                        </div>
                     </div>
                 </div>
 
-                {/* Stories Grid */}
+                {/* Stories Grid - Full width on mobile */}
                 {loading ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                         {[...Array(6)].map((_, i) => (
                             <div key={i} className="glass-card rounded-2xl overflow-hidden">
                                 <div className="p-5 border-b border-gray-100 dark:border-gray-700">

@@ -4,6 +4,7 @@ import { AuthContext } from './context/AuthContext';
 import { ThemeContext } from './context/ThemeContext';
 import Navbar from './components/Navbar';
 import SupportFloatingButton from './components/SupportFloatingButton';
+import MobileBottomNav from './components/MobileBottomNav';
 import ErrorBoundary, { RouteErrorBoundary } from './components/ErrorBoundary';
 import InnovativeLoader, { RouteLoader } from './components/InnovativeLoader';
 
@@ -113,6 +114,9 @@ function App() {
 
         {/* Floating Support Button - visible on all pages except auth */}
         {!isAuthPage && <SupportFloatingButton />}
+
+        {/* Mobile Bottom Navigation */}
+        <MobileBottomNav />
       </div>
     </ErrorBoundary>
   );
