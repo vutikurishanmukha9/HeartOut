@@ -5,6 +5,7 @@ import { ThemeContext } from './context/ThemeContext';
 import Navbar from './components/Navbar';
 import SupportFloatingButton from './components/SupportFloatingButton';
 import ErrorBoundary, { RouteErrorBoundary } from './components/ErrorBoundary';
+import InnovativeLoader, { RouteLoader } from './components/InnovativeLoader';
 
 // Lazy load routes for better performance
 const AuthRoutes = lazy(() => import('./routes/AuthRoutes'));
@@ -13,17 +14,7 @@ const AdminRoutes = lazy(() => import('./routes/AdminRoutes'));
 const ProfileRoutes = lazy(() => import('./routes/ProfileRoutes'));
 const Support = lazy(() => import('./pages/Support'));
 
-// Loading component for Suspense fallback
-function RouteLoader() {
-  return (
-    <div className="min-h-[400px] flex items-center justify-center">
-      <div className="text-center">
-        <div className="w-12 h-12 border-4 border-primary-200 rounded-full animate-spin border-t-primary-600 mx-auto"></div>
-        <p className="mt-4 text-gray-500 dark:text-gray-400 text-sm">Loading...</p>
-      </div>
-    </div>
-  );
-}
+// RouteLoader is now imported from InnovativeLoader
 
 function App() {
   const auth = useContext(AuthContext);
@@ -52,16 +43,9 @@ function App() {
     }
   }, [theme.theme, theme.effectiveTheme]);
 
-  // Show loading screen during initial load
+  // Show innovative loading screen during initial load
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-primary-200 rounded-full animate-spin border-t-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading HeartOut...</p>
-        </div>
-      </div>
-    );
+    return <InnovativeLoader />;
   }
 
   const isAuthPage = location.pathname.startsWith('/auth');

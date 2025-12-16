@@ -42,13 +42,26 @@ class ErrorBoundary extends React.Component {
 const App = React.lazy(() => import('./App.jsx'));
 const AuthProvider = React.lazy(() => import('./context/AuthContext').then(m => ({ default: m.AuthProvider })));
 const ThemeProvider = React.lazy(() => import('./context/ThemeContext').then(m => ({ default: m.ThemeProvider })));
+const InnovativeLoader = React.lazy(() => import('./components/InnovativeLoader'));
 
-// Loading component
+// Loading component - uses a simple fallback until InnovativeLoader loads
 const Loading = () => (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-            <div className="w-16 h-16 border-4 border-orange-200 rounded-full animate-spin border-t-orange-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading HeartOut...</p>
+    <div className="min-h-screen flex items-center justify-center" style={{
+        background: 'linear-gradient(-45deg, #fdf2f8, #fef7ee, #fefce8, #fff7ed)',
+    }}>
+        <div className="flex flex-col items-center space-y-4">
+            <svg viewBox="0 0 24 24" className="w-12 h-12" fill="url(#heartGradient)">
+                <defs>
+                    <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#f43f5e" />
+                        <stop offset="100%" stopColor="#f97316" />
+                    </linearGradient>
+                </defs>
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-orange-500 bg-clip-text text-transparent">
+                HeartOut
+            </h1>
         </div>
     </div>
 );
