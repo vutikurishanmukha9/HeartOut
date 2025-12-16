@@ -47,14 +47,14 @@ export default function Feed() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-rose-50/50 via-orange-50/30 to-purple-50/50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
 
-            {/* Hero Section - extends to fill any gap */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-primary-500/10 via-secondary-500/10 to-accent-500/10 dark:from-primary-900/20 dark:via-secondary-900/20 dark:to-accent-900/20 border-b border-white/20 dark:border-gray-800 -mt-px">
+            {/* Hero Section - pull up to fill navbar gap */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-primary-500/10 via-secondary-500/10 to-accent-500/10 dark:from-primary-900/20 dark:via-secondary-900/20 dark:to-accent-900/20 border-b border-white/20 dark:border-gray-800 -mt-16 pt-16">
                 {/* Floating Decorative Elements */}
                 <div className="absolute top-10 left-10 w-72 h-72 bg-primary-400/20 rounded-full blur-3xl animate-float" />
                 <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent-400/20 rounded-full blur-3xl animate-float-slow" />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-secondary-400/10 rounded-full blur-2xl" />
 
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16 lg:py-24">
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 md:py-16 lg:py-24">
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
                         {/* Left Content */}
                         <div className="flex-1 text-center lg:text-left animate-slide-up">
