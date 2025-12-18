@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, TrendingUp, Star, ArrowRight, BookOpen, Heart } from 'lucide-react';
+import { Sparkles, TrendingUp, Star, ArrowRight, BookOpen, Heart, Clock } from 'lucide-react';
 import StoryCard from '../components/PostCard';
 import StoryTypeSelector from '../components/StoryTypeSelector';
 import { getApiUrl } from '../config/api';
@@ -8,7 +8,7 @@ export default function Feed() {
     const [stories, setStories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('all');
-    const [sortBy, setSortBy] = useState('latest');
+    const [sortBy, setSortBy] = useState('smart');  // Default to smart ranking
     const [page, setPage] = useState(1);
 
     useEffect(() => {
@@ -39,7 +39,8 @@ export default function Feed() {
     };
 
     const sortOptions = [
-        { value: 'latest', label: 'Latest', icon: Sparkles },
+        { value: 'smart', label: 'For You', icon: Sparkles },
+        { value: 'latest', label: 'Latest', icon: Clock },
         { value: 'trending', label: 'Trending', icon: TrendingUp },
         { value: 'most_viewed', label: 'Most Viewed', icon: Star }
     ];

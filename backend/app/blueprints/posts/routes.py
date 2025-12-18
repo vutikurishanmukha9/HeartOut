@@ -7,6 +7,7 @@ from app.schemas import PostCreationSchema, CommentCreationSchema, SupportSchema
 from app.utils.reading_time import calculate_reading_time, get_excerpt
 from app.utils.decorators import get_current_user
 from app.services.story_service import StoryService
+from app.services.ranking_service import RankingService
 from marshmallow import ValidationError
 from datetime import datetime, timezone
 from sqlalchemy import desc, func, or_
@@ -43,15 +44,24 @@ def create_story():
 
 @bp.route('/', methods=['GET'])
 def get_stories():
-    """Get list of published stories with optional filtering"""
+    """Get list of published stories with optional filtering and smart ranking"""
     story_type = request.args.get('story_type')
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 20, type=int)
-    sort_by = request.args.get('sort_by', 'latest')
+    sort_by = request.args.get('sort_by', 'smart')  # Default to smart ranking
     
     try:
-        filters = {'story_type': story_type} if story_type else None
-        pagination = StoryService.get_stories(filters, page, per_page, sort_by)
+        # Use category-specific smart ranking
+        if sort_by == 'smart':
+            pagination = RankingService.get_ranked_stories(
+                story_type=story_type,
+                page=page,
+                per_page=per_page
+            )
+        else:
+            # Fallback to standard sorting
+            filters = {'story_type': story_type} if story_type else None
+            pagination = StoryService.get_stories(filters, page, per_page, sort_by)
         
         return jsonify({
             'stories': [story.to_dict() for story in pagination.items],
@@ -62,7 +72,8 @@ def get_stories():
             'has_next': pagination.has_next,
             'has_prev': pagination.has_prev,
             'next_page': pagination.next_num if pagination.has_next else None,
-            'prev_page': pagination.prev_num if pagination.has_prev else None
+            'prev_page': pagination.prev_num if pagination.has_prev else None,
+            'ranking_algorithm': 'smart' if sort_by == 'smart' else sort_by
         })
     except Exception as e:
         current_app.logger.error(f"Get stories error: {str(e)}")
@@ -471,6 +482,108 @@ def get_user_stories(user_id):
             'author_bio': user.author_bio,
             'is_featured_author': user.is_featured_author
         },
+        'total': pagination.total,
+        'page': page,
+        'per_page': per_page,
+        'total_pages': pagination.pages
+    })
+
+
+# ========== ENGAGEMENT TRACKING ENDPOINTS ==========
+
+@bp.route('/<story_id>/bookmark', methods=['POST'])
+@jwt_required()
+def toggle_bookmark(story_id):
+    """Toggle bookmark/save status for a story"""
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(public_id=current_user_id).first()
+    
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    
+    is_bookmarked, save_count = RankingService.toggle_bookmark(story_id, user.id)
+    
+    if is_bookmarked is None:
+        return jsonify({'error': 'Story not found'}), 404
+    
+    return jsonify({
+        'is_bookmarked': is_bookmarked,
+        'save_count': save_count,
+        'message': 'Bookmark added' if is_bookmarked else 'Bookmark removed'
+    })
+
+
+@bp.route('/<story_id>/bookmark', methods=['GET'])
+@jwt_required()
+def get_bookmark_status(story_id):
+    """Check if story is bookmarked by current user"""
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(public_id=current_user_id).first()
+    
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    
+    is_bookmarked = RankingService.is_bookmarked(story_id, user.id)
+    
+    story = Post.query.filter_by(public_id=story_id).first()
+    save_count = story.save_count if story else 0
+    
+    return jsonify({
+        'is_bookmarked': is_bookmarked,
+        'save_count': save_count
+    })
+
+
+@bp.route('/<story_id>/read-progress', methods=['POST'])
+@jwt_required(optional=True)
+def track_read_progress(story_id):
+    """Track reading progress for engagement metrics"""
+    current_user_id = get_jwt_identity()
+    user = None
+    user_id = None
+    
+    if current_user_id:
+        user = User.query.filter_by(public_id=current_user_id).first()
+        user_id = user.id if user else None
+    
+    data = request.json or {}
+    scroll_depth = data.get('scroll_depth')  # 0.0 - 1.0
+    time_spent = data.get('time_spent')      # seconds
+    
+    success = RankingService.update_story_metrics(
+        story_id=story_id,
+        user_id=user_id,
+        scroll_depth=scroll_depth,
+        time_spent=time_spent
+    )
+    
+    if not success:
+        return jsonify({'error': 'Story not found'}), 404
+    
+    return jsonify({
+        'message': 'Progress tracked',
+        'scroll_depth': scroll_depth,
+        'time_spent': time_spent
+    })
+
+
+@bp.route('/bookmarks', methods=['GET'])
+@jwt_required()
+def get_my_bookmarks():
+    """Get all bookmarked stories for current user"""
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(public_id=current_user_id).first()
+    
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
+    
+    pagination = RankingService.get_user_bookmarks(user.id, page, per_page)
+    
+    return jsonify({
+        'stories': [story.to_dict() for story in pagination.items],
         'total': pagination.total,
         'page': page,
         'per_page': per_page,

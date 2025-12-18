@@ -144,6 +144,18 @@ class Post(db.Model):
     # Moderation fields
     flagged_count = db.Column(db.Integer, default=0)
     
+    # Engagement tracking for ranking algorithms
+    save_count = db.Column(db.Integer, default=0)           # Bookmark saves (distinct from reactions)
+    completion_rate = db.Column(db.Float, default=0.0)      # Average read completion (0.0 - 1.0)
+    avg_read_time = db.Column(db.Integer, default=0)        # Average time spent reading (seconds)
+    reread_count = db.Column(db.Integer, default=0)         # Number of re-reads (same user)
+    unique_readers = db.Column(db.Integer, default=0)       # Distinct user views
+    
+    # Ranking cache (periodically updated)
+    rank_score = db.Column(db.Float, default=0.0)
+    last_ranked_at = db.Column(db.DateTime)
+
+    
     # Foreign keys
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     
@@ -276,3 +288,58 @@ class Support(db.Model):
                 'display_name': self.giver.display_name
             }
         }
+
+
+class Bookmark(db.Model):
+    """User bookmarks/saves for stories (distinct from reactions)"""
+    __tablename__ = 'bookmarks'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    
+    # Foreign keys
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
+    
+    # Relationships
+    user = db.relationship('User', backref=db.backref('bookmarks', lazy='dynamic'))
+    post = db.relationship('Post', backref=db.backref('bookmarks', lazy='dynamic'))
+    
+    # Constraints
+    __table_args__ = (
+        db.UniqueConstraint('user_id', 'post_id', name='unique_user_bookmark'),
+        db.Index('idx_bookmark_user', 'user_id'),
+        db.Index('idx_bookmark_post', 'post_id'),
+    )
+
+
+class ReadProgress(db.Model):
+    """Track user reading engagement with stories"""
+    __tablename__ = 'read_progress'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    
+    # Reading metrics
+    scroll_depth = db.Column(db.Float, default=0.0)     # 0.0 - 1.0 (how far scrolled)
+    time_spent = db.Column(db.Integer, default=0)       # seconds spent on page
+    completed = db.Column(db.Boolean, default=False)    # finished reading
+    read_count = db.Column(db.Integer, default=1)       # number of visits to this story
+    
+    # Timestamps
+    first_read = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    last_read = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    
+    # Foreign keys
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
+    
+    # Relationships
+    user = db.relationship('User', backref=db.backref('read_progress', lazy='dynamic'))
+    post = db.relationship('Post', backref=db.backref('read_progress', lazy='dynamic'))
+    
+    # Constraints
+    __table_args__ = (
+        db.UniqueConstraint('user_id', 'post_id', name='unique_user_read_progress'),
+        db.Index('idx_read_progress_user', 'user_id'),
+        db.Index('idx_read_progress_post', 'post_id'),
+    )

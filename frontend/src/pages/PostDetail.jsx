@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Clock, Eye, Calendar, Share2, Bookmark, MessageCircle, ArrowLeft, Trash2, Edit } from 'lucide-react';
 import { storyTypes } from '../components/StoryTypeSelector';
@@ -19,14 +19,108 @@ export default function PostDetail() {
     const [isAnonymousComment, setIsAnonymousComment] = useState(true);
     const [userReaction, setUserReaction] = useState(null);
     const [supportCount, setSupportCount] = useState(0);
+    const [isBookmarked, setIsBookmarked] = useState(false);
+
+    // Read progress tracking
+    const startTimeRef = useRef(Date.now());
+    const maxScrollDepthRef = useRef(0);
+    const trackingIntervalRef = useRef(null);
 
     useEffect(() => {
         fetchStory();
         fetchComments();
         if (user) {
             fetchUserReaction();
+            fetchBookmarkStatus();
         }
+
+        // Start tracking time and scroll
+        startTimeRef.current = Date.now();
+
+        const handleScroll = () => {
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrolled = window.scrollY / scrollHeight;
+            maxScrollDepthRef.current = Math.max(maxScrollDepthRef.current, Math.min(1, scrolled));
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        // Send progress on unmount or visibility change
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            sendReadProgress();
+        };
     }, [id, user]);
+
+    // Send read progress to backend
+    const sendReadProgress = useCallback(async () => {
+        const timeSpent = Math.floor((Date.now() - startTimeRef.current) / 1000);
+        if (timeSpent < 3) return; // Don't track very short visits
+
+        try {
+            const headers = { 'Content-Type': 'application/json' };
+            const token = localStorage.getItem('access_token');
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
+            await fetch(getApiUrl(`/api/posts/${id}/read-progress`), {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({
+                    scroll_depth: maxScrollDepthRef.current,
+                    time_spent: timeSpent
+                })
+            });
+        } catch (error) {
+            // Silent fail for tracking
+        }
+    }, [id]);
+
+    // Track on visibility change (user switches tab or closes)
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                sendReadProgress();
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    }, [sendReadProgress]);
+
+    const fetchBookmarkStatus = async () => {
+        try {
+            const response = await fetch(getApiUrl(`/api/posts/${id}/bookmark`), {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setIsBookmarked(data.is_bookmarked);
+            }
+        } catch (error) {
+            // Silent fail
+        }
+    };
+
+    const handleToggleBookmark = async () => {
+        try {
+            const response = await fetch(getApiUrl(`/api/posts/${id}/bookmark`), {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setIsBookmarked(data.is_bookmarked);
+            }
+        } catch (error) {
+            console.error('Failed to toggle bookmark:', error);
+        }
+    };
 
     const fetchStory = async () => {
         try {
@@ -289,6 +383,19 @@ export default function PostDetail() {
                         <Share2 className="w-5 h-5" />
                         Share
                     </button>
+
+                    {user && (
+                        <button
+                            onClick={handleToggleBookmark}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${isBookmarked
+                                    ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400'
+                                    : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-amber-400'
+                                }`}
+                        >
+                            <Bookmark className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} />
+                            {isBookmarked ? 'Saved' : 'Save'}
+                        </button>
+                    )}
 
                     <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                         <MessageCircle className="w-5 h-5" />

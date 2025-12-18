@@ -5,7 +5,7 @@ import pytest
 import os
 from app import create_app
 from app.extensions import db
-from app.models import User, Post, Comment, Support, PostStatus, StoryType, UserRole
+from app.models import User, Post, Comment, Support, PostStatus, StoryType, UserRole, Bookmark, ReadProgress
 
 
 class TestConfig:

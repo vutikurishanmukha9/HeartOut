@@ -109,4 +109,4 @@ class PaginationSchema(Schema):
     """Schema for pagination parameters"""
     page = fields.Int(load_default=1, validate=validate.Range(min=1))
     per_page = fields.Int(load_default=20, validate=validate.Range(min=1, max=100))
-    sort_by = fields.Str(validate=validate.OneOf(['latest', 'trending', 'most_viewed']), load_default='latest')
+    sort_by = fields.Str(validate=validate.OneOf(['smart', 'latest', 'trending', 'most_viewed']), load_default='smart')

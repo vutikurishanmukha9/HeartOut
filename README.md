@@ -37,6 +37,9 @@ A modern, premium storytelling platform for authentic personal expression.
 ### Key Features
 - Anonymous posting option
 - 5 reaction types (Love, Inspiring, Save, Hug, Mind-blown)
+- **Smart Category-Based Ranking** - Unique algorithm per story type (Learning-to-Rank, Emotion-Similarity, etc.)
+- **Bookmark/Save Stories** - Save stories for later with engagement tracking
+- **Read Progress Tracking** - Scroll depth and time spent analytics
 - **Story Analytics Dashboard** - Interactive pie chart with category breakdown
 - Draft management
 - Story search
@@ -153,7 +156,7 @@ HeartOut/
 ### Stories
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/posts` | List stories |
+| GET | `/api/posts` | List stories (smart ranking default) |
 | POST | `/api/posts` | Create story |
 | GET | `/api/posts/:id` | Get story |
 | PUT | `/api/posts/:id` | Update story |
@@ -161,6 +164,10 @@ HeartOut/
 | GET | `/api/posts/drafts` | User drafts |
 | GET | `/api/posts/search` | Search stories |
 | POST | `/api/posts/:id/toggle-react` | Toggle reaction |
+| POST | `/api/posts/:id/bookmark` | Toggle bookmark |
+| GET | `/api/posts/:id/bookmark` | Get bookmark status |
+| POST | `/api/posts/:id/read-progress` | Track reading progress |
+| GET | `/api/posts/bookmarks` | Get user's bookmarks |
 
 ---
 
@@ -215,6 +222,7 @@ pytest -v
 | Authentication | 9 | Login, Register, Profile, Logout |
 | Stories | 14 | CRUD, Drafts, Filtering |
 | Reactions | 6 | Add, Toggle, Types |
+| **Ranking** | 62 | Smart ranking, Bookmarks, Progress |
 
 #### Frontend (Vitest)
 ```bash
@@ -292,6 +300,20 @@ pytest tests/test_security.py -v
 ---
 
 ## Recent Updates
+
+### v2.5 - Smart Category-Based Ranking
+- **Smart Ranking Algorithms** - 6 unique algorithms per story category:
+  - *Achievements*: Learning-to-Rank (saves + completion rate)
+  - *Regrets*: Emotion-Similarity (rereads + deep engagement)
+  - *Unsent Letters*: Random/Chronological (zero virality, max privacy)
+  - *Sacrifices*: Hybrid Ranker (saves + rereads + time decay)
+  - *Life Stories*: Completion-Optimized (scroll depth + session time)
+  - *Other*: Exploration-Based (multi-armed bandit for discovery)
+- **Bookmark System** - Save stories distinct from reactions
+- **Read Progress Tracking** - Scroll depth, time spent, completion rate
+- **Engagement Analytics** - Unique readers, reread counts, save counts
+- **"For You" Feed** - Smart ranking as default sort option
+- **110 Backend Tests** - Comprehensive test coverage including 62 new ranking tests
 
 ### v2.4 - Security & Performance
 - **XSS Protection** - DOMPurify sanitization for all user content
