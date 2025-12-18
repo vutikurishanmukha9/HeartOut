@@ -6,6 +6,7 @@ import ReactionButton from '../components/SupportButton';
 import { AuthContext } from '../context/AuthContext';
 import { sanitizeText } from '../utils/sanitize';
 import { getApiUrl } from '../config/api';
+import { formatFullDate, formatCommentDate } from '../utils/dateFormat';
 
 export default function PostDetail() {
     const { id } = useParams();
@@ -233,11 +234,7 @@ export default function PostDetail() {
                             </p>
                             <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                                 <Calendar className="w-4 h-4" />
-                                {new Date(story.created_at).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                })}
+                                {formatFullDate(story.created_at)}
                             </div>
                         </div>
                     </div>
@@ -371,7 +368,7 @@ export default function PostDetail() {
                                                 {comment.author?.display_name || comment.author?.username || 'Anonymous'}
                                             </span>
                                             <span className="text-xs text-gray-500 dark:text-gray-400">
-                                                {new Date(comment.created_at).toLocaleDateString()}
+                                                {formatCommentDate(comment.created_at)}
                                             </span>
                                         </div>
                                         <p className="text-gray-700 dark:text-gray-300">

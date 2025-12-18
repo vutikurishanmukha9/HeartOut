@@ -3,6 +3,7 @@ import { Heart, MessageCircle, Clock, Eye, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { storyTypes } from './StoryTypeSelector';
 import { sanitizeText } from '../utils/sanitize';
+import { formatRelativeDate } from '../utils/dateFormat';
 
 export default function StoryCard({ story, index = 0 }) {
     const storyType = storyTypes.find(t => t.value === story.story_type) || storyTypes[storyTypes.length - 1];
@@ -13,18 +14,6 @@ export default function StoryCard({ story, index = 0 }) {
     const excerpt = safeContent.length > 150
         ? safeContent.substring(0, 150) + '...'
         : safeContent;
-
-    // Format date nicely
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffTime = Math.abs(now - date);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        if (diffDays === 1) return 'Yesterday';
-        if (diffDays < 7) return `${diffDays} days ago`;
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    };
 
     return (
         <Link
@@ -65,7 +54,7 @@ export default function StoryCard({ story, index = 0 }) {
                                     {storyType.label}
                                 </span>
                                 <p className="text-xs text-gray-400 dark:text-gray-500">
-                                    {formatDate(story.created_at)}
+                                    {formatRelativeDate(story.created_at)}
                                 </p>
                             </div>
                         </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Trash2, Edit, Clock } from 'lucide-react';
 import { getApiUrl } from '../config/api';
+import { formatRelativeDate } from '../utils/dateFormat';
 
 export default function Drafts() {
     const [drafts, setDrafts] = useState([]);
@@ -106,7 +107,7 @@ export default function Drafts() {
                                     </p>
                                     <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                                         <Clock className="w-4 h-4 mr-1" />
-                                        Last edited {new Date(draft.updated_at).toLocaleDateString()}
+                                        Last edited {formatRelativeDate(draft.updated_at)}
                                     </div>
                                 </div>
 
