@@ -25,11 +25,59 @@ def create_app(config_class=Config):
     # Auto-run migrations on startup (for production where shell access is limited)
     with app.app_context():
         try:
-            from flask_migrate import upgrade
+            from flask_migrate import upgrade, stamp
+            from sqlalchemy import text
+            
+            # Check if we need to fix migration history first
+            try:
+                # Try to get current revision
+                result = db.session.execute(text("SELECT version_num FROM alembic_version"))
+                current_version = result.scalar()
+                app.logger.info(f'Current migration version: {current_version}')
+            except Exception:
+                current_version = None
+                app.logger.info('No alembic_version table found')
+            
+            # If database exists but alembic_version is wrong, stamp it
+            try:
+                result = db.session.execute(text("SELECT 1 FROM users LIMIT 1"))
+                db_has_data = True
+            except Exception:
+                db_has_data = False
+            
+            if db_has_data and current_version is None:
+                # Database has data but no version - stamp it to second migration
+                app.logger.info('Stamping database to 94438ba377ef')
+                stamp(revision='94438ba377ef')
+            
+            # Now run upgrade
             upgrade()
             app.logger.info('Database migrations applied successfully')
+            
         except Exception as e:
             app.logger.warning(f'Migration check: {str(e)}')
+            
+            # Fallback: Try to add missing columns directly with raw SQL
+            try:
+                from sqlalchemy import text
+                columns_to_add = [
+                    "ALTER TABLE posts ADD COLUMN IF NOT EXISTS save_count INTEGER DEFAULT 0",
+                    "ALTER TABLE posts ADD COLUMN IF NOT EXISTS completion_rate FLOAT DEFAULT 0.0",
+                    "ALTER TABLE posts ADD COLUMN IF NOT EXISTS avg_read_time INTEGER DEFAULT 0",
+                    "ALTER TABLE posts ADD COLUMN IF NOT EXISTS reread_count INTEGER DEFAULT 0",
+                    "ALTER TABLE posts ADD COLUMN IF NOT EXISTS unique_readers INTEGER DEFAULT 0",
+                    "ALTER TABLE posts ADD COLUMN IF NOT EXISTS rank_score FLOAT DEFAULT 0.0",
+                    "ALTER TABLE posts ADD COLUMN IF NOT EXISTS last_ranked_at TIMESTAMP",
+                ]
+                for sql in columns_to_add:
+                    try:
+                        db.session.execute(text(sql))
+                    except Exception:
+                        pass
+                db.session.commit()
+                app.logger.info('Added missing columns via fallback SQL')
+            except Exception as fallback_error:
+                app.logger.error(f'Fallback migration failed: {str(fallback_error)}')
     
     # CORS configuration - allow all origins for API endpoints
     # Note: When using wildcard "*", supports_credentials must be False
