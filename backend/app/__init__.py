@@ -22,6 +22,15 @@ def create_app(config_class=Config):
     jwt.init_app(app)
     limiter.init_app(app)
     
+    # Auto-run migrations on startup (for production where shell access is limited)
+    with app.app_context():
+        try:
+            from flask_migrate import upgrade
+            upgrade()
+            app.logger.info('Database migrations applied successfully')
+        except Exception as e:
+            app.logger.warning(f'Migration check: {str(e)}')
+    
     # CORS configuration - allow all origins for API endpoints
     # Note: When using wildcard "*", supports_credentials must be False
     # For production, set CORS_ORIGINS to specific domains
