@@ -128,6 +128,75 @@ def create_app(config_class=Config):
     def health_check():
         return {'status': 'healthy', 'message': 'Server is awake!'}, 200
     
+    # Database fix endpoint - call once to add missing columns
+    @app.route('/api/fix-db')
+    def fix_database():
+        from sqlalchemy import text
+        results = []
+        
+        columns_sql = [
+            ("save_count", "ALTER TABLE posts ADD COLUMN save_count INTEGER DEFAULT 0"),
+            ("completion_rate", "ALTER TABLE posts ADD COLUMN completion_rate FLOAT DEFAULT 0.0"),
+            ("avg_read_time", "ALTER TABLE posts ADD COLUMN avg_read_time INTEGER DEFAULT 0"),
+            ("reread_count", "ALTER TABLE posts ADD COLUMN reread_count INTEGER DEFAULT 0"),
+            ("unique_readers", "ALTER TABLE posts ADD COLUMN unique_readers INTEGER DEFAULT 0"),
+            ("rank_score", "ALTER TABLE posts ADD COLUMN rank_score FLOAT DEFAULT 0.0"),
+            ("last_ranked_at", "ALTER TABLE posts ADD COLUMN last_ranked_at TIMESTAMP"),
+        ]
+        
+        for col_name, sql in columns_sql:
+            try:
+                db.session.execute(text(sql))
+                db.session.commit()
+                results.append(f"Added: {col_name}")
+            except Exception as e:
+                db.session.rollback()
+                if "already exists" in str(e).lower() or "duplicate" in str(e).lower():
+                    results.append(f"Exists: {col_name}")
+                else:
+                    results.append(f"Error {col_name}: {str(e)[:50]}")
+        
+        # Create bookmarks table if not exists
+        try:
+            db.session.execute(text("""
+                CREATE TABLE IF NOT EXISTS bookmarks (
+                    id SERIAL PRIMARY KEY,
+                    user_id INTEGER NOT NULL REFERENCES users(id),
+                    post_id INTEGER NOT NULL REFERENCES posts(id),
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(user_id, post_id)
+                )
+            """))
+            db.session.commit()
+            results.append("Created/verified: bookmarks table")
+        except Exception as e:
+            db.session.rollback()
+            results.append(f"Bookmarks table: {str(e)[:50]}")
+        
+        # Create read_progress table if not exists
+        try:
+            db.session.execute(text("""
+                CREATE TABLE IF NOT EXISTS read_progress (
+                    id SERIAL PRIMARY KEY,
+                    user_id INTEGER NOT NULL REFERENCES users(id),
+                    post_id INTEGER NOT NULL REFERENCES posts(id),
+                    scroll_depth FLOAT DEFAULT 0.0,
+                    time_spent INTEGER DEFAULT 0,
+                    completed BOOLEAN DEFAULT FALSE,
+                    read_count INTEGER DEFAULT 1,
+                    first_read TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    last_read TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(user_id, post_id)
+                )
+            """))
+            db.session.commit()
+            results.append("Created/verified: read_progress table")
+        except Exception as e:
+            db.session.rollback()
+            results.append(f"Read progress table: {str(e)[:50]}")
+        
+        return {'status': 'complete', 'results': results}, 200
+    
     # Logging setup
     if not app.debug and not app.testing:
         if not os.path.exists('logs'):
