@@ -16,7 +16,7 @@ class TestRegistration:
         """Test successful user registration"""
         response = client.post('/api/auth/register', json={
             'username': 'newuser',
-            'email': 'newuser@example.com',
+            'email': 'newuser@gmail.com',
             'password': VALID_PASSWORD
         })
         
@@ -29,14 +29,14 @@ class TestRegistration:
         # First registration
         client.post('/api/auth/register', json={
             'username': 'user1',
-            'email': 'duplicate@example.com',
+            'email': 'duplicate@gmail.com',
             'password': VALID_PASSWORD
         })
         
         # Second registration with same email
         response = client.post('/api/auth/register', json={
             'username': 'user2',
-            'email': 'duplicate@example.com',
+            'email': 'duplicate@gmail.com',
             'password': VALID_PASSWORD
         })
         
@@ -47,14 +47,14 @@ class TestRegistration:
         # First registration
         client.post('/api/auth/register', json={
             'username': 'duplicateuser',
-            'email': 'user1@example.com',
+            'email': 'user1@gmail.com',
             'password': VALID_PASSWORD
         })
         
         # Second registration with same username
         response = client.post('/api/auth/register', json={
             'username': 'duplicateuser',
-            'email': 'user2@example.com',
+            'email': 'user2@gmail.com',
             'password': VALID_PASSWORD
         })
         
@@ -74,7 +74,7 @@ class TestRegistration:
         """Test registration with weak password"""
         response = client.post('/api/auth/register', json={
             'username': 'testuser',
-            'email': 'test@example.com',
+            'email': 'test@gmail.com',
             'password': '123'  # Weak password
         })
         
@@ -89,13 +89,13 @@ class TestLogin:
         # Register first
         client.post('/api/auth/register', json={
             'username': 'loginuser',
-            'email': 'login@example.com',
+            'email': 'login@gmail.com',
             'password': VALID_PASSWORD
         })
         
         # Login
         response = client.post('/api/auth/login', json={
-            'email': 'login@example.com',
+            'email': 'login@gmail.com',
             'password': VALID_PASSWORD
         })
         
@@ -109,13 +109,13 @@ class TestLogin:
         # Register first
         client.post('/api/auth/register', json={
             'username': 'testuser',
-            'email': 'test@example.com',
+            'email': 'test@gmail.com',
             'password': VALID_PASSWORD
         })
         
         # Login with wrong password
         response = client.post('/api/auth/login', json={
-            'email': 'test@example.com',
+            'email': 'test@gmail.com',
             'password': 'WrongPassword123!'
         })
         
@@ -124,7 +124,7 @@ class TestLogin:
     def test_login_nonexistent_user(self, client):
         """Test login with non-existent email"""
         response = client.post('/api/auth/login', json={
-            'email': 'nonexistent@example.com',
+            'email': 'nonexistent@gmail.com',
             'password': VALID_PASSWORD
         })
         

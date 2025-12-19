@@ -177,6 +177,7 @@ HeartOut/
 - **JWT-based authentication** with access and refresh tokens
 - **Persistent token blocklist** for secure logout
 - **Strong password validation** (8+ chars, upper/lower/number/special)
+- **Email domain restriction** - Only Gmail, Outlook, Yahoo, iCloud allowed
 - **Environment variable validation** on startup
 
 ### Input Protection

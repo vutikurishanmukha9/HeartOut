@@ -48,13 +48,13 @@ def auth_headers(client):
     # Register a test user
     client.post('/api/auth/register', json={
         'username': 'testuser',
-        'email': 'test@example.com',
+        'email': 'test@gmail.com',
         'password': strong_password
     })
     
     # Login to get token
     response = client.post('/api/auth/login', json={
-        'email': 'test@example.com',
+        'email': 'test@gmail.com',
         'password': strong_password
     })
     
@@ -68,7 +68,7 @@ def sample_user(app):
     with app.app_context():
         user = User(
             username='sampleuser',
-            email='sample@example.com',
+            email='sample@gmail.com',
             display_name='Sample User'
         )
         user.set_password('SamplePassword123!')

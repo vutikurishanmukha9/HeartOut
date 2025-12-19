@@ -368,7 +368,7 @@ class TestBookmarkModel:
             # Create user and story
             user = User(
                 username='bookmarktest',
-                email='bookmark@test.com',
+                email='bookmark@gmail.com',
                 display_name='Bookmark Tester'
             )
             user.set_password('TestPass123!')
@@ -405,7 +405,7 @@ class TestReadProgressModel:
             # Create user and story
             user = User(
                 username='progresstest',
-                email='progress@test.com',
+                email='progress@gmail.com',
                 display_name='Progress Tester'
             )
             user.set_password('TestPass123!')
@@ -449,7 +449,7 @@ class TestReadProgressModel:
         with app.app_context():
             user = User(
                 username='rereadtest',
-                email='reread@test.com',
+                email='reread@gmail.com',
                 display_name='Reread Tester'
             )
             user.set_password('TestPass123!')
@@ -501,7 +501,7 @@ class TestSaveCountTracking:
         with app.app_context():
             user = User(
                 username='savecounttest',
-                email='savecount@test.com',
+                email='savecount@gmail.com',
                 display_name='Save Count Tester'
             )
             user.set_password('TestPass123!')
@@ -563,7 +563,7 @@ class TestEdgeCases:
         """Test bookmarking with non-existent user ID"""
         with app.app_context():
             # Create a story
-            user = User(username='edgetest', email='edge@test.com')
+            user = User(username='edgetest', email='edge@gmail.com')
             user.set_password('TestPass123!')
             db.session.add(user)
             db.session.commit()
@@ -585,7 +585,7 @@ class TestEdgeCases:
     def test_scroll_depth_boundary_values(self, app):
         """Test scroll depth at boundary values (0.0, 1.0)"""
         with app.app_context():
-            user = User(username='scrolltest', email='scroll@test.com')
+            user = User(username='scrolltest', email='scroll@gmail.com')
             user.set_password('TestPass123!')
             db.session.add(user)
             db.session.commit()
@@ -636,7 +636,7 @@ class TestMultipleUsers:
         """Test multiple users can bookmark the same story"""
         with app.app_context():
             # Create author
-            author = User(username='storyauthor', email='author@test.com')
+            author = User(username='storyauthor', email='author@gmail.com')
             author.set_password('TestPass123!')
             db.session.add(author)
             db.session.commit()
@@ -655,7 +655,7 @@ class TestMultipleUsers:
             # Create multiple users who will bookmark
             users = []
             for i in range(5):
-                user = User(username=f'bookmarker{i}', email=f'user{i}@test.com')
+                user = User(username=f'bookmarker{i}', email=f'user{i}@gmail.com')
                 user.set_password('TestPass123!')
                 db.session.add(user)
                 users.append(user)
@@ -673,7 +673,7 @@ class TestMultipleUsers:
     def test_multiple_users_read_same_story(self, app):
         """Test multiple users reading the same story"""
         with app.app_context():
-            author = User(username='readauthor', email='readauthor@test.com')
+            author = User(username='readauthor', email='readauthor@gmail.com')
             author.set_password('TestPass123!')
             db.session.add(author)
             db.session.commit()
@@ -690,7 +690,7 @@ class TestMultipleUsers:
             
             # Multiple readers
             for i in range(3):
-                reader = User(username=f'reader{i}', email=f'reader{i}@test.com')
+                reader = User(username=f'reader{i}', email=f'reader{i}@gmail.com')
                 reader.set_password('TestPass123!')
                 db.session.add(reader)
                 db.session.commit()
@@ -712,7 +712,7 @@ class TestCompletionRateCalculation:
     def test_completion_rate_updates(self, app):
         """Test that completion rate is properly calculated"""
         with app.app_context():
-            author = User(username='completeauthor', email='complete@test.com')
+            author = User(username='completeauthor', email='complete@gmail.com')
             author.set_password('TestPass123!')
             db.session.add(author)
             db.session.commit()
@@ -730,7 +730,7 @@ class TestCompletionRateCalculation:
             # Three readers with different scroll depths
             depths = [0.3, 0.6, 0.9]
             for i, depth in enumerate(depths):
-                reader = User(username=f'completer{i}', email=f'completer{i}@test.com')
+                reader = User(username=f'completer{i}', email=f'completer{i}@gmail.com')
                 reader.set_password('TestPass123!')
                 db.session.add(reader)
                 db.session.commit()
@@ -753,7 +753,7 @@ class TestRankingOrder:
     def test_stories_with_engagement_rank_higher(self, app):
         """Test that stories with more engagement rank higher"""
         with app.app_context():
-            author = User(username='rankauthor', email='rankauthor@test.com')
+            author = User(username='rankauthor', email='rankauthor@gmail.com')
             author.set_password('TestPass123!')
             db.session.add(author)
             db.session.commit()
@@ -989,7 +989,7 @@ class TestStoryTypeFiltering:
     def test_ranking_filters_by_type(self, app):
         """Test that ranking correctly filters by story type"""
         with app.app_context():
-            author = User(username='filterauthor', email='filter@test.com')
+            author = User(username='filterauthor', email='filter@gmail.com')
             author.set_password('TestPass123!')
             db.session.add(author)
             db.session.commit()
@@ -1045,7 +1045,7 @@ class TestUniqueReadersTracking:
     def test_unique_readers_increments_for_new_users(self, app):
         """Test unique_readers increments for new users only"""
         with app.app_context():
-            author = User(username='uniqueauthor', email='unique@test.com')
+            author = User(username='uniqueauthor', email='unique@gmail.com')
             author.set_password('TestPass123!')
             db.session.add(author)
             db.session.commit()
@@ -1060,7 +1060,7 @@ class TestUniqueReadersTracking:
             db.session.add(story)
             db.session.commit()
             
-            reader = User(username='uniquereader', email='uniquereader@test.com')
+            reader = User(username='uniquereader', email='uniquereader@gmail.com')
             reader.set_password('TestPass123!')
             db.session.add(reader)
             db.session.commit()
@@ -1097,7 +1097,7 @@ class TestRereadTracking:
     def test_reread_count_increments(self, app):
         """Test that reread_count increments on subsequent reads"""
         with app.app_context():
-            author = User(username='rereadauthor', email='rereadauthor@test.com')
+            author = User(username='rereadauthor', email='rereadauthor@gmail.com')
             author.set_password('TestPass123!')
             db.session.add(author)
             db.session.commit()
@@ -1112,7 +1112,7 @@ class TestRereadTracking:
             db.session.add(story)
             db.session.commit()
             
-            reader = User(username='rereader', email='rereader@test.com')
+            reader = User(username='rereader', email='rereader@gmail.com')
             reader.set_password('TestPass123!')
             db.session.add(reader)
             db.session.commit()

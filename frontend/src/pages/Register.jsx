@@ -186,9 +186,13 @@ export default function Register() {
                                     value={formData.email}
                                     onChange={handleChange}
                                     className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:text-white transition-all duration-300"
-                                    placeholder="you@example.com"
+                                    placeholder="you@gmail.com"
                                 />
                             </div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                <span className="inline-block w-1.5 h-1.5 bg-primary-500 rounded-full"></span>
+                                Use Gmail, Outlook, Yahoo, or iCloud email only
+                            </p>
                         </div>
 
                         {/* Password Field */}

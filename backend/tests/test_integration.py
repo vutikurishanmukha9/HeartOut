@@ -13,7 +13,7 @@ class TestUserRegistrationFlow:
         # Step 1: Register
         register_response = client.post('/api/auth/register', json={
             'username': 'flowuser',
-            'email': 'flow@example.com',
+            'email': 'flow@gmail.com',
             'password': 'SecureP@ss123!'
         })
         assert register_response.status_code == 201
@@ -56,11 +56,11 @@ class TestStoryInteractionFlow:
         # User 1 - Story author
         client.post('/api/auth/register', json={
             'username': 'author1',
-            'email': 'author1@example.com',
+            'email': 'author1@gmail.com',
             'password': 'SecureP@ss123!'
         })
         author_login = client.post('/api/auth/login', json={
-            'email': 'author1@example.com',
+            'email': 'author1@gmail.com',
             'password': 'SecureP@ss123!'
         })
         author_token = author_login.json['access_token']
@@ -69,11 +69,11 @@ class TestStoryInteractionFlow:
         # User 2 - Reader
         client.post('/api/auth/register', json={
             'username': 'reader1',
-            'email': 'reader1@example.com',
+            'email': 'reader1@gmail.com',
             'password': 'SecureP@ss123!'
         })
         reader_login = client.post('/api/auth/login', json={
-            'email': 'reader1@example.com',
+            'email': 'reader1@gmail.com',
             'password': 'SecureP@ss123!'
         })
         reader_token = reader_login.json['access_token']

@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'add_engagement_tracking'
-down_revision = None  # Update this to your latest migration
+down_revision = '94438ba377ef'  # Points to add_indexes_and_tokenblocklist migration
 branch_labels = None
 depends_on = None
 

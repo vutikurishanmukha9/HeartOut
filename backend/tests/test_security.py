@@ -92,7 +92,7 @@ class TestSQLInjection:
         
         for payload in sql_payloads:
             response = client.post('/api/auth/login', json={
-                'email': f'{payload}@example.com',
+                'email': f'{payload}@gmail.com',
                 'password': payload
             })
             
@@ -177,7 +177,7 @@ class TestAuthentication:
         for password in weak_passwords:
             response = client.post('/api/auth/register', json={
                 'username': 'testuser',
-                'email': 'test@example.com',
+                'email': 'test@gmail.com',
                 'password': password
             })
             
@@ -192,11 +192,11 @@ class TestAuthorization:
         # Create user 1
         client.post('/api/auth/register', json={
             'username': 'user1_auth',
-            'email': 'user1_auth@example.com',
+            'email': 'user1_auth@gmail.com',
             'password': 'SecureP@ss123!'
         })
         login1 = client.post('/api/auth/login', json={
-            'email': 'user1_auth@example.com',
+            'email': 'user1_auth@gmail.com',
             'password': 'SecureP@ss123!'
         })
         token1 = login1.json['access_token']
@@ -205,11 +205,11 @@ class TestAuthorization:
         # Create user 2
         client.post('/api/auth/register', json={
             'username': 'user2_auth',
-            'email': 'user2_auth@example.com',
+            'email': 'user2_auth@gmail.com',
             'password': 'SecureP@ss123!'
         })
         login2 = client.post('/api/auth/login', json={
-            'email': 'user2_auth@example.com',
+            'email': 'user2_auth@gmail.com',
             'password': 'SecureP@ss123!'
         })
         token2 = login2.json['access_token']
@@ -241,11 +241,11 @@ class TestAuthorization:
         # Create user 1
         client.post('/api/auth/register', json={
             'username': 'user1_del',
-            'email': 'user1_del@example.com',
+            'email': 'user1_del@gmail.com',
             'password': 'SecureP@ss123!'
         })
         login1 = client.post('/api/auth/login', json={
-            'email': 'user1_del@example.com',
+            'email': 'user1_del@gmail.com',
             'password': 'SecureP@ss123!'
         })
         token1 = login1.json['access_token']
@@ -254,11 +254,11 @@ class TestAuthorization:
         # Create user 2
         client.post('/api/auth/register', json={
             'username': 'user2_del',
-            'email': 'user2_del@example.com',
+            'email': 'user2_del@gmail.com',
             'password': 'SecureP@ss123!'
         })
         login2 = client.post('/api/auth/login', json={
-            'email': 'user2_del@example.com',
+            'email': 'user2_del@gmail.com',
             'password': 'SecureP@ss123!'
         })
         token2 = login2.json['access_token']
@@ -319,7 +319,7 @@ class TestInputValidation:
         for username in special_usernames:
             response = client.post('/api/auth/register', json={
                 'username': username,
-                'email': f'{username}@example.com',
+                'email': f'{username}@gmail.com',
                 'password': 'SecureP@ss123!'
             })
             

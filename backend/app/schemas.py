@@ -22,12 +22,27 @@ class UserRegistrationSchema(Schema):
     
     @validates('email')
     def validate_email_domain(self, value, **kwargs):
-        """Additional email validation"""
-        # Block common disposable email domains
-        disposable_domains = ['tempmail.com', 'throwaway.com', '10minutemail.com']
+        """Validate email domain - only allow popular email providers"""
+        # Allowed email domains (popular providers only)
+        allowed_domains = [
+            'gmail.com',
+            'outlook.com',
+            'hotmail.com',
+            'live.com',
+            'yahoo.com',
+            'icloud.com',
+            'me.com',
+            'mac.com'
+        ]
+        
         domain = value.split('@')[1].lower()
-        if domain in disposable_domains:
-            raise ValidationError('Please use a valid email address')
+        
+        if domain not in allowed_domains:
+            allowed_list = ', '.join(allowed_domains[:5]) + ', etc.'
+            raise ValidationError(
+                f'Please use a personal email from: Gmail, Outlook, Yahoo, or iCloud. '
+                f'Work/school emails are not allowed.'
+            )
 
 
 class UserLoginSchema(Schema):
