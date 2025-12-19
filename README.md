@@ -49,6 +49,7 @@ A modern, premium storytelling platform for authentic personal expression.
 - **Post deletion** - Authors can delete their own stories
 - **Profile page** - User profiles with story filtering by category
 - **Mental Health Support** - Integrated helplines (Tele MANAS, iCall) with floating button
+- **Cold Start UX** - Friendly notification when server wakes from sleep
 
 ---
 

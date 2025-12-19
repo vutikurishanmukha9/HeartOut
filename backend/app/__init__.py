@@ -66,6 +66,11 @@ def create_app(config_class=Config):
     def rate_limit_error(error):
         return {'error': 'Rate limit exceeded. Please try again later.'}, 429
     
+    # Health check endpoint for cold start warmup
+    @app.route('/api/health')
+    def health_check():
+        return {'status': 'healthy', 'message': 'Server is awake!'}, 200
+    
     # Logging setup
     if not app.debug and not app.testing:
         if not os.path.exists('logs'):

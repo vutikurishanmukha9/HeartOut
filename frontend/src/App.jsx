@@ -7,6 +7,7 @@ import SupportFloatingButton from './components/SupportFloatingButton';
 import MobileBottomNav from './components/MobileBottomNav';
 import ErrorBoundary, { RouteErrorBoundary } from './components/ErrorBoundary';
 import InnovativeLoader, { RouteLoader } from './components/InnovativeLoader';
+import { ServerStatusProvider, ServerWarmupToast } from './components/ServerWarmup';
 
 // Lazy load routes for better performance
 const AuthRoutes = lazy(() => import('./routes/AuthRoutes'));
@@ -54,70 +55,75 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-transparent transition-colors duration-200">
-        {showNavbar && <Navbar />}
+      <ServerStatusProvider>
+        <div className="min-h-screen bg-transparent transition-colors duration-200">
+          {showNavbar && <Navbar />}
 
-        <main className={`${showNavbar ? 'pt-16' : ''} transition-all duration-200`}>
-          <Suspense fallback={<RouteLoader />}>
-            <Routes>
-              {/* Public routes */}
-              <Route path="/auth/*" element={
-                <RouteErrorBoundary routeName="authentication">
-                  <AuthRoutes />
-                </RouteErrorBoundary>
-              } />
-              <Route path="/support" element={
-                <RouteErrorBoundary routeName="support">
-                  <Support />
-                </RouteErrorBoundary>
-              } />
+          <main className={`${showNavbar ? 'pt-16' : ''} transition-all duration-200`}>
+            <Suspense fallback={<RouteLoader />}>
+              <Routes>
+                {/* Public routes */}
+                <Route path="/auth/*" element={
+                  <RouteErrorBoundary routeName="authentication">
+                    <AuthRoutes />
+                  </RouteErrorBoundary>
+                } />
+                <Route path="/support" element={
+                  <RouteErrorBoundary routeName="support">
+                    <Support />
+                  </RouteErrorBoundary>
+                } />
 
-              {/* Redirect legacy auth routes */}
-              <Route path="/login" element={<Navigate to="/auth/login" replace />} />
-              <Route path="/register" element={<Navigate to="/auth/register" replace />} />
+                {/* Redirect legacy auth routes */}
+                <Route path="/login" element={<Navigate to="/auth/login" replace />} />
+                <Route path="/register" element={<Navigate to="/auth/register" replace />} />
 
-              {/* Protected routes */}
-              {isAuthenticated ? (
-                <>
-                  <Route path="/feed/*" element={
-                    <RouteErrorBoundary routeName="feed">
-                      <FeedRoutes />
-                    </RouteErrorBoundary>
-                  } />
-                  <Route path="/profile/*" element={
-                    <RouteErrorBoundary routeName="profile">
-                      <ProfileRoutes />
-                    </RouteErrorBoundary>
-                  } />
-                  {user?.role === 'admin' && (
-                    <Route path="/admin/*" element={
-                      <RouteErrorBoundary routeName="admin">
-                        <AdminRoutes />
+                {/* Protected routes */}
+                {isAuthenticated ? (
+                  <>
+                    <Route path="/feed/*" element={
+                      <RouteErrorBoundary routeName="feed">
+                        <FeedRoutes />
                       </RouteErrorBoundary>
                     } />
-                  )}
+                    <Route path="/profile/*" element={
+                      <RouteErrorBoundary routeName="profile">
+                        <ProfileRoutes />
+                      </RouteErrorBoundary>
+                    } />
+                    {user?.role === 'admin' && (
+                      <Route path="/admin/*" element={
+                        <RouteErrorBoundary routeName="admin">
+                          <AdminRoutes />
+                        </RouteErrorBoundary>
+                      } />
+                    )}
 
-                  {/* Default redirect for authenticated users */}
-                  <Route path="/" element={<Navigate to="/feed" replace />} />
-                  <Route path="*" element={<Navigate to="/feed" replace />} />
-                </>
-              ) : (
-                <>
-                  {/* Redirect to auth for unauthenticated users */}
-                  <Route path="/" element={<Navigate to="/auth/login" replace />} />
-                  <Route path="*" element={<Navigate to="/auth/login" replace />} />
-                </>
-              )}
-            </Routes>
-          </Suspense>
-        </main>
+                    {/* Default redirect for authenticated users */}
+                    <Route path="/" element={<Navigate to="/feed" replace />} />
+                    <Route path="*" element={<Navigate to="/feed" replace />} />
+                  </>
+                ) : (
+                  <>
+                    {/* Redirect to auth for unauthenticated users */}
+                    <Route path="/" element={<Navigate to="/auth/login" replace />} />
+                    <Route path="*" element={<Navigate to="/auth/login" replace />} />
+                  </>
+                )}
+              </Routes>
+            </Suspense>
+          </main>
 
-        {/* Floating Support Button - visible on all pages except auth */}
-        {!isAuthPage && <SupportFloatingButton />}
+          {/* Floating Support Button - visible on all pages except auth */}
+          {!isAuthPage && <SupportFloatingButton />}
 
-        {/* Mobile Bottom Navigation */}
-        <MobileBottomNav />
-      </div>
+          {/* Mobile Bottom Navigation */}
+          <MobileBottomNav />
+
+          {/* Server Cold Start Toast */}
+          <ServerWarmupToast />
+        </div>
+      </ServerStatusProvider>
     </ErrorBoundary>
   );
 }
