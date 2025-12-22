@@ -162,14 +162,14 @@ export default function Login() {
                 <div className="relative z-10 flex flex-col justify-center items-center px-8 lg:px-12 text-white text-center h-full">
                     <div className="mb-8">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6">
-                            <Sparkles className="w-4 h-4" />
+                            <Sparkles className="w-4 h-4" aria-hidden="true" />
                             <span className="text-sm font-medium">Discover amazing stories</span>
                         </div>
 
                         <h2 className="text-3xl lg:text-4xl font-bold mb-4">
                             Every story is a journey
                         </h2>
-                        <p className="text-lg text-white/80 max-w-md">
+                        <p className="text-lg text-white max-w-md">
                             Join our community of storytellers sharing life's most meaningful moments.
                         </p>
                     </div>

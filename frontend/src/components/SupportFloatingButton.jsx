@@ -16,18 +16,19 @@ export default function SupportFloatingButton() {
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-white/20 rounded-lg">
-                                    <Heart className="w-5 h-5" />
+                                    <Heart className="w-5 h-5" aria-hidden="true" />
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-lg">Need Support?</h3>
-                                    <p className="text-sm text-white/80">We're here for you</p>
+                                    <p className="text-sm text-white">We're here for you</p>
                                 </div>
                             </div>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="p-1.5 hover:bg-white/20 rounded-lg transition-colors"
+                                aria-label="Close support panel"
+                                className="p-1.5 hover:bg-white/20 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
                             >
-                                <X className="w-5 h-5" />
+                                <X className="w-5 h-5" aria-hidden="true" />
                             </button>
                         </div>
                     </div>
@@ -63,26 +64,29 @@ export default function SupportFloatingButton() {
             {/* Floating Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
+                aria-label={isOpen ? 'Close support resources' : 'Open support resources'}
+                aria-expanded={isOpen}
                 className={`
                     group flex items-center gap-2 px-4 py-3 rounded-full
                     bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500
                     text-white font-semibold shadow-lg shadow-pink-500/30
                     hover:shadow-xl hover:shadow-pink-500/40 hover:scale-105
                     transition-all duration-300
+                    focus:outline-none focus:ring-4 focus:ring-pink-300 dark:focus:ring-pink-700
                     ${isOpen ? 'ring-4 ring-pink-300 dark:ring-pink-700' : ''}
                 `}
             >
                 {isOpen ? (
-                    <ChevronUp className="w-5 h-5" />
+                    <ChevronUp className="w-5 h-5" aria-hidden="true" />
                 ) : (
                     <>
                         <div className="relative">
-                            <Heart className="w-5 h-5" />
-                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-white rounded-full animate-ping" />
-                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-white rounded-full" />
+                            <Heart className="w-5 h-5" aria-hidden="true" />
+                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-white rounded-full animate-ping" aria-hidden="true" />
+                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-white rounded-full" aria-hidden="true" />
                         </div>
                         <span className="hidden sm:inline">Need Support?</span>
-                        <Phone className="w-4 h-4 sm:hidden" />
+                        <Phone className="w-4 h-4 sm:hidden" aria-hidden="true" />
                     </>
                 )}
             </button>

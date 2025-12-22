@@ -7,6 +7,8 @@
 A modern, premium storytelling platform for authentic personal expression.
 
 [![GitHub](https://img.shields.io/badge/GitHub-vutikurishanmukha9%2FHeartOut-blue)](https://github.com/vutikurishanmukha9/HeartOut)
+[![CI](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml/badge.svg)](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/Tests-110+-brightgreen)](https://github.com/vutikurishanmukha9/HeartOut/actions)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![React](https://img.shields.io/badge/React-18+-61DAFB.svg)](https://react.dev)
@@ -50,6 +52,9 @@ A modern, premium storytelling platform for authentic personal expression.
 - **Profile page** - User profiles with story filtering by category
 - **Mental Health Support** - Integrated helplines (Tele MANAS, iCall) with floating button
 - **Cold Start UX** - Friendly notification when server wakes from sleep
+- **Dynamic SEO** - Open Graph/Twitter Cards for story sharing previews
+- **Accessibility (A11y)** - Skip-to-content, ARIA labels, keyboard navigation, 95+ Lighthouse target
+- **CI/CD Pipeline** - GitHub Actions for automated testing on every push
 
 ---
 
@@ -73,6 +78,7 @@ A modern, premium storytelling platform for authentic personal expression.
 | Lucide React | Icons |
 | React Router | Navigation |
 | **Recharts** | Data visualization |
+| **react-helmet-async** | Dynamic SEO meta tags |
 
 ---
 
@@ -208,6 +214,51 @@ FLASK_ENV=production
 
 ---
 
+## Performance Optimizations
+
+### Database Indexing
+| Index | Columns | Purpose |
+|-------|---------|---------|
+| `idx_post_status_story_type` | status, story_type | Filter by category |
+| `idx_post_status_published` | status, published_at | Sort by date |
+| `idx_post_user_status` | user_id, status | User's stories |
+
+### N+1 Query Prevention
+- **Denormalized counts** - `support_count`, `comment_count` cached on Post model
+- **Eager loading** - `joinedload(Post.author)` in all story queries
+- **Selectinload** - Optimized relationship loading for supports/comments
+
+### SEO & Social Sharing
+- **Dynamic Open Graph tags** - Category-specific previews
+- **Twitter Cards** - Rich story previews on X/Twitter
+- **react-helmet-async** - Server-side meta tag management
+
+---
+
+## CI/CD Pipeline
+
+### GitHub Actions (`.github/workflows/ci.yml`)
+
+| Job | Description |
+|-----|-------------|
+| `backend-tests` | Runs 110+ pytest tests with coverage |
+| `frontend-build` | Builds React production bundle |
+| `code-quality` | Flake8 linting for critical errors |
+| `security-scan` | Trivy vulnerability scanner |
+| `ci-success` | Final gate (all must pass) |
+
+### Triggers
+- ✅ Push to `main`, `master`, `develop`
+- ✅ Pull Requests to these branches
+
+### Badges
+```markdown
+[![CI](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml/badge.svg)]
+[![Tests](https://img.shields.io/badge/Tests-110+-brightgreen)]
+```
+
+---
+
 ## Testing
 
 ### Unit Tests
@@ -303,7 +354,13 @@ pytest tests/test_security.py -v
 
 ## Recent Updates
 
-### v2.6 - Premium UI/UX Overhaul
+### v2.6 - Premium UI/UX Overhaul & Ranking Consolidation
+- **Gravity Sort Ranking** - Consolidated from 6 category-specific algorithms to single SQL-optimized query:
+  - Formula: `score = points / (age_hours + 2) ^ 1.8` (Hacker News style)
+  - Balances Recency vs Engagement in one query
+  - Removed Multi-Armed Bandit, Emotion-Similarity (CPU-heavy for small datasets)
+  - Kept random ranking for Unsent Letters (privacy)
+  - Reduced `ranking_service.py` from 373 to 223 lines
 - **Premium Typography System** - Poppins (headings) + Inter (body) fonts
   - Font weight hierarchy: extrabold, bold, semibold, light
   - Letter spacing: `tracking-tight`, `tracking-wide`, `tracking-wider`

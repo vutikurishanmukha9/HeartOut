@@ -176,21 +176,22 @@ class StoryService:
             if existing.support_type == support_type:
                 # Same reaction type - remove it (toggle off)
                 db.session.delete(existing)
+                story.support_count = max(0, story.support_count - 1)  # Update cached count
                 db.session.commit()
                 return {
                     'action': 'removed', 
-                    'support_count': story.supports.count(),
+                    'support_count': story.support_count,
                     'user_reaction': None
                 }
             else:
-                # Different reaction type - update it
+                # Different reaction type - update it (count stays same)
                 existing.support_type = support_type
                 existing.message = message
                 db.session.commit()
                 return {
                     'action': 'changed', 
                     'reaction': existing, 
-                    'support_count': story.supports.count(),
+                    'support_count': story.support_count,
                     'user_reaction': support_type
                 }
         else:
@@ -203,11 +204,12 @@ class StoryService:
                 post_id=story.id
             )
             db.session.add(reaction)
+            story.support_count += 1  # Update cached count
             db.session.commit()
             return {
                 'action': 'added', 
                 'reaction': reaction, 
-                'support_count': story.supports.count(),
+                'support_count': story.support_count,
                 'user_reaction': support_type
             }
     

@@ -149,9 +149,9 @@ export default function FeatureHighlights() {
 
             {/* Animated Divider */}
             <div className="flex items-center justify-center gap-3 mb-6">
-                <div className="h-px w-12 bg-gradient-to-r from-transparent to-white/40" />
-                <Star className="w-4 h-4 text-white/60" />
-                <div className="h-px w-12 bg-gradient-to-l from-transparent to-white/40" />
+                <div className="h-px w-12 bg-gradient-to-r from-transparent to-white/40" aria-hidden="true" />
+                <Star className="w-4 h-4 text-white" aria-hidden="true" />
+                <div className="h-px w-12 bg-gradient-to-l from-transparent to-white/40" aria-hidden="true" />
             </div>
 
             {/* Testimonial Carousel */}
@@ -169,11 +169,11 @@ export default function FeatureHighlights() {
                                 : 'opacity-0 translate-y-8 pointer-events-none'}
                         `}
                     >
-                        <p className="text-white/90 text-base italic font-light leading-relaxed mb-2">
+                        <p className="text-white text-base italic font-light leading-relaxed mb-2">
                             "{testimonial.quote}"
                         </p>
-                        <p className="text-white/60 text-sm font-medium flex items-center gap-2">
-                            <Heart className="w-3 h-3 text-rose-400" fill="currentColor" />
+                        <p className="text-white/90 text-sm font-medium flex items-center gap-2">
+                            <Heart className="w-3 h-3 text-rose-400" fill="currentColor" aria-hidden="true" />
                             {testimonial.author}
                         </p>
                     </div>

@@ -154,6 +154,10 @@ class Post(db.Model):
     # Ranking cache (periodically updated)
     rank_score = db.Column(db.Float, default=0.0)
     last_ranked_at = db.Column(db.DateTime)
+    
+    # Denormalized counts (updated on write, avoids N+1 on read)
+    support_count = db.Column(db.Integer, default=0)      # Cached count of supports
+    comment_count = db.Column(db.Integer, default=0)      # Cached count of comments
 
     
     # Foreign keys
@@ -168,6 +172,10 @@ class Post(db.Model):
         db.Index('idx_post_published_at', 'published_at'),
         db.Index('idx_post_is_featured', 'is_featured'),
         db.Index('idx_post_view_count', 'view_count'),
+        # Composite indexes for common query patterns
+        db.Index('idx_post_status_story_type', 'status', 'story_type'),
+        db.Index('idx_post_status_published', 'status', 'published_at'),
+        db.Index('idx_post_user_status', 'user_id', 'status'),
     )
     
     # Relationships
@@ -189,8 +197,9 @@ class Post(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'published_at': self.published_at.isoformat() if self.published_at else None,
-            'support_count': self.supports.count(),
-            'comment_count': self.comments.count()
+            # Use cached counts (no N+1 queries)
+            'support_count': self.support_count,
+            'comment_count': self.comment_count
         }
         
         if include_author and not self.is_anonymous:

@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { HelmetProvider } from 'react-helmet-async';
 import './index.css';
 
 // Simple wrapper to catch errors
@@ -69,16 +70,18 @@ const Loading = () => (
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <ErrorBoundary>
-            <React.Suspense fallback={<Loading />}>
-                <BrowserRouter>
-                    <ThemeProvider>
-                        <AuthProvider>
-                            <App />
-                            <Toaster position="top-right" />
-                        </AuthProvider>
-                    </ThemeProvider>
-                </BrowserRouter>
-            </React.Suspense>
+            <HelmetProvider>
+                <React.Suspense fallback={<Loading />}>
+                    <BrowserRouter>
+                        <ThemeProvider>
+                            <AuthProvider>
+                                <App />
+                                <Toaster position="top-right" />
+                            </AuthProvider>
+                        </ThemeProvider>
+                    </BrowserRouter>
+                </React.Suspense>
+            </HelmetProvider>
         </ErrorBoundary>
     </React.StrictMode>
 );

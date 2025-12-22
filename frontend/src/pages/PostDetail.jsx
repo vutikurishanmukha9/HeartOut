@@ -7,6 +7,7 @@ import { AuthContext } from '../context/AuthContext';
 import { sanitizeText } from '../utils/sanitize';
 import { getApiUrl } from '../config/api';
 import { formatFullDate, formatCommentDate } from '../utils/dateFormat';
+import { StorySEO } from '../components/SEO';
 
 export default function PostDetail() {
     const { id } = useParams();
@@ -282,212 +283,219 @@ export default function PostDetail() {
     const Icon = storyType.icon;
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            {/* Header */}
-            <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <button
-                        onClick={() => navigate('/feed')}
-                        className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-                    >
-                        <ArrowLeft className="w-5 h-5" />
-                        Back to Stories
-                    </button>
-                </div>
-            </div>
+        <>
+            {/* Dynamic SEO for social sharing */}
+            <StorySEO story={story} />
 
-            {/* Story Content */}
-            <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                {/* Story Type Badge */}
-                <div className="mb-6">
-                    <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${storyType.bgColor} ${storyType.borderColor} border-2`}>
-                        <div className={`p-1.5 rounded-lg bg-gradient-to-br ${storyType.color}`}>
-                            <Icon className="w-4 h-4 text-white" />
-                        </div>
-                        <span className={`font-semibold ${storyType.textColor}`}>
-                            {storyType.label}
-                        </span>
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+                {/* Header */}
+                <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                        <button
+                            onClick={() => navigate('/feed')}
+                            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                        >
+                            <ArrowLeft className="w-5 h-5" />
+                            Back to Stories
+                        </button>
                     </div>
                 </div>
-
-                {/* Title */}
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-                    {story.title}
-                </h1>
-
-                {/* Meta Info */}
-                <div className="flex flex-wrap items-center gap-6 mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
-                    {/* Author */}
-                    <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-400 to-secondary-500 flex items-center justify-center text-white text-lg font-semibold">
-                            {story.author?.username?.[0]?.toUpperCase() || 'A'}
-                        </div>
-                        <div>
-                            <p className="font-semibold text-gray-900 dark:text-white">
-                                {story.author?.display_name || story.author?.username || 'Anonymous'}
-                            </p>
-                            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                                <Calendar className="w-4 h-4" />
-                                {formatFullDate(story.created_at)}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Stats */}
-                    <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400">
-                        <div className="flex items-center gap-1">
-                            <Clock className="w-4 h-4" />
-                            <span className="text-sm">{story.reading_time} min read</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                            <Eye className="w-4 h-4" />
-                            <span className="text-sm">{story.view_count} views</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Tags */}
-                {story.tags && story.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-8">
-                        {story.tags.map((tag, index) => (
-                            <span
-                                key={index}
-                                className="px-3 py-1 text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full"
-                            >
-                                #{tag}
-                            </span>
-                        ))}
-                    </div>
-                )}
 
                 {/* Story Content */}
-                <div className="prose prose-lg dark:prose-invert max-w-none mb-12">
-                    <div className="text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap">
-                        {sanitizeText(story.content)}
-                    </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex items-center gap-4 py-6 border-y border-gray-200 dark:border-gray-700 mb-8">
-                    <ReactionButton
-                        storyId={story.id}
-                        currentReaction={userReaction}
-                        onReact={handleReact}
-                        supportCount={supportCount}
-                    />
-
-                    <button
-                        onClick={handleShare}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-primary-400 transition-all"
-                    >
-                        <Share2 className="w-5 h-5" />
-                        Share
-                    </button>
-
-                    {user && (
-                        <button
-                            onClick={handleToggleBookmark}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${isBookmarked
-                                    ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400'
-                                    : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-amber-400'
-                                }`}
-                        >
-                            <Bookmark className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} />
-                            {isBookmarked ? 'Saved' : 'Save'}
-                        </button>
-                    )}
-
-                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                        <MessageCircle className="w-5 h-5" />
-                        <span>{story.comment_count} comments</span>
-                    </div>
-
-                    {/* Author Actions - Edit/Delete */}
-                    {isAuthor && (
-                        <div className="ml-auto flex items-center gap-2">
-                            <button
-                                onClick={() => navigate(`/edit/${story.id}`)}
-                                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-blue-300 dark:border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
-                            >
-                                <Edit className="w-4 h-4" />
-                                Edit
-                            </button>
-                            <button
-                                onClick={handleDelete}
-                                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
-                            >
-                                <Trash2 className="w-4 h-4" />
-                                Delete
-                            </button>
-                        </div>
-                    )}
-                </div>
-
-                {/* Comments Section */}
-                <div className="space-y-6">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                        Comments ({comments.length})
-                    </h2>
-
-                    {/* Add Comment */}
-                    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-                        <textarea
-                            value={commentText}
-                            onChange={(e) => setCommentText(e.target.value)}
-                            placeholder="Share your thoughts..."
-                            rows={3}
-                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none mb-3"
-                        />
-                        <div className="flex items-center justify-between">
-                            <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                <input
-                                    type="checkbox"
-                                    checked={isAnonymousComment}
-                                    onChange={(e) => setIsAnonymousComment(e.target.checked)}
-                                    className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                                />
-                                Comment anonymously
-                            </label>
-                            <button
-                                onClick={handleComment}
-                                disabled={!commentText.trim()}
-                                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                Post Comment
-                            </button>
+                <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    {/* Story Type Badge */}
+                    <div className="mb-6">
+                        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${storyType.bgColor} ${storyType.borderColor} border-2`}>
+                            <div className={`p-1.5 rounded-lg bg-gradient-to-br ${storyType.color}`}>
+                                <Icon className="w-4 h-4 text-white" />
+                            </div>
+                            <span className={`font-semibold ${storyType.textColor}`}>
+                                {storyType.label}
+                            </span>
                         </div>
                     </div>
 
-                    {/* Comments List */}
-                    <div className="space-y-4">
-                        {comments.map((comment) => (
-                            <div
-                                key={comment.id}
-                                className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4"
-                            >
-                                <div className="flex items-start gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-secondary-400 to-accent-500 flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
-                                        {comment.author?.username?.[0]?.toUpperCase() || 'A'}
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className="font-semibold text-gray-900 dark:text-white">
-                                                {comment.author?.display_name || comment.author?.username || 'Anonymous'}
-                                            </span>
-                                            <span className="text-xs text-gray-500 dark:text-gray-400">
-                                                {formatCommentDate(comment.created_at)}
-                                            </span>
-                                        </div>
-                                        <p className="text-gray-700 dark:text-gray-300">
-                                            {comment.content}
-                                        </p>
-                                    </div>
+                    {/* Title */}
+                    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+                        {story.title}
+                    </h1>
+
+                    {/* Meta Info */}
+                    <div className="flex flex-wrap items-center gap-6 mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
+                        {/* Author */}
+                        <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-400 to-secondary-500 flex items-center justify-center text-white text-lg font-semibold">
+                                {story.author?.username?.[0]?.toUpperCase() || 'A'}
+                            </div>
+                            <div>
+                                <p className="font-semibold text-gray-900 dark:text-white">
+                                    {story.author?.display_name || story.author?.username || 'Anonymous'}
+                                </p>
+                                <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                                    <Calendar className="w-4 h-4" />
+                                    {formatFullDate(story.created_at)}
                                 </div>
                             </div>
-                        ))}
+                        </div>
+
+                        {/* Stats */}
+                        <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400">
+                            <div className="flex items-center gap-1">
+                                <Clock className="w-4 h-4" />
+                                <span className="text-sm">{story.reading_time} min read</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <Eye className="w-4 h-4" />
+                                <span className="text-sm">{story.view_count} views</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </article>
-        </div>
+
+                    {/* Tags */}
+                    {story.tags && story.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-8">
+                            {story.tags.map((tag, index) => (
+                                <span
+                                    key={index}
+                                    className="px-3 py-1 text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full"
+                                >
+                                    #{tag}
+                                </span>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Story Content */}
+                    <div className="prose prose-lg dark:prose-invert max-w-none mb-12">
+                        <div className="text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap">
+                            {sanitizeText(story.content)}
+                        </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 py-6 border-y border-gray-200 dark:border-gray-700 mb-8">
+                        <ReactionButton
+                            storyId={story.id}
+                            currentReaction={userReaction}
+                            onReact={handleReact}
+                            supportCount={supportCount}
+                        />
+
+                        <button
+                            onClick={handleShare}
+                            aria-label="Share this story"
+                            className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-primary-400 transition-all"
+                        >
+                            <Share2 className="w-5 h-5" aria-hidden="true" />
+                            <span className="hidden sm:inline">Share</span>
+                        </button>
+
+                        {user && (
+                            <button
+                                onClick={handleToggleBookmark}
+                                aria-label={isBookmarked ? 'Remove from saved' : 'Save this story'}
+                                className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg border transition-all ${isBookmarked
+                                    ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400'
+                                    : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-amber-400'
+                                    }`}
+                            >
+                                <Bookmark className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} aria-hidden="true" />
+                                <span className="hidden sm:inline">{isBookmarked ? 'Saved' : 'Save'}</span>
+                            </button>
+                        )}
+
+                        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                            <MessageCircle className="w-5 h-5" aria-hidden="true" />
+                            <span className="text-sm sm:text-base">{story.comment_count} <span className="hidden sm:inline">comments</span></span>
+                        </div>
+
+                        {/* Author Actions - Edit/Delete */}
+                        {isAuthor && (
+                            <div className="ml-auto flex items-center gap-2">
+                                <button
+                                    onClick={() => navigate(`/edit/${story.id}`)}
+                                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-blue-300 dark:border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
+                                >
+                                    <Edit className="w-4 h-4" />
+                                    Edit
+                                </button>
+                                <button
+                                    onClick={handleDelete}
+                                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                    Delete
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Comments Section */}
+                    <div className="space-y-6">
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                            Comments ({comments.length})
+                        </h2>
+
+                        {/* Add Comment */}
+                        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+                            <textarea
+                                value={commentText}
+                                onChange={(e) => setCommentText(e.target.value)}
+                                placeholder="Share your thoughts..."
+                                rows={3}
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none mb-3"
+                            />
+                            <div className="flex items-center justify-between">
+                                <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                    <input
+                                        type="checkbox"
+                                        checked={isAnonymousComment}
+                                        onChange={(e) => setIsAnonymousComment(e.target.checked)}
+                                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                                    />
+                                    Comment anonymously
+                                </label>
+                                <button
+                                    onClick={handleComment}
+                                    disabled={!commentText.trim()}
+                                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    Post Comment
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Comments List */}
+                        <div className="space-y-4">
+                            {comments.map((comment) => (
+                                <div
+                                    key={comment.id}
+                                    className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4"
+                                >
+                                    <div className="flex items-start gap-3">
+                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-secondary-400 to-accent-500 flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
+                                            {comment.author?.username?.[0]?.toUpperCase() || 'A'}
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className="font-semibold text-gray-900 dark:text-white">
+                                                    {comment.author?.display_name || comment.author?.username || 'Anonymous'}
+                                                </span>
+                                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                    {formatCommentDate(comment.created_at)}
+                                                </span>
+                                            </div>
+                                            <p className="text-gray-700 dark:text-gray-300">
+                                                {comment.content}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </>
     );
 }

@@ -5,6 +5,7 @@ const reactionTypes = [
   {
     value: 'heart',
     label: 'Love it',
+    ariaLabel: 'React with Love',
     icon: Heart,
     color: 'text-rose-500',
     bgColor: 'bg-rose-50 dark:bg-rose-900/20',
@@ -16,6 +17,7 @@ const reactionTypes = [
   {
     value: 'applause',
     label: 'Inspiring',
+    ariaLabel: 'React with Inspiring',
     icon: Award,
     color: 'text-amber-500',
     bgColor: 'bg-amber-50 dark:bg-amber-900/20',
@@ -27,6 +29,7 @@ const reactionTypes = [
   {
     value: 'bookmark',
     label: 'Save',
+    ariaLabel: 'Save this story',
     icon: Bookmark,
     color: 'text-blue-500',
     bgColor: 'bg-blue-50 dark:bg-blue-900/20',
@@ -38,6 +41,7 @@ const reactionTypes = [
   {
     value: 'hug',
     label: 'Hug',
+    ariaLabel: 'Send a virtual Hug',
     icon: HeartHandshake,
     color: 'text-purple-500',
     bgColor: 'bg-purple-50 dark:bg-purple-900/20',
@@ -49,6 +53,7 @@ const reactionTypes = [
   {
     value: 'inspiring',
     label: 'Mind-blown',
+    ariaLabel: 'React with Mind-blown',
     icon: Sparkles,
     color: 'text-emerald-500',
     bgColor: 'bg-emerald-50 dark:bg-emerald-900/20',
@@ -64,17 +69,31 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
   const [reacting, setReacting] = useState(false);
   const [animatingReaction, setAnimatingReaction] = useState(null);
   const dropdownRef = useRef(null);
+  const mainButtonRef = useRef(null);
 
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside or pressing Escape
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+        mainButtonRef.current?.focus(); // Return focus to main button
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen]);
 
   const handleReact = async (type) => {
     if (reacting) return;
@@ -102,9 +121,17 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
     <div className="relative" ref={dropdownRef}>
       {/* Main Button */}
       <button
+        ref={mainButtonRef}
         onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+        aria-haspopup="menu"
+        aria-label={currentReaction
+          ? `Your reaction: ${currentReactionType?.label}. ${supportCount} reactions. Click to change.`
+          : `Add a reaction. ${supportCount} reactions total.`
+        }
         className={`
           group flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all duration-300
+          focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900
           ${currentReaction
             ? `${currentReactionType?.bgColor} ${currentReactionType?.borderColor} ${currentReactionType?.color} border-2 shadow-sm`
             : 'bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-md'
@@ -114,24 +141,28 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
         {currentReaction ? (
           <>
             {React.createElement(currentReactionType?.icon || Heart, {
-              className: `w-5 h-5 ${currentReactionType?.color} ${currentReactionType?.fillClass} transition-transform duration-300 group-hover:scale-110`
+              className: `w-5 h-5 ${currentReactionType?.color} ${currentReactionType?.fillClass} transition-transform duration-300 group-hover:scale-110`,
+              'aria-hidden': 'true'
             })}
             <span className="font-semibold">{currentReactionType?.label}</span>
           </>
         ) : (
           <>
-            <Heart className="w-5 h-5 transition-all duration-300 group-hover:text-rose-500 group-hover:scale-110" />
+            <Heart className="w-5 h-5 transition-all duration-300 group-hover:text-rose-500 group-hover:scale-110" aria-hidden="true" />
             <span>React</span>
           </>
         )}
         {supportCount > 0 && (
-          <span className={`
-            text-xs font-bold px-2 py-0.5 rounded-full
-            ${currentReaction
-              ? 'bg-white/50 dark:bg-gray-900/30'
-              : 'bg-gray-100 dark:bg-gray-700'
-            }
-          `}>
+          <span
+            className={`
+              text-xs font-bold px-2 py-0.5 rounded-full
+              ${currentReaction
+                ? 'bg-white/50 dark:bg-gray-900/30'
+                : 'bg-gray-100 dark:bg-gray-700'
+              }
+            `}
+            aria-label={`${supportCount} reactions`}
+          >
             {supportCount}
           </span>
         )}
@@ -140,6 +171,8 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
       {/* Reaction Picker Dropdown */}
       {isOpen && (
         <div
+          role="menu"
+          aria-label="Choose a reaction"
           className={`
             absolute bottom-full left-1/2 -translate-x-1/2 mb-3 
             bg-white dark:bg-gray-800 
@@ -150,9 +183,9 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
           `}
         >
           {/* Arrow */}
-          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 rotate-45 bg-white dark:bg-gray-800 border-r border-b border-gray-100 dark:border-gray-700" />
+          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 rotate-45 bg-white dark:bg-gray-800 border-r border-b border-gray-100 dark:border-gray-700" aria-hidden="true" />
 
-          {reactionTypes.map((reaction) => {
+          {reactionTypes.map((reaction, index) => {
             const Icon = reaction.icon;
             const isSelected = currentReaction === reaction.value;
             const isAnimating = animatingReaction === reaction.value;
@@ -160,10 +193,15 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
             return (
               <button
                 key={reaction.value}
+                role="menuitem"
                 onClick={() => handleReact(reaction.value)}
                 disabled={reacting}
+                aria-label={reaction.ariaLabel}
+                aria-pressed={isSelected}
+                tabIndex={index === 0 ? 0 : -1}
                 className={`
                   relative group/item flex flex-col items-center p-3 rounded-xl transition-all duration-300
+                  focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1
                   ${isSelected
                     ? `${reaction.bgColor} ${reaction.borderColor} border-2 scale-110`
                     : `${reaction.hoverBg} hover:scale-110 border-2 border-transparent`
@@ -171,13 +209,16 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
                   ${isAnimating ? 'animate-bounce' : ''}
                   disabled:opacity-50
                 `}
-                title={reaction.label}
               >
                 {/* Glow effect on hover */}
-                <div className={`
-                  absolute inset-0 rounded-xl opacity-0 group-hover/item:opacity-100 transition-opacity duration-300
-                  bg-gradient-to-br ${reaction.gradient} blur-lg -z-10
-                `} style={{ opacity: isSelected ? 0.3 : 0 }} />
+                <div
+                  className={`
+                    absolute inset-0 rounded-xl opacity-0 group-hover/item:opacity-100 transition-opacity duration-300
+                    bg-gradient-to-br ${reaction.gradient} blur-lg -z-10
+                  `}
+                  style={{ opacity: isSelected ? 0.3 : 0 }}
+                  aria-hidden="true"
+                />
 
                 <Icon
                   className={`
@@ -186,17 +227,21 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
                     transition-all duration-300
                     ${isAnimating ? 'scale-125' : 'group-hover/item:scale-110'}
                   `}
+                  aria-hidden="true"
                 />
 
-                {/* Label tooltip */}
-                <span className={`
-                  absolute -top-8 left-1/2 -translate-x-1/2 
-                  px-2 py-1 rounded-lg 
-                  bg-gray-900 dark:bg-gray-700 text-white text-xs font-medium
-                  opacity-0 group-hover/item:opacity-100 
-                  transition-opacity duration-200 whitespace-nowrap
-                  pointer-events-none
-                `}>
+                {/* Label tooltip - visible on hover, hidden from screen readers (announced via aria-label) */}
+                <span
+                  className={`
+                    absolute -top-8 left-1/2 -translate-x-1/2 
+                    px-2 py-1 rounded-lg 
+                    bg-gray-900 dark:bg-gray-700 text-white text-xs font-medium
+                    opacity-0 group-hover/item:opacity-100 
+                    transition-opacity duration-200 whitespace-nowrap
+                    pointer-events-none
+                  `}
+                  aria-hidden="true"
+                >
                   {reaction.label}
                 </span>
               </button>

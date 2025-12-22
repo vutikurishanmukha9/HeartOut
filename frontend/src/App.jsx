@@ -8,6 +8,7 @@ import MobileBottomNav from './components/MobileBottomNav';
 import ErrorBoundary, { RouteErrorBoundary } from './components/ErrorBoundary';
 import InnovativeLoader, { RouteLoader } from './components/InnovativeLoader';
 import { ServerStatusProvider, ServerWarmupToast } from './components/ServerWarmup';
+import SkipToContent from './components/Accessibility';
 
 // Lazy load routes for better performance
 const AuthRoutes = lazy(() => import('./routes/AuthRoutes'));
@@ -56,10 +57,17 @@ function App() {
   return (
     <ErrorBoundary>
       <ServerStatusProvider>
+        {/* Skip to main content link for keyboard/screen reader users */}
+        <SkipToContent targetId="main-content" />
+
         <div className="min-h-screen bg-transparent transition-colors duration-200">
           {showNavbar && <Navbar />}
 
-          <main className={`${showNavbar ? 'pt-16' : ''} transition-all duration-200`}>
+          <main
+            id="main-content"
+            tabIndex={-1}
+            className={`${showNavbar ? 'pt-16' : ''} transition-all duration-200 focus:outline-none`}
+          >
             <Suspense fallback={<RouteLoader />}>
               <Routes>
                 {/* Public routes */}

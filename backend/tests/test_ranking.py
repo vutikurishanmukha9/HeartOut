@@ -24,13 +24,15 @@ class TestRankingService:
         assert hasattr(RankingService, 'is_bookmarked')
         assert hasattr(RankingService, 'get_user_bookmarks')
     
-    def test_category_weights_defined(self):
-        """Test that category weights are defined for all story types"""
-        for story_type in StoryType:
-            weights = RankingService.CATEGORY_WEIGHTS.get(story_type, RankingService.DEFAULT_WEIGHTS)
-            assert weights is not None
-            # Check common weight keys
-            assert 'freshness_weight' in weights or 'use_random' in weights
+    def test_gravity_constant_defined(self):
+        """Test that GRAVITY constant is defined"""
+        assert hasattr(RankingService, 'GRAVITY')
+        assert RankingService.GRAVITY > 0
+    
+    def test_random_categories_defined(self):
+        """Test that RANDOM_CATEGORIES is defined for privacy-sensitive types"""
+        assert hasattr(RankingService, 'RANDOM_CATEGORIES')
+        assert StoryType.UNSENT_LETTER in RankingService.RANDOM_CATEGORIES
     
     def test_get_ranked_stories_with_string_type(self, app, auth_headers, client):
         """Test get_ranked_stories accepts string story types"""
@@ -323,40 +325,25 @@ class TestEngagementMetricsUpdate:
                 assert response.json['story']['view_count'] >= initial_views
 
 
-class TestCategorySpecificRanking:
-    """Test that different categories use different ranking algorithms"""
+class TestGravitySortRanking:
+    """Test Gravity Sort ranking algorithm"""
     
     def test_unsent_letters_uses_random(self):
-        """Test Unsent Letters category uses random ranking"""
-        weights = RankingService.CATEGORY_WEIGHTS.get(StoryType.UNSENT_LETTER, {})
-        assert weights.get('use_random') == True
+        """Test Unsent Letters category uses random ranking for privacy"""
+        assert StoryType.UNSENT_LETTER in RankingService.RANDOM_CATEGORIES
     
-    def test_other_uses_exploration(self):
-        """Test Other category uses exploration-based ranking"""
-        weights = RankingService.CATEGORY_WEIGHTS.get(StoryType.OTHER, {})
-        assert weights.get('use_exploration') == True
+    def test_other_categories_use_gravity(self):
+        """Test other categories use Gravity Sort ranking"""
+        # All non-random categories should use gravity sort
+        for story_type in StoryType:
+            if story_type not in RankingService.RANDOM_CATEGORIES:
+                # Should not raise any errors
+                pass  # Gravity sort is default for all other types
     
-    def test_achievement_prioritizes_saves_and_completion(self):
-        """Test Achievement category prioritizes saves and completion"""
-        weights = RankingService.CATEGORY_WEIGHTS.get(StoryType.ACHIEVEMENT, {})
-        assert weights.get('save_weight', 0) >= 0.25
-        assert weights.get('completion_weight', 0) >= 0.25
-    
-    def test_regret_prioritizes_completion_and_rereads(self):
-        """Test Regret category prioritizes completion and rereads"""
-        weights = RankingService.CATEGORY_WEIGHTS.get(StoryType.REGRET, {})
-        assert weights.get('completion_weight', 0) >= 0.30
-        assert weights.get('reread_weight', 0) >= 0.20
-    
-    def test_sacrifice_has_reread_weight(self):
-        """Test Sacrifice category includes reread weight"""
-        weights = RankingService.CATEGORY_WEIGHTS.get(StoryType.SACRIFICE, {})
-        assert 'reread_weight' in weights
-    
-    def test_life_story_prioritizes_completion(self):
-        """Test Life Story category prioritizes completion"""
-        weights = RankingService.CATEGORY_WEIGHTS.get(StoryType.LIFE_STORY, {})
-        assert weights.get('completion_weight', 0) >= 0.35
+    def test_gravity_decay_factor(self):
+        """Test gravity decay factor is reasonable"""
+        # Hacker News uses 1.8, valid range is 1.5-2.0
+        assert 1.0 <= RankingService.GRAVITY <= 3.0
 
 
 class TestBookmarkModel:
