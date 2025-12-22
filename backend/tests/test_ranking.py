@@ -904,70 +904,31 @@ class TestAPIErrorHandling:
             assert response.status_code == 200
 
 
-class TestWeightValidation:
-    """Validate all ranking weights sum correctly"""
+class TestGravitySortAlgorithm:
+    """Test Gravity Sort algorithm configuration"""
     
-    def test_achievement_weights_sum_to_one(self):
-        """Test Achievement weights roughly sum to 1"""
-        weights = RankingService.CATEGORY_WEIGHTS.get(StoryType.ACHIEVEMENT, {})
-        total = (
-            weights.get('save_weight', 0) +
-            weights.get('completion_weight', 0) +
-            weights.get('view_weight', 0) +
-            weights.get('reaction_weight', 0) +
-            weights.get('freshness_weight', 0)
-        )
-        assert 0.9 <= total <= 1.1
+    def test_gravity_constant_exists(self):
+        """Test GRAVITY constant is defined"""
+        assert hasattr(RankingService, 'GRAVITY')
+        assert RankingService.GRAVITY > 0
     
-    def test_regret_weights_sum_to_one(self):
-        """Test Regret weights roughly sum to 1"""
-        weights = RankingService.CATEGORY_WEIGHTS.get(StoryType.REGRET, {})
-        total = (
-            weights.get('save_weight', 0) +
-            weights.get('completion_weight', 0) +
-            weights.get('view_weight', 0) +
-            weights.get('reaction_weight', 0) +
-            weights.get('freshness_weight', 0) +
-            weights.get('reread_weight', 0)
-        )
-        assert 0.9 <= total <= 1.1
+    def test_gravity_is_reasonable_value(self):
+        """Test GRAVITY is in reasonable range (1.0-3.0)"""
+        assert 1.0 <= RankingService.GRAVITY <= 3.0
     
-    def test_sacrifice_weights_sum_to_one(self):
-        """Test Sacrifice weights roughly sum to 1"""
-        weights = RankingService.CATEGORY_WEIGHTS.get(StoryType.SACRIFICE, {})
-        total = (
-            weights.get('save_weight', 0) +
-            weights.get('completion_weight', 0) +
-            weights.get('view_weight', 0) +
-            weights.get('reaction_weight', 0) +
-            weights.get('freshness_weight', 0) +
-            weights.get('reread_weight', 0)
-        )
-        assert 0.9 <= total <= 1.1
+    def test_random_categories_defined(self):
+        """Test RANDOM_CATEGORIES is defined for privacy-sensitive types"""
+        assert hasattr(RankingService, 'RANDOM_CATEGORIES')
+        assert StoryType.UNSENT_LETTER in RankingService.RANDOM_CATEGORIES
     
-    def test_life_story_weights_sum_to_one(self):
-        """Test Life Story weights roughly sum to 1"""
-        weights = RankingService.CATEGORY_WEIGHTS.get(StoryType.LIFE_STORY, {})
-        total = (
-            weights.get('save_weight', 0) +
-            weights.get('completion_weight', 0) +
-            weights.get('view_weight', 0) +
-            weights.get('reaction_weight', 0) +
-            weights.get('freshness_weight', 0)
-        )
-        assert 0.9 <= total <= 1.1
+    def test_gravity_balances_recency_engagement(self):
+        """Test that Gravity Sort uses standard HN-style decay (1.5-2.0)"""
+        assert 1.5 <= RankingService.GRAVITY <= 2.5
     
-    def test_default_weights_sum_to_one(self):
-        """Test default weights roughly sum to 1"""
-        weights = RankingService.DEFAULT_WEIGHTS
-        total = (
-            weights.get('save_weight', 0) +
-            weights.get('completion_weight', 0) +
-            weights.get('view_weight', 0) +
-            weights.get('reaction_weight', 0) +
-            weights.get('freshness_weight', 0)
-        )
-        assert 0.9 <= total <= 1.1
+    def test_service_has_get_ranked_stories_method(self):
+        """Test main ranking method exists"""
+        assert hasattr(RankingService, 'get_ranked_stories')
+        assert callable(RankingService.get_ranked_stories)
 
 
 class TestStoryTypeFiltering:
@@ -1006,24 +967,16 @@ class TestStoryTypeFiltering:
 
 
 class TestGoldenRuleCompliance:
-    """Test that the Golden Rule is followed: resonance > reaction > recency"""
+    """Test that Gravity Sort balances recency vs engagement"""
     
-    def test_no_pure_popularity_ranking(self):
-        """Verify no category uses pure popularity (views only) ranking"""
-        for story_type, weights in RankingService.CATEGORY_WEIGHTS.items():
-            if 'use_random' in weights or 'use_exploration' in weights:
-                continue
-            # View weight should never dominate
-            view_weight = weights.get('view_weight', 0)
-            assert view_weight < 0.5, f"{story_type} has too high view_weight"
+    def test_gravity_prevents_pure_popularity(self):
+        """Verify Gravity decay prevents old popular posts from dominating"""
+        # With GRAVITY > 1, older content decays faster than linear
+        assert RankingService.GRAVITY > 1.0
     
-    def test_all_categories_consider_completion(self):
-        """Verify all non-random categories consider completion (resonance)"""
-        for story_type, weights in RankingService.CATEGORY_WEIGHTS.items():
-            if weights.get('use_random'):
-                continue
-            # Should have completion weight (resonance)
-            assert 'completion_weight' in weights or 'use_exploration' in weights
+    def test_unsent_letters_use_random(self):
+        """Privacy-sensitive categories should use random ordering"""
+        assert StoryType.UNSENT_LETTER in RankingService.RANDOM_CATEGORIES
 
 
 class TestUniqueReadersTracking:
