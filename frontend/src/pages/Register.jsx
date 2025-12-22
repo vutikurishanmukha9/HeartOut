@@ -74,99 +74,117 @@ export default function Register() {
                 </div>
 
                 {/* Content */}
-                <div className="relative z-10 flex flex-col justify-center px-10 py-8 text-white h-full">
+                <div className="relative z-10 flex flex-col justify-center px-8 lg:px-12 py-8 text-white h-full font-body">
                     {/* Logo */}
-                    <div className="mb-6">
-                        <div className="flex items-center gap-4 mb-4">
-                            <div className="p-4 bg-gradient-to-br from-orange-400 via-rose-400 to-purple-500 rounded-2xl shadow-lg">
-                                <Heart className="w-10 h-10 text-white" />
+                    <div className="mb-8">
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="relative group">
+                                <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-rose-500 rounded-2xl blur-lg opacity-60 group-hover:opacity-80 transition-opacity" />
+                                <div className="relative p-4 bg-gradient-to-br from-orange-400 via-rose-400 to-purple-500 rounded-2xl shadow-2xl">
+                                    <Heart className="w-10 h-10 text-white animate-pulse" />
+                                </div>
                             </div>
-                            <span className="text-4xl font-bold">
-                                <span className="text-gray-900">Heart</span>
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-rose-400">Out</span>
+                            <span className="text-4xl font-heading font-extrabold tracking-tight">
+                                <span className="text-white drop-shadow-lg">Heart</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-300 to-rose-300">Out</span>
                             </span>
                         </div>
-                        <h2 className="text-3xl font-bold leading-tight">
-                            Don't Hold It In. Heart It Out.
+                        <h2 className="font-heading text-3xl lg:text-4xl font-bold leading-tight tracking-wide">
+                            <span className="text-white drop-shadow-md">Don't Hold It In.</span> <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-300 via-rose-300 to-purple-300 tracking-wider">
+                                Heart It Out.
+                            </span>
                         </h2>
                     </div>
 
-                    {/* Feature List */}
+                    {/* Premium Feature Cards */}
                     <div className="space-y-3">
-                        <p className="text-base text-white/90">
-                            <span className="font-bold">Send the Unsent:</span>{' '}
-                            <span className="font-light">Post the text, letter, or apology you never delivered.</span>
-                        </p>
-                        <p className="text-base text-white/90">
-                            <span className="font-bold">Claim Your Wins:</span>{' '}
-                            <span className="font-light">Shout out the achievements you usually celebrate alone.</span>
-                        </p>
-                        <p className="text-base text-white/90">
-                            <span className="font-bold">Vent Your Regrets:</span>{' '}
-                            <span className="font-light">Turn your painful mistakes into shared lessons.</span>
-                        </p>
-                        <p className="text-base text-white/90">
-                            <span className="font-bold">Reveal the Cost:</span>{' '}
-                            <span className="font-light">Share the sacrifices behind your success.</span>
-                        </p>
-                        <p className="text-base text-white/90">
-                            <span className="font-bold">Be Unapologetic:</span>{' '}
-                            <span className="font-light">No filters. No judgment. Just your life story.</span>
-                        </p>
+                        {[
+                            { title: 'Send the Unsent', desc: 'Post the text, letter, or apology you never delivered.' },
+                            { title: 'Claim Your Wins', desc: 'Shout out the achievements you usually celebrate alone.' },
+                            { title: 'Vent Your Regrets', desc: 'Turn your painful mistakes into shared lessons.' },
+                            { title: 'Reveal the Cost', desc: 'Share the sacrifices behind your success.' },
+                            { title: 'Be Unapologetic', desc: 'No filters. No judgment. Just your life story.' },
+                        ].map((feature, index) => (
+                            <div
+                                key={index}
+                                className="group p-4 rounded-xl bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-300 cursor-default"
+                                style={{ animationDelay: `${index * 0.1}s` }}
+                            >
+                                <span className="font-heading font-semibold text-white group-hover:text-orange-300 transition-colors tracking-wide">
+                                    {feature.title}:
+                                </span>
+                                <span className="font-light text-white/90 ml-2">
+                                    {feature.desc}
+                                </span>
+                            </div>
+                        ))}
                     </div>
 
                     {/* Footer */}
-                    <div className="mt-6 pt-6 border-t border-white/20">
-                        <p className="text-lg font-bold">Your voice has found its home.</p>
+                    <div className="mt-8 pt-6 border-t border-white/20">
+                        <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-lg shadow-green-400/50" />
+                            <p className="font-heading text-lg font-semibold text-white tracking-wide drop-shadow-md">
+                                Your voice has found its home.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Right Side - Form */}
             <div className="w-full lg:w-1/2 flex items-center justify-center px-4 py-6 sm:p-8 bg-gradient-to-br from-rose-50/50 to-purple-50/50 dark:from-gray-900 dark:to-gray-800 min-h-screen lg:min-h-0 safe-area-top safe-area-bottom">
-                <div className="w-full max-w-md animate-slide-up">
-                    {/* Mobile Logo */}
+                <div className="w-full max-w-md animate-slide-up font-body">
+                    {/* Mobile Logo - Premium Styling */}
                     <div className="lg:hidden text-center mb-8">
-                        <div className="inline-flex items-center gap-2">
-                            <div className="p-2 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl">
-                                <Heart className="w-6 h-6 text-white" />
+                        <div className="inline-flex items-center gap-3 mb-4">
+                            <div className="relative">
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl blur-md opacity-50" />
+                                <div className="relative p-2.5 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl shadow-lg">
+                                    <Heart className="w-7 h-7 text-white" />
+                                </div>
                             </div>
-                            <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                                Heart<span className="text-primary-500">Out</span>
+                            <span className="text-2xl font-heading font-extrabold tracking-tight text-gray-900 dark:text-white">
+                                Heart<span className="text-gradient">Out</span>
                             </span>
                         </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 font-light">
+                            Share your authentic stories
+                        </p>
                     </div>
 
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                        <h1 className="font-heading text-3xl font-bold tracking-wide text-gray-900 dark:text-white mb-2">
                             Create your account
                         </h1>
-                        <p className="text-gray-600 dark:text-gray-400">
+                        <p className="text-gray-600 dark:text-gray-400 font-light">
                             Start your storytelling journey today
                         </p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form onSubmit={handleSubmit} className="space-y-5 font-body">
                         {error && (
-                            <div className="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm animate-slide-down">
+                            <div className="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm animate-slide-down font-medium">
                                 {error}
                             </div>
                         )}
 
                         {/* Username Field */}
                         <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            <label className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-300 tracking-wide">
                                 Username
                             </label>
-                            <div className="relative">
-                                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <div className="relative group">
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-secondary-500/20 rounded-xl opacity-0 group-focus-within:opacity-100 blur-xl transition-opacity duration-500" />
+                                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-primary-500 transition-colors duration-300" />
                                 <input
                                     name="username"
                                     type="text"
                                     required
                                     value={formData.username}
                                     onChange={handleChange}
-                                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:text-white transition-all duration-300"
+                                    className="relative w-full pl-12 pr-4 py-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 dark:text-white transition-all duration-300 placeholder:text-gray-400 shadow-sm hover:shadow-md focus:shadow-lg"
                                     placeholder="johndoe"
                                 />
                             </div>
@@ -174,22 +192,23 @@ export default function Register() {
 
                         {/* Email Field */}
                         <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            <label className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-300 tracking-wide">
                                 Email
                             </label>
-                            <div className="relative">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <div className="relative group">
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-secondary-500/20 rounded-xl opacity-0 group-focus-within:opacity-100 blur-xl transition-opacity duration-500" />
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-primary-500 transition-colors duration-300" />
                                 <input
                                     name="email"
                                     type="email"
                                     required
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:text-white transition-all duration-300"
+                                    className="relative w-full pl-12 pr-4 py-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 dark:text-white transition-all duration-300 placeholder:text-gray-400 shadow-sm hover:shadow-md focus:shadow-lg"
                                     placeholder="you@gmail.com"
                                 />
                             </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1.5 font-medium">
                                 <span className="inline-block w-1.5 h-1.5 bg-primary-500 rounded-full"></span>
                                 Use Gmail, Outlook, Yahoo, or iCloud email only
                             </p>
@@ -197,18 +216,19 @@ export default function Register() {
 
                         {/* Password Field */}
                         <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            <label className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-300 tracking-wide">
                                 Password
                             </label>
-                            <div className="relative">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <div className="relative group">
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-secondary-500/20 rounded-xl opacity-0 group-focus-within:opacity-100 blur-xl transition-opacity duration-500" />
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-primary-500 transition-colors duration-300" />
                                 <input
                                     name="password"
                                     type="password"
                                     required
                                     value={formData.password}
                                     onChange={handleChange}
-                                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:text-white transition-all duration-300"
+                                    className="relative w-full pl-12 pr-4 py-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 dark:text-white transition-all duration-300 placeholder:text-gray-400 shadow-sm hover:shadow-md focus:shadow-lg"
                                     placeholder="••••••••"
                                     minLength="8"
                                 />

@@ -1,7 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { Heart, Mail, Lock, ArrowRight, BookOpen, Sparkles, MessageCircle, TrendingUp, Users } from 'lucide-react';
+import { Heart, Mail, Lock, ArrowRight, Sparkles } from 'lucide-react';
+import FeatureHighlights from '../components/FeatureHighlights';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -30,56 +31,52 @@ export default function Login() {
         }
     };
 
-    const stats = [
-        { icon: BookOpen, value: '2.5K+', label: 'Stories' },
-        { icon: Users, value: '10K+', label: 'Members' },
-        { icon: MessageCircle, value: '50K+', label: 'Comments' },
-        { icon: TrendingUp, value: '98%', label: 'Positive' }
-    ];
+
 
     return (
         <div className="min-h-screen flex">
             {/* Left Side - Form */}
             <div className="w-full lg:w-1/2 flex items-center justify-center px-4 py-6 sm:p-8 bg-gradient-to-br from-rose-50/50 to-purple-50/50 dark:from-gray-900 dark:to-gray-800 min-h-screen lg:min-h-0 safe-area-top safe-area-bottom">
-                <div className="w-full max-w-md animate-slide-up">
+                <div className="w-full max-w-md animate-slide-up font-body">
                     {/* Logo */}
                     <div className="text-center mb-8">
                         <div className="inline-flex items-center gap-3 mb-6">
                             <div className="p-3 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl shadow-lg shadow-primary-500/30">
                                 <Heart className="w-8 h-8 text-white" />
                             </div>
-                            <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                            <span className="text-3xl font-heading font-extrabold tracking-tight text-gray-900 dark:text-white">
                                 Heart<span className="text-gradient">Out</span>
                             </span>
                         </div>
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                        <h1 className="font-heading text-3xl font-bold tracking-wide text-gray-900 dark:text-white mb-2">
                             Welcome back!
                         </h1>
-                        <p className="text-gray-600 dark:text-gray-400">
+                        <p className="text-gray-600 dark:text-gray-400 font-light">
                             Continue your storytelling journey
                         </p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         {error && (
-                            <div className="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm animate-slide-down">
+                            <div className="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm animate-slide-down font-medium">
                                 {error}
                             </div>
                         )}
 
                         {/* Email Field */}
                         <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            <label className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-300 tracking-wide">
                                 Email
                             </label>
-                            <div className="relative">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <div className="relative group">
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-secondary-500/20 rounded-xl opacity-0 group-focus-within:opacity-100 blur-xl transition-opacity duration-500" />
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-primary-500 transition-colors duration-300" />
                                 <input
                                     type="email"
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:text-white transition-all duration-300"
+                                    className="relative w-full pl-12 pr-4 py-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 dark:text-white transition-all duration-300 font-body placeholder:text-gray-400 shadow-sm hover:shadow-md focus:shadow-lg"
                                     placeholder="you@example.com"
                                 />
                             </div>
@@ -88,21 +85,22 @@ export default function Login() {
                         {/* Password Field */}
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-300 tracking-wide">
                                     Password
                                 </label>
-                                <a href="#" className="text-sm text-primary-600 hover:text-primary-500 transition-colors">
+                                <a href="#" className="text-sm font-medium text-primary-600 hover:text-primary-500 transition-colors">
                                     Forgot password?
                                 </a>
                             </div>
-                            <div className="relative">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <div className="relative group">
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-secondary-500/20 rounded-xl opacity-0 group-focus-within:opacity-100 blur-xl transition-opacity duration-500" />
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-primary-500 transition-colors duration-300" />
                                 <input
                                     type="password"
                                     required
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:text-white transition-all duration-300"
+                                    className="relative w-full pl-12 pr-4 py-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 dark:text-white transition-all duration-300 font-body placeholder:text-gray-400 shadow-sm hover:shadow-md focus:shadow-lg"
                                     placeholder="••••••••"
                                 />
                             </div>
@@ -113,9 +111,9 @@ export default function Login() {
                             <input
                                 id="remember"
                                 type="checkbox"
-                                className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                                className="w-5 h-5 rounded-md border-2 border-gray-300 text-primary-600 focus:ring-primary-500 focus:ring-offset-0 transition-all duration-200 cursor-pointer"
                             />
-                            <label htmlFor="remember" className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                            <label htmlFor="remember" className="ml-3 text-sm text-gray-600 dark:text-gray-400 cursor-pointer font-medium">
                                 Keep me signed in
                             </label>
                         </div>
@@ -161,51 +159,24 @@ export default function Login() {
                 </div>
 
                 {/* Content */}
-                <div className="relative z-10 flex flex-col justify-center items-center px-16 text-white text-center">
-                    <div className="mb-12">
+                <div className="relative z-10 flex flex-col justify-center items-center px-8 lg:px-12 text-white text-center h-full">
+                    <div className="mb-8">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6">
                             <Sparkles className="w-4 h-4" />
                             <span className="text-sm font-medium">Discover amazing stories</span>
                         </div>
 
-                        <h2 className="text-4xl font-bold mb-4">
+                        <h2 className="text-3xl lg:text-4xl font-bold mb-4">
                             Every story is a journey
                         </h2>
-                        <p className="text-xl text-white/80 max-w-md">
+                        <p className="text-lg text-white/80 max-w-md">
                             Join our community of storytellers sharing life's most meaningful moments.
                         </p>
                     </div>
 
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-2 gap-6 w-full max-w-sm">
-                        {stats.map((stat, index) => {
-                            const Icon = stat.icon;
-                            return (
-                                <div
-                                    key={index}
-                                    className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20 hover:bg-white/20 transition-all duration-300 animate-slide-up"
-                                    style={{ animationDelay: `${index * 0.1}s` }}
-                                >
-                                    <Icon className="w-6 h-6 mb-2 mx-auto" />
-                                    <p className="text-2xl font-bold">{stat.value}</p>
-                                    <p className="text-sm text-white/80">{stat.label}</p>
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    {/* Testimonial */}
-                    <div className="mt-12 p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 max-w-md">
-                        <p className="text-white/90 italic mb-4">
-                            "HeartOut helped me find the courage to share my story. The support I received was overwhelming."
-                        </p>
-                        <div className="flex items-center justify-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-white/30 to-white/10 border-2 border-white/50" />
-                            <div className="text-left">
-                                <p className="font-semibold text-sm">Anonymous Storyteller</p>
-                                <p className="text-xs text-white/60">Member since 2024</p>
-                            </div>
-                        </div>
+                    {/* Premium Feature Highlights */}
+                    <div className="w-full max-w-md">
+                        <FeatureHighlights />
                     </div>
                 </div>
             </div>

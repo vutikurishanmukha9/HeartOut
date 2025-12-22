@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, TrendingUp, Star, ArrowRight, BookOpen, Heart, Clock } from 'lucide-react';
 import StoryCard from '../components/PostCard';
 import StoryTypeSelector from '../components/StoryTypeSelector';
+import StoryTypeShowcase from '../components/StoryTypeShowcase';
 import { getApiUrl } from '../config/api';
 
 export default function Feed() {
@@ -90,21 +91,12 @@ export default function Feed() {
                             </div>
                         </div>
 
-                        {/* Right - Stats Cards */}
-                        <div className="flex-1 grid grid-cols-2 gap-4 max-w-md animate-slide-up stagger-2">
-                            {[
-                                { label: 'Stories Shared', value: '2.5K+', color: 'from-primary-500 to-rose-500' },
-                                { label: 'Active Readers', value: '10K+', color: 'from-secondary-500 to-amber-500' },
-                                { label: 'Hearts Given', value: '50K+', color: 'from-accent-500 to-purple-500' },
-                                { label: 'Countries', value: '45+', color: 'from-blue-500 to-cyan-500' }
-                            ].map((stat, i) => (
-                                <div key={i} className="glass-card rounded-2xl p-5 text-center hover:shadow-glow transition-all duration-300 group">
-                                    <p className={`text-3xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent group-hover:scale-110 transition-transform`}>
-                                        {stat.value}
-                                    </p>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{stat.label}</p>
-                                </div>
-                            ))}
+                        {/* Right - Premium Story Types Showcase */}
+                        <div className="flex-1 max-w-xl animate-slide-up stagger-2">
+                            <StoryTypeShowcase
+                                selectedCategory={selectedCategory}
+                                onSelectCategory={setSelectedCategory}
+                            />
                         </div>
                     </div>
                 </div>

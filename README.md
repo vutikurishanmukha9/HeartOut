@@ -303,6 +303,34 @@ pytest tests/test_security.py -v
 
 ## Recent Updates
 
+### v2.6 - Premium UI/UX Overhaul
+- **Premium Typography System** - Poppins (headings) + Inter (body) fonts
+  - Font weight hierarchy: extrabold, bold, semibold, light
+  - Letter spacing: `tracking-tight`, `tracking-wide`, `tracking-wider`
+  - Drop shadows for improved color contrast
+- **Story Type Showcase** (Feed Page) - Premium category cards replacing fake stats:
+  - 3D perspective tilt on hover
+  - Glassmorphism with backdrop blur
+  - Animated gradient borders
+  - Floating orb backgrounds
+  - Floating particles on hover
+  - Shine effect animations
+- **Feature Highlights** (Auth Pages) - Premium pill-style feature buttons:
+  - Gradient icon backgrounds with glow
+  - Hover sparkle animations
+  - Rotating testimonial carousel
+  - Touch-friendly mobile states
+- **Premium Form Inputs** (Login/Register):
+  - Gradient glow on focus
+  - Icon color transitions (gray → primary)
+  - Border-2 with shadow depth (sm → md → lg)
+  - Larger padding for touch targets
+- **Mobile Responsiveness**:
+  - Responsive font sizes and spacing
+  - Touch events for mobile hover states
+  - Mobile logo with glow effect
+  - Smaller scale animations on mobile
+
 ### v2.5 - Smart Category-Based Ranking
 - **Smart Ranking Algorithms** - 6 unique algorithms per story category:
   - *Achievements*: Learning-to-Rank (saves + completion rate)
