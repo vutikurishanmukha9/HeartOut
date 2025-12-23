@@ -200,9 +200,9 @@ class Post(db.Model):
             'reading_time': self.reading_time,
             'view_count': self.view_count,
             'is_featured': self.is_featured,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
-            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
-            'published_at': self.published_at.isoformat() if self.published_at else None,
+            'created_at': (self.created_at.isoformat() + 'Z') if self.created_at else None,
+            'updated_at': (self.updated_at.isoformat() + 'Z') if self.updated_at else None,
+            'published_at': (self.published_at.isoformat() + 'Z') if self.published_at else None,
             # Use cached counts (no N+1 queries) - fallback to 0 for records before migration
             'support_count': self.support_count or 0,
             'comment_count': self.comment_count or 0
