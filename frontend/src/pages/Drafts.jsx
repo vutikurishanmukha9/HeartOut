@@ -119,20 +119,20 @@ export default function Drafts() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center space-x-2 ml-4">
+                                <div className="flex items-center gap-3 ml-4">
                                     <Link
                                         to={`/feed/create?draft=${draft.id}`}
-                                        className="p-2 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors"
-                                        title="Edit draft"
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-sm font-medium rounded-xl shadow-sm hover:shadow-md hover:from-primary-600 hover:to-primary-700 transition-all duration-200"
                                     >
-                                        <Edit className="w-5 h-5" />
+                                        <Edit className="w-4 h-4" />
+                                        <span>Edit</span>
                                     </Link>
                                     <button
                                         onClick={() => confirmDelete(draft.id, draft.title)}
-                                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                                        title="Delete draft"
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-medium rounded-xl border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/40 hover:border-red-300 dark:hover:border-red-700 transition-all duration-200"
                                     >
-                                        <Trash2 className="w-5 h-5" />
+                                        <Trash2 className="w-4 h-4" />
+                                        <span>Delete</span>
                                     </button>
                                 </div>
                             </div>
