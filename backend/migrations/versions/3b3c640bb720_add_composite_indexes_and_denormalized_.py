@@ -24,6 +24,10 @@ def upgrade():
         batch_op.create_index('idx_post_status_published', ['status', 'published_at'], unique=False)
         batch_op.create_index('idx_post_status_story_type', ['status', 'story_type'], unique=False)
         batch_op.create_index('idx_post_user_status', ['user_id', 'status'], unique=False)
+    
+    # Backfill: Set NULL values to 0 for existing records
+    op.execute("UPDATE posts SET support_count = 0 WHERE support_count IS NULL")
+    op.execute("UPDATE posts SET comment_count = 0 WHERE comment_count IS NULL")
 
     # ### end Alembic commands ###
 
