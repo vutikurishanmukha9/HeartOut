@@ -160,8 +160,7 @@ export default function CreatePost() {
 
                 <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12 animate-slide-up">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-white/30 dark:border-gray-700/30 mb-6">
-                            <PenTool className="w-4 h-4 text-primary-500" />
+                        <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-white/30 dark:border-gray-700/30 mb-6">
                             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Step 1 of 2</span>
                         </div>
 
