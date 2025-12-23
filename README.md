@@ -248,8 +248,8 @@ FLASK_ENV=production
 | `ci-success` | Final gate (all must pass) |
 
 ### Triggers
-- ✅ Push to `main`, `master`, `develop`
-- ✅ Pull Requests to these branches
+- Push to `main`, `master`, `develop`
+- Pull Requests to these branches
 
 ### Badges
 ```markdown

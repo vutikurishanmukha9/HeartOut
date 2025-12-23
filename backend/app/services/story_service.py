@@ -176,7 +176,9 @@ class StoryService:
             if existing.support_type == support_type:
                 # Same reaction type - remove it (toggle off)
                 db.session.delete(existing)
-                story.support_count = max(0, story.support_count - 1)  # Update cached count
+                # Handle None (for records before denormalization)
+                current_count = story.support_count or 0
+                story.support_count = max(0, current_count - 1)
                 db.session.commit()
                 return {
                     'action': 'removed', 
@@ -204,7 +206,8 @@ class StoryService:
                 post_id=story.id
             )
             db.session.add(reaction)
-            story.support_count += 1  # Update cached count
+            # Handle None (for records before denormalization)
+            story.support_count = (story.support_count or 0) + 1
             db.session.commit()
             return {
                 'action': 'added', 

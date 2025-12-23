@@ -197,9 +197,9 @@ class Post(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'published_at': self.published_at.isoformat() if self.published_at else None,
-            # Use cached counts (no N+1 queries)
-            'support_count': self.support_count,
-            'comment_count': self.comment_count
+            # Use cached counts (no N+1 queries) - fallback to 0 for records before migration
+            'support_count': self.support_count or 0,
+            'comment_count': self.comment_count or 0
         }
         
         if include_author and not self.is_anonymous:
