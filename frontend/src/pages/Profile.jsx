@@ -71,10 +71,16 @@ export default function Profile() {
 
     const fetchUserStories = async () => {
         try {
-            const endpoint = isOwnProfile
-                ? getApiUrl('/api/posts?status=published')
-                : getApiUrl(`/api/posts/user/${userId}/stories`);
+            // For own profile, use current user's ID to fetch only THEIR stories
+            const targetUserId = isOwnProfile ? currentUser?.id : userId;
 
+            if (!targetUserId) {
+                console.error('No user ID available to fetch stories');
+                setStories([]);
+                return;
+            }
+
+            const endpoint = getApiUrl(`/api/posts/user/${targetUserId}/stories`);
             const headers = isOwnProfile
                 ? { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` }
                 : {};
@@ -84,6 +90,7 @@ export default function Profile() {
             setStories(data.stories || []);
         } catch (error) {
             console.error('Failed to fetch stories:', error);
+            setStories([]);
         }
     };
 
