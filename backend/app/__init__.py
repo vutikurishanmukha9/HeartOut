@@ -144,6 +144,8 @@ def create_app(config_class=Config):
             ("unique_readers", "ALTER TABLE posts ADD COLUMN unique_readers INTEGER DEFAULT 0"),
             ("rank_score", "ALTER TABLE posts ADD COLUMN rank_score FLOAT DEFAULT 0.0"),
             ("last_ranked_at", "ALTER TABLE posts ADD COLUMN last_ranked_at TIMESTAMP"),
+            ("support_count", "ALTER TABLE posts ADD COLUMN support_count INTEGER DEFAULT 0"),
+            ("comment_count", "ALTER TABLE posts ADD COLUMN comment_count INTEGER DEFAULT 0"),
         ]
         
         for col_name, sql in columns_sql:
