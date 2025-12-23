@@ -58,35 +58,76 @@ export default function Feed() {
 
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 md:py-16 lg:py-24">
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-                        {/* Left Content */}
-                        <div className="flex-1 text-center lg:text-left animate-slide-up">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-white/30 dark:border-gray-700/30 mb-6">
-                                <Heart className="w-4 h-4 text-primary-500" />
-                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Stories that touch hearts</span>
+                        {/* Left Content - Premium Hero */}
+                        <div className="flex-1 text-center lg:text-left animate-slide-up relative">
+                            {/* Decorative quote mark - hidden on small mobile */}
+                            <div className="absolute -top-2 -left-2 sm:-top-4 sm:-left-4 lg:-top-8 lg:-left-8 text-6xl sm:text-8xl lg:text-9xl font-serif text-primary-200/30 dark:text-primary-800/20 select-none pointer-events-none hidden sm:block" aria-hidden="true">
+                                "
                             </div>
 
-                            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6">
-                                <span className="text-gray-900 dark:text-white">Discover </span>
-                                <span className="text-gradient">Real Stories</span>
+                            {/* Badge with pulse */}
+                            <div className="relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-primary-200/50 dark:border-primary-700/30 mb-4 sm:mb-6 shadow-lg shadow-primary-500/10">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
+                                </span>
+                                <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-500 fill-primary-500/30" />
+                                <span className="text-xs sm:text-sm font-semibold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+                                    Stories that touch hearts
+                                </span>
+                            </div>
+
+                            {/* Main heading with unique styling */}
+                            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-4 sm:mb-6 leading-tight tracking-tight">
+                                <span className="block text-gray-900 dark:text-white">
+                                    Discover
+                                </span>
+                                <span className="relative inline-block">
+                                    <span className="text-gradient bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 bg-clip-text text-transparent">
+                                        Real Stories
+                                    </span>
+                                    {/* Underline decoration */}
+                                    <svg className="absolute -bottom-2 left-0 w-full h-3" viewBox="0 0 200 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M2 8C30 4 70 2 100 6C130 10 170 8 198 4" stroke="url(#underline-gradient)" strokeWidth="4" strokeLinecap="round" />
+                                        <defs>
+                                            <linearGradient id="underline-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stopColor="#f97316" />
+                                                <stop offset="50%" stopColor="#ec4899" />
+                                                <stop offset="100%" stopColor="#8b5cf6" />
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                </span>
                             </h1>
 
-                            <p className="text-base md:text-xl text-gray-600 dark:text-gray-400 mb-6 md:mb-8 max-w-xl">
-                                From achievements to life lessons, explore authentic narratives from people around the world.
+                            {/* Subtext with better typography */}
+                            <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-6 sm:mb-8 max-w-lg leading-relaxed px-2 sm:px-0">
+                                From <span className="font-semibold text-emerald-600 dark:text-emerald-400">achievements</span> to
+                                <span className="font-semibold text-violet-600 dark:text-violet-400"> life lessons</span>, explore
+                                authentic narratives from storytellers worldwide.
                             </p>
 
-                            <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-                                <a href="/feed/create" className="btn-premium inline-flex items-center gap-2">
-                                    <BookOpen className="w-5 h-5" />
+                            {/* CTA Section */}
+                            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 justify-center lg:justify-start w-full sm:w-auto">
+                                <a href="/feed/create" className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 text-white font-bold shadow-xl shadow-primary-500/30 hover:shadow-2xl hover:shadow-primary-500/40 hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto text-sm sm:text-base">
+                                    <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
                                     Share Your Story
-                                    <ArrowRight className="w-4 h-4" />
-                                </a>
-                                <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                                    <div className="flex -space-x-2">
-                                        {[...Array(4)].map((_, i) => (
-                                            <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-secondary-500 border-2 border-white dark:border-gray-800" />
-                                        ))}
+                                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                                    {/* Shine effect */}
+                                    <div className="absolute inset-0 rounded-xl sm:rounded-2xl overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                                     </div>
-                                    <span className="text-sm">Join 1,000+ storytellers</span>
+                                </a>
+
+                                {/* Simple authentic tagline */}
+                                <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50">
+                                    <div className="flex items-center gap-1">
+                                        <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500 fill-rose-500" />
+                                        <Heart className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-rose-400 fill-rose-400 -ml-1.5 mt-1.5" />
+                                    </div>
+                                    <span className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">
+                                        Community-powered
+                                    </span>
                                 </div>
                             </div>
                         </div>

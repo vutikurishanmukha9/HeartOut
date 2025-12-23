@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { Trophy, Lightbulb, Mail, Heart, Sparkles, BookOpen } from 'lucide-react';
 
 /**
- * Premium Animated Story Types Component
+ * Premium Story Types Showcase - Circular Icon Design
  * 
  * Features:
- * - 3D perspective tilt on hover
- * - Glassmorphic cards with depth
- * - Animated gradient borders
- * - Glowing orb backgrounds
- * - Floating particles
- * - Smooth micro-interactions
+ * - Circular icon containers with soft shadows
+ * - Pulsing glow effect on hover
+ * - Smooth scale and lift animations
+ * - Glassmorphic card backgrounds
+ * - Floating background orbs
+ * - Description reveals on hover
  */
 
 const storyCategories = [
@@ -18,89 +18,94 @@ const storyCategories = [
         id: 'achievement',
         label: 'Success Stories',
         icon: Trophy,
-        gradient: 'from-emerald-400 via-green-500 to-teal-600',
-        glowColor: 'rgba(16, 185, 129, 0.4)',
-        orbColor: '#10b981',
-        description: 'Celebrate victories'
+        bgColor: 'bg-emerald-500',
+        lightBg: 'bg-emerald-50 dark:bg-emerald-900/20',
+        shadowColor: 'shadow-emerald-500/30',
+        hoverShadow: 'hover:shadow-emerald-500/50',
+        glowColor: 'rgba(16, 185, 129, 0.6)',
+        ringColor: 'ring-emerald-500',
+        description: 'Celebrate victories & milestones'
     },
     {
         id: 'regret',
         label: 'Life Lessons',
         icon: Lightbulb,
-        gradient: 'from-blue-400 via-indigo-500 to-purple-600',
-        glowColor: 'rgba(99, 102, 241, 0.4)',
-        orbColor: '#6366f1',
+        bgColor: 'bg-violet-500',
+        lightBg: 'bg-violet-50 dark:bg-violet-900/20',
+        shadowColor: 'shadow-violet-500/30',
+        hoverShadow: 'hover:shadow-violet-500/50',
+        glowColor: 'rgba(139, 92, 246, 0.6)',
+        ringColor: 'ring-violet-500',
         description: 'Wisdom from experience'
     },
     {
         id: 'unsent_letter',
         label: 'Unsent Letters',
         icon: Mail,
-        gradient: 'from-slate-400 via-gray-500 to-zinc-600',
-        glowColor: 'rgba(100, 116, 139, 0.4)',
-        orbColor: '#64748b',
-        description: 'Words unspoken'
+        bgColor: 'bg-slate-500',
+        lightBg: 'bg-slate-50 dark:bg-slate-900/20',
+        shadowColor: 'shadow-slate-500/30',
+        hoverShadow: 'hover:shadow-slate-500/50',
+        glowColor: 'rgba(100, 116, 139, 0.6)',
+        ringColor: 'ring-slate-500',
+        description: 'Words left unspoken'
     },
     {
         id: 'sacrifice',
         label: 'Sacrifices',
         icon: Heart,
-        gradient: 'from-rose-400 via-red-500 to-pink-600',
-        glowColor: 'rgba(244, 63, 94, 0.4)',
-        orbColor: '#f43f5e',
+        bgColor: 'bg-rose-500',
+        lightBg: 'bg-rose-50 dark:bg-rose-900/20',
+        shadowColor: 'shadow-rose-500/30',
+        hoverShadow: 'hover:shadow-rose-500/50',
+        glowColor: 'rgba(244, 63, 94, 0.6)',
+        ringColor: 'ring-rose-500',
         description: 'Given from the heart'
     },
     {
         id: 'confession',
         label: 'Dreams',
         icon: Sparkles,
-        gradient: 'from-violet-400 via-purple-500 to-fuchsia-600',
-        glowColor: 'rgba(139, 92, 246, 0.4)',
-        orbColor: '#8b5cf6',
+        bgColor: 'bg-purple-500',
+        lightBg: 'bg-purple-50 dark:bg-purple-900/20',
+        shadowColor: 'shadow-purple-500/30',
+        hoverShadow: 'hover:shadow-purple-500/50',
+        glowColor: 'rgba(168, 85, 247, 0.6)',
+        ringColor: 'ring-purple-500',
         description: 'Hopes & aspirations'
     },
     {
         id: 'other',
         label: 'Other Tales',
         icon: BookOpen,
-        gradient: 'from-amber-400 via-orange-500 to-red-600',
-        glowColor: 'rgba(245, 158, 11, 0.4)',
-        orbColor: '#f59e0b',
+        bgColor: 'bg-amber-500',
+        lightBg: 'bg-amber-50 dark:bg-amber-900/20',
+        shadowColor: 'shadow-amber-500/30',
+        hoverShadow: 'hover:shadow-amber-500/50',
+        glowColor: 'rgba(245, 158, 11, 0.6)',
+        ringColor: 'ring-amber-500',
         description: 'Unique stories'
     },
 ];
 
 export default function StoryTypeShowcase({ selectedCategory, onSelectCategory }) {
     const [hoveredCard, setHoveredCard] = useState(null);
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-    const handleMouseMove = (e, cardId) => {
-        const card = e.currentTarget;
-        const rect = card.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width;
-        const y = (e.clientY - rect.top) / rect.height;
-        setMousePosition({ x, y });
-    };
 
     return (
-        <div className="story-showcase-container">
+        <div className="story-showcase-container relative">
             {/* Floating background orbs */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-3xl">
                 <div className="floating-orb orb-1" />
                 <div className="floating-orb orb-2" />
                 <div className="floating-orb orb-3" />
             </div>
 
             {/* Cards Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 relative z-10">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 relative z-10 p-2 sm:p-4">
                 {storyCategories.map((category, index) => {
                     const Icon = category.icon;
                     const isHovered = hoveredCard === category.id;
                     const isSelected = selectedCategory === category.id;
-
-                    // 3D tilt calculation
-                    const tiltX = isHovered ? (mousePosition.y - 0.5) * 20 : 0;
-                    const tiltY = isHovered ? (mousePosition.x - 0.5) * -20 : 0;
 
                     return (
                         <button
@@ -108,240 +113,213 @@ export default function StoryTypeShowcase({ selectedCategory, onSelectCategory }
                             onClick={() => onSelectCategory(category.id)}
                             onMouseEnter={() => setHoveredCard(category.id)}
                             onMouseLeave={() => setHoveredCard(null)}
-                            onMouseMove={(e) => handleMouseMove(e, category.id)}
-                            className="story-card-3d group"
+                            className={`
+                                story-card-modern group relative
+                                flex flex-col items-center
+                                p-4 sm:p-5
+                                rounded-2xl sm:rounded-3xl
+                                bg-white/80 dark:bg-gray-800/80
+                                backdrop-blur-sm
+                                border border-white/60 dark:border-gray-700/60
+                                transition-all duration-300 ease-out
+                                ${isSelected
+                                    ? `ring-2 ${category.ringColor} ring-offset-2 dark:ring-offset-gray-900 shadow-xl ${category.shadowColor}`
+                                    : 'shadow-lg hover:shadow-xl'
+                                }
+                                ${isHovered && !isSelected ? 'scale-[1.03] -translate-y-1' : ''}
+                                focus:outline-none focus:ring-2 focus:${category.ringColor} focus:ring-offset-2
+                            `}
                             style={{
-                                '--index': index,
-                                '--glow-color': category.glowColor,
-                                '--orb-color': category.orbColor,
-                                transform: `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) ${isHovered ? 'translateZ(20px)' : 'translateZ(0)'}`,
-                                animationDelay: `${index * 0.1}s`,
+                                animationDelay: `${index * 0.08}s`,
                             }}
+                            aria-label={`View ${category.label}`}
+                            aria-pressed={isSelected}
                         >
-                            {/* Animated gradient border */}
-                            <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${category.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm`} />
-
-                            {/* Glass card */}
-                            <div className={`
-                                relative overflow-hidden
-                                bg-white/70 dark:bg-gray-900/70
-                                backdrop-blur-xl
-                                rounded-2xl
-                                border border-white/50 dark:border-gray-700/50
-                                p-5
-                                transition-all duration-500
-                                ${isSelected ? 'ring-2 ring-primary-500 ring-offset-2 dark:ring-offset-gray-900' : ''}
-                                ${isHovered ? 'bg-white/90 dark:bg-gray-800/90 shadow-2xl' : 'shadow-lg'}
-                            `}>
-                                {/* Glowing orb background */}
-                                <div
-                                    className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-60 transition-all duration-700"
-                                    style={{ background: category.glowColor }}
-                                />
-
-                                {/* Floating particles on hover */}
-                                {isHovered && (
-                                    <div className="particles-container">
-                                        {[...Array(6)].map((_, i) => (
-                                            <span
-                                                key={i}
-                                                className="floating-particle"
-                                                style={{
-                                                    '--delay': `${i * 0.2}s`,
-                                                    '--x': `${Math.random() * 100}%`,
-                                                    background: category.orbColor,
-                                                }}
-                                            />
-                                        ))}
-                                    </div>
-                                )}
-
-                                {/* Icon container with gradient background */}
-                                <div className={`
-                                    relative z-10
-                                    w-14 h-14 mx-auto mb-3
-                                    rounded-xl
-                                    bg-gradient-to-br ${category.gradient}
-                                    flex items-center justify-center
-                                    shadow-lg
-                                    transform transition-all duration-500
-                                    ${isHovered ? 'scale-110 rotate-3 shadow-2xl' : ''}
+                            {/* Glow effect behind icon on hover */}
+                            <div
+                                className={`
+                                    absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2
+                                    w-20 h-20 rounded-full blur-2xl
+                                    transition-opacity duration-500
+                                    ${isHovered || isSelected ? 'opacity-60' : 'opacity-0'}
                                 `}
-                                    style={{
-                                        boxShadow: isHovered ? `0 20px 40px ${category.glowColor}` : undefined
-                                    }}
-                                >
-                                    <Icon className="w-7 h-7 text-white" strokeWidth={2} />
+                                style={{ background: category.glowColor }}
+                            />
 
-                                    {/* Shine effect */}
-                                    <div className="absolute inset-0 rounded-xl overflow-hidden">
-                                        <div className="absolute inset-0 bg-gradient-to-tr from-white/30 to-transparent" />
-                                        <div className={`
-                                            absolute -inset-full
-                                            bg-gradient-to-r from-transparent via-white/30 to-transparent
-                                            transform -skew-x-12
-                                            ${isHovered ? 'animate-shine' : 'opacity-0'}
-                                        `} />
-                                    </div>
+                            {/* Circular Icon Container */}
+                            <div className={`
+                                relative z-10
+                                w-14 h-14 sm:w-16 sm:h-16
+                                rounded-full
+                                ${category.bgColor}
+                                flex items-center justify-center
+                                shadow-lg ${category.shadowColor}
+                                transform transition-all duration-300 ease-out
+                                ${isHovered ? 'scale-110 shadow-xl' : ''}
+                                ${isSelected ? 'scale-110' : ''}
+                            `}>
+                                <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" strokeWidth={2} />
+
+                                {/* Shine overlay */}
+                                <div className="absolute inset-0 rounded-full overflow-hidden">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent" />
                                 </div>
 
-                                {/* Label */}
-                                <h3 className={`
-                                    relative z-10
-                                    text-sm font-bold text-center
-                                    text-gray-800 dark:text-white
-                                    mb-1
-                                    transition-all duration-300
-                                    ${isHovered ? 'transform scale-105' : ''}
-                                `}>
-                                    {category.label}
-                                </h3>
-
-                                {/* Description - appears on hover */}
-                                <p className={`
-                                    relative z-10
-                                    text-xs text-center
-                                    text-gray-500 dark:text-gray-400
-                                    transition-all duration-300
-                                    ${isHovered ? 'opacity-100 max-h-10' : 'opacity-0 max-h-0'}
-                                    overflow-hidden
-                                `}>
-                                    {category.description}
-                                </p>
-
-                                {/* Selected indicator */}
-                                {isSelected && (
-                                    <div className="absolute top-2 right-2 w-3 h-3">
-                                        <span className="absolute inset-0 rounded-full bg-primary-500 animate-ping opacity-75" />
-                                        <span className="relative block w-3 h-3 rounded-full bg-primary-500" />
-                                    </div>
+                                {/* Pulsing ring on hover */}
+                                {(isHovered || isSelected) && (
+                                    <div className={`absolute inset-0 rounded-full ${category.bgColor} animate-ping-slow opacity-30`} />
                                 )}
-
-                                {/* Bottom highlight line */}
-                                <div className={`
-                                    absolute bottom-0 left-0 right-0 h-1
-                                    bg-gradient-to-r ${category.gradient}
-                                    transform origin-left transition-transform duration-500
-                                    ${isHovered || isSelected ? 'scale-x-100' : 'scale-x-0'}
-                                `} />
                             </div>
+
+                            {/* Label */}
+                            <h3 className={`
+                                relative z-10
+                                mt-3 sm:mt-4
+                                text-xs sm:text-sm font-semibold text-center
+                                text-gray-800 dark:text-white
+                                transition-all duration-300
+                                ${isHovered ? 'scale-105' : ''}
+                            `}>
+                                {category.label}
+                            </h3>
+
+                            {/* Description - shows on hover */}
+                            <p className={`
+                                relative z-10
+                                text-[10px] sm:text-xs text-center
+                                text-gray-500 dark:text-gray-400
+                                mt-1 leading-tight
+                                transition-all duration-300
+                                ${isHovered ? 'opacity-100 max-h-10' : 'opacity-0 max-h-0'}
+                                overflow-hidden
+                            `}>
+                                {category.description}
+                            </p>
+
+                            {/* Selected checkmark */}
+                            {isSelected && (
+                                <div className="absolute top-2 right-2">
+                                    <div className="relative">
+                                        <span className={`absolute inset-0 rounded-full ${category.bgColor} animate-ping opacity-50`} style={{ width: '12px', height: '12px' }} />
+                                        <span className={`block w-3 h-3 rounded-full ${category.bgColor}`} />
+                                    </div>
+                                </div>
+                            )}
                         </button>
                     );
                 })}
             </div>
 
+            {/* "All Stories" link */}
+            <div className="text-center mt-4 sm:mt-6">
+                <button
+                    onClick={() => onSelectCategory('all')}
+                    className={`
+                        inline-flex items-center gap-2
+                        px-4 py-2 rounded-full
+                        text-sm font-medium
+                        transition-all duration-300
+                        ${selectedCategory === 'all'
+                            ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg'
+                            : 'bg-white/60 dark:bg-gray-800/60 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700'
+                        }
+                    `}
+                    aria-pressed={selectedCategory === 'all'}
+                >
+                    <Sparkles className="w-4 h-4" />
+                    View All Stories
+                </button>
+            </div>
+
             <style>{`
                 .story-showcase-container {
                     position: relative;
-                    padding: 1rem;
                 }
 
-                .story-card-3d {
-                    animation: cardEntrance 0.6s ease-out both;
-                    transition: transform 0.15s ease-out;
-                    transform-style: preserve-3d;
+                .story-card-modern {
+                    animation: cardFadeIn 0.5s ease-out both;
                 }
 
-                @keyframes cardEntrance {
+                @keyframes cardFadeIn {
                     from {
                         opacity: 0;
-                        transform: perspective(1000px) translateY(30px) rotateX(-10deg);
+                        transform: translateY(20px) scale(0.95);
                     }
                     to {
                         opacity: 1;
-                        transform: perspective(1000px) translateY(0) rotateX(0);
+                        transform: translateY(0) scale(1);
                     }
                 }
 
                 .floating-orb {
                     position: absolute;
                     border-radius: 50%;
-                    filter: blur(60px);
-                    animation: floatOrb 20s ease-in-out infinite;
+                    filter: blur(50px);
+                    animation: floatOrb 15s ease-in-out infinite;
                 }
 
                 .orb-1 {
-                    width: 200px;
-                    height: 200px;
-                    background: rgba(251, 146, 60, 0.3);
-                    top: -50px;
-                    right: -50px;
+                    width: 180px;
+                    height: 180px;
+                    background: linear-gradient(135deg, rgba(251, 146, 60, 0.4), rgba(244, 63, 94, 0.3));
+                    top: -40px;
+                    right: -30px;
                     animation-delay: 0s;
                 }
 
                 .orb-2 {
-                    width: 150px;
-                    height: 150px;
-                    background: rgba(168, 85, 247, 0.3);
-                    bottom: -30px;
-                    left: -30px;
-                    animation-delay: -7s;
+                    width: 140px;
+                    height: 140px;
+                    background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(59, 130, 246, 0.3));
+                    bottom: -20px;
+                    left: -20px;
+                    animation-delay: -5s;
                 }
 
                 .orb-3 {
                     width: 100px;
                     height: 100px;
-                    background: rgba(59, 130, 246, 0.3);
-                    top: 50%;
-                    left: 50%;
-                    animation-delay: -14s;
+                    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(6, 182, 212, 0.3));
+                    top: 40%;
+                    right: 20%;
+                    animation-delay: -10s;
                 }
 
                 @keyframes floatOrb {
                     0%, 100% { transform: translate(0, 0) scale(1); }
-                    25% { transform: translate(20px, -20px) scale(1.1); }
-                    50% { transform: translate(-10px, 10px) scale(0.9); }
-                    75% { transform: translate(-20px, -10px) scale(1.05); }
+                    33% { transform: translate(15px, -15px) scale(1.05); }
+                    66% { transform: translate(-10px, 10px) scale(0.95); }
                 }
 
-                .particles-container {
-                    position: absolute;
-                    inset: 0;
-                    overflow: hidden;
-                    border-radius: 1rem;
-                    pointer-events: none;
-                }
-
-                .floating-particle {
-                    position: absolute;
-                    width: 4px;
-                    height: 4px;
-                    border-radius: 50%;
-                    left: var(--x);
-                    bottom: -10px;
-                    animation: floatUp 2s ease-out infinite;
-                    animation-delay: var(--delay);
-                }
-
-                @keyframes floatUp {
+                @keyframes ping-slow {
                     0% {
-                        transform: translateY(0) scale(0);
-                        opacity: 0;
-                    }
-                    10% {
-                        opacity: 1;
                         transform: scale(1);
+                        opacity: 0.3;
+                    }
+                    50% {
+                        transform: scale(1.4);
+                        opacity: 0;
                     }
                     100% {
-                        transform: translateY(-100px) scale(0.5);
+                        transform: scale(1.4);
                         opacity: 0;
                     }
                 }
 
-                @keyframes shine {
-                    0% { transform: translateX(-100%) skewX(-12deg); }
-                    100% { transform: translateX(200%) skewX(-12deg); }
-                }
-
-                .animate-shine {
-                    animation: shine 1.5s ease-in-out infinite;
+                .animate-ping-slow {
+                    animation: ping-slow 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
                 }
 
                 /* Dark mode adjustments */
                 .dark .floating-orb {
-                    opacity: 0.5;
+                    opacity: 0.4;
+                }
+
+                .dark .story-card-modern {
+                    background: rgba(31, 41, 55, 0.85);
                 }
             `}</style>
         </div>
     );
 }
+
