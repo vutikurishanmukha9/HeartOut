@@ -160,9 +160,6 @@ export default function CreatePost() {
 
                 <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12 animate-slide-up">
-                        <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-white/30 dark:border-gray-700/30 mb-6">
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Step 1 of 2</span>
-                        </div>
 
                         <h1 className="text-5xl font-bold mb-4">
                             <span className="text-gray-900 dark:text-white">What's Your </span>
@@ -214,9 +211,6 @@ export default function CreatePost() {
                                     <span className="text-gray-900 dark:text-white">Write Your </span>
                                     <span className="text-gradient">Story</span>
                                 </h1>
-                                <div className="px-4 py-1.5 rounded-full bg-gradient-to-r from-primary-500/20 to-secondary-500/20 border border-primary-300/50 dark:border-primary-700/50 backdrop-blur-sm">
-                                    <span className="text-sm font-semibold text-gradient">Step 2 of 2</span>
-                                </div>
                             </div>
                             <p className="text-lg text-gray-600 dark:text-gray-400">
                                 Share your authentic experience with the world
