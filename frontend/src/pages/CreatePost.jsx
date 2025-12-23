@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { PenTool, Save, Send, ArrowLeft, Sparkles, Clock, Hash, Check, X, Heart, Lightbulb, AlertCircle } from 'lucide-react';
 import StoryTypeSelector from '../components/StoryTypeSelector';
 import AnonymousToggle from '../components/AnonymousToggle';
@@ -7,8 +7,10 @@ import { getApiUrl } from '../config/api';
 
 export default function CreatePost() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const textareaRef = useRef(null);
     const [step, setStep] = useState(1);
+    const [draftId, setDraftId] = useState(null);
     const [formData, setFormData] = useState({
         title: '',
         content: '',
@@ -22,6 +24,40 @@ export default function CreatePost() {
     const [showPublishModal, setShowPublishModal] = useState(false);
     const [autoSaved, setAutoSaved] = useState(false);
     const [lastSaved, setLastSaved] = useState(null);
+
+    // Load draft if editing existing one
+    useEffect(() => {
+        const draftParam = searchParams.get('draft');
+        if (draftParam) {
+            setDraftId(draftParam);
+            loadDraft(draftParam);
+        }
+    }, [searchParams]);
+
+    const loadDraft = async (id) => {
+        try {
+            const token = localStorage.getItem('access_token');
+            const response = await fetch(getApiUrl(`/api/posts/${id}`), {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                const story = data.story;
+                setFormData({
+                    title: story.title || '',
+                    content: story.content || '',
+                    story_type: story.story_type || '',
+                    is_anonymous: story.is_anonymous ?? true,
+                    tags: story.tags || [],
+                    status: story.status || 'draft'
+                });
+                // Skip to step 2 if story type is set
+                if (story.story_type) setStep(2);
+            }
+        } catch (error) {
+            console.error('Failed to load draft:', error);
+        }
+    };
 
     // Auto-save draft every 30 seconds
     useEffect(() => {
@@ -43,8 +79,14 @@ export default function CreatePost() {
 
         setSubmitting(true);
         try {
-            const response = await fetch(getApiUrl('/api/posts'), {
-                method: 'POST',
+            // Use PUT for editing existing draft, POST for new story
+            const url = draftId
+                ? getApiUrl(`/api/posts/${draftId}`)
+                : getApiUrl('/api/posts');
+            const method = draftId ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`
