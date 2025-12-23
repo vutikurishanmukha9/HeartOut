@@ -68,6 +68,8 @@ def create_app(config_class=Config):
                     "ALTER TABLE posts ADD COLUMN IF NOT EXISTS unique_readers INTEGER DEFAULT 0",
                     "ALTER TABLE posts ADD COLUMN IF NOT EXISTS rank_score FLOAT DEFAULT 0.0",
                     "ALTER TABLE posts ADD COLUMN IF NOT EXISTS last_ranked_at TIMESTAMP",
+                    "ALTER TABLE posts ADD COLUMN IF NOT EXISTS support_count INTEGER DEFAULT 0",
+                    "ALTER TABLE posts ADD COLUMN IF NOT EXISTS comment_count INTEGER DEFAULT 0",
                 ]
                 for sql in columns_to_add:
                     try:

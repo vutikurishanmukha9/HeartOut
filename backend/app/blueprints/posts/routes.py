@@ -38,8 +38,12 @@ def create_story():
         }), 201
     except Exception as e:
         db.session.rollback()
-        current_app.logger.error(f"Story creation error: {str(e)}")
-        return jsonify({'error': 'Story creation failed'}), 500
+        error_msg = str(e)
+        current_app.logger.error(f"Story creation error: {error_msg}")
+        # Include hint for debugging in development
+        if current_app.debug:
+            return jsonify({'error': f'Story creation failed: {error_msg}'}), 500
+        return jsonify({'error': 'Story creation failed. Please try again.'}), 500
 
 
 @bp.route('/', methods=['GET'])
