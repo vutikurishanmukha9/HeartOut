@@ -59,11 +59,13 @@ export default function CreatePost() {
                 const data = await response.json();
                 navigate(publishNow ? `/feed/story/${data.story.id}` : '/feed/drafts');
             } else {
-                alert('Failed to create story');
+                const errorData = await response.json().catch(() => ({}));
+                const errorMsg = errorData.error || errorData.errors?.title?.[0] || errorData.errors?.content?.[0] || 'Failed to create story';
+                alert(errorMsg);
             }
         } catch (error) {
             console.error('Error creating story:', error);
-            alert('An error occurred');
+            alert('Network error. Please check your connection.');
         } finally {
             setSubmitting(false);
             setShowPublishModal(false);
