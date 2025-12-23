@@ -58,21 +58,21 @@ def validate_environment(app):
                 fallback_value = DEV_FALLBACKS[var]()
                 os.environ[var] = fallback_value
                 app.config[var] = fallback_value
-                warnings.append(f"⚠️  {var} not set. Using secure random value for development.")
+                warnings.append(f"WARNING: {var} not set. Using secure random value for development.")
             else:
                 missing_required.append(f"  - {var}: {description}")
         else:
             # Validate key strength
             if var in ['SECRET_KEY', 'JWT_SECRET_KEY'] and len(value) < 32:
                 if is_development:
-                    warnings.append(f"⚠️  {var} is weak (< 32 chars). Consider using a stronger key.")
+                    warnings.append(f"WARNING: {var} is weak (<32 chars). Consider using a stronger key.")
                 else:
                     missing_required.append(f"  - {var}: Must be at least 32 characters for production")
     
     # Check recommended variables (warnings only)
     for var, description in RECOMMENDED_VARS.items():
         if not os.environ.get(var):
-            warnings.append(f"💡 {var} not set: {description}")
+            warnings.append(f"INFO: {var} not set: {description}")
     
     # Print warnings
     if warnings:

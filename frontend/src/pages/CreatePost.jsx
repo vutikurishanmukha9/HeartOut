@@ -15,7 +15,7 @@ export default function CreatePost() {
         title: '',
         content: '',
         story_type: '',
-        is_anonymous: true,
+        is_anonymous: false,
         tags: [],
         status: 'draft'
     });
@@ -220,7 +220,7 @@ export default function CreatePost() {
                                 </div>
                             </div>
                             <p className="text-lg text-gray-600 dark:text-gray-400">
-                                Share your authentic experience with the world ✨
+                                Share your authentic experience with the world
                             </p>
                         </div>
 
@@ -458,7 +458,7 @@ export default function CreatePost() {
                                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${formData.is_anonymous
                                             ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'
                                             : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'}`}>
-                                            {formData.is_anonymous ? '🔒 Anonymous' : '🌍 Public'}
+                                            {formData.is_anonymous ? 'Anonymous' : 'Public'}
                                         </span>
                                     </div>
                                 </div>

@@ -10,7 +10,7 @@ with app.app_context():
     Post.query.delete()
     User.query.delete()
     db.session.commit()
-    print("✅ All test data cleared successfully!")
+    print("All test data cleared successfully!")
     print("   - Users: 0")
     print("   - Stories: 0")
     print("   - Comments: 0")
