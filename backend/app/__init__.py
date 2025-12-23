@@ -201,6 +201,49 @@ def create_app(config_class=Config):
         
         return {'status': 'complete', 'results': results}, 200
     
+    # Debug endpoint to check database columns on posts table
+    @app.route('/api/check-db')
+    def check_database():
+        """Check all columns in posts table to identify missing columns"""
+        from sqlalchemy import text
+        results = {
+            'status': 'checking',
+            'posts_table_columns': [],
+            'expected_columns': [
+                'id', 'public_id', 'title', 'content', 'status', 'story_type',
+                'is_anonymous', 'tags', 'reading_time', 'view_count', 'is_featured',
+                'featured_at', 'created_at', 'updated_at', 'published_at', 'flagged_count',
+                'save_count', 'completion_rate', 'avg_read_time', 'reread_count',
+                'unique_readers', 'rank_score', 'last_ranked_at', 'support_count',
+                'comment_count', 'user_id'
+            ],
+            'missing_columns': [],
+            'test_insert_error': None
+        }
+        
+        try:
+            # Get actual columns from database
+            result = db.session.execute(text("""
+                SELECT column_name FROM information_schema.columns 
+                WHERE table_name = 'posts' ORDER BY ordinal_position
+            """))
+            actual_columns = [row[0] for row in result.fetchall()]
+            results['posts_table_columns'] = actual_columns
+            
+            # Find missing columns
+            results['missing_columns'] = [col for col in results['expected_columns'] if col not in actual_columns]
+            
+            if results['missing_columns']:
+                results['status'] = 'missing_columns'
+            else:
+                results['status'] = 'all_columns_present'
+                
+        except Exception as e:
+            results['status'] = 'error'
+            results['error'] = str(e)
+        
+        return results, 200
+    
     # Logging setup
     if not app.debug and not app.testing:
         if not os.path.exists('logs'):
