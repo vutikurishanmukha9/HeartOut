@@ -185,16 +185,22 @@ def get_story(story_id):
     if not story:
         return jsonify({'error': 'Story not found'}), 404
     
+    # For non-published stories, only the author can view
     if story.status != PostStatus.PUBLISHED:
+        # Try to get current user from JWT (if token provided)
         try:
+            from flask_jwt_extended import verify_jwt_in_request
+            verify_jwt_in_request(optional=True)
             current_user_id = get_jwt_identity()
-            if not current_user_id or story.author.public_id != current_user_id:
+            user = User.query.filter_by(public_id=current_user_id).first() if current_user_id else None
+            if not user or story.user_id != user.id:
                 return jsonify({'error': 'Story not found'}), 404
         except:
             return jsonify({'error': 'Story not found'}), 404
     
-    # Increment view count
-    StoryService.increment_view_count(story)
+    # Increment view count only for published stories
+    if story.status == PostStatus.PUBLISHED:
+        StoryService.increment_view_count(story)
     
     return jsonify({'story': story.to_dict()})
 

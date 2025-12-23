@@ -37,11 +37,13 @@ export default function CreatePost() {
     const loadDraft = async (id) => {
         try {
             const token = localStorage.getItem('access_token');
+            console.log('Loading draft:', id);
             const response = await fetch(getApiUrl(`/api/posts/${id}`), {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) {
                 const data = await response.json();
+                console.log('Draft loaded:', data);
                 const story = data.story;
                 setFormData({
                     title: story.title || '',
@@ -53,6 +55,8 @@ export default function CreatePost() {
                 });
                 // Skip to step 2 if story type is set
                 if (story.story_type) setStep(2);
+            } else {
+                console.error('Failed to load draft, status:', response.status);
             }
         } catch (error) {
             console.error('Failed to load draft:', error);
