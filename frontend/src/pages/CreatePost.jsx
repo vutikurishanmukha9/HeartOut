@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { PenTool, Save, Send, ArrowLeft, Sparkles, Clock, Hash, Check, X, Heart, Lightbulb, AlertCircle } from 'lucide-react';
+import { PenTool, Save, Send, ArrowLeft, Sparkles, Clock, Hash, Check, X, Heart, Lightbulb, AlertCircle, Shield } from 'lucide-react';
 import StoryTypeSelector from '../components/StoryTypeSelector';
 import AnonymousToggle from '../components/AnonymousToggle';
 import { getApiUrl } from '../config/api';
@@ -191,57 +191,68 @@ export default function CreatePost() {
 
     // Step 2: Write Story
     return (
-        <div className="min-h-screen bg-gradient-to-br from-rose-50/50 via-orange-50/30 to-purple-50/50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 py-8">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-rose-50/50 via-orange-50/30 to-purple-50/50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 py-8 relative overflow-hidden">
+            {/* Decorative background elements */}
+            <div className="absolute top-20 -left-20 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl animate-float pointer-events-none" />
+            <div className="absolute bottom-40 -right-20 w-96 h-96 bg-accent-400/10 rounded-full blur-3xl animate-float-slow pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-secondary-400/5 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8 animate-slide-up">
                     <button
                         onClick={() => setStep(1)}
-                        className="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors mb-4"
+                        className="group inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all mb-6"
                     >
-                        <ArrowLeft className="w-4 h-4" />
-                        Change Story Type
+                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                        <span className="text-sm font-medium">Change Story Type</span>
                     </button>
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between flex-wrap gap-4">
                         <div>
-                            <div className="flex items-center gap-3 mb-2">
-                                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                                    Write Your Story
+                            <div className="flex items-center gap-4 mb-3">
+                                <h1 className="text-4xl font-bold">
+                                    <span className="text-gray-900 dark:text-white">Write Your </span>
+                                    <span className="text-gradient">Story</span>
                                 </h1>
-                                <div className="px-3 py-1 rounded-full bg-gradient-to-r from-primary-500/10 to-secondary-500/10 border border-primary-200 dark:border-primary-800">
-                                    <span className="text-sm font-medium text-gradient">Step 2 of 2</span>
+                                <div className="px-4 py-1.5 rounded-full bg-gradient-to-r from-primary-500/20 to-secondary-500/20 border border-primary-300/50 dark:border-primary-700/50 backdrop-blur-sm">
+                                    <span className="text-sm font-semibold text-gradient">Step 2 of 2</span>
                                 </div>
                             </div>
-                            <p className="text-gray-600 dark:text-gray-400">
-                                Share your authentic experience with the world
+                            <p className="text-lg text-gray-600 dark:text-gray-400">
+                                Share your authentic experience with the world ✨
                             </p>
                         </div>
 
                         {/* Auto-save indicator */}
-                        <div className="flex items-center gap-2 text-sm">
+                        <div className="flex items-center gap-2 text-sm px-4 py-2 rounded-full bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-white/30 dark:border-gray-700/30">
                             {autoSaved && (
-                                <span className="flex items-center gap-1 text-green-600 dark:text-green-400 animate-fade-in">
-                                    <Check className="w-4 h-4" />
-                                    Saved
+                                <span className="flex items-center gap-2 text-green-600 dark:text-green-400 animate-fade-in">
+                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                    Auto-saved
                                 </span>
                             )}
                             {lastSaved && !autoSaved && (
-                                <span className="text-gray-400">
-                                    Last saved {lastSaved.toLocaleTimeString()}
+                                <span className="text-gray-500 dark:text-gray-400">
+                                    <Clock className="w-4 h-4 inline mr-1" />
+                                    {lastSaved.toLocaleTimeString()}
                                 </span>
+                            )}
+                            {!lastSaved && !autoSaved && (
+                                <span className="text-gray-400">Draft not saved</span>
                             )}
                         </div>
                     </div>
                 </div>
 
-                <div className="grid lg:grid-cols-3 gap-6">
+                <div className="grid lg:grid-cols-3 gap-8">
                     {/* Main Editor */}
                     <div className="lg:col-span-2 space-y-6 animate-slide-up">
-                        <div className="glass-card rounded-2xl p-6 space-y-6">
+                        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl p-8 shadow-xl shadow-gray-200/50 dark:shadow-gray-900/50 border border-white/50 dark:border-gray-700/50 space-y-8">
                             {/* Title Input */}
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                            <div className="group">
+                                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                                    <PenTool className="w-4 h-4 text-primary-500" />
                                     Title <span className="text-primary-500">*</span>
                                 </label>
                                 <div className="relative">
@@ -250,20 +261,23 @@ export default function CreatePost() {
                                         value={formData.title}
                                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                         placeholder="Give your story a compelling title..."
-                                        className="w-full px-4 py-4 text-xl font-semibold border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white/50 dark:bg-gray-800/50 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-0 focus:border-primary-500 transition-all duration-300"
+                                        className="w-full px-5 py-4 text-xl font-semibold border-2 border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-900/50 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-0 focus:border-primary-500 focus:shadow-lg focus:shadow-primary-500/10 transition-all duration-300"
                                         maxLength={200}
                                     />
-                                    {/* Progress bar */}
-                                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                    {/* Animated gradient border on focus */}
+                                    <div className="absolute inset-0 -z-10 rounded-2xl bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 opacity-0 group-focus-within:opacity-100 blur-sm transition-opacity duration-300" />
+                                </div>
+                                <div className="flex justify-between items-center mt-2 px-1">
+                                    <div className="h-1 flex-1 max-w-32 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                                         <div
-                                            className={`h-full transition-all duration-300 ${titleProgress > 80 ? 'bg-red-500' : titleProgress > 50 ? 'bg-yellow-500' : 'bg-primary-500'}`}
+                                            className={`h-full transition-all duration-300 rounded-full ${titleProgress > 80 ? 'bg-gradient-to-r from-red-400 to-red-500' : titleProgress > 50 ? 'bg-gradient-to-r from-yellow-400 to-orange-500' : 'bg-gradient-to-r from-primary-400 to-secondary-500'}`}
                                             style={{ width: `${titleProgress}%` }}
                                         />
                                     </div>
+                                    <span className={`text-xs font-medium ${titleProgress > 80 ? 'text-red-500' : 'text-gray-400'}`}>
+                                        {formData.title.length}/200
+                                    </span>
                                 </div>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-right">
-                                    {formData.title.length}/200 characters
-                                </p>
                             </div>
 
                             {/* Content Textarea */}
@@ -372,8 +386,13 @@ export default function CreatePost() {
                     {/* Sidebar */}
                     <div className="space-y-6 animate-slide-up stagger-2">
                         {/* Anonymous Toggle Card */}
-                        <div className="glass-card rounded-2xl p-5">
-                            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Privacy</h3>
+                        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl p-6 shadow-lg shadow-gray-200/30 dark:shadow-gray-900/30 border border-white/50 dark:border-gray-700/50">
+                            <div className="flex items-center gap-2 mb-4">
+                                <div className="p-1.5 rounded-lg bg-primary-100 dark:bg-primary-900/30">
+                                    <Shield className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                                </div>
+                                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Privacy Settings</h3>
+                            </div>
                             <AnonymousToggle
                                 isAnonymous={formData.is_anonymous}
                                 onChange={(value) => setFormData({ ...formData, is_anonymous: value })}
@@ -381,37 +400,67 @@ export default function CreatePost() {
                         </div>
 
                         {/* Writing Tips Card */}
-                        <div className="glass-card rounded-2xl p-5">
-                            <div className="flex items-center gap-2 mb-4">
-                                <Lightbulb className="w-5 h-5 text-amber-500" />
-                                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Writing Tip</h3>
+                        <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 backdrop-blur-xl rounded-2xl p-6 border border-amber-200/50 dark:border-amber-700/30">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="p-2 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-amber-500/30">
+                                    <Lightbulb className="w-5 h-5 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Writing Tip</h3>
+                                    <p className="text-xs text-amber-600 dark:text-amber-400">For your story type</p>
+                                </div>
                             </div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                                {writingTips[formData.story_type] || writingTips.other}
+                            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic">
+                                "{writingTips[formData.story_type] || writingTips.other}"
                             </p>
                         </div>
 
                         {/* Preview Stats Card */}
-                        <div className="glass-card rounded-2xl p-5">
-                            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Story Preview</h3>
-                            <div className="space-y-3">
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-gray-500 dark:text-gray-400">Word count</span>
-                                    <span className="font-medium text-gray-900 dark:text-white">{wordCount}</span>
+                        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl p-6 shadow-lg shadow-gray-200/30 dark:shadow-gray-900/30 border border-white/50 dark:border-gray-700/50">
+                            <div className="flex items-center gap-2 mb-5">
+                                <div className="p-1.5 rounded-lg bg-secondary-100 dark:bg-secondary-900/30">
+                                    <Sparkles className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
                                 </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-gray-500 dark:text-gray-400">Reading time</span>
-                                    <span className="font-medium text-gray-900 dark:text-white">{readingTime} min</span>
+                                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Story Preview</h3>
+                            </div>
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <PenTool className="w-4 h-4 text-gray-400" />
+                                        <span className="text-sm text-gray-500 dark:text-gray-400">Words</span>
+                                    </div>
+                                    <span className="text-lg font-bold text-gradient">{wordCount}</span>
                                 </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-gray-500 dark:text-gray-400">Tags</span>
-                                    <span className="font-medium text-gray-900 dark:text-white">{formData.tags.length}/5</span>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <Clock className="w-4 h-4 text-gray-400" />
+                                        <span className="text-sm text-gray-500 dark:text-gray-400">Read time</span>
+                                    </div>
+                                    <span className="text-lg font-bold text-gray-900 dark:text-white">{readingTime} min</span>
                                 </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-gray-500 dark:text-gray-400">Visibility</span>
-                                    <span className="font-medium text-gray-900 dark:text-white">
-                                        {formData.is_anonymous ? 'Anonymous' : 'Public'}
-                                    </span>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <Hash className="w-4 h-4 text-gray-400" />
+                                        <span className="text-sm text-gray-500 dark:text-gray-400">Tags</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        {[...Array(5)].map((_, i) => (
+                                            <div
+                                                key={i}
+                                                className={`w-2 h-2 rounded-full transition-colors ${i < formData.tags.length ? 'bg-primary-500' : 'bg-gray-200 dark:bg-gray-700'}`}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="pt-3 border-t border-gray-100 dark:border-gray-700/50">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm text-gray-500 dark:text-gray-400">Visibility</span>
+                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${formData.is_anonymous
+                                            ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'
+                                            : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'}`}>
+                                            {formData.is_anonymous ? '🔒 Anonymous' : '🌍 Public'}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
