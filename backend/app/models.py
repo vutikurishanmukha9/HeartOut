@@ -105,6 +105,12 @@ class User(db.Model):
         }
         
         if include_sensitive:
+            # Get total_stories with error handling
+            try:
+                total_stories = self.posts.filter_by(status=PostStatus.PUBLISHED).count()
+            except Exception:
+                total_stories = 0
+            
             data.update({
                 'email': self.email,
                 'is_verified': self.is_verified,
@@ -112,7 +118,7 @@ class User(db.Model):
                 'author_bio': self.author_bio,
                 'website_url': self.website_url,
                 'social_links': self.social_links or {},
-                'total_stories': self.posts.filter_by(status=PostStatus.PUBLISHED).count()
+                'total_stories': total_stories
             })
         
         return data

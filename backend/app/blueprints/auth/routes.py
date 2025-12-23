@@ -93,20 +93,40 @@ def login():
     if not user.is_active:
         return jsonify({'error': 'Account is deactivated'}), 401
     
-    # Update last login
-    user.last_login = datetime.now(timezone.utc)
-    db.session.commit()
-    
-    # Create tokens
-    access_token = create_access_token(identity=user.public_id)
-    refresh_token = create_refresh_token(identity=user.public_id)
-    
-    return jsonify({
-        'message': 'Login successful',
-        'user': user.to_dict(include_sensitive=True),
-        'access_token': access_token,
-        'refresh_token': refresh_token
-    })
+    try:
+        # Update last login
+        user.last_login = datetime.now(timezone.utc)
+        db.session.commit()
+        
+        # Create tokens
+        access_token = create_access_token(identity=user.public_id)
+        refresh_token = create_refresh_token(identity=user.public_id)
+        
+        # Get user data with error handling
+        try:
+            user_data = user.to_dict(include_sensitive=True)
+        except Exception as e:
+            current_app.logger.error(f"Error in user.to_dict: {str(e)}")
+            # Fallback to basic user data
+            user_data = {
+                'id': user.public_id,
+                'username': user.username,
+                'email': user.email,
+                'display_name': user.display_name,
+                'role': user.role.value if user.role else 'user'
+            }
+        
+        return jsonify({
+            'message': 'Login successful',
+            'user': user_data,
+            'access_token': access_token,
+            'refresh_token': refresh_token
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Login error: {str(e)}")
+        return jsonify({'error': 'Login failed. Please try again.'}), 500
 
 @bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
