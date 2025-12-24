@@ -9,6 +9,7 @@ A modern, premium storytelling platform for authentic personal expression.
 [![GitHub](https://img.shields.io/badge/GitHub-vutikurishanmukha9%2FHeartOut-blue)](https://github.com/vutikurishanmukha9/HeartOut)
 [![CI](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml/badge.svg)](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/Tests-144+-brightgreen)](https://github.com/vutikurishanmukha9/HeartOut/actions)
+[![Coverage](https://img.shields.io/badge/Coverage-70%25-yellow)](https://github.com/vutikurishanmukha9/HeartOut)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![React](https://img.shields.io/badge/React-18+-61DAFB.svg)](https://react.dev)
@@ -292,6 +293,28 @@ npm test
 | SupportButton | 9 | Reactions, Dropdown |
 | AuthContext | 7 | Provider, State |
 
+### Test Coverage
+
+```bash
+# Backend coverage
+cd backend && pytest --cov=app --cov-report=term
+
+# Frontend coverage  
+cd frontend && npm run test:coverage
+```
+
+| Module | Coverage | Notes |
+|--------|----------|-------|
+| **Backend Total** | **70%** | Core business logic |
+| models.py | 98% | Database models |
+| ranking_service.py | 99% | Smart ranking algorithm |
+| password_validator.py | 97% | Authentication |
+| auth routes | 68% | Login, register, profile |
+| **Frontend Total** | **15%** | Utility functions tested |
+| SupportButton | 95% | Reactions |
+| HelplineCard | 97% | Cards |
+| StoryTypeSelector | 85% | Type picker |
+
 ### Integration Tests
 Complete user flow tests covering end-to-end journeys.
 ```bash
@@ -335,6 +358,31 @@ locust -f tests/test_load.py --host=http://localhost:5000
 | ActiveUser | Creating content, reactions, comments |
 | HeavyUser | Pagination stress, category filtering |
 
+**Performance Benchmarks (Target):**
+| Endpoint | Target Avg | Target 95th %ile | Concurrent Users |
+|----------|-----------|-----------------|------------------|
+| GET /api/posts | <150ms | <400ms | 50+ |
+| GET /api/posts/:id | <100ms | <300ms | 50+ |
+| POST /api/auth/login | <200ms | <500ms | 25+ |
+| POST /api/posts | <300ms | <800ms | 25+ |
+
+### Visual Regression Tests (Playwright)
+Screenshot-based visual testing for UI consistency.
+```bash
+cd frontend
+npx playwright test e2e/visual.spec.js
+npx playwright test e2e/visual.spec.js --update-snapshots  # Update baselines
+```
+
+| Page | Tests | Viewport |
+|------|-------|----------|
+| Login/Register | 3 | Desktop, Dark mode |
+| Feed | 1 | Desktop |
+| Profile | 1 | Desktop |
+| Create Story | 1 | Desktop |
+| Mobile Responsive | 2 | iPhone X (375x812) |
+| Components | 2 | Bottom nav, Support button |
+
 ### Security Tests
 Penetration testing for common vulnerabilities.
 ```bash
@@ -342,13 +390,14 @@ cd backend
 pytest tests/test_security.py -v
 ```
 
-| Category | Tests |
-|----------|-------|
-| XSS Prevention | Script injection, event handlers |
-| SQL Injection | Login, search, path injection |
-| Authentication | JWT validation, password strength |
-| Authorization | Cross-user edit/delete prevention |
-| Input Validation | Oversized content, invalid types |
+| Category | Tests | Coverage |
+|----------|-------|----------|
+| XSS Prevention | 3 | Script injection, event handlers, iframes |
+| SQL Injection | 3 | Login, search, path parameters |
+| Authentication | 3 | JWT validation, password strength, token expiry |
+| Authorization | 2 | Cross-user edit/delete prevention |
+| Input Validation | 3 | Oversized content, invalid types, special chars |
+| **Total** | **14** | Common OWASP vulnerabilities |
 
 
 ---
