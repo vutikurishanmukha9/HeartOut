@@ -174,7 +174,7 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
           role="menu"
           aria-label="Choose a reaction"
           className={`
-            absolute bottom-full left-1/2 -translate-x-1/2 mb-3 
+            absolute bottom-full left-0 sm:left-1/2 sm:-translate-x-1/2 mb-3 
             bg-white dark:bg-gray-800 
             rounded-2xl shadow-xl 
             border border-gray-100 dark:border-gray-700 

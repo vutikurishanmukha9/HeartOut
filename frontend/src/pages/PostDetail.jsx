@@ -287,7 +287,7 @@ export default function PostDetail() {
             {/* Dynamic SEO for social sharing */}
             <StorySEO story={story} />
 
-            <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-24 md:pb-0">
                 {/* Header */}
                 <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -302,7 +302,7 @@ export default function PostDetail() {
                 </div>
 
                 {/* Story Content */}
-                <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-24 md:pb-12">
                     {/* Story Type Badge */}
                     <div className="mb-6">
                         <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${storyType.bgColor} ${storyType.borderColor} border-2`}>

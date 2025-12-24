@@ -7,7 +7,7 @@ export default function SupportFloatingButton() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="fixed bottom-6 left-6 z-50">
+        <div className="fixed bottom-24 md:bottom-6 left-6 z-50">
             {/* Expanded Panel */}
             {isOpen && (
                 <div className="absolute bottom-16 left-0 w-80 sm:w-96 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-slide-up">
