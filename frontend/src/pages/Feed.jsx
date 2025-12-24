@@ -157,16 +157,20 @@ export default function Feed() {
                                     <button
                                         key={option.value}
                                         onClick={() => setSortBy(option.value)}
+                                        title={option.label}
                                         className={`
-                                        flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all duration-300
-                                        ${isActive
-                                                ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg shadow-primary-500/30 scale-105'
-                                                : 'bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-primary-400 hover:shadow-md'
+                                            group relative flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-300
+                                            ${isActive
+                                                ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
+                                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                                             }
-                                    `}
+                                        `}
                                     >
-                                        <Icon className="w-4 h-4" />
-                                        {option.label}
+                                        <Icon className={`w-4 h-4 shrink-0 transition-all duration-300 ${isActive ? 'text-primary-500' : 'group-hover:scale-110 group-hover:text-primary-500'}`} />
+                                        <span className="hidden sm:inline relative">
+                                            {option.label}
+                                            <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+                                        </span>
                                     </button>
                                 );
                             })}
@@ -179,15 +183,20 @@ export default function Feed() {
                             <span className="text-sm font-medium text-gray-500 dark:text-gray-400 shrink-0">Type:</span>
                             <button
                                 onClick={() => setSelectedCategory('all')}
+                                title="All Stories"
                                 className={`
-                                px-5 py-2.5 rounded-xl font-medium transition-all duration-300
-                                ${selectedCategory === 'all'
-                                        ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-lg'
-                                        : 'bg-white/80 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-400'
+                                    group relative px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-300
+                                    ${selectedCategory === 'all'
+                                        ? 'text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800'
+                                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                                     }
-                            `}
+                                `}
                             >
-                                All Stories
+                                <span className="relative">
+                                    <span className="sm:hidden">All</span>
+                                    <span className="hidden sm:inline">All Stories</span>
+                                    <span className={`absolute -bottom-1 left-0 h-0.5 bg-gray-900 dark:bg-white transition-all duration-300 ${selectedCategory === 'all' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+                                </span>
                             </button>
                             <StoryTypeSelector
                                 selected={selectedCategory === 'all' ? '' : selectedCategory}

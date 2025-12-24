@@ -18,7 +18,10 @@ import {
   Heart,
   HeartHandshake,
   FileText,
-  Sparkles
+  Sparkles,
+  Flame,
+  PenLine,
+  BookMarked
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -52,9 +55,9 @@ const Navbar = () => {
   }, [isProfileMenuOpen]);
 
   const navItems = [
-    { name: 'Feed', href: '/feed', icon: Home, active: location.pathname.startsWith('/feed') && location.pathname !== '/feed/create' && location.pathname !== '/feed/drafts' },
-    { name: 'Create', href: '/feed/create', icon: PlusCircle, active: location.pathname === '/feed/create' },
-    { name: 'Drafts', href: '/feed/drafts', icon: FileText, active: location.pathname === '/feed/drafts' }
+    { name: 'Feed', href: '/feed', icon: Flame, active: location.pathname.startsWith('/feed') && location.pathname !== '/feed/create' && location.pathname !== '/feed/drafts' },
+    { name: 'Create', href: '/feed/create', icon: PenLine, active: location.pathname === '/feed/create' },
+    { name: 'Drafts', href: '/feed/drafts', icon: BookMarked, active: location.pathname === '/feed/drafts' }
   ];
 
   if (hasPermission('admin_access') || user?.role === 'admin') {
@@ -97,24 +100,37 @@ const Navbar = () => {
               </span>
             </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-1">
+            {/* Desktop Navigation - Minimalist + Micro-animations */}
+            <div className="hidden md:flex items-center ml-8 space-x-1">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 return (
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`relative flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${item.active
-                      ? 'text-white bg-gradient-to-r from-primary-500 to-secondary-500 shadow-lg shadow-primary-500/30'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/80 dark:hover:bg-gray-800/80'
+                    className={`group relative flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${item.active
+                      ? 'text-primary-600 dark:text-primary-400'
+                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                       }`}
                   >
-                    <Icon className="w-4 h-4" />
-                    <span>{item.name}</span>
+                    {/* Icon with subtle scale on hover */}
+                    <Icon className={`w-4 h-4 transition-all duration-300 ${item.active
+                      ? 'text-primary-500'
+                      : 'group-hover:scale-110 group-hover:text-primary-500'
+                      }`} />
+                    <span className="relative">
+                      {item.name}
+                      {/* Animated underline */}
+                      <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 transition-all duration-300 ${item.active
+                        ? 'w-full'
+                        : 'w-0 group-hover:w-full'
+                        }`} />
+                    </span>
                     {item.name === 'Create' && !item.active && (
-                      <Sparkles className="w-3 h-3 text-secondary-500" />
+                      <Sparkles className="w-3.5 h-3.5 text-secondary-500 opacity-70 group-hover:opacity-100 group-hover:rotate-12 transition-all duration-300" />
                     )}
+                    {/* Subtle background on hover */}
+                    <span className="absolute inset-0 rounded-lg bg-gray-100 dark:bg-gray-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
                   </Link>
                 );
               })}

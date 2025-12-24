@@ -1,11 +1,11 @@
 import React from 'react';
-import { Trophy, Heart, Mail, HeartHandshake, BookOpen, Sparkles, Check } from 'lucide-react';
+import { Medal, CloudRain, Send, Gift, Compass, Shapes, Check } from 'lucide-react';
 
 const storyTypes = [
     {
         value: 'achievement',
         label: 'Achievement',
-        icon: Trophy,
+        icon: Medal,
         description: 'Celebrate your victories and milestones',
         color: 'from-emerald-500 to-green-600',
         bgColor: 'bg-emerald-50 dark:bg-emerald-900/20',
@@ -17,7 +17,7 @@ const storyTypes = [
     {
         value: 'regret',
         label: 'Regret',
-        icon: Heart,
+        icon: CloudRain,
         description: 'Lessons learned from experiences',
         color: 'from-blue-500 to-indigo-600',
         bgColor: 'bg-blue-50 dark:bg-blue-900/20',
@@ -29,7 +29,7 @@ const storyTypes = [
     {
         value: 'unsent_letter',
         label: 'Unsent Letter',
-        icon: Mail,
+        icon: Send,
         description: 'Words you never got to say',
         color: 'from-gray-500 to-slate-600',
         bgColor: 'bg-gray-50 dark:bg-gray-900/20',
@@ -41,7 +41,7 @@ const storyTypes = [
     {
         value: 'sacrifice',
         label: 'Sacrifice',
-        icon: HeartHandshake,
+        icon: Gift,
         description: 'What you gave up for others',
         color: 'from-red-500 to-rose-600',
         bgColor: 'bg-red-50 dark:bg-red-900/20',
@@ -53,7 +53,7 @@ const storyTypes = [
     {
         value: 'life_story',
         label: 'Life Story',
-        icon: BookOpen,
+        icon: Compass,
         description: 'Your personal journey and growth',
         color: 'from-amber-500 to-yellow-600',
         bgColor: 'bg-amber-50 dark:bg-amber-900/20',
@@ -65,7 +65,7 @@ const storyTypes = [
     {
         value: 'other',
         label: 'Other',
-        icon: Sparkles,
+        icon: Shapes,
         description: 'Stories that don\'t fit a category',
         color: 'from-gray-300 to-gray-400',
         bgColor: 'bg-gray-50 dark:bg-gray-900/20',
@@ -79,7 +79,7 @@ const storyTypes = [
 export default function StoryTypeSelector({ selected, onChange, variant = 'cards' }) {
     if (variant === 'tabs') {
         return (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-0.5 sm:gap-1">
                 {storyTypes.map((type) => {
                     const Icon = type.icon;
                     const isSelected = selected === type.value;
@@ -88,16 +88,23 @@ export default function StoryTypeSelector({ selected, onChange, variant = 'cards
                         <button
                             key={type.value}
                             onClick={() => onChange(type.value)}
+                            title={type.label}
                             className={`
-                                flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all duration-300
+                                group relative flex items-center justify-center gap-1.5 px-2.5 sm:px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-300
                                 ${isSelected
-                                    ? `${type.bgColor} ${type.textColor} border-2 ${type.borderColor} shadow-md`
-                                    : 'bg-white/80 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm'
+                                    ? `${type.textColor} ${type.bgColor}`
+                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                                 }
                             `}
                         >
-                            <Icon className="w-4 h-4" />
-                            <span>{type.label}</span>
+                            <Icon className={`w-4 h-4 shrink-0 transition-all duration-300 ${isSelected ? '' : 'group-hover:scale-110'}`} />
+                            <span className="hidden sm:inline relative">
+                                {type.label}
+                                <span className={`absolute -bottom-1 left-0 h-0.5 transition-all duration-300 ${isSelected
+                                    ? `w-full bg-gradient-to-r ${type.color}`
+                                    : 'w-0 group-hover:w-full bg-gray-400 dark:bg-gray-500'
+                                    }`} />
+                            </span>
                         </button>
                     );
                 })}
