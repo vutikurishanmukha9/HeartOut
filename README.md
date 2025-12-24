@@ -8,7 +8,7 @@ A modern, premium storytelling platform for authentic personal expression.
 
 [![GitHub](https://img.shields.io/badge/GitHub-vutikurishanmukha9%2FHeartOut-blue)](https://github.com/vutikurishanmukha9/HeartOut)
 [![CI](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml/badge.svg)](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/Tests-110+-brightgreen)](https://github.com/vutikurishanmukha9/HeartOut/actions)
+[![Tests](https://img.shields.io/badge/Tests-144+-brightgreen)](https://github.com/vutikurishanmukha9/HeartOut/actions)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![React](https://img.shields.io/badge/React-18+-61DAFB.svg)](https://react.dev)
@@ -254,7 +254,7 @@ FLASK_ENV=production
 ### Badges
 ```markdown
 [![CI](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml/badge.svg)]
-[![Tests](https://img.shields.io/badge/Tests-110+-brightgreen)]
+[![Tests](https://img.shields.io/badge/Tests-144+-brightgreen)]
 ```
 
 ---
@@ -276,6 +276,7 @@ pytest -v
 | Stories | 14 | CRUD, Drafts, Filtering |
 | Reactions | 6 | Add, Toggle, Types |
 | **Ranking** | 62 | Smart ranking, Bookmarks, Progress |
+| **Strict** | 30 | Input validation, Authorization, Edge cases |
 
 #### Frontend (Vitest)
 ```bash
@@ -353,6 +354,23 @@ pytest tests/test_security.py -v
 ---
 
 ## Recent Updates
+
+### v2.7 - Strict Testing & Mobile UI Fixes
+- **Strict Test Suite** (30 new tests):
+  - Input validation boundaries (username, password, email formats)
+  - Authorization checks (prevent cross-user modifications)
+  - Token security (malformed JWT handling)
+  - Data integrity (author consistency, anonymous hiding)
+  - Edge cases (Unicode, long content, XSS prevention)
+- **Mobile UI Fixes**:
+  - Reaction picker positioning (no longer cut off on left)
+  - Removed duplicate navbar spacer (eliminated gradient gap)
+  - Support floating button repositioned above bottom nav
+  - Bottom padding for mobile content areas
+- **Drafts Page Enhancement**:
+  - Premium Edit/Delete buttons with gradient styling
+  - Pill-style buttons with labels and hover effects
+- **Total Test Count**: 144 backend tests
 
 ### v2.6 - Premium UI/UX Overhaul & Ranking Consolidation
 - **Gravity Sort Ranking** - Consolidated from 6 category-specific algorithms to single SQL-optimized query:
