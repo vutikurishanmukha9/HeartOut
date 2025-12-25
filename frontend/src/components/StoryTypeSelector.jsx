@@ -79,7 +79,7 @@ const storyTypes = [
 export default function StoryTypeSelector({ selected, onChange, variant = 'cards' }) {
     if (variant === 'tabs') {
         return (
-            <div className="flex flex-wrap gap-0.5 sm:gap-1">
+            <>
                 {storyTypes.map((type) => {
                     const Icon = type.icon;
                     const isSelected = selected === type.value;
@@ -108,7 +108,7 @@ export default function StoryTypeSelector({ selected, onChange, variant = 'cards
                         </button>
                     );
                 })}
-            </div>
+            </>
         );
     }
 

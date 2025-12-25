@@ -68,6 +68,7 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
   const [isOpen, setIsOpen] = useState(false);
   const [reacting, setReacting] = useState(false);
   const [animatingReaction, setAnimatingReaction] = useState(null);
+  const [floatingReaction, setFloatingReaction] = useState(null); // For float-up animation
   const dropdownRef = useRef(null);
   const mainButtonRef = useRef(null);
 
@@ -98,21 +99,30 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
   const handleReact = async (type) => {
     if (reacting) return;
 
+    // Find the reaction type for floating animation
+    const reactionData = reactionTypes.find(r => r.value === type);
+
+    // Optimistic UI - show animation immediately
     setAnimatingReaction(type);
+    setFloatingReaction(reactionData);
     setReacting(true);
 
-    try {
-      await onReact(type);
-      setTimeout(() => {
-        setIsOpen(false);
-        setAnimatingReaction(null);
-      }, 300);
-    } catch (error) {
-      console.error('Reaction failed:', error);
+    // Close picker quickly for snappy feel
+    setTimeout(() => {
+      setIsOpen(false);
       setAnimatingReaction(null);
-    } finally {
+    }, 200);
+
+    // Clear floating after animation
+    setTimeout(() => {
+      setFloatingReaction(null);
       setReacting(false);
-    }
+    }, 500);
+
+    // Fire API call in background (don't await - optimistic)
+    onReact(type).catch(error => {
+      console.error('Reaction failed:', error);
+    });
   };
 
   const currentReactionType = reactionTypes.find(r => r.value === currentReaction);
@@ -168,22 +178,40 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
         )}
       </button>
 
+      {/* Floating Reaction Animation - Facebook Style */}
+      {floatingReaction && (() => {
+        const FloatingIcon = floatingReaction.icon;
+        return (
+          <div className="absolute -top-12 sm:-top-14 left-6 pointer-events-none z-50">
+            {/* Main floating icon */}
+            <div className="animate-float-up-fade">
+              <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br ${floatingReaction.gradient} flex items-center justify-center shadow-xl animate-pop-scale`}>
+                <FloatingIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              </div>
+            </div>
+            {/* Particle burst effect */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className={`absolute w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-gradient-to-r ${floatingReaction.gradient} animate-burst-particle`}
+                  style={{ animationDelay: `${i * 0.05}s` }}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      })()}
       {/* Reaction Picker Dropdown */}
       {isOpen && (
         <div
           role="menu"
           aria-label="Choose a reaction"
-          className={`
-            absolute bottom-full left-0 sm:left-1/2 sm:-translate-x-1/2 mb-3 
-            bg-white dark:bg-gray-800 
-            rounded-2xl shadow-xl 
-            border border-gray-100 dark:border-gray-700 
-            p-2 flex gap-1 z-50
-            animate-slide-up
-          `}
+          className="absolute bottom-full mb-3 z-50 left-0 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-2 flex gap-1"
         >
           {/* Arrow */}
-          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 rotate-45 bg-white dark:bg-gray-800 border-r border-b border-gray-100 dark:border-gray-700" aria-hidden="true" />
+          <div className="absolute -bottom-2 left-6 w-4 h-4 rotate-45 bg-white dark:bg-gray-800 border-r border-b border-gray-100 dark:border-gray-700" aria-hidden="true" />
+
 
           {reactionTypes.map((reaction, index) => {
             const Icon = reaction.icon;
@@ -200,11 +228,11 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
                 aria-pressed={isSelected}
                 tabIndex={index === 0 ? 0 : -1}
                 className={`
-                  relative group/item flex flex-col items-center p-3 rounded-xl transition-all duration-300
+                  relative group/item flex flex-col items-center p-2 rounded-lg transition-all duration-200
                   focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1
                   ${isSelected
-                    ? `${reaction.bgColor} ${reaction.borderColor} border-2 scale-110`
-                    : `${reaction.hoverBg} hover:scale-110 border-2 border-transparent`
+                    ? `${reaction.bgColor} ${reaction.borderColor} border scale-105`
+                    : `${reaction.hoverBg} hover:scale-105 border border-transparent`
                   }
                   ${isAnimating ? 'animate-bounce' : ''}
                   disabled:opacity-50
@@ -213,19 +241,19 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
                 {/* Glow effect on hover */}
                 <div
                   className={`
-                    absolute inset-0 rounded-xl opacity-0 group-hover/item:opacity-100 transition-opacity duration-300
-                    bg-gradient-to-br ${reaction.gradient} blur-lg -z-10
+                    absolute inset-0 rounded-lg opacity-0 group-hover/item:opacity-100 transition-opacity duration-200
+                    bg-gradient-to-br ${reaction.gradient} blur-md -z-10
                   `}
-                  style={{ opacity: isSelected ? 0.3 : 0 }}
+                  style={{ opacity: isSelected ? 0.2 : 0 }}
                   aria-hidden="true"
                 />
 
                 <Icon
                   className={`
-                    w-7 h-7 ${reaction.color} 
+                    w-5 h-5 ${reaction.color} 
                     ${isSelected ? reaction.fillClass : ''} 
-                    transition-all duration-300
-                    ${isAnimating ? 'scale-125' : 'group-hover/item:scale-110'}
+                    transition-all duration-200
+                    ${isAnimating ? 'scale-110' : 'group-hover/item:scale-105'}
                   `}
                   aria-hidden="true"
                 />

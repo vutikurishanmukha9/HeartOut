@@ -177,9 +177,9 @@ export default function Feed() {
                         </div>
                     </div>
 
-                    {/* Category Filters - Horizontal Scroll on Mobile */}
+                    {/* Category Filters - Horizontal Scroll on Mobile, Justified on Desktop */}
                     <div className="-mx-4 px-4 md:mx-0 md:px-0 overflow-x-auto scrollbar-hide">
-                        <div className="flex items-center gap-2 md:gap-3 min-w-max pb-2">
+                        <div className="flex items-center gap-2 md:gap-0 md:justify-between min-w-max md:min-w-0 pb-2">
                             <span className="text-sm font-medium text-gray-500 dark:text-gray-400 shrink-0">Type:</span>
                             <button
                                 onClick={() => setSelectedCategory('all')}
