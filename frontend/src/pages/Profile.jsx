@@ -317,11 +317,11 @@ export default function Profile() {
 
                         {/* Pie Chart Card - Reference Design */}
                         {stories.length > 0 && (
-                            <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 p-8 shadow-xl">
-                                <div className="flex flex-col lg:flex-row items-center gap-12">
-                                    {/* Chart with custom labels */}
+                            <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-8 shadow-xl overflow-hidden">
+                                <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+                                    {/* Chart with custom labels - responsive sizing */}
                                     <div className="w-full lg:w-1/2 flex justify-center">
-                                        <div className="relative" style={{ width: 320, height: 320 }}>
+                                        <div className="relative w-[260px] h-[260px] sm:w-[320px] sm:h-[320px]">
                                             <ResponsiveContainer width="100%" height="100%">
                                                 <PieChart>
                                                     <defs>
@@ -364,8 +364,8 @@ export default function Profile() {
                                                         })).filter(d => d.value > 0)}
                                                         cx="50%"
                                                         cy="50%"
-                                                        innerRadius={80}
-                                                        outerRadius={140}
+                                                        innerRadius={60}
+                                                        outerRadius={100}
                                                         paddingAngle={3}
                                                         dataKey="value"
                                                         onClick={(data) => setSelectedCategory(data.type)}
@@ -381,11 +381,11 @@ export default function Profile() {
                                                             return (
                                                                 <g>
                                                                     <rect
-                                                                        x={x - 28}
-                                                                        y={y - 14}
-                                                                        width={56}
-                                                                        height={28}
-                                                                        rx={6}
+                                                                        x={x - 22}
+                                                                        y={y - 10}
+                                                                        width={44}
+                                                                        height={20}
+                                                                        rx={4}
                                                                         fill="rgba(17, 24, 39, 0.85)"
                                                                     />
                                                                     <text
@@ -394,8 +394,8 @@ export default function Profile() {
                                                                         fill="white"
                                                                         textAnchor="middle"
                                                                         dominantBaseline="central"
-                                                                        className="text-sm font-bold"
-                                                                        style={{ fontSize: '14px', fontWeight: 'bold' }}
+                                                                        className="text-xs font-bold"
+                                                                        style={{ fontSize: '11px', fontWeight: 'bold' }}
                                                                     >
                                                                         {percentage}
                                                                     </text>
@@ -439,8 +439,8 @@ export default function Profile() {
                                     {/* Legend and Stats */}
                                     <div className="w-full lg:w-1/2 space-y-6">
                                         <div className="text-center lg:text-left">
-                                            <p className="text-6xl font-black text-gray-900 dark:text-white">{stories.length}</p>
-                                            <p className="text-xl text-gray-500 dark:text-gray-400 mt-1">Total Stories</p>
+                                            <p className="text-4xl sm:text-6xl font-black text-gray-900 dark:text-white">{stories.length}</p>
+                                            <p className="text-lg sm:text-xl text-gray-500 dark:text-gray-400 mt-1">Total Stories</p>
                                         </div>
 
                                         <div className="space-y-4">
