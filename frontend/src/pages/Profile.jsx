@@ -129,26 +129,38 @@ export default function Profile() {
     }, {});
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-24 md:pb-12">
-                {/* Profile Header */}
-                <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 mb-8">
-                    <div className="flex flex-col md:flex-row gap-8">
-                        {/* Avatar */}
-                        <div className="flex-shrink-0">
-                            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary-400 via-secondary-500 to-accent-500 flex items-center justify-center text-white text-5xl font-bold shadow-lg">
-                                {profile?.username?.[0]?.toUpperCase() || 'U'}
-                            </div>
-                            {profile?.is_featured_author && (
-                                <div className="mt-4 flex items-center justify-center gap-2 px-3 py-1 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full text-white text-sm font-semibold">
-                                    <Award className="w-4 h-4" />
-                                    Featured Author
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 pb-24 md:pb-12">
+                {/* Profile Header - Premium Glassmorphism */}
+                <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-gray-200/50 dark:border-gray-700/50 p-6 sm:p-8 mb-8 shadow-xl shadow-gray-200/50 dark:shadow-gray-900/50 overflow-hidden">
+                    {/* Decorative gradient orb */}
+                    <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-violet-400 via-purple-500 to-fuchsia-500 rounded-full blur-3xl opacity-20 dark:opacity-30" />
+                    <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-gradient-to-br from-blue-400 via-cyan-500 to-teal-500 rounded-full blur-3xl opacity-20 dark:opacity-30" />
+
+                    <div className="relative">
+                        {/* Mobile Layout: Avatar row with Edit button */}
+                        <div className="flex md:hidden items-center justify-between mb-4">
+                            {/* Avatar */}
+                            <div className="relative group">
+                                <div className="absolute -inset-1 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 rounded-full blur-sm opacity-75 group-hover:opacity-100 transition-opacity animate-pulse" />
+                                <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 flex items-center justify-center text-white text-3xl font-bold shadow-2xl ring-4 ring-white dark:ring-gray-800">
+                                    {profile?.username?.[0]?.toUpperCase() || 'U'}
                                 </div>
+                            </div>
+                            {/* Edit button on mobile */}
+                            {isOwnProfile && !editing && (
+                                <button
+                                    onClick={() => setEditing(true)}
+                                    className="group relative flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-500 to-purple-600 text-white text-sm font-medium rounded-full shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 hover:scale-105 active:scale-95 transition-all duration-300"
+                                >
+                                    <Edit className="w-4 h-4 transition-transform duration-300 group-hover:rotate-12" />
+                                    Edit Profile
+                                </button>
                             )}
                         </div>
 
-                        {/* Profile Info */}
-                        <div className="flex-1">
+                        {/* Mobile Profile Info - Below avatar row */}
+                        <div className="md:hidden">
                             {editing ? (
                                 <div className="space-y-4">
                                     <input
@@ -169,7 +181,7 @@ export default function Profile() {
                                         value={formData.author_bio}
                                         onChange={(e) => setFormData({ ...formData, author_bio: e.target.value })}
                                         placeholder="Detailed author biography..."
-                                        rows={4}
+                                        rows={3}
                                         className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                                     />
                                     <input
@@ -179,106 +191,233 @@ export default function Profile() {
                                         placeholder="Website URL"
                                         className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                                     />
-                                    <div className="flex gap-2">
+                                    <div className="flex gap-4">
                                         <button
                                             onClick={handleUpdateProfile}
-                                            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                                            className="group relative flex items-center gap-2 px-4 py-2 text-emerald-600 dark:text-emerald-400 font-medium transition-all duration-300"
                                         >
-                                            Save Changes
+                                            <span className="relative">
+                                                Save
+                                                <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300 group-hover:w-full" />
+                                            </span>
                                         </button>
                                         <button
                                             onClick={() => setEditing(false)}
-                                            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600"
+                                            className="group relative flex items-center gap-2 px-4 py-2 text-gray-500 dark:text-gray-400 font-medium transition-all duration-300"
                                         >
-                                            Cancel
+                                            <span className="relative">
+                                                Cancel
+                                                <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gray-400 transition-all duration-300 group-hover:w-full" />
+                                            </span>
                                         </button>
                                     </div>
                                 </div>
                             ) : (
                                 <>
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div>
-                                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                                                {profile?.display_name || profile?.username}
-                                            </h1>
-                                            <p className="text-gray-600 dark:text-gray-400">
-                                                @{profile?.username}
-                                            </p>
-                                        </div>
-                                        {isOwnProfile && (
-                                            <button
-                                                onClick={() => setEditing(true)}
-                                                className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600"
-                                            >
-                                                <Edit className="w-4 h-4" />
-                                                Edit Profile
-                                            </button>
-                                        )}
-                                    </div>
-
+                                    <h1 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                                        {profile?.display_name || profile?.username}
+                                    </h1>
+                                    <p className="text-gray-500 dark:text-gray-400 font-medium text-sm mb-3">
+                                        @{profile?.username}
+                                    </p>
                                     {profile?.bio && (
-                                        <p className="text-gray-700 dark:text-gray-300 mb-4">
+                                        <p className="text-gray-700 dark:text-gray-300 text-sm mb-3">
                                             {profile.bio}
                                         </p>
                                     )}
-
                                     {profile?.author_bio && (
-                                        <div className="mb-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
-                                            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">About the Author</h3>
-                                            <p className="text-gray-700 dark:text-gray-300">
+                                        <div className="mb-3">
+                                            <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">About the Author</h3>
+                                            <p className="text-gray-700 dark:text-gray-300 text-sm">
                                                 {profile.author_bio}
                                             </p>
                                         </div>
                                     )}
-
-                                    <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400">
+                                    <div className="flex flex-wrap gap-3 text-xs text-gray-600 dark:text-gray-400">
                                         {profile?.website_url && (
                                             <a
                                                 href={profile.website_url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="flex items-center gap-1 hover:text-primary-600 dark:hover:text-primary-400"
+                                                className="flex items-center gap-1 hover:text-primary-600"
                                             >
-                                                <Globe className="w-4 h-4" />
+                                                <Globe className="w-3 h-3" />
                                                 Website
                                             </a>
                                         )}
                                         <div className="flex items-center gap-1">
-                                            <BookOpen className="w-4 h-4" />
+                                            <BookOpen className="w-3 h-3" />
                                             {profile?.total_stories || stories.length} stories
                                         </div>
                                     </div>
+                                    {profile?.is_featured_author && (
+                                        <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full text-white text-xs font-semibold">
+                                            <Award className="w-3 h-3" />
+                                            Featured Author
+                                        </div>
+                                    )}
                                 </>
                             )}
                         </div>
+                        <div className="hidden md:flex flex-row gap-8">
+                            {/* Avatar - Animated Gradient Ring */}
+                            <div className="flex-shrink-0 flex flex-col items-start">
+                                <div className="relative group">
+                                    <div className="absolute -inset-1 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 rounded-full blur-sm opacity-75 group-hover:opacity-100 transition-opacity animate-pulse" />
+                                    <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 flex items-center justify-center text-white text-5xl font-bold shadow-2xl ring-4 ring-white dark:ring-gray-800">
+                                        {profile?.username?.[0]?.toUpperCase() || 'U'}
+                                    </div>
+                                </div>
+                                {profile?.is_featured_author && (
+                                    <div className="mt-4 flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full text-white text-sm font-semibold shadow-lg shadow-amber-500/30">
+                                        <Award className="w-4 h-4" />
+                                        Featured Author
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Profile Info - Desktop */}
+                            <div className="flex-1">
+                                {editing ? (
+                                    <div className="space-y-4">
+                                        <input
+                                            type="text"
+                                            value={formData.display_name}
+                                            onChange={(e) => setFormData({ ...formData, display_name: e.target.value })}
+                                            placeholder="Display Name"
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                                        />
+                                        <textarea
+                                            value={formData.bio}
+                                            onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                                            placeholder="Short bio..."
+                                            rows={2}
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                                        />
+                                        <textarea
+                                            value={formData.author_bio}
+                                            onChange={(e) => setFormData({ ...formData, author_bio: e.target.value })}
+                                            placeholder="Detailed author biography..."
+                                            rows={4}
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                                        />
+                                        <input
+                                            type="url"
+                                            value={formData.website_url}
+                                            onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
+                                            placeholder="Website URL"
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                                        />
+                                        <div className="flex gap-4">
+                                            <button
+                                                onClick={handleUpdateProfile}
+                                                className="group relative flex items-center gap-2 px-4 py-2 text-emerald-600 dark:text-emerald-400 font-medium transition-all duration-300 hover:text-emerald-700 dark:hover:text-emerald-300"
+                                            >
+                                                <span className="relative">
+                                                    Save Changes
+                                                    <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300 group-hover:w-full" />
+                                                </span>
+                                            </button>
+                                            <button
+                                                onClick={() => setEditing(false)}
+                                                className="group relative flex items-center gap-2 px-4 py-2 text-gray-500 dark:text-gray-400 font-medium transition-all duration-300 hover:text-gray-700 dark:hover:text-gray-200"
+                                            >
+                                                <span className="relative">
+                                                    Cancel
+                                                    <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gray-400 transition-all duration-300 group-hover:w-full" />
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="flex items-center justify-between gap-4 mb-4">
+                                            <div className="text-left">
+                                                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
+                                                    {profile?.display_name || profile?.username}
+                                                </h1>
+                                                <p className="text-gray-500 dark:text-gray-400 font-medium">
+                                                    @{profile?.username}
+                                                </p>
+                                            </div>
+                                            {isOwnProfile && (
+                                                <button
+                                                    onClick={() => setEditing(true)}
+                                                    className="group relative flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-medium rounded-full shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 hover:scale-105 active:scale-95 transition-all duration-300"
+                                                >
+                                                    <Edit className="w-4 h-4 transition-transform duration-300 group-hover:rotate-12" />
+                                                    Edit Profile
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        {profile?.bio && (
+                                            <p className="text-gray-700 dark:text-gray-300 mb-4 text-left">
+                                                {profile.bio}
+                                            </p>
+                                        )}
+
+                                        {profile?.author_bio && (
+                                            <div className="mb-4 mt-2 text-left">
+                                                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">About the Author</h3>
+                                                <p className="text-gray-700 dark:text-gray-300">
+                                                    {profile.author_bio}
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400">
+                                            {profile?.website_url && (
+                                                <a
+                                                    href={profile.website_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-1 hover:text-primary-600 dark:hover:text-primary-400"
+                                                >
+                                                    <Globe className="w-4 h-4" />
+                                                    Website
+                                                </a>
+                                            )}
+                                            <div className="flex items-center gap-1">
+                                                <BookOpen className="w-4 h-4" />
+                                                {profile?.total_stories || stories.length} stories
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Story Analytics Section - Clean Redesign */}
-                    <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                    {/* Story Analytics Section - Premium Design */}
+                    <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-gray-200/50 dark:border-gray-700/50">
                         {/* Header */}
-                        <div className="flex items-center justify-between mb-8">
-                            <div className="flex items-center gap-4">
-                                <div className="p-3 rounded-2xl bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 shadow-lg shadow-purple-500/25">
-                                    <BookOpen className="w-6 h-6 text-white" />
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2.5 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-500/25">
+                                    <BookOpen className="w-5 h-5 text-white" />
                                 </div>
                                 <div>
-                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Story Analytics</h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">Your writing journey at a glance</p>
+                                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Story Analytics</h3>
+                                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Your writing journey at a glance</p>
                                 </div>
                             </div>
                             {selectedCategory && (
                                 <button
                                     onClick={() => setSelectedCategory(null)}
-                                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                                    className="group relative flex items-center gap-2 px-4 py-2 text-red-500 dark:text-red-400 font-medium transition-all duration-300 hover:text-red-600 dark:hover:text-red-300"
                                 >
-                                    <X className="w-4 h-4" />
-                                    Clear Filter
+                                    <X className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-90" />
+                                    <span className="relative text-sm">
+                                        Clear Filter
+                                        <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gradient-to-r from-red-500 to-rose-500 transition-all duration-300 group-hover:w-full" />
+                                    </span>
                                 </button>
                             )}
                         </div>
 
-                        {/* Stats Cards Row */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+                        {/* Stats Cards Row - Premium Design */}
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-6 sm:mb-8">
                             {storyTypes.map((type) => {
                                 const Icon = type.icon;
                                 const count = storiesByType[type.value] || 0;
@@ -288,26 +427,32 @@ export default function Profile() {
                                         key={type.value}
                                         onClick={() => setSelectedCategory(isSelected ? null : type.value)}
                                         className={`
-                                            relative p-4 rounded-xl border-2 text-center transition-all duration-200
+                                            group relative p-3 sm:p-4 rounded-xl sm:rounded-2xl text-center transition-all duration-300 overflow-hidden
                                             ${isSelected
-                                                ? 'border-violet-500 bg-violet-50 dark:bg-violet-900/20 shadow-lg shadow-violet-500/20 scale-105'
+                                                ? 'bg-gradient-to-br from-violet-500/10 to-purple-500/10 border-2 border-violet-400 dark:border-violet-500 shadow-lg shadow-violet-500/20 scale-[1.02]'
                                                 : count > 0
-                                                    ? 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-violet-300 dark:hover:border-violet-600 hover:shadow-md'
-                                                    : 'border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 opacity-50 cursor-default'
+                                                    ? 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 hover:border-violet-300 dark:hover:border-violet-600 hover:shadow-lg hover:scale-[1.02]'
+                                                    : 'bg-gray-50/50 dark:bg-gray-900/30 border border-gray-100 dark:border-gray-800 opacity-40 cursor-default'
                                             }
                                         `}
                                         disabled={count === 0}
                                     >
-                                        <div className={`inline-flex p-2.5 rounded-xl bg-gradient-to-br ${type.color} mb-2 shadow-md`}>
-                                            <Icon className="w-5 h-5 text-white" />
+                                        {/* Subtle gradient glow on hover */}
+                                        {count > 0 && (
+                                            <div className={`absolute inset-0 bg-gradient-to-br ${type.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
+                                        )}
+                                        <div className="relative">
+                                            <div className={`inline-flex p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-gradient-to-br ${type.color} mb-2 shadow-md group-hover:shadow-lg transition-shadow`}>
+                                                <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                                            </div>
+                                            <p className={`text-xl sm:text-2xl font-bold transition-colors ${isSelected ? 'text-violet-600 dark:text-violet-400' : 'text-gray-900 dark:text-white'}`}>
+                                                {count}
+                                            </p>
+                                            <p className="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 mt-0.5 sm:mt-1">{type.label}</p>
                                         </div>
-                                        <p className={`text-2xl font-bold ${isSelected ? 'text-violet-600 dark:text-violet-400' : 'text-gray-900 dark:text-white'}`}>
-                                            {count}
-                                        </p>
-                                        <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{type.label}</p>
                                         {isSelected && (
-                                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-violet-500 rounded-full flex items-center justify-center">
-                                                <div className="w-2 h-2 bg-white rounded-full" />
+                                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                                                <div className="w-1.5 h-1.5 bg-white rounded-full" />
                                             </div>
                                         )}
                                     </button>
@@ -315,13 +460,15 @@ export default function Profile() {
                             })}
                         </div>
 
-                        {/* Pie Chart Card - Reference Design */}
+                        {/* Pie Chart Card - Premium Design */}
                         {stories.length > 0 && (
-                            <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-8 shadow-xl overflow-hidden">
-                                <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+                            <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-gray-200/50 dark:border-gray-700/50 p-4 sm:p-6 lg:p-8 shadow-xl overflow-hidden">
+                                {/* Decorative gradient */}
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-violet-400/20 to-fuchsia-400/20 rounded-full blur-3xl" />
+                                <div className="relative flex flex-col lg:flex-row items-center gap-6 lg:gap-10">
                                     {/* Chart with custom labels - responsive sizing */}
                                     <div className="w-full lg:w-1/2 flex justify-center">
-                                        <div className="relative w-[260px] h-[260px] sm:w-[320px] sm:h-[320px]">
+                                        <div className="relative w-[220px] h-[220px] sm:w-[280px] sm:h-[280px]">
                                             <ResponsiveContainer width="100%" height="100%">
                                                 <PieChart>
                                                     <defs>
@@ -364,8 +511,8 @@ export default function Profile() {
                                                         })).filter(d => d.value > 0)}
                                                         cx="50%"
                                                         cy="50%"
-                                                        innerRadius={60}
-                                                        outerRadius={100}
+                                                        innerRadius={50}
+                                                        outerRadius={85}
                                                         paddingAngle={3}
                                                         dataKey="value"
                                                         onClick={(data) => setSelectedCategory(data.type)}
@@ -437,13 +584,13 @@ export default function Profile() {
                                     </div>
 
                                     {/* Legend and Stats */}
-                                    <div className="w-full lg:w-1/2 space-y-6">
+                                    <div className="w-full lg:w-1/2 space-y-4 sm:space-y-5">
                                         <div className="text-center lg:text-left">
-                                            <p className="text-4xl sm:text-6xl font-black text-gray-900 dark:text-white">{stories.length}</p>
-                                            <p className="text-lg sm:text-xl text-gray-500 dark:text-gray-400 mt-1">Total Stories</p>
+                                            <p className="text-3xl sm:text-5xl font-black bg-gradient-to-r from-violet-600 to-purple-600 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">{stories.length}</p>
+                                            <p className="text-base sm:text-lg font-medium text-gray-500 dark:text-gray-400 mt-1">Total Stories</p>
                                         </div>
 
-                                        <div className="space-y-4">
+                                        <div className="space-y-2 sm:space-y-3">
                                             {storyTypes.filter(type => (storiesByType[type.value] || 0) > 0).map((type) => {
                                                 const count = storiesByType[type.value] || 0;
                                                 const percentage = ((count / stories.length) * 100).toFixed(1);
@@ -451,24 +598,24 @@ export default function Profile() {
                                                     <button
                                                         key={type.value}
                                                         onClick={() => setSelectedCategory(selectedCategory === type.value ? null : type.value)}
-                                                        className={`w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-200 ${selectedCategory === type.value
-                                                            ? 'bg-gray-100 dark:bg-gray-700 shadow-md scale-102'
-                                                            : 'hover:bg-gray-50 dark:hover:bg-gray-800'
+                                                        className={`w-full flex items-center gap-3 p-2.5 sm:p-3 rounded-xl transition-all duration-200 ${selectedCategory === type.value
+                                                            ? 'bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-700 shadow-sm'
+                                                            : 'hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-transparent'
                                                             }`}
                                                     >
                                                         <div
-                                                            className="w-5 h-5 rounded-lg flex-shrink-0 shadow-sm"
+                                                            className="w-4 h-4 sm:w-5 sm:h-5 rounded-md flex-shrink-0 shadow-sm"
                                                             style={{ backgroundColor: type.chartColor }}
                                                         />
-                                                        <span className="flex-1 text-left font-medium text-gray-800 dark:text-gray-200">{type.label}</span>
-                                                        <span className="text-lg font-bold text-gray-900 dark:text-white">{count}</span>
-                                                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400 w-16 text-right">{percentage}%</span>
+                                                        <span className="flex-1 text-left text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200">{type.label}</span>
+                                                        <span className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">{count}</span>
+                                                        <span className="text-xs sm:text-sm font-medium text-gray-400 dark:text-gray-500 w-14 sm:w-16 text-right">{percentage}%</span>
                                                     </button>
                                                 );
                                             })}
                                         </div>
 
-                                        <p className="text-center lg:text-left text-sm text-gray-500 dark:text-gray-400 italic">
+                                        <p className="text-center lg:text-left text-xs sm:text-sm text-gray-400 dark:text-gray-500 italic pt-2">
                                             Click on a slice or legend to filter stories
                                         </p>
                                     </div>
@@ -524,16 +671,22 @@ export default function Profile() {
                                 {selectedCategory ? (
                                     <button
                                         onClick={() => setSelectedCategory(null)}
-                                        className="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                                        className="group relative inline-flex items-center gap-2 px-4 py-2 text-gray-600 dark:text-gray-300 font-medium transition-all duration-300 hover:text-gray-800 dark:hover:text-white"
                                     >
-                                        Clear Filter
+                                        <span className="relative">
+                                            Clear Filter
+                                            <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gray-400 transition-all duration-300 group-hover:w-full" />
+                                        </span>
                                     </button>
                                 ) : isOwnProfile && (
                                     <Link
                                         to="/feed/create"
-                                        className="inline-block px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                                        className="group relative inline-flex items-center gap-2 px-4 py-2 text-violet-600 dark:text-violet-400 font-medium transition-all duration-300 hover:text-violet-700 dark:hover:text-violet-300"
                                     >
-                                        Write Your First Story
+                                        <span className="relative">
+                                            Write Your First Story
+                                            <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gradient-to-r from-violet-500 to-purple-500 transition-all duration-300 group-hover:w-full" />
+                                        </span>
                                     </Link>
                                 )}
                             </div>
