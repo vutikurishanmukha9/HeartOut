@@ -11,6 +11,7 @@ const storyTypes = [
         bgColor: 'bg-emerald-50 dark:bg-emerald-900/20',
         borderColor: 'border-emerald-200 dark:border-emerald-800',
         textColor: 'text-emerald-700 dark:text-emerald-300',
+        hoverTextColor: 'group-hover:text-emerald-600 dark:group-hover:text-emerald-400',
         shadowColor: 'shadow-emerald-500/20',
         chartColor: '#10b981'
     },
@@ -23,6 +24,7 @@ const storyTypes = [
         bgColor: 'bg-blue-50 dark:bg-blue-900/20',
         borderColor: 'border-blue-200 dark:border-blue-800',
         textColor: 'text-blue-700 dark:text-blue-300',
+        hoverTextColor: 'group-hover:text-blue-600 dark:group-hover:text-blue-400',
         shadowColor: 'shadow-blue-500/20',
         chartColor: '#3b82f6'
     },
@@ -35,6 +37,7 @@ const storyTypes = [
         bgColor: 'bg-gray-50 dark:bg-gray-900/20',
         borderColor: 'border-gray-200 dark:border-gray-800',
         textColor: 'text-gray-700 dark:text-gray-300',
+        hoverTextColor: 'group-hover:text-slate-600 dark:group-hover:text-slate-400',
         shadowColor: 'shadow-gray-500/20',
         chartColor: '#6b7280'
     },
@@ -47,6 +50,7 @@ const storyTypes = [
         bgColor: 'bg-red-50 dark:bg-red-900/20',
         borderColor: 'border-red-200 dark:border-red-800',
         textColor: 'text-red-700 dark:text-red-300',
+        hoverTextColor: 'group-hover:text-red-600 dark:group-hover:text-red-400',
         shadowColor: 'shadow-red-500/20',
         chartColor: '#ef4444'
     },
@@ -59,6 +63,7 @@ const storyTypes = [
         bgColor: 'bg-amber-50 dark:bg-amber-900/20',
         borderColor: 'border-amber-200 dark:border-amber-800',
         textColor: 'text-amber-700 dark:text-amber-300',
+        hoverTextColor: 'group-hover:text-amber-600 dark:group-hover:text-amber-400',
         shadowColor: 'shadow-amber-500/20',
         chartColor: '#f59e0b'
     },
@@ -71,6 +76,7 @@ const storyTypes = [
         bgColor: 'bg-gray-50 dark:bg-gray-900/20',
         borderColor: 'border-gray-200 dark:border-gray-800',
         textColor: 'text-gray-600 dark:text-gray-400',
+        hoverTextColor: 'group-hover:text-gray-600 dark:group-hover:text-gray-300',
         shadowColor: 'shadow-gray-400/20',
         chartColor: '#d1d5db'
     }
