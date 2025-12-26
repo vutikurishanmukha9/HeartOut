@@ -1,0 +1,40 @@
+name: Preview Deploy
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  # ============================================
+  # Deploy PR Preview to Vercel
+  # ============================================
+  preview-frontend:
+    name: Frontend Preview
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy Preview to Vercel
+        uses: amondnet/vercel-action@v25
+        if: ${{ secrets.VERCEL_TOKEN != '' }}
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./frontend
+        continue-on-error: true
+
+      - name: Comment Preview URL
+        uses: actions/github-script@v7
+        if: success()
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '**Preview deployed!** Check Vercel dashboard for preview URL.'
+            })
+        continue-on-error: true
