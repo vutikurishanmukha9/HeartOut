@@ -27,7 +27,7 @@ jobs:
         continue-on-error: true
 
       - name: Comment Preview URL
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         if: success()
         with:
           script: |
