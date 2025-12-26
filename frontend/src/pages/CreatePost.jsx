@@ -75,6 +75,22 @@ export default function CreatePost() {
         }
     }, [formData.title, formData.content]);
 
+    // Auto-resize textarea on mobile
+    useEffect(() => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+            // Reset height to auto to get proper scrollHeight
+            textarea.style.height = 'auto';
+            // Set minimum height based on screen size
+            const isMobile = window.innerWidth < 640;
+            const minHeight = isMobile ? 120 : 400; // 4 rows mobile, 16 rows desktop
+            const maxHeight = isMobile ? 400 : 600; // Cap height
+            // Calculate new height
+            const newHeight = Math.min(Math.max(textarea.scrollHeight, minHeight), maxHeight);
+            textarea.style.height = `${newHeight}px`;
+        }
+    }, [formData.content]);
+
     const handleSubmit = async (publishNow = false) => {
         if (!formData.title || !formData.content || !formData.story_type) {
             alert('Please fill in all required fields');
@@ -274,34 +290,44 @@ export default function CreatePost() {
                             </div>
 
                             {/* Content Textarea */}
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Your Story <span className="text-primary-500">*</span>
-                                </label>
-                                <textarea
-                                    ref={textareaRef}
-                                    value={formData.content}
-                                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                    placeholder="Tell your story... Be authentic, be you."
-                                    rows={16}
-                                    className="w-full px-4 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white/50 dark:bg-gray-800/50 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-0 focus:border-primary-500 transition-all duration-300 resize-none leading-relaxed"
-                                />
-
-                                {/* Stats Bar */}
-                                <div className="flex items-center justify-between mt-3 px-1">
-                                    <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                                        <span className="flex items-center gap-1.5">
-                                            <PenTool className="w-4 h-4" />
-                                            {wordCount} words
+                            <div className="relative">
+                                <label className="flex items-center justify-between text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    <span>Your Story <span className="text-primary-500">*</span></span>
+                                    {formData.content.length > 0 && (
+                                        <span className="text-xs font-normal text-emerald-500 flex items-center gap-1 animate-fade-in">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                            Writing...
                                         </span>
-                                        <span className="flex items-center gap-1.5">
+                                    )}
+                                </label>
+                                <div className="relative group">
+                                    <textarea
+                                        ref={textareaRef}
+                                        value={formData.content}
+                                        onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                                        placeholder="Tell your story... Be authentic, be you."
+                                        className="w-full px-4 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-xl sm:rounded-2xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-0 focus:border-primary-500 focus:shadow-lg focus:shadow-primary-500/10 transition-all duration-300 resize-none leading-relaxed min-h-[120px] sm:min-h-[400px] overflow-y-auto"
+                                        style={{ maxHeight: '400px' }}
+                                    />
+                                    {/* Gradient fade at bottom when scrollable */}
+                                    <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white dark:from-gray-800 to-transparent pointer-events-none rounded-b-xl sm:rounded-b-2xl opacity-0 group-focus-within:opacity-100 transition-opacity" />
+                                </div>
+
+                                {/* Stats Bar - Enhanced */}
+                                <div className="flex items-center justify-between mt-3 px-1">
+                                    <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                                        <span className="flex items-center gap-1 sm:gap-1.5 px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700/50">
+                                            <PenTool className="w-3 h-3 sm:w-4 sm:h-4" />
+                                            <span className="font-medium">{wordCount}</span> words
+                                        </span>
+                                        <span className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700/50">
                                             <Hash className="w-4 h-4" />
-                                            {charCount} chars
+                                            <span className="font-medium">{charCount}</span> chars
                                         </span>
                                     </div>
-                                    <span className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
-                                        <Clock className="w-4 h-4" />
-                                        ~{readingTime} min read
+                                    <span className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm text-gray-500 dark:text-gray-400 px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700/50">
+                                        <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+                                        ~{readingTime} min
                                     </span>
                                 </div>
                             </div>
@@ -356,21 +382,20 @@ export default function CreatePost() {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex gap-4">
+                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                             <button
                                 onClick={() => handleSubmit(false)}
                                 disabled={submitting}
-                                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-medium hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md transition-all disabled:opacity-50"
+                                className="group flex-1 flex items-center justify-center gap-2.5 px-6 py-3.5 sm:py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl sm:rounded-2xl font-semibold hover:border-violet-300 dark:hover:border-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:text-violet-700 dark:hover:text-violet-300 hover:shadow-lg hover:shadow-violet-500/10 active:scale-[0.98] transition-all duration-200 disabled:opacity-50"
                             >
-                                <Save className="w-5 h-5" />
                                 Save as Draft
                             </button>
                             <button
                                 onClick={() => setShowPublishModal(true)}
                                 disabled={submitting || !formData.title || !formData.content}
-                                className="flex-1 btn-premium flex items-center justify-center gap-2 py-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="group flex-1 flex items-center justify-center gap-2.5 px-6 py-3.5 sm:py-4 bg-gradient-to-r from-orange-400 via-rose-400 to-pink-400 text-white rounded-xl sm:rounded-2xl font-semibold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                             >
-                                <Sparkles className="w-5 h-5" />
+                                <Sparkles className="w-5 h-5 transition-transform group-hover:rotate-12" />
                                 Publish Story
                             </button>
                         </div>

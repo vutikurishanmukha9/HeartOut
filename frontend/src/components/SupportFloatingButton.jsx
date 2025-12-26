@@ -67,9 +67,9 @@ export default function SupportFloatingButton() {
                 aria-label={isOpen ? 'Close support resources' : 'Open support resources'}
                 aria-expanded={isOpen}
                 className={`
-                    group flex items-center gap-2 px-4 py-3 rounded-full
+                    group flex items-center gap-1.5 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-full
                     bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500
-                    text-white font-semibold shadow-lg shadow-pink-500/30
+                    text-white text-sm font-medium shadow-lg shadow-pink-500/30
                     hover:shadow-xl hover:shadow-pink-500/40 hover:scale-105
                     transition-all duration-300
                     focus:outline-none focus:ring-4 focus:ring-pink-300 dark:focus:ring-pink-700
@@ -77,16 +77,16 @@ export default function SupportFloatingButton() {
                 `}
             >
                 {isOpen ? (
-                    <ChevronUp className="w-5 h-5" aria-hidden="true" />
+                    <ChevronUp className="w-4 h-4" aria-hidden="true" />
                 ) : (
                     <>
                         <div className="relative">
-                            <Heart className="w-5 h-5" aria-hidden="true" />
-                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-white rounded-full animate-ping" aria-hidden="true" />
-                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-white rounded-full" aria-hidden="true" />
+                            <Heart className="w-4 h-4" aria-hidden="true" />
+                            <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-white rounded-full animate-ping" aria-hidden="true" />
+                            <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-white rounded-full" aria-hidden="true" />
                         </div>
                         <span className="hidden sm:inline">Need Support?</span>
-                        <Phone className="w-4 h-4 sm:hidden" aria-hidden="true" />
+                        <Phone className="w-3.5 h-3.5 sm:hidden" aria-hidden="true" />
                     </>
                 )}
             </button>
