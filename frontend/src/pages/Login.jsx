@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { Heart, Mail, Lock, ArrowRight, Sparkles, Eye, EyeOff } from 'lucide-react';
@@ -13,13 +13,27 @@ export default function Login() {
     const navigate = useNavigate();
     const { login } = useContext(AuthContext);
 
+    // Refs to handle browser autofill (autofill doesn't trigger onChange)
+    const emailRef = useRef(null);
+    const passwordRef = useRef(null);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
 
+        // Read directly from DOM to handle autofill cases
+        const emailValue = emailRef.current?.value || email;
+        const passwordValue = passwordRef.current?.value || password;
+
+        if (!emailValue || !passwordValue) {
+            setError('Please enter both email and password');
+            setLoading(false);
+            return;
+        }
+
         try {
-            const result = await login(email, password);
+            const result = await login(emailValue, passwordValue);
             if (result.success) {
                 navigate('/feed');
             } else {
@@ -73,6 +87,7 @@ export default function Login() {
                                 <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-secondary-500/20 rounded-xl opacity-0 group-focus-within:opacity-100 blur-xl transition-opacity duration-500" />
                                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-primary-500 transition-colors duration-300" />
                                 <input
+                                    ref={emailRef}
                                     type="email"
                                     required
                                     value={email}
@@ -97,12 +112,13 @@ export default function Login() {
                                 <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-secondary-500/20 rounded-xl opacity-0 group-focus-within:opacity-100 blur-xl transition-opacity duration-500" />
                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-primary-500 transition-colors duration-300" />
                                 <input
+                                    ref={passwordRef}
                                     type={showPassword ? 'text' : 'password'}
                                     required
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     className="relative w-full pl-12 pr-12 py-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 dark:text-white transition-all duration-300 font-body placeholder:text-gray-400 shadow-sm hover:shadow-md focus:shadow-lg"
-                                    placeholder="••••••••"
+                                    placeholder="........"
                                 />
                                 <button
                                     type="button"
