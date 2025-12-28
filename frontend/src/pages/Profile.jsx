@@ -6,6 +6,7 @@ import StoryCard from '../components/PostCard';
 import { storyTypes } from '../components/StoryTypeSelector';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { getApiUrl } from '../config/api';
+import { getAvatarColor } from '../utils/avatarColors';
 
 export default function Profile() {
     const { userId } = useParams();
@@ -142,8 +143,8 @@ export default function Profile() {
                         <div className="flex md:hidden items-center justify-between mb-4">
                             {/* Avatar */}
                             <div className="relative group">
-                                <div className="absolute -inset-1 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 rounded-full blur-sm opacity-75 group-hover:opacity-100 transition-opacity animate-pulse" />
-                                <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 flex items-center justify-center text-white text-3xl font-bold shadow-2xl ring-4 ring-white dark:ring-gray-800">
+                                <div className={`absolute -inset-1 bg-gradient-to-br ${getAvatarColor(profile?.username?.[0])} rounded-full blur-sm opacity-75 group-hover:opacity-100 transition-opacity animate-pulse`} />
+                                <div className={`relative w-20 h-20 rounded-full bg-gradient-to-br ${getAvatarColor(profile?.username?.[0])} flex items-center justify-center text-white text-3xl font-bold shadow-2xl ring-4 ring-white dark:ring-gray-800`}>
                                     {profile?.username?.[0]?.toUpperCase() || 'U'}
                                 </div>
                             </div>
@@ -263,8 +264,8 @@ export default function Profile() {
                             {/* Avatar - Animated Gradient Ring */}
                             <div className="flex-shrink-0 flex flex-col items-start">
                                 <div className="relative group">
-                                    <div className="absolute -inset-1 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 rounded-full blur-sm opacity-75 group-hover:opacity-100 transition-opacity animate-pulse" />
-                                    <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 flex items-center justify-center text-white text-5xl font-bold shadow-2xl ring-4 ring-white dark:ring-gray-800">
+                                    <div className={`absolute -inset-1 bg-gradient-to-br ${getAvatarColor(profile?.username?.[0])} rounded-full blur-sm opacity-75 group-hover:opacity-100 transition-opacity animate-pulse`} />
+                                    <div className={`relative w-32 h-32 rounded-full bg-gradient-to-br ${getAvatarColor(profile?.username?.[0])} flex items-center justify-center text-white text-5xl font-bold shadow-2xl ring-4 ring-white dark:ring-gray-800`}>
                                         {profile?.username?.[0]?.toUpperCase() || 'U'}
                                     </div>
                                 </div>
