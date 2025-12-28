@@ -404,6 +404,14 @@ pytest tests/test_security.py -v
 
 ## Recent Updates
 
+### v2.8 - Backend Performance & UI Enhancements
+- **Connection Pooling** - SQLAlchemy pool of 5-15 connections with auto-recycle
+- **Cache Utility** - Redis support with graceful memory fallback
+- **Query Optimization** - Eager loading for bookmarks, fewer N+1 queries
+- **Dynamic Avatar Colors** - Profile avatars now use username-based colors
+- **Auto-Growing Textarea** - Mobile-first editor that expands with content
+- **Autofill Login Fix** - Browser autofill now works correctly with React state
+
 ### v2.7 - Strict Testing & Mobile UI Fixes
 - **Strict Test Suite** (30 new tests):
   - Input validation boundaries (username, password, email formats)
