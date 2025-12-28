@@ -14,6 +14,7 @@ from sqlalchemy import desc, func, case
 from sqlalchemy.orm import joinedload
 from app.extensions import db
 from app.models import Post, PostStatus, StoryType, Support, Bookmark, ReadProgress
+from app.utils.cache import cache
 
 
 class RankingService:
@@ -230,10 +231,18 @@ class RankingService:
     
     @classmethod
     def get_user_bookmarks(cls, user_id, page=1, per_page=20):
-        """Get all bookmarked stories for a user"""
-        return Post.query.join(Bookmark).filter(
+        """Get all bookmarked stories for a user with eager loading"""
+        return Post.query.options(
+            joinedload(Post.author)
+        ).join(Bookmark).filter(
             Bookmark.user_id == user_id,
             Post.status == PostStatus.PUBLISHED
         ).order_by(desc(Bookmark.created_at)).paginate(
             page=page, per_page=per_page, error_out=False
         )
+    
+    @classmethod
+    def invalidate_feed_cache(cls):
+        """Invalidate feed cache when stories are created/updated/deleted"""
+        cache.clear_pattern('feed:*')
+

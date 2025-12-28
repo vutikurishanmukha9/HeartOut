@@ -34,6 +34,14 @@ class Config:
     SQLALCHEMY_DATABASE_URI = database_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
+    # Connection Pooling for Production Performance
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_size': 5,           # Number of connections to keep open
+        'pool_recycle': 300,      # Recycle connections after 5 minutes
+        'pool_pre_ping': True,    # Verify connections before use (prevents stale connections)
+        'max_overflow': 10,       # Allow 10 extra connections under load
+    }
+    
     # JWT Configuration
     JWT_ACCESS_TOKEN_EXPIRES = 3600  # 1 hour
     JWT_REFRESH_TOKEN_EXPIRES = 2592000  # 30 days
