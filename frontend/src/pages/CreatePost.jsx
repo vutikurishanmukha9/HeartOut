@@ -31,6 +31,27 @@ export default function CreatePost() {
         if (draftParam) {
             setDraftId(draftParam);
             loadDraft(draftParam);
+        } else {
+            // Restore from localStorage if not editing existing draft
+            const savedDraft = localStorage.getItem('heartout_draft');
+            if (savedDraft) {
+                try {
+                    const parsed = JSON.parse(savedDraft);
+                    setFormData(prev => ({
+                        ...prev,
+                        title: parsed.title || '',
+                        content: parsed.content || '',
+                        story_type: parsed.story_type || '',
+                        is_anonymous: parsed.is_anonymous ?? false,
+                        tags: parsed.tags || []
+                    }));
+                    if (parsed.story_type) setStep(2);
+                    setAutoSaved(true);
+                    setTimeout(() => setAutoSaved(false), 2000);
+                } catch (e) {
+                    console.error('Failed to restore draft:', e);
+                }
+            }
         }
     }, [searchParams]);
 
@@ -63,17 +84,30 @@ export default function CreatePost() {
         }
     };
 
-    // Auto-save draft every 30 seconds
+    // Clear localStorage draft helper
+    const clearLocalDraft = () => {
+        localStorage.removeItem('heartout_draft');
+    };
+
+    // Auto-save draft to localStorage every 5 seconds
     useEffect(() => {
-        if (formData.title || formData.content) {
+        if (!draftId && (formData.title || formData.content)) {
             const timer = setTimeout(() => {
+                localStorage.setItem('heartout_draft', JSON.stringify({
+                    title: formData.title,
+                    content: formData.content,
+                    story_type: formData.story_type,
+                    is_anonymous: formData.is_anonymous,
+                    tags: formData.tags,
+                    savedAt: new Date().toISOString()
+                }));
                 setAutoSaved(true);
                 setLastSaved(new Date());
                 setTimeout(() => setAutoSaved(false), 2000);
-            }, 30000);
+            }, 5000);
             return () => clearTimeout(timer);
         }
-    }, [formData.title, formData.content]);
+    }, [formData.title, formData.content, formData.story_type, formData.is_anonymous, formData.tags, draftId]);
 
     // Auto-resize textarea on mobile
     useEffect(() => {
@@ -119,6 +153,7 @@ export default function CreatePost() {
 
             if (response.ok) {
                 const data = await response.json();
+                clearLocalDraft(); // Clear localStorage after successful save
                 navigate(publishNow ? `/feed/story/${data.story.id}` : '/feed/drafts');
             } else {
                 const errorData = await response.json().catch(() => ({}));

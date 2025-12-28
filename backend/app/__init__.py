@@ -110,6 +110,35 @@ def create_app(config_class=Config):
     # Register centralized error handlers
     register_error_handlers(app)
     
+    # Security Headers Middleware
+    @app.after_request
+    def add_security_headers(response):
+        """Add security headers to all responses"""
+        # Prevent clickjacking
+        response.headers['X-Frame-Options'] = 'DENY'
+        
+        # Prevent MIME type sniffing
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        
+        # XSS Protection (legacy browsers)
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        
+        # Referrer Policy
+        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        
+        # Content Security Policy (relaxed for API)
+        if not response.direct_passthrough:
+            response.headers['Content-Security-Policy'] = "default-src 'self'; frame-ancestors 'none'"
+        
+        # HSTS (only in production with HTTPS)
+        if not app.debug and app.config.get('FLASK_ENV') == 'production':
+            response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        
+        # Permissions Policy (restrict browser features)
+        response.headers['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
+        
+        return response
+    
     # Additional error handlers
     @app.errorhandler(404)
     def not_found_error(error):
