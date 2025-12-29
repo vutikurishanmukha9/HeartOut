@@ -3,7 +3,8 @@ FastAPI Application Configuration
 Using Pydantic Settings for type-safe configuration
 """
 import os
-from typing import List
+from typing import List, Any
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 
@@ -51,8 +52,19 @@ class Settings(BaseSettings):
     CORS_ORIGINS: List[str] = [
         "http://localhost:5173",
         "http://localhost:3000",
-        "https://heartout.vercel.app"
+        "https://heartout.vercel.app",
+        "https://heart-out.vercel.app",
+        "https://heartout.onrender.com"
     ]
+
+    @field_validator("CORS_ORIGINS", mode="before")
+    @classmethod
+    def assemble_cors_origins(cls, v: Any) -> List[str]:
+        if isinstance(v, str) and not v.startswith("["):
+            return [i.strip() for i in v.split(",")]
+        if isinstance(v, (list, str)):
+            return v
+        raise ValueError(v)
     
     # Rate Limiting
     RATE_LIMIT_PER_MINUTE: int = 60
