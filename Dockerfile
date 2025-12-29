@@ -8,6 +8,8 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# Cache bust: v3.0.1 - Force rebuild with email-validator
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
