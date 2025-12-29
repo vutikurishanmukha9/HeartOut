@@ -22,7 +22,7 @@ services:
           name: heartout-db
           property: connectionString
       - key: CORS_ORIGINS
-        value: https://heartout.onrender.com
+        value: https://heartout.onrender.com,https://heart-out.vercel.app,https://heartout.vercel.app
     healthCheckPath: /api/health
 
   # Frontend Static Site
