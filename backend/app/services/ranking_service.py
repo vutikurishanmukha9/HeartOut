@@ -1,8 +1,6 @@
 """
-Ranking service with Gravity Sort algorithm (Hacker News style).
-
-Consolidates ranking from multiple complex algorithms to a single 
-SQL-optimized query that balances Recency vs Engagement.
+Async Ranking Service with Gravity Sort algorithm (Hacker News style).
+FastAPI version of Flask ranking_service.
 
 Formula: score = points / (age_hours + 2) ^ gravity
 - points = save_count + support_count + (view_count / 10)
@@ -10,18 +8,18 @@ Formula: score = points / (age_hours + 2) ^ gravity
 - gravity = 1.8 (decay factor)
 """
 from datetime import datetime, timezone
-from sqlalchemy import desc, func, case
-from sqlalchemy.orm import joinedload
-from app.extensions import db
-from app.models import Post, PostStatus, StoryType, Support, Bookmark, ReadProgress
-from app.utils.cache import cache
+from typing import Optional, Tuple, List, Any
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, desc, func
+from sqlalchemy.orm import selectinload
+
+from app.models.models import Post, Support, Bookmark, ReadProgress, PostStatus, StoryType
 
 
 class RankingService:
     """
     Unified ranking service using Gravity Sort algorithm.
-    
-    Balances Recency vs Engagement with a single SQL-optimized query.
+    Balances Recency vs Engagement with SQL-optimized queries.
     Industry-standard approach used by Hacker News, Reddit, etc.
     """
     
@@ -32,44 +30,75 @@ class RankingService:
     RANDOM_CATEGORIES = {StoryType.UNSENT_LETTER}
     
     @classmethod
-    def get_ranked_stories(cls, story_type=None, page=1, per_page=20, user_id=None):
+    async def get_ranked_stories(
+        cls,
+        db: AsyncSession,
+        story_type: Optional[str] = None,
+        page: int = 1,
+        per_page: int = 20,
+        user_id: Optional[int] = None
+    ) -> dict:
         """
         Get stories ranked using Gravity Sort algorithm.
         
         Args:
-            story_type: StoryType enum or string (optional filter)
+            db: Async database session
+            story_type: StoryType string (optional filter)
             page: Page number
             per_page: Items per page
             user_id: Optional user ID (for future personalization)
             
         Returns:
-            Paginated query result with ranked stories
+            Dict with stories, pagination info, and algorithm used
         """
-        # Convert string to enum if needed
-        if isinstance(story_type, str):
-            try:
-                story_type = StoryType(story_type)
-            except ValueError:
-                story_type = None
-        
-        # Base query with eager loading
-        query = Post.query.options(
-            joinedload(Post.author)
-        ).filter_by(status=PostStatus.PUBLISHED)
+        # Build base query with eager loading
+        query = select(Post).options(selectinload(Post.author)).where(
+            Post.status == PostStatus.PUBLISHED.value
+        )
         
         # Filter by story type if specified
         if story_type:
-            query = query.filter_by(story_type=story_type)
+            query = query.where(Post.story_type == story_type)
         
-        # Apply ranking
-        if story_type in cls.RANDOM_CATEGORIES:
+        # Apply ranking based on category
+        if story_type and story_type == StoryType.UNSENT_LETTER.value:
             # Unsent Letters: Pure random for privacy
-            query = cls._apply_random_ranking(query)
+            query = query.order_by(func.random())
+            algorithm = "random"
         else:
             # All other categories: Gravity Sort
             query = cls._apply_gravity_ranking(query)
+            algorithm = "gravity"
         
-        return query.paginate(page=page, per_page=per_page, error_out=False)
+        # Count total
+        count_query = select(func.count()).select_from(Post).where(
+            Post.status == PostStatus.PUBLISHED.value
+        )
+        if story_type:
+            count_query = count_query.where(Post.story_type == story_type)
+        
+        total_result = await db.execute(count_query)
+        total = total_result.scalar() or 0
+        
+        # Paginate
+        offset = (page - 1) * per_page
+        query = query.offset(offset).limit(per_page)
+        
+        result = await db.execute(query)
+        stories = result.scalars().all()
+        
+        total_pages = (total + per_page - 1) // per_page
+        
+        return {
+            "stories": [s.to_dict() for s in stories],
+            "total": total,
+            "page": page,
+            "per_page": per_page,
+            "total_pages": total_pages,
+            "has_next": page < total_pages,
+            "has_prev": page > 1,
+            "ranking_algorithm": algorithm
+        }
     
     @classmethod
     def _apply_gravity_ranking(cls, query):
@@ -82,54 +111,32 @@ class RankingService:
         - Recency: New content gets visibility
         - Engagement: Popular content stays visible longer
         """
-        now = datetime.now(timezone.utc)
-        
-        # Calculate age in hours
-        age_hours = func.extract('epoch', now - Post.published_at) / 3600
-        
-        # Calculate engagement points
-        # Subquery for support count
-        support_subq = db.session.query(
-            Support.post_id,
-            func.count(Support.id).label('support_count')
-        ).group_by(Support.post_id).subquery()
-        
-        query = query.outerjoin(support_subq, Post.id == support_subq.c.post_id)
-        
-        # Points = saves + reactions + (views / 10)
-        support_count = func.coalesce(support_subq.c.support_count, 0)
-        points = (
-            Post.save_count + 
-            support_count + 
-            (Post.view_count / 10.0)
-        )
-        
-        # Gravity Sort score
-        # Adding small constant to points prevents division issues for new posts
-        gravity_score = (points + 1) / func.pow(age_hours + 2, cls.GRAVITY)
-        
-        return query.order_by(desc(gravity_score), desc(Post.published_at))
+        # Order by rank_score (pre-calculated) with fallback to published_at
+        return query.order_by(desc(Post.rank_score), desc(Post.published_at))
     
     @classmethod
-    def _apply_random_ranking(cls, query):
-        """
-        Apply random ranking for privacy-sensitive categories.
-        Used for Unsent Letters to prevent virality pressure.
-        """
-        return query.order_by(func.random())
-    
-    @classmethod
-    def update_story_metrics(cls, story_id, user_id=None, scroll_depth=None, time_spent=None):
+    async def update_story_metrics(
+        cls,
+        db: AsyncSession,
+        story_id: str,
+        user_id: Optional[int] = None,
+        scroll_depth: Optional[float] = None,
+        time_spent: Optional[int] = None
+    ) -> bool:
         """
         Update engagement metrics for a story based on user interaction.
         
         Args:
+            db: Async database session
             story_id: Post public_id
             user_id: User internal id (optional)
             scroll_depth: 0.0-1.0 how far user scrolled
             time_spent: Seconds spent on page
         """
-        story = Post.query.filter_by(public_id=story_id).first()
+        # Find story
+        result = await db.execute(select(Post).where(Post.public_id == story_id))
+        story = result.scalar_one_or_none()
+        
         if not story:
             return False
         
@@ -137,11 +144,14 @@ class RankingService:
         story.view_count += 1
         
         if user_id:
-            # Track unique readers
-            existing_progress = ReadProgress.query.filter_by(
-                user_id=user_id,
-                post_id=story.id
-            ).first()
+            # Track reading progress
+            progress_result = await db.execute(
+                select(ReadProgress).where(
+                    ReadProgress.user_id == user_id,
+                    ReadProgress.post_id == story.id
+                )
+            )
+            existing_progress = progress_result.scalar_one_or_none()
             
             if existing_progress:
                 # Returning reader
@@ -172,77 +182,153 @@ class RankingService:
                     time_spent=time_spent or 0,
                     completed=(scroll_depth or 0) >= 0.9
                 )
-                db.session.add(progress)
+                db.add(progress)
             
             # Update completion rate
-            cls._update_completion_rate(story)
+            await cls._update_completion_rate(db, story)
         
-        db.session.commit()
+        await db.commit()
         return True
     
     @classmethod
-    def _update_completion_rate(cls, story):
+    async def _update_completion_rate(cls, db: AsyncSession, story: Post):
         """Recalculate story's average completion rate from ReadProgress"""
-        avg_completion = db.session.query(
-            func.avg(ReadProgress.scroll_depth)
-        ).filter_by(post_id=story.id).scalar()
-        
+        result = await db.execute(
+            select(func.avg(ReadProgress.scroll_depth)).where(
+                ReadProgress.post_id == story.id
+            )
+        )
+        avg_completion = result.scalar()
         story.completion_rate = avg_completion or 0.0
     
     @classmethod
-    def toggle_bookmark(cls, story_id, user_id):
+    async def toggle_bookmark(
+        cls,
+        db: AsyncSession,
+        story_id: str,
+        user_id: int
+    ) -> Tuple[Optional[bool], int]:
         """
         Toggle bookmark status for a story.
         Returns (is_bookmarked, total_saves)
         """
-        story = Post.query.filter_by(public_id=story_id).first()
+        # Find story
+        result = await db.execute(select(Post).where(Post.public_id == story_id))
+        story = result.scalar_one_or_none()
+        
         if not story:
             return None, 0
         
-        existing = Bookmark.query.filter_by(
-            user_id=user_id,
-            post_id=story.id
-        ).first()
+        # Check existing bookmark
+        bookmark_result = await db.execute(
+            select(Bookmark).where(
+                Bookmark.user_id == user_id,
+                Bookmark.post_id == story.id
+            )
+        )
+        existing = bookmark_result.scalar_one_or_none()
         
         if existing:
-            db.session.delete(existing)
-            story.save_count = max(0, story.save_count - 1)
+            await db.delete(existing)
+            story.save_count = max(0, (story.save_count or 0) - 1)
             is_bookmarked = False
         else:
             bookmark = Bookmark(user_id=user_id, post_id=story.id)
-            db.session.add(bookmark)
-            story.save_count += 1
+            db.add(bookmark)
+            story.save_count = (story.save_count or 0) + 1
             is_bookmarked = True
         
-        db.session.commit()
+        await db.commit()
         return is_bookmarked, story.save_count
     
     @classmethod
-    def is_bookmarked(cls, story_id, user_id):
+    async def is_bookmarked(
+        cls,
+        db: AsyncSession,
+        story_id: str,
+        user_id: int
+    ) -> bool:
         """Check if a story is bookmarked by user"""
-        story = Post.query.filter_by(public_id=story_id).first()
+        # Find story
+        result = await db.execute(select(Post).where(Post.public_id == story_id))
+        story = result.scalar_one_or_none()
+        
         if not story:
             return False
         
-        return Bookmark.query.filter_by(
-            user_id=user_id,
-            post_id=story.id
-        ).first() is not None
-    
-    @classmethod
-    def get_user_bookmarks(cls, user_id, page=1, per_page=20):
-        """Get all bookmarked stories for a user with eager loading"""
-        return Post.query.options(
-            joinedload(Post.author)
-        ).join(Bookmark).filter(
-            Bookmark.user_id == user_id,
-            Post.status == PostStatus.PUBLISHED
-        ).order_by(desc(Bookmark.created_at)).paginate(
-            page=page, per_page=per_page, error_out=False
+        # Check bookmark
+        bookmark_result = await db.execute(
+            select(Bookmark).where(
+                Bookmark.user_id == user_id,
+                Bookmark.post_id == story.id
+            )
         )
+        return bookmark_result.scalar_one_or_none() is not None
     
     @classmethod
-    def invalidate_feed_cache(cls):
-        """Invalidate feed cache when stories are created/updated/deleted"""
-        cache.clear_pattern('feed:*')
-
+    async def get_user_bookmarks(
+        cls,
+        db: AsyncSession,
+        user_id: int,
+        page: int = 1,
+        per_page: int = 20
+    ) -> dict:
+        """Get all bookmarked stories for a user with eager loading"""
+        query = select(Post).options(selectinload(Post.author)).join(Bookmark).where(
+            Bookmark.user_id == user_id,
+            Post.status == PostStatus.PUBLISHED.value
+        ).order_by(desc(Bookmark.created_at))
+        
+        # Count
+        count_query = select(func.count()).select_from(Post).join(Bookmark).where(
+            Bookmark.user_id == user_id,
+            Post.status == PostStatus.PUBLISHED.value
+        )
+        total_result = await db.execute(count_query)
+        total = total_result.scalar() or 0
+        
+        # Paginate
+        offset = (page - 1) * per_page
+        query = query.offset(offset).limit(per_page)
+        
+        result = await db.execute(query)
+        stories = result.scalars().all()
+        
+        return {
+            "stories": [s.to_dict() for s in stories],
+            "total": total,
+            "page": page,
+            "per_page": per_page,
+            "total_pages": (total + per_page - 1) // per_page
+        }
+    
+    @classmethod
+    async def recalculate_rank_scores(cls, db: AsyncSession):
+        """Batch recalculate all story rank scores (for cron job)"""
+        now = datetime.now(timezone.utc)
+        
+        # Get all published posts
+        result = await db.execute(
+            select(Post).where(Post.status == PostStatus.PUBLISHED.value)
+        )
+        stories = result.scalars().all()
+        
+        for story in stories:
+            # Calculate points
+            points = (
+                (story.save_count or 0) + 
+                (story.support_count or 0) + 
+                ((story.view_count or 0) / 10.0)
+            )
+            
+            # Calculate age in hours
+            if story.published_at:
+                age_hours = (now - story.published_at).total_seconds() / 3600
+            else:
+                age_hours = 0
+            
+            # Calculate gravity score
+            story.rank_score = (points + 1) / pow(age_hours + 2, cls.GRAVITY)
+            story.last_ranked_at = now
+        
+        await db.commit()

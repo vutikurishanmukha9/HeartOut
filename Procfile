@@ -1,2 +1,1 @@
-release: cd backend && flask db upgrade
-web: cd backend && gunicorn --bind 0.0.0.0:$PORT --workers 2 --threads 4 "app:create_app()"
+web: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 2

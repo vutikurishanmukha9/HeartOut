@@ -1,0 +1,26 @@
+# Core Flask dependencies
+Flask==2.3.3
+Flask-SQLAlchemy==3.0.5
+Flask-Migrate==4.0.5
+Flask-JWT-Extended==4.5.3
+Flask-CORS==4.0.0
+Flask-Limiter==3.5.0
+Flask-WTF==1.2.1
+
+# Database - use psycopg for better Python 3.11+ compatibility
+psycopg2-binary==2.9.9
+
+# Serialization
+marshmallow==3.20.1
+
+# Utilities
+python-dotenv==1.0.0
+
+# Production server
+gunicorn==21.2.0
+
+# Redis for production rate limiting
+redis==5.0.1
+
+# Whitenoise for static files (optional)
+whitenoise==6.6.0

@@ -12,7 +12,7 @@ env:
 
 jobs:
   # ============================================
-  # Backend Tests (Python/Flask)
+  # Backend Tests (Python/FastAPI)
   # ============================================
   backend-tests:
     name: Backend Tests
@@ -37,16 +37,15 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest pytest-cov
+          pip install pytest pytest-cov pytest-asyncio
 
       - name: Run tests with coverage
         env:
-          FLASK_ENV: testing
           TESTING: 'true'
           SECRET_KEY: 'test-secret-key-for-ci'
           JWT_SECRET_KEY: 'test-jwt-secret-for-ci'
         run: |
-          pytest tests/ -v --tb=short --cov=app --cov-report=xml --cov-report=term-missing
+          pytest app/tests/ -v --tb=short --cov=app --cov-report=xml --cov-report=term-missing
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4

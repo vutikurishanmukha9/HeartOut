@@ -5,8 +5,8 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "cd backend && gunicorn --bind 0.0.0.0:$PORT --workers 2 --threads 4 'app:create_app()'"
-healthcheckPath = "/api/auth/health"
+startCommand = "cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 2"
+healthcheckPath = "/api/health"
 healthcheckTimeout = 30
 
 [[services]]

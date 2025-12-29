@@ -1,56 +1,56 @@
 """
-Utility to calculate estimated reading time for stories
+Reading Time Calculator for Stories
+Estimates reading time based on word count
 """
 
-def calculate_reading_time(content):
+
+def calculate_reading_time(content: str) -> int:
     """
-    Calculate estimated reading time based on word count
+    Calculate estimated reading time in minutes.
+    
+    Uses average reading speed of 225 words per minute.
     
     Args:
-        content (str): The story content
+        content: Story content text
         
     Returns:
-        int: Estimated reading time in minutes
+        Reading time in minutes (minimum 1)
     """
     if not content:
-        return 0
+        return 1
     
-    # Average reading speed: 200-250 words per minute
-    # Using 225 as a middle ground
-    WORDS_PER_MINUTE = 225
+    # Count words
+    words = len(content.split())
     
-    # Count words (split by whitespace)
-    word_count = len(content.split())
+    # Average reading speed is 225 words per minute
+    reading_time = words // 225
     
-    # Calculate minutes, round up to nearest minute
-    reading_time = (word_count + WORDS_PER_MINUTE - 1) // WORDS_PER_MINUTE
-    
-    # Minimum 1 minute for any content
+    # Minimum 1 minute
     return max(1, reading_time)
 
 
-def get_excerpt(content, length=150):
+def calculate_reading_time_detailed(content: str) -> dict:
     """
-    Get a short excerpt from the story content
+    Calculate detailed reading time statistics.
     
     Args:
-        content (str): The full story content
-        length (int): Maximum length of excerpt in characters
+        content: Story content text
         
     Returns:
-        str: Excerpt with ellipsis if truncated
+        Dict with word_count, reading_time_minutes, reading_speed_used
     """
     if not content:
-        return ""
+        return {
+            "word_count": 0,
+            "reading_time_minutes": 1,
+            "reading_speed_wpm": 225
+        }
     
-    if len(content) <= length:
-        return content
+    words = len(content.split())
+    reading_time = max(1, words // 225)
     
-    # Find the last space before the length limit
-    excerpt = content[:length]
-    last_space = excerpt.rfind(' ')
-    
-    if last_space > 0:
-        excerpt = excerpt[:last_space]
-    
-    return excerpt + "..."
+    return {
+        "word_count": words,
+        "reading_time_minutes": reading_time,
+        "reading_speed_wpm": 225
+    }

@@ -86,8 +86,8 @@ export function ServerWarmupToast() {
     return (
         <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 z-50 animate-slide-up">
             <div className={`rounded-2xl shadow-2xl border backdrop-blur-xl p-4 ${showSuccess
-                    ? 'bg-green-50/95 dark:bg-green-900/30 border-green-200 dark:border-green-800'
-                    : 'bg-white/95 dark:bg-gray-800/95 border-gray-200 dark:border-gray-700'
+                ? 'bg-green-50/95 dark:bg-green-900/30 border-green-200 dark:border-green-800'
+                : 'bg-white/95 dark:bg-gray-800/95 border-gray-200 dark:border-gray-700'
                 }`}>
                 {showSuccess ? (
                     <div className="flex items-center gap-3">
@@ -99,7 +99,7 @@ export function ServerWarmupToast() {
                                 Server is ready!
                             </p>
                             <p className="text-sm text-green-600 dark:text-green-400">
-                                Warmed up in {warmupTime}s. Enjoy! 🎉
+                                Warmed up in {warmupTime}s. Enjoy!
                             </p>
                         </div>
                     </div>
@@ -137,7 +137,7 @@ export function ServerWarmupToast() {
                                     style={{ width: '60%' }} />
                             </div>
                             <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                                Thanks for your patience! ☕
+                                Thanks for your patience!
                             </p>
                         </div>
                     </div>

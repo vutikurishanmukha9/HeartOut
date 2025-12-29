@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { PenTool, Save, Send, ArrowLeft, Sparkles, Clock, Hash, Check, X, Heart, Lightbulb, AlertCircle, Shield } from 'lucide-react';
+import toast from 'react-hot-toast';
 import StoryTypeSelector from '../components/StoryTypeSelector';
 import AnonymousToggle from '../components/AnonymousToggle';
 import { getApiUrl } from '../config/api';
@@ -11,6 +12,7 @@ export default function CreatePost() {
     const textareaRef = useRef(null);
     const [step, setStep] = useState(1);
     const [draftId, setDraftId] = useState(null);
+    const [loadingDraft, setLoadingDraft] = useState(false); // Prevents flash when loading draft
     const [formData, setFormData] = useState({
         title: '',
         content: '',
@@ -30,6 +32,7 @@ export default function CreatePost() {
         const draftParam = searchParams.get('draft');
         if (draftParam) {
             setDraftId(draftParam);
+            setLoadingDraft(true); // Show loading while fetching draft
             loadDraft(draftParam);
         } else {
             // Restore from localStorage if not editing existing draft
@@ -78,9 +81,13 @@ export default function CreatePost() {
                 if (story.story_type) setStep(2);
             } else {
                 console.error('Failed to load draft, status:', response.status);
+                toast.error('Failed to load draft');
             }
         } catch (error) {
             console.error('Failed to load draft:', error);
+            toast.error('Failed to load draft');
+        } finally {
+            setLoadingDraft(false); // Done loading
         }
     };
 
@@ -127,7 +134,9 @@ export default function CreatePost() {
 
     const handleSubmit = async (publishNow = false) => {
         if (!formData.title || !formData.content || !formData.story_type) {
-            alert('Please fill in all required fields');
+            toast.error('Please fill in all required fields', {
+                duration: 4000
+            });
             return;
         }
 
@@ -157,12 +166,37 @@ export default function CreatePost() {
                 navigate(publishNow ? `/feed/story/${data.story.id}` : '/feed/drafts');
             } else {
                 const errorData = await response.json().catch(() => ({}));
-                const errorMsg = errorData.error || errorData.errors?.title?.[0] || errorData.errors?.content?.[0] || 'Failed to create story';
-                alert(errorMsg);
+                // Handle FastAPI validation errors (422 format: {detail: [{loc: [], msg: '...'}]})
+                let errorMsg = 'Failed to create story';
+                if (errorData.detail) {
+                    if (Array.isArray(errorData.detail)) {
+                        // FastAPI validation error format
+                        errorMsg = errorData.detail.map(err => {
+                            const field = err.loc?.slice(-1)[0] || 'field';
+                            return `${field}: ${err.msg}`;
+                        }).join('\n');
+                    } else if (typeof errorData.detail === 'string') {
+                        errorMsg = errorData.detail;
+                    }
+                } else if (errorData.error) {
+                    errorMsg = errorData.error;
+                } else if (errorData.message) {
+                    errorMsg = errorData.message;
+                }
+                // Show styled toast with the actual validation error
+                toast.error(errorMsg, {
+                    duration: 6000,
+                    style: {
+                        maxWidth: '400px',
+                        whiteSpace: 'pre-line'
+                    }
+                });
             }
         } catch (error) {
             console.error('Error creating story:', error);
-            alert('Network error. Please check your connection.');
+            toast.error('Network error. Please check your connection.', {
+                duration: 5000
+            });
         } finally {
             setSubmitting(false);
             setShowPublishModal(false);
@@ -200,6 +234,18 @@ export default function CreatePost() {
         life_story: "Share the moments that shaped who you are today.",
         other: "Let your authentic voice shine through."
     };
+
+    // Show loading screen while loading draft (prevents flash of step 1)
+    if (loadingDraft) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-rose-50/50 via-orange-50/30 to-purple-50/50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-12 h-12 border-4 border-primary-200 rounded-full animate-spin border-t-primary-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600 dark:text-gray-400">Loading your draft...</p>
+                </div>
+            </div>
+        );
+    }
 
     // Step 1: Story Type Selection
     if (step === 1) {

@@ -1,6 +1,7 @@
 """
-Async Cache Utility for FastAPI
-Simple in-memory cache with optional Redis support.
+Simple Cache Utility for Backend Performance
+
+Provides a simple in-memory cache with optional Redis support.
 Falls back gracefully when Redis is unavailable.
 """
 import os
@@ -8,73 +9,64 @@ import time
 import json
 import functools
 from typing import Any, Optional, Callable
-import asyncio
 
-# Try to import aioredis, fallback to None if not available
+# Try to import Redis, fallback to None if not available
 try:
-    import redis.asyncio as aioredis
+    import redis
     REDIS_AVAILABLE = True
 except ImportError:
-    try:
-        import aioredis
-        REDIS_AVAILABLE = True
-    except ImportError:
-        aioredis = None
-        REDIS_AVAILABLE = False
+    redis = None
+    REDIS_AVAILABLE = False
 
 
-class AsyncCache:
+class SimpleCache:
     """
-    Async caching with Redis support and memory fallback.
+    Simple caching with Redis support and memory fallback.
     
     Usage:
-        cache = AsyncCache()
-        await cache.set('key', data, ttl=60)  # Cache for 60 seconds
-        data = await cache.get('key')
+        cache = SimpleCache()
+        cache.set('key', data, ttl=60)  # Cache for 60 seconds
+        data = cache.get('key')
     """
     
     def __init__(self):
         self._memory_cache = {}
         self._redis_client = None
-        self._initialized = False
+        self._init_redis()
     
-    async def init(self):
+    def _init_redis(self):
         """Initialize Redis connection if available."""
-        if self._initialized:
-            return
-        
         if not REDIS_AVAILABLE:
-            self._initialized = True
             return
         
         redis_url = os.environ.get('REDIS_URL')
         if redis_url:
             try:
-                self._redis_client = await aioredis.from_url(
+                self._redis_client = redis.from_url(
                     redis_url,
                     socket_connect_timeout=2,
                     socket_timeout=2
                 )
                 # Test connection
-                await self._redis_client.ping()
+                self._redis_client.ping()
             except Exception:
                 self._redis_client = None
-        
-        self._initialized = True
     
     @property
     def using_redis(self) -> bool:
         """Check if Redis is being used."""
         return self._redis_client is not None
     
-    async def get(self, key: str) -> Optional[Any]:
-        """Get value from cache. Returns None if key doesn't exist or is expired."""
-        await self.init()
+    def get(self, key: str) -> Optional[Any]:
+        """
+        Get value from cache.
         
+        Returns None if key doesn't exist or is expired.
+        """
         # Try Redis first
         if self._redis_client:
             try:
-                value = await self._redis_client.get(key)
+                value = self._redis_client.get(key)
                 if value:
                     return json.loads(value)
             except Exception:
@@ -91,7 +83,7 @@ class AsyncCache:
         
         return None
     
-    async def set(self, key: str, value: Any, ttl: int = 60) -> bool:
+    def set(self, key: str, value: Any, ttl: int = 60) -> bool:
         """
         Set value in cache with TTL (time to live) in seconds.
         
@@ -103,12 +95,10 @@ class AsyncCache:
         Returns:
             True if cached successfully
         """
-        await self.init()
-        
         # Try Redis first
         if self._redis_client:
             try:
-                await self._redis_client.setex(key, ttl, json.dumps(value))
+                self._redis_client.setex(key, ttl, json.dumps(value))
                 return True
             except Exception:
                 pass
@@ -120,14 +110,12 @@ class AsyncCache:
         }
         return True
     
-    async def delete(self, key: str) -> bool:
+    def delete(self, key: str) -> bool:
         """Delete a key from cache."""
-        await self.init()
-        
         # Try Redis
         if self._redis_client:
             try:
-                await self._redis_client.delete(key)
+                self._redis_client.delete(key)
             except Exception:
                 pass
         
@@ -137,7 +125,7 @@ class AsyncCache:
         
         return True
     
-    async def clear_pattern(self, pattern: str) -> int:
+    def clear_pattern(self, pattern: str) -> int:
         """
         Clear all keys matching pattern.
         
@@ -147,15 +135,14 @@ class AsyncCache:
         Returns:
             Number of keys deleted
         """
-        await self.init()
         deleted = 0
         
         # Redis pattern delete
         if self._redis_client:
             try:
-                keys = await self._redis_client.keys(pattern)
+                keys = self._redis_client.keys(pattern)
                 if keys:
-                    deleted = await self._redis_client.delete(*keys)
+                    deleted = self._redis_client.delete(*keys)
             except Exception:
                 pass
         
@@ -170,32 +157,32 @@ class AsyncCache:
 
 
 # Global cache instance
-cache = AsyncCache()
+cache = SimpleCache()
 
 
-def async_cached(ttl: int = 60, key_prefix: str = ''):
+def cached(ttl: int = 60, key_prefix: str = ''):
     """
-    Decorator for caching async function results.
+    Decorator for caching function results.
     
     Usage:
-        @async_cached(ttl=30, key_prefix='feed')
-        async def get_feed(page, story_type):
-            return await expensive_query()
+        @cached(ttl=30, key_prefix='feed')
+        def get_feed(page, story_type):
+            return expensive_query()
     """
     def decorator(func: Callable):
         @functools.wraps(func)
-        async def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs):
             # Build cache key from function name and arguments
             cache_key = f"{key_prefix}:{func.__name__}:{hash(str(args) + str(kwargs))}"
             
             # Try to get from cache
-            result = await cache.get(cache_key)
+            result = cache.get(cache_key)
             if result is not None:
                 return result
             
             # Execute function and cache result
-            result = await func(*args, **kwargs)
-            await cache.set(cache_key, result, ttl)
+            result = func(*args, **kwargs)
+            cache.set(cache_key, result, ttl)
             return result
         
         return wrapper

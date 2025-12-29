@@ -64,11 +64,12 @@ A modern, premium storytelling platform for authentic personal expression.
 ### Backend
 | Technology | Purpose |
 |------------|---------|
-| Flask | Python web framework |
-| SQLAlchemy | Database ORM |
-| JWT | Authentication |
-| Marshmallow | Validation |
-| Flask-Limiter | Rate limiting |
+| **FastAPI** | Modern async Python web framework |
+| **SQLAlchemy 2.0** | Async database ORM |
+| **Pydantic v2** | Data validation |
+| **Uvicorn** | ASGI server |
+| **SlowAPI** | Rate limiting |
+| JWT (PyJWT) | Authentication |
 
 ### Frontend
 | Technology | Purpose |
@@ -104,7 +105,6 @@ python -m venv venv
 source venv/bin/activate  # macOS/Linux
 pip install -r requirements.txt
 cp .env.example .env
-flask db upgrade
 
 # Frontend setup
 cd ../frontend
@@ -114,15 +114,17 @@ npm install
 ### Running
 
 ```bash
-# Terminal 1 - Backend (http://localhost:5000)
+# Terminal 1 - Backend (http://localhost:8000)
 cd backend
 .\venv\Scripts\activate
-python run.py
+python -m uvicorn app.main:app --reload --port 8000
 
 # Terminal 2 - Frontend (http://localhost:5173)
 cd frontend
 npm run dev
 ```
+
+> **Note:** API docs are available at http://localhost:8000/api/docs (Swagger UI)
 
 ---
 
@@ -131,20 +133,24 @@ npm run dev
 ```
 HeartOut/
 ├── backend/
-│   ├── app/
-│   │   ├── blueprints/     # API routes (auth, posts, admin)
-│   │   ├── services/       # Business logic layer
-│   │   ├── utils/          # Decorators, errors, validators
-│   │   ├── models.py       # Database models
-│   │   └── schemas.py      # Request validation
-│   └── migrations/
+│   ├── app/                    # FastAPI application
+│   │   ├── api/v1/             # API routes (auth, posts, admin)
+│   │   ├── core/               # Config, database, security
+│   │   ├── models/             # SQLAlchemy models
+│   │   ├── schemas/            # Pydantic schemas
+│   │   ├── services/           # Business logic layer
+│   │   ├── tests/              # 141 pytest tests
+│   │   ├── utils/              # Validators, helpers
+│   │   └── main.py             # FastAPI app entry
+│   ├── flask_app_legacy/       # Archived Flask app (not in use)
+│   └── requirements.txt        # Python dependencies
 ├── frontend/
 │   ├── src/
-│   │   ├── components/     # Reusable UI components
-│   │   ├── pages/          # Page components
-│   │   ├── context/        # Auth & Theme providers
-│   │   └── routes/         # Route configurations
-│   └── public/             # Static assets
+│   │   ├── components/         # Reusable UI components
+│   │   ├── pages/              # Page components
+│   │   ├── context/            # Auth & Theme providers
+│   │   └── routes/             # Route configurations
+│   └── public/                 # Static assets
 └── README.md
 ```
 
@@ -264,11 +270,11 @@ FLASK_ENV=production
 
 ### Unit Tests
 
-#### Backend (pytest)
+#### Backend (pytest - 141 tests)
 ```bash
 cd backend
 .\venv\Scripts\activate
-pytest -v
+pytest app/tests -v
 ```
 
 | Test Suite | Tests | Description |
@@ -348,7 +354,7 @@ Performance and load testing.
 ```bash
 cd backend
 pip install locust
-locust -f tests/test_load.py --host=http://localhost:5000
+locust -f tests/test_load.py --host=http://localhost:8000
 # Open http://localhost:8089 for web UI
 ```
 
@@ -404,6 +410,19 @@ pytest tests/test_security.py -v
 
 ## Recent Updates
 
+### v3.0 - FastAPI Migration
+- **Backend Migration** - Complete migration from Flask to FastAPI:
+  - Async/await throughout with SQLAlchemy 2.0
+  - Pydantic v2 for request/response validation
+  - Auto-generated OpenAPI docs at `/api/docs`
+  - Improved performance with Uvicorn ASGI server
+  - 141 backend tests (all passing)
+- **Code Reorganization**:
+  - Flask app archived to `flask_app_legacy/`
+  - Clean `app/` structure with FastAPI
+  - Updated deployment configs (Dockerfile, Procfile, render.yaml)
+- **Port Change**: Backend now runs on port 8000 (was 5000)
+
 ### v2.8 - Backend Performance & UI Enhancements
 - **Connection Pooling** - SQLAlchemy pool of 5-15 connections with auto-recycle
 - **Cache Utility** - Redis support with graceful memory fallback
@@ -427,7 +446,6 @@ pytest tests/test_security.py -v
 - **Drafts Page Enhancement**:
   - Premium Edit/Delete buttons with gradient styling
   - Pill-style buttons with labels and hover effects
-- **Total Test Count**: 144 backend tests
 
 ### v2.6 - Premium UI/UX Overhaul & Ranking Consolidation
 - **Gravity Sort Ranking** - Consolidated from 6 category-specific algorithms to single SQL-optimized query:
@@ -554,11 +572,13 @@ pytest tests/test_security.py -v
 
 #### Backend (Render/Railway/Heroku)
 ```bash
+# Start command:
+uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 2
+
 # Environment variables required:
 SECRET_KEY=<32+ char secret>
 JWT_SECRET_KEY=<32+ char secret>
 DATABASE_URL=postgresql://...
-FLASK_ENV=production
 CORS_ORIGINS=https://your-frontend-domain.com
 
 # Optional:

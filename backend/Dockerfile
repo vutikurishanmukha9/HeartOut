@@ -1,4 +1,4 @@
-# Backend Dockerfile
+# Backend Dockerfile (FastAPI)
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -20,7 +20,7 @@ COPY . .
 RUN mkdir -p logs
 
 # Expose port
-EXPOSE 5000
+EXPOSE 8000
 
-# Run migrations and start server
-CMD ["python", "run.py"]
+# Run FastAPI with uvicorn
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

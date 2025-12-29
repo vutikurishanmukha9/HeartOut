@@ -18,27 +18,21 @@ const SITE_URL = 'https://heartout.vercel.app'; // Update with your actual domai
 const CATEGORY_META = {
     achievement: {
         description: 'A HeartOut story about Achievements - celebrating victories and milestones.',
-        emoji: '🏆',
     },
     regret: {
         description: 'A HeartOut story about Regrets - lessons from difficult experiences.',
-        emoji: '💭',
     },
     unsent_letter: {
         description: 'A HeartOut story - an Unsent Letter expressing words never said.',
-        emoji: '✉️',
     },
     sacrifice: {
         description: 'A HeartOut story about Sacrifices - documenting what was given up.',
-        emoji: '💝',
     },
     life_story: {
         description: 'A HeartOut Life Story - sharing a personal journey.',
-        emoji: '📖',
     },
     other: {
         description: 'A personal story shared on HeartOut.',
-        emoji: '❤️',
     },
 };
 
