@@ -1,31 +1,31 @@
 """
 FastAPI Posts/Stories Routes
-Complete migration from Flask posts blueprint (20+ endpoints)
+Refactored to use StoryService and common dependencies
 """
 from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc, func, or_
 from sqlalchemy.orm import selectinload
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Optional, List
 
 from app.core.database import get_db
 from app.core.security import get_current_user
+from app.core.exceptions import NotFoundError, ForbiddenError, ValidationError
+from app.api.dependencies import (
+    get_story_or_404, get_published_story_or_404, 
+    PaginationDep, Pagination, DbSession
+)
 from app.models.models import User, Post, Comment, Support, Bookmark, ReadProgress, PostStatus, StoryType
 from app.schemas.posts import (
     PostCreate, PostUpdate, PostResponse, PostListResponse,
     CommentCreate, CommentResponse, SupportCreate, SupportResponse,
     BookmarkResponse, ReadProgressUpdate
 )
+from app.services.story_service import StoryService, calculate_reading_time
 
 
 router = APIRouter()
-
-
-def calculate_reading_time(content: str) -> int:
-    """Calculate reading time in minutes"""
-    words = len(content.split())
-    return max(1, words // 225)
 
 
 # ========== STORY CRUD ==========
@@ -390,15 +390,12 @@ async def update_story(
     db: AsyncSession = Depends(get_db)
 ):
     """Update a story (only by author)"""
-    query = select(Post).where(Post.public_id == story_id)
-    result = await db.execute(query)
-    story = result.scalar_one_or_none()
+    # Get story or 404
+    story = await get_story_or_404(story_id, db, include_author=False)
     
-    if not story:
-        raise HTTPException(status_code=404, detail="Story not found")
-    
+    # Check ownership
     if story.user_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Unauthorized")
+        raise ForbiddenError("You can only edit your own stories")
     
     # Update fields
     story.title = post_data.title
@@ -427,15 +424,10 @@ async def delete_story(
     db: AsyncSession = Depends(get_db)
 ):
     """Delete a story (only by author)"""
-    query = select(Post).where(Post.public_id == story_id)
-    result = await db.execute(query)
-    story = result.scalar_one_or_none()
-    
-    if not story:
-        raise HTTPException(status_code=404, detail="Story not found")
+    story = await get_story_or_404(story_id, db, include_author=False)
     
     if story.user_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Unauthorized")
+        raise ForbiddenError("You can only delete your own stories")
     
     await db.delete(story)
     await db.commit()
