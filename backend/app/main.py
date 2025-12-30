@@ -26,14 +26,14 @@ async def lifespan(app: FastAPI):
     # Startup
     print("Starting FastAPI application...")
     
-    # Create tables for development (SQLite) - use Alembic in production
-    if settings.IS_SQLITE:
-        from app.models.models import (
-            User, Post, Comment, Support, Bookmark, ReadProgress, TokenBlocklist
-        )
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-        print(f"Database tables created (SQLite mode)")
+    # Create tables if they don't exist (for both SQLite and PostgreSQL)
+    # In production, you might want to use Alembic migrations instead
+    from app.models.models import (
+        User, Post, Comment, Support, Bookmark, ReadProgress, TokenBlocklist
+    )
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    print(f"Database tables verified/created")
     
     print(f"Using database: {settings.DATABASE_URL[:30]}...")
     yield
