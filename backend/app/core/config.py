@@ -30,9 +30,19 @@ class Settings(BaseSettings):
         
         # Handle PostgreSQL (use asyncpg)
         if url.startswith("postgres://"):
-            return url.replace("postgres://", "postgresql+asyncpg://", 1)
-        if url.startswith("postgresql://"):
-            return url.replace("postgresql://", "postgresql+asyncpg://", 1)
+            url = url.replace("postgres://", "postgresql+asyncpg://", 1)
+        elif url.startswith("postgresql://"):
+            url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        
+        # asyncpg doesn't support 'sslmode', it uses 'ssl' instead
+        # Remove sslmode parameter as asyncpg handles SSL differently
+        if "sslmode=" in url:
+            # Remove sslmode parameter from URL
+            import re
+            url = re.sub(r'[?&]sslmode=[^&]*', '', url)
+            # Clean up any leftover ? or & at the end
+            url = re.sub(r'\?$', '', url)
+            url = re.sub(r'\?&', '?', url)
         
         return url
     
