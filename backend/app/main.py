@@ -60,6 +60,25 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
+# Middleware to handle trailing slashes - redirect /path/ to /path
+from starlette.responses import RedirectResponse
+
+@app.middleware("http")
+async def redirect_trailing_slash(request: Request, call_next):
+    """Redirect URLs with trailing slashes to non-trailing slash versions"""
+    path = request.url.path
+    if path != "/" and path.endswith("/"):
+        # Strip trailing slash and redirect
+        new_path = path.rstrip("/")
+        query_string = request.url.query
+        if query_string:
+            new_url = f"{new_path}?{query_string}"
+        else:
+            new_url = new_path
+        return RedirectResponse(url=new_url, status_code=307)
+    return await call_next(request)
+
+
 # Custom exception handler - convert FastAPI 'detail' to Flask-style 'error' for frontend compatibility
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
