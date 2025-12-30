@@ -7,7 +7,7 @@ from typing import Optional, List
 from enum import Enum
 import uuid
 
-from sqlalchemy import String, Text, Integer, Float, Boolean, DateTime, JSON, ForeignKey, Index, UniqueConstraint
+from sqlalchemy import String, Text, Integer, Float, Boolean, DateTime, JSON, ForeignKey, Index, UniqueConstraint, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import bcrypt
 
@@ -158,8 +158,8 @@ class Post(Base):
     public_id: Mapped[str] = mapped_column(String(36), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
-    status: Mapped[str] = mapped_column(String(20), default=PostStatus.DRAFT.value, nullable=False)
-    story_type: Mapped[str] = mapped_column(String(20), default=StoryType.OTHER.value, nullable=False)
+    status: Mapped[str] = mapped_column(SQLEnum('draft', 'published', 'flagged', 'removed', name='poststatus', create_constraint=False, native_enum=True), default=PostStatus.DRAFT.value, nullable=False)
+    story_type: Mapped[str] = mapped_column(SQLEnum('achievement', 'regret', 'unsent_letter', 'sacrifice', 'life_story', 'other', name='storytype', create_constraint=False, native_enum=True), default=StoryType.OTHER.value, nullable=False)
     is_anonymous: Mapped[bool] = mapped_column(Boolean, default=True)
     tags: Mapped[Optional[list]] = mapped_column(JSON, nullable=True)
     
