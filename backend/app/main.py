@@ -51,40 +51,12 @@ app = FastAPI(
     docs_url="/api/docs",
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json",
-    lifespan=lifespan,
-    redirect_slashes=False  # Prevent 307 redirect loops with trailing slashes
+    lifespan=lifespan
 )
 
 # Add rate limiter
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-
-
-# Middleware to handle trailing slashes - redirect /path/ to /path
-from starlette.responses import RedirectResponse
-
-@app.middleware("http")
-async def redirect_trailing_slash(request: Request, call_next):
-    """Redirect URLs with trailing slashes to non-trailing slash versions"""
-    path = request.url.path
-    if path != "/" and path.endswith("/"):
-        # Strip trailing slash and redirect
-        new_path = path.rstrip("/")
-        query_string = request.url.query
-        if query_string:
-            new_url = f"{new_path}?{query_string}"
-        else:
-            new_url = new_path
-        
-        # Create redirect response with CORS headers
-        response = RedirectResponse(url=new_url, status_code=307)
-        origin = request.headers.get("origin", "*")
-        response.headers["Access-Control-Allow-Origin"] = origin
-        response.headers["Access-Control-Allow-Credentials"] = "true"
-        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
-        response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept"
-        return response
-    return await call_next(request)
 
 
 # Custom exception handler - convert FastAPI 'detail' to Flask-style 'error' for frontend compatibility
