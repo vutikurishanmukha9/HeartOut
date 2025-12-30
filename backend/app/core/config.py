@@ -34,15 +34,11 @@ class Settings(BaseSettings):
         elif url.startswith("postgresql://"):
             url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
         
-        # asyncpg doesn't support 'sslmode', it uses 'ssl' instead
-        # Remove sslmode parameter as asyncpg handles SSL differently
-        if "sslmode=" in url:
-            # Remove sslmode parameter from URL
-            import re
-            url = re.sub(r'[?&]sslmode=[^&]*', '', url)
-            # Clean up any leftover ? or & at the end
-            url = re.sub(r'\?$', '', url)
-            url = re.sub(r'\?&', '?', url)
+        # asyncpg doesn't support URL query parameters like sslmode, channel_binding
+        # These are passed differently in asyncpg (via connect_args in engine)
+        # Strip all query parameters from the URL
+        if "?" in url:
+            url = url.split("?")[0]
         
         return url
     

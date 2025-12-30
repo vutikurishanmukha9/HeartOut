@@ -20,7 +20,14 @@ if settings.IS_SQLITE:
         poolclass=StaticPool,
     )
 else:
-    # PostgreSQL: use connection pooling
+    # PostgreSQL: use connection pooling with SSL for Neon
+    import ssl
+    
+    # Create SSL context for Neon (requires SSL)
+    ssl_context = ssl.create_default_context()
+    ssl_context.check_hostname = False
+    ssl_context.verify_mode = ssl.CERT_NONE  # Neon uses self-signed certs
+    
     engine = create_async_engine(
         settings.ASYNC_DATABASE_URL,
         echo=settings.DEBUG,
@@ -28,6 +35,7 @@ else:
         max_overflow=10,
         pool_recycle=300,
         pool_pre_ping=True,
+        connect_args={"ssl": ssl_context},  # Enable SSL for asyncpg
     )
 
 
