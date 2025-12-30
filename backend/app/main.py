@@ -51,7 +51,8 @@ app = FastAPI(
     docs_url="/api/docs",
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json",
-    lifespan=lifespan
+    lifespan=lifespan,
+    redirect_slashes=False  # Prevent 307 redirect loops with trailing slashes
 )
 
 # Add rate limiter
