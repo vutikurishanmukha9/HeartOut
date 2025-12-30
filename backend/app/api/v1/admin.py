@@ -38,7 +38,7 @@ async def get_dashboard_stats(
     db: AsyncSession = Depends(get_db)
 ):
     """Get admin dashboard statistics"""
-    start_date = datetime.now(timezone.utc) - timedelta(days=days)
+    start_date = datetime.utcnow() - timedelta(days=days)
     
     # User statistics
     total_users_result = await db.execute(select(func.count()).select_from(User))
@@ -303,7 +303,7 @@ async def moderate_post(
         post.status = PostStatus.PUBLISHED.value
         post.flagged_count = 0
         if not post.published_at:
-            post.published_at = datetime.now(timezone.utc)
+            post.published_at = datetime.utcnow()
     elif action == 'remove':
         post.status = PostStatus.REMOVED.value
     elif action == 'flag':
@@ -335,7 +335,7 @@ async def feature_post(
     
     post.is_featured = not post.is_featured
     if post.is_featured:
-        post.featured_at = datetime.now(timezone.utc)
+        post.featured_at = datetime.utcnow()
     
     await db.commit()
     

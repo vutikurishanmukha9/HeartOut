@@ -43,7 +43,7 @@ class StoryService:
         )
         
         if story.status == PostStatus.PUBLISHED.value:
-            story.published_at = datetime.now(timezone.utc)
+            story.published_at = datetime.utcnow()
         
         db.add(story)
         await db.commit()
@@ -257,10 +257,10 @@ class StoryService:
         if 'status' in data:
             new_status = data['status']
             if new_status == PostStatus.PUBLISHED.value and story.status != PostStatus.PUBLISHED.value:
-                story.published_at = datetime.now(timezone.utc)
+                story.published_at = datetime.utcnow()
             story.status = new_status
         
-        story.updated_at = datetime.now(timezone.utc)
+        story.updated_at = datetime.utcnow()
         await db.commit()
         await db.refresh(story)
         

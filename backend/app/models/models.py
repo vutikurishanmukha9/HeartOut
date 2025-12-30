@@ -47,7 +47,7 @@ class TokenBlocklist(Base):
     jti: Mapped[str] = mapped_column(String(36), nullable=False, unique=True, index=True)
     token_type: Mapped[str] = mapped_column(String(10), nullable=False)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
-    revoked_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    revoked_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     
     __table_args__ = (
@@ -68,7 +68,7 @@ class User(Base):
     role: Mapped[str] = mapped_column(String(20), default=UserRole.USER.value, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     last_login: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     
     # Profile fields
@@ -170,8 +170,8 @@ class Post(Base):
     featured_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     
     # Timestamps
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     published_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     
     # Moderation
@@ -257,7 +257,7 @@ class Comment(Base):
     public_id: Mapped[str] = mapped_column(String(36), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
     content: Mapped[str] = mapped_column(Text, nullable=False)
     is_anonymous: Mapped[bool] = mapped_column(Boolean, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     
     # Foreign keys
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
@@ -307,7 +307,7 @@ class Support(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     support_type: Mapped[str] = mapped_column(String(50), default='heart')
     message: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     
     # Foreign keys
     giver_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
@@ -344,7 +344,7 @@ class Bookmark(Base):
     __tablename__ = 'bookmarks'
     
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     
     # Foreign keys
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
@@ -374,8 +374,8 @@ class ReadProgress(Base):
     read_count: Mapped[int] = mapped_column(Integer, default=1)
     
     # Timestamps
-    first_read: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
-    last_read: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    first_read: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    last_read: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     
     # Foreign keys
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)

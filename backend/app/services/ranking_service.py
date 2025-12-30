@@ -156,7 +156,7 @@ class RankingService:
             if existing_progress:
                 # Returning reader
                 existing_progress.read_count += 1
-                existing_progress.last_read = datetime.now(timezone.utc)
+                existing_progress.last_read = datetime.utcnow()
                 story.reread_count += 1
                 
                 if scroll_depth:
@@ -305,7 +305,7 @@ class RankingService:
     @classmethod
     async def recalculate_rank_scores(cls, db: AsyncSession):
         """Batch recalculate all story rank scores (for cron job)"""
-        now = datetime.now(timezone.utc)
+        now = datetime.utcnow()
         
         # Get all published posts
         result = await db.execute(

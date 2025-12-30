@@ -51,7 +51,7 @@ async def create_story(
     
     # Set published_at if publishing
     if post_data.status == 'published':
-        post.published_at = datetime.now(timezone.utc)
+        post.published_at = datetime.utcnow()
     
     db.add(post)
     await db.commit()
@@ -408,11 +408,11 @@ async def update_story(
     story.tags = post_data.tags
     story.status = post_data.status
     story.reading_time = calculate_reading_time(post_data.content)
-    story.updated_at = datetime.now(timezone.utc)
+    story.updated_at = datetime.utcnow()
     
     # Set published_at if publishing for first time
     if post_data.status == 'published' and not story.published_at:
-        story.published_at = datetime.now(timezone.utc)
+        story.published_at = datetime.utcnow()
     
     await db.commit()
     await db.refresh(story)
@@ -813,7 +813,7 @@ async def track_read_progress(
         if existing:
             # Update existing progress
             existing.read_count += 1
-            existing.last_read = datetime.now(timezone.utc)
+            existing.last_read = datetime.utcnow()
             story.reread_count += 1
             
             if progress_data.scroll_depth:
