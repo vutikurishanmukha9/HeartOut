@@ -103,11 +103,18 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
-    allow_origin_regex=r"https://.*\.onrender\.com|https://.*\.vercel\.app",  # Allow Render and Vercel subdomains
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://heartout.vercel.app",
+        "https://heart-out.vercel.app",
+        "https://heartout-kx89.onrender.com",
+    ],
+    allow_origin_regex=r"https://.*\.onrender\.com|https://.*\.vercel\.app",
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 
