@@ -103,10 +103,25 @@ class User(Base):
         ).decode('utf-8')
     
     def check_password(self, password: str) -> bool:
-        return bcrypt.checkpw(
-            password.encode('utf-8'),
-            self.password_hash.encode('utf-8')
-        )
+        """Check password - supports both bcrypt (FastAPI) and werkzeug (Flask) hashes"""
+        try:
+            # First try bcrypt (new FastAPI format)
+            if self.password_hash.startswith('$2'):  # bcrypt hashes start with $2a$, $2b$, etc.
+                return bcrypt.checkpw(
+                    password.encode('utf-8'),
+                    self.password_hash.encode('utf-8')
+                )
+            else:
+                # Fall back to werkzeug for legacy Flask hashes (pbkdf2, scrypt, etc.)
+                from werkzeug.security import check_password_hash
+                return check_password_hash(self.password_hash, password)
+        except (ValueError, TypeError):
+            # If all else fails, try werkzeug as a last resort
+            try:
+                from werkzeug.security import check_password_hash
+                return check_password_hash(self.password_hash, password)
+            except Exception:
+                return False
     
     def to_dict(self, include_sensitive: bool = False) -> dict:
         data = {
