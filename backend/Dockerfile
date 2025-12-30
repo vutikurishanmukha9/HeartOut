@@ -3,6 +3,8 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# Cache bust: v4.0.0 - Force rebuild after ENUM to VARCHAR migration
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
