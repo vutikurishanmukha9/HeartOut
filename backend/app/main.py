@@ -75,7 +75,15 @@ async def redirect_trailing_slash(request: Request, call_next):
             new_url = f"{new_path}?{query_string}"
         else:
             new_url = new_path
-        return RedirectResponse(url=new_url, status_code=307)
+        
+        # Create redirect response with CORS headers
+        response = RedirectResponse(url=new_url, status_code=307)
+        origin = request.headers.get("origin", "*")
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+        response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept"
+        return response
     return await call_next(request)
 
 
