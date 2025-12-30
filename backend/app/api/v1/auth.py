@@ -133,8 +133,8 @@ async def login(
             detail="Account is deactivated"
         )
     
-    # Update last login
-    user.last_login = datetime.now(timezone.utc)
+    # Update last login (use naive UTC datetime for PostgreSQL compatibility)
+    user.last_login = datetime.utcnow()
     await db.commit()
     
     # Create tokens
