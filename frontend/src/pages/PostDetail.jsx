@@ -366,72 +366,74 @@ export default function PostDetail() {
                     )}
 
                     {/* Story Content */}
-                    <div className="prose prose-lg dark:prose-invert max-w-none mb-12">
-                        <div className="text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap">
+                    <div className="w-full mb-12">
+                        <p className="w-full text-gray-800 dark:text-gray-200 text-lg leading-relaxed whitespace-pre-wrap text-justify">
                             {sanitizeText(story.content)}
-                        </div>
+                        </p>
                     </div>
 
                     {/* Actions */}
-                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 py-6 border-y border-gray-200 dark:border-gray-700 mb-8">
-                        <ReactionButton
-                            storyId={story.id}
-                            currentReaction={userReaction}
-                            onReact={handleReact}
-                            supportCount={supportCount}
-                        />
+                    <div className="border-y border-gray-200 dark:border-gray-700 py-6 mb-8">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+                            <ReactionButton
+                                storyId={story.id}
+                                currentReaction={userReaction}
+                                onReact={handleReact}
+                                supportCount={supportCount}
+                            />
 
-                        <button
-                            onClick={handleShare}
-                            aria-label="Share this story"
-                            className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-primary-400 transition-all"
-                        >
-                            <Share2 className="w-5 h-5" aria-hidden="true" />
-                            <span className="hidden sm:inline">Share</span>
-                        </button>
-
-                        {user && (
                             <button
-                                onClick={handleToggleBookmark}
-                                aria-label={isBookmarked ? 'Remove from saved' : 'Save this story'}
-                                className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg border transition-all ${isBookmarked
-                                    ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400'
-                                    : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-amber-400'
-                                    }`}
+                                onClick={handleShare}
+                                aria-label="Share this story"
+                                className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-primary-400 transition-all"
                             >
-                                <Bookmark className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} aria-hidden="true" />
-                                <span className="hidden sm:inline">{isBookmarked ? 'Saved' : 'Save'}</span>
+                                <Share2 className="w-5 h-5" aria-hidden="true" />
+                                <span className="hidden sm:inline">Share</span>
                             </button>
-                        )}
 
-                        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                            <MessageCircle className="w-5 h-5" aria-hidden="true" />
-                            <span className="text-sm sm:text-base">{story.comment_count} <span className="hidden sm:inline">comments</span></span>
-                        </div>
+                            {user && (
+                                <button
+                                    onClick={handleToggleBookmark}
+                                    aria-label={isBookmarked ? 'Remove from saved' : 'Save this story'}
+                                    className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg border transition-all ${isBookmarked
+                                        ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400'
+                                        : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-amber-400'
+                                        }`}
+                                >
+                                    <Bookmark className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} aria-hidden="true" />
+                                    <span className="hidden sm:inline">{isBookmarked ? 'Saved' : 'Save'}</span>
+                                </button>
+                            )}
 
-                        {/* Author Actions - Edit/Delete */}
-                        {isAuthor && (
-                            <div className="ml-auto flex items-center gap-2">
-                                <button
-                                    onClick={() => navigate(`/edit/${story.id}`)}
-                                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-blue-300 dark:border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
-                                >
-                                    <Edit className="w-4 h-4" />
-                                    Edit
-                                </button>
-                                <button
-                                    onClick={handleDelete}
-                                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                    Delete
-                                </button>
+                            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                                <MessageCircle className="w-5 h-5" aria-hidden="true" />
+                                <span className="text-sm sm:text-base">{story.comment_count} <span className="hidden sm:inline">comments</span></span>
                             </div>
-                        )}
+
+                            {/* Author Actions - Edit/Delete */}
+                            {isAuthor && (
+                                <div className="ml-auto flex items-center gap-2">
+                                    <button
+                                        onClick={() => navigate(`/edit/${story.id}`)}
+                                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-blue-300 dark:border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
+                                    >
+                                        <Edit className="w-4 h-4" />
+                                        Edit
+                                    </button>
+                                    <button
+                                        onClick={handleDelete}
+                                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                        Delete
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {/* Comments Section */}
-                    <div className="space-y-6">
+                    <div className="w-full space-y-6">
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                             Comments ({comments.length})
                         </h2>
