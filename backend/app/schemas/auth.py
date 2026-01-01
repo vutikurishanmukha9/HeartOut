@@ -113,3 +113,9 @@ class PasswordChange(BaseModel):
     """Schema for password change"""
     current_password: str
     new_password: str = Field(..., min_length=8, max_length=128)
+
+
+class DeleteAccount(BaseModel):
+    """Schema for account deletion"""
+    password: str = Field(..., description="User password for confirmation")
+

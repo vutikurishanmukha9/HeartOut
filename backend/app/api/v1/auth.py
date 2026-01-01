@@ -18,7 +18,7 @@ from app.core.security import (
 from app.models.models import User, TokenBlocklist, PostStatus
 from app.schemas.auth import (
     UserRegistration, UserLogin, TokenResponse, ProfileUpdate, 
-    UserResponse, PasswordChange, RefreshToken
+    UserResponse, PasswordChange, RefreshToken, DeleteAccount
 )
 
 
@@ -275,3 +275,56 @@ async def get_public_profile(
         )
     
     return {"user": user.to_dict()}
+
+
+# Delete account
+@router.delete("/account")
+async def delete_account(
+    delete_data: DeleteAccount,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Delete user's account permanently"""
+    # Verify password
+    if not current_user.check_password(delete_data.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Password is incorrect"
+        )
+    
+    # Import models for deletion
+    from app.models.models import Post, Comment, Bookmark, Support, ReadProgress
+    
+    user_id = current_user.id
+    
+    # Delete user's bookmarks
+    await db.execute(
+        Bookmark.__table__.delete().where(Bookmark.user_id == user_id)
+    )
+    
+    # Delete user's read progress
+    await db.execute(
+        ReadProgress.__table__.delete().where(ReadProgress.user_id == user_id)
+    )
+    
+    # Delete user's supports
+    await db.execute(
+        Support.__table__.delete().where(Support.user_id == user_id)
+    )
+    
+    # Delete comments on user's posts and by user
+    await db.execute(
+        Comment.__table__.delete().where(Comment.user_id == user_id)
+    )
+    
+    # Delete user's posts (this will cascade delete related comments/supports)
+    await db.execute(
+        Post.__table__.delete().where(Post.author_id == user_id)
+    )
+    
+    # Finally delete the user
+    await db.delete(current_user)
+    await db.commit()
+    
+    return {"message": "Account deleted successfully"}
+

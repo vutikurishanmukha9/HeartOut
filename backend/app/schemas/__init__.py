@@ -7,6 +7,7 @@ from app.schemas.auth import (
     UserResponse,
     RefreshToken,
     PasswordChange,
+    DeleteAccount,
 )
 from app.schemas.posts import (
     PostCreate,
@@ -32,6 +33,7 @@ __all__ = [
     "UserResponse",
     "RefreshToken",
     "PasswordChange",
+    "DeleteAccount",
     # Posts
     "PostCreate",
     "PostUpdate",
