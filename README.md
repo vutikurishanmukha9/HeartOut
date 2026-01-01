@@ -51,6 +51,7 @@ A modern, premium storytelling platform for authentic personal expression.
 - Comment system
 - **Post deletion** - Authors can delete their own stories
 - **Profile page** - User profiles with story filtering by category
+- **Settings page** - Theme toggle, password change, account deletion
 - **Mental Health Support** - Integrated helplines (Tele MANAS, iCall) with floating button
 - **Cold Start UX** - Friendly notification when server wakes from sleep
 - **Dynamic SEO** - Open Graph/Twitter Cards for story sharing previews
@@ -165,6 +166,8 @@ HeartOut/
 | POST | `/api/auth/login` | Login |
 | GET | `/api/auth/profile` | Get profile |
 | PUT | `/api/auth/profile` | Update profile |
+| PUT | `/api/auth/change-password` | Change password |
+| DELETE | `/api/auth/me` | Delete account |
 | GET | `/api/auth/stats` | User statistics |
 
 ### Stories
@@ -409,6 +412,16 @@ pytest tests/test_security.py -v
 ---
 
 ## Recent Updates
+
+### v3.1 - Settings Page
+- **Settings Page** - Dedicated account management page at `/profile/settings`:
+  - Theme toggle (Light/Dark/System)
+  - Change password with validation
+  - Account deletion with confirmation modal
+- **New API Endpoints**:
+  - `PUT /api/auth/change-password` - Secure password change
+  - `DELETE /api/auth/me` - Account deletion
+- **Route Fix** - Added explicit `/settings` route before dynamic `/:userId`
 
 ### v3.0 - FastAPI Migration
 - **Backend Migration** - Complete migration from Flask to FastAPI:
