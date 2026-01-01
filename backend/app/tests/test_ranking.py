@@ -210,7 +210,7 @@ class TestBookmarkEndpoints:
         response = await client.get("/api/posts/bookmarks", headers=auth_headers)
         
         assert response.status_code == 200
-        assert "stories" in response.json()
+        assert "items" in response.json()
 
 
 class TestReadProgressEndpoints:

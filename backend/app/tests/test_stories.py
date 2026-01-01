@@ -311,4 +311,4 @@ class TestBookmarks:
         
         assert response.status_code == 200
         data = response.json()
-        assert "stories" in data
+        assert "items" in data
