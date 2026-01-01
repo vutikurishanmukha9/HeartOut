@@ -170,6 +170,48 @@ async def get_user_drafts(
     }
 
 
+# ========== BOOKMARKS (must be before /{story_id} route) ==========
+
+@router.get("/bookmarks")
+async def get_bookmarked_stories(
+    page: int = Query(1, ge=1, description="Page number"),
+    per_page: int = Query(20, ge=1, le=100, description="Items per page"),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get all stories bookmarked by the current user"""
+    offset = (page - 1) * per_page
+    
+    # Query bookmarks with joined posts
+    query = select(Post).options(selectinload(Post.author)).join(Bookmark).where(
+        Bookmark.user_id == current_user.id,
+        Post.status == PostStatus.PUBLISHED.value
+    )
+    
+    # Calculate total count before pagination
+    count_query = select(func.count()).select_from(Post).join(Bookmark).where(
+        Bookmark.user_id == current_user.id,
+        Post.status == PostStatus.PUBLISHED.value
+    )
+    total_result = await db.execute(count_query)
+    total = total_result.scalar() or 0
+    
+    # Apply pagination and ordering
+    query = query.order_by(desc(Bookmark.created_at)).offset(offset).limit(per_page)
+    
+    # Execute query
+    result = await db.execute(query)
+    posts = result.scalars().all()
+    
+    return {
+        "items": [post.to_dict() for post in posts],
+        "total": total,
+        "page": page,
+        "size": per_page,
+        "pages": (total + per_page - 1) // per_page if total > 0 else 0
+    }
+
+
 @router.get("/search")
 async def search_stories(
     q: str = Query(..., min_length=2),
@@ -258,42 +300,6 @@ async def get_stories_by_category(
         "total_pages": (total + per_page - 1) // per_page
     }
 
-
-@router.get("/bookmarks")
-async def get_my_bookmarks(
-    page: int = Query(1, ge=1),
-    per_page: int = Query(20, ge=1, le=100),
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Get all bookmarked stories for current user"""
-    query = select(Post).options(selectinload(Post.author)).join(Bookmark).where(
-        Bookmark.user_id == current_user.id,
-        Post.status == PostStatus.PUBLISHED.value
-    ).order_by(desc(Bookmark.created_at))
-    
-    # Count
-    count_query = select(func.count()).select_from(Post).join(Bookmark).where(
-        Bookmark.user_id == current_user.id,
-        Post.status == PostStatus.PUBLISHED.value
-    )
-    total_result = await db.execute(count_query)
-    total = total_result.scalar() or 0
-    
-    # Paginate
-    offset = (page - 1) * per_page
-    query = query.offset(offset).limit(per_page)
-    
-    result = await db.execute(query)
-    stories = result.scalars().all()
-    
-    return {
-        "stories": [s.to_dict() for s in stories],
-        "total": total,
-        "page": page,
-        "per_page": per_page,
-        "total_pages": (total + per_page - 1) // per_page
-    }
 
 
 @router.get("/user/{user_id}/stories")
@@ -692,7 +698,6 @@ async def get_my_reaction(
     }
 
 
-# ========== BOOKMARKS ==========
 
 @router.post("/{story_id}/bookmark")
 async def toggle_bookmark(
@@ -833,3 +838,4 @@ async def track_read_progress(
         "scroll_depth": progress_data.scroll_depth,
         "time_spent": progress_data.time_spent
     }
+

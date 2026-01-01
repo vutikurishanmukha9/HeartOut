@@ -5,11 +5,14 @@ import CreatePost from '../pages/CreatePost';
 import PostDetail from '../pages/PostDetail';
 import Drafts from '../pages/Drafts';
 
+import SavedStories from '../pages/SavedStories';
+
 export default function FeedRoutes() {
   return (
     <Routes>
       <Route index element={<Feed />} />
       <Route path="create" element={<CreatePost />} />
+      <Route path="saved" element={<SavedStories />} />
       <Route path="story/:id" element={<PostDetail />} />
       <Route path="drafts" element={<Drafts />} />
       <Route path="*" element={<Navigate to="/feed" replace />} />
