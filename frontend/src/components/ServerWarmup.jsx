@@ -65,26 +65,21 @@ export function ServerWarmupToast() {
 
     useEffect(() => {
         if (serverStatus === 'warming' || serverStatus === 'checking') {
-            // Only show if it takes more than 2 seconds
-            const timer = setTimeout(() => {
-                if (serverStatus === 'warming' || serverStatus === 'checking') {
-                    setVisible(true);
-                }
-            }, 2000);
-            return () => clearTimeout(timer);
+            // Show immediately when server is waking up
+            setVisible(true);
         } else if (serverStatus === 'ready' && visible) {
             setShowSuccess(true);
             setTimeout(() => {
                 setVisible(false);
                 setShowSuccess(false);
-            }, 3000);
+            }, 6000);
         }
     }, [serverStatus, visible]);
 
     if (!visible) return null;
 
     return (
-        <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 z-50 animate-slide-up">
+        <div className="fixed bottom-20 left-4 right-4 md:bottom-4 md:left-auto md:right-4 md:w-96 z-[100] animate-slide-up">
             <div className={`rounded-2xl shadow-2xl border backdrop-blur-xl p-4 ${showSuccess
                 ? 'bg-green-50/95 dark:bg-green-900/30 border-green-200 dark:border-green-800'
                 : 'bg-white/95 dark:bg-gray-800/95 border-gray-200 dark:border-gray-700'
