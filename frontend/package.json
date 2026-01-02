@@ -16,6 +16,7 @@
     "test:e2e:headed": "playwright test --headed"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.16",
     "dompurify": "^3.0.6",
     "framer-motion": "^10.16.5",
     "lucide-react": "^0.294.0",

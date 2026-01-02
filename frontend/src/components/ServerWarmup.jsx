@@ -79,7 +79,7 @@ export function ServerWarmupToast() {
     if (!visible) return null;
 
     return (
-        <div className="fixed bottom-20 left-4 right-4 md:bottom-4 md:left-auto md:right-4 md:w-96 z-[100] animate-slide-up">
+        <div className="fixed bottom-20 right-4 w-auto max-w-[200px] md:bottom-4 md:max-w-none md:w-80 z-[100] animate-slide-up">
             <div className={`rounded-2xl shadow-2xl border backdrop-blur-xl p-4 ${showSuccess
                 ? 'bg-green-50/95 dark:bg-green-900/30 border-green-200 dark:border-green-800'
                 : 'bg-white/95 dark:bg-gray-800/95 border-gray-200 dark:border-gray-700'

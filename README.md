@@ -8,7 +8,7 @@ A modern, premium storytelling platform for authentic personal expression.
 
 [![GitHub](https://img.shields.io/badge/GitHub-vutikurishanmukha9%2FHeartOut-blue)](https://github.com/vutikurishanmukha9/HeartOut)
 [![CI](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml/badge.svg)](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/Tests-144+-brightgreen)](https://github.com/vutikurishanmukha9/HeartOut/actions)
+[![Tests](https://img.shields.io/badge/Tests-123+-brightgreen)](https://github.com/vutikurishanmukha9/HeartOut/actions)
 [![Coverage](https://img.shields.io/badge/Coverage-70%25-yellow)](https://github.com/vutikurishanmukha9/HeartOut)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
@@ -140,7 +140,7 @@ HeartOut/
 │   │   ├── models/             # SQLAlchemy models
 │   │   ├── schemas/            # Pydantic schemas
 │   │   ├── services/           # Business logic layer
-│   │   ├── tests/              # 141 pytest tests
+│   │   ├── tests/              # 55 pytest tests
 │   │   ├── utils/              # Validators, helpers
 │   │   └── main.py             # FastAPI app entry
 │   ├── flask_app_legacy/       # Archived Flask app (not in use)
@@ -251,8 +251,8 @@ FLASK_ENV=production
 
 | Job | Description |
 |-----|-------------|
-| `backend-tests` | Runs 110+ pytest tests with coverage |
-| `frontend-build` | Builds React production bundle |
+| `backend-tests` | Runs 55 pytest tests with coverage |
+| `frontend-tests` | Runs 68 Vitest tests + builds bundle |
 | `code-quality` | Flake8 linting for critical errors |
 | `security-scan` | Trivy vulnerability scanner |
 | `ci-success` | Final gate (all must pass) |
@@ -262,10 +262,8 @@ FLASK_ENV=production
 - Pull Requests to these branches
 
 ### Badges
-```markdown
-[![CI](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml/badge.svg)]
-[![Tests](https://img.shields.io/badge/Tests-144+-brightgreen)]
-```
+[![CI](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml/badge.svg)](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/Tests-123+-brightgreen)](https://github.com/vutikurishanmukha9/HeartOut/actions)
 
 ---
 
@@ -273,7 +271,7 @@ FLASK_ENV=production
 
 ### Unit Tests
 
-#### Backend (pytest - 141 tests)
+#### Backend (pytest - 55 tests)
 ```bash
 cd backend
 .\venv\Scripts\activate
@@ -282,16 +280,19 @@ pytest app/tests -v
 
 | Test Suite | Tests | Description |
 |------------|-------|-------------|
-| Authentication | 9 | Login, Register, Profile, Logout |
-| Stories | 14 | CRUD, Drafts, Filtering |
-| Reactions | 6 | Add, Toggle, Types |
-| **Ranking** | 62 | Smart ranking, Bookmarks, Progress |
-| **Strict** | 30 | Input validation, Authorization, Edge cases |
+| Health & Root | 3 | API endpoints |
+| Authentication | 12 | Login, Register, Tokens |
+| Stories CRUD | 15 | Create, Read, Update, Delete |
+| Comments | 2 | Add, Get comments |
+| Reactions | 2 | Toggle, Get my reaction |
+| Bookmarks | 2 | Toggle, Get bookmarks |
+| Pagination | 3 | Edge cases validation |
+| WebSocket | 15 | Connection manager, readers |
 
-#### Frontend (Vitest)
+#### Frontend (Vitest - 68 tests)
 ```bash
 cd frontend
-npm test
+npm run test:run
 ```
 
 | Test Suite | Tests | Description |
@@ -301,6 +302,8 @@ npm test
 | StoryTypeSelector | 10 | Selection, Rendering |
 | SupportButton | 9 | Reactions, Dropdown |
 | AuthContext | 7 | Provider, State |
+| StoryCard | 7 | Card rendering, Anonymous |
+| Navbar | 5 | Navigation, Links |
 
 ### Test Coverage
 

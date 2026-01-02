@@ -23,6 +23,7 @@ import {
   PenLine,
   BookMarked
 } from 'lucide-react';
+import { useWebSocket } from '../hooks/useWebSocket.jsx';
 
 const Navbar = () => {
   const { user, logout, hasPermission } = useContext(AuthContext);
@@ -34,18 +35,25 @@ const Navbar = () => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+  const ws = useWebSocket();
 
   const profileMenuRef = useRef(null);
+  const notificationRef = useRef(null);
 
-  // Close profile menu when clicking outside
+  // Close profile menu and notification dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
         setIsProfileMenuOpen(false);
       }
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setIsNotificationOpen(false);
+      }
     };
 
-    if (isProfileMenuOpen) {
+    if (isProfileMenuOpen || isNotificationOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
@@ -169,10 +177,58 @@ const Navbar = () => {
               </Link>
 
               {/* Notifications */}
-              <button className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-300 group">
-                <Bell className="w-5 h-5 group-hover:text-primary-500 transition-colors" />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
-              </button>
+              <div className="relative" ref={notificationRef}>
+                <button
+                  onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                  className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-300 group"
+                >
+                  <Bell className="w-5 h-5 group-hover:text-primary-500 transition-colors" />
+                  {ws?.notifications?.length > 0 && (
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
+                  )}
+                </button>
+
+                {/* Notification Dropdown */}
+                {isNotificationOpen && (
+                  <div className="fixed right-4 top-16 w-72 md:absolute md:inset-auto md:right-0 md:top-auto md:mt-2 md:w-80 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50">
+                    <div className="p-3 border-b border-gray-100 dark:border-gray-700">
+                      <h3 className="font-semibold text-gray-900 dark:text-white">Notifications</h3>
+                    </div>
+                    <div className="max-h-80 overflow-y-auto">
+                      {ws?.notifications?.length > 0 ? (
+                        ws.notifications.slice(0, 10).map((notif) => (
+                          <Link
+                            key={notif.id}
+                            to={`/feed/${notif.story_id}`}
+                            onClick={() => {
+                              setIsNotificationOpen(false);
+                              ws.dismissNotification(notif.id);
+                            }}
+                            className="flex items-start gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors border-b border-gray-50 dark:border-gray-700/50 last:border-0"
+                          >
+                            <div className={`p-2 rounded-lg ${notif.type === 'comment' ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-rose-100 dark:bg-rose-900/30'}`}>
+                              {notif.type === 'comment' ? (
+                                <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                              ) : (
+                                <Heart className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm text-gray-900 dark:text-white">{notif.message}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{notif.story_title}</p>
+                            </div>
+                          </Link>
+                        ))
+                      ) : (
+                        <div className="p-6 text-center text-gray-500 dark:text-gray-400">
+                          <Bell className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                          <p className="text-sm">No notifications yet</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Theme Toggle */}
               <button

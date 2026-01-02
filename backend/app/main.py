@@ -155,3 +155,40 @@ async def root():
         "framework": "FastAPI",
         "docs": "/api/docs"
     }
+
+
+# WebSocket endpoint for real-time notifications
+from fastapi import WebSocket, WebSocketDisconnect
+from app.api.v1.websockets import manager
+
+
+@app.websocket("/ws/{user_id}")
+async def websocket_endpoint(websocket: WebSocket, user_id: int):
+    """WebSocket endpoint for real-time notifications"""
+    await manager.connect(websocket, user_id)
+    try:
+        while True:
+            # Keep connection alive, handle incoming messages
+            data = await websocket.receive_json()
+            
+            # Handle different message types
+            if data.get("type") == "join_story":
+                story_id = data.get("story_id")
+                if story_id:
+                    manager.add_reader(story_id, user_id)
+                    await manager.broadcast_reader_count(story_id)
+            
+            elif data.get("type") == "leave_story":
+                story_id = data.get("story_id")
+                if story_id:
+                    manager.remove_reader(story_id, user_id)
+                    await manager.broadcast_reader_count(story_id)
+            
+            elif data.get("type") == "ping":
+                await websocket.send_json({"type": "pong"})
+    
+    except WebSocketDisconnect:
+        manager.disconnect(user_id)
+    except Exception:
+        manager.disconnect(user_id)
+

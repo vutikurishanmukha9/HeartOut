@@ -57,11 +57,12 @@ jobs:
         continue-on-error: true
 
   # ============================================
-  # Frontend Build & Lint (React/Vite)
+  # Frontend Build & Tests (React/Vite)
   # ============================================
-  frontend-build:
-    name: Frontend Build
+  frontend-tests:
+    name: Frontend Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     
     defaults:
       run:
@@ -85,18 +86,24 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Run linter (if configured)
+      - name: Run linter
         run: npm run lint --if-present
         continue-on-error: true
+
+      - name: Run unit tests
+        run: npm run test:run
 
       - name: Build production bundle
         run: npm run build
 
-      - name: Run frontend tests (if configured)
-        run: npm run test --if-present -- --run
-        continue-on-error: true
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: frontend/dist
+          retention-days: 1
 
   # ============================================
   # Code Quality Checks
@@ -145,19 +152,19 @@ jobs:
   # ============================================
   ci-success:
     name: CI Success
-    needs: [backend-tests, frontend-build]
+    needs: [backend-tests, frontend-tests]
     runs-on: ubuntu-latest
     if: always()
     
     steps:
       - name: Check all jobs passed
         run: |
-          if [[ "${{ needs.backend-tests.result }}" == "success" && "${{ needs.frontend-build.result }}" == "success" ]]; then
-            echo "All CI checks passed!"
+          if [[ "${{ needs.backend-tests.result }}" == "success" && "${{ needs.frontend-tests.result }}" == "success" ]]; then
+            echo "✅ All CI checks passed!"
             exit 0
           else
-            echo "Some CI checks failed"
+            echo "❌ Some CI checks failed"
             echo "Backend: ${{ needs.backend-tests.result }}"
-            echo "Frontend: ${{ needs.frontend-build.result }}"
+            echo "Frontend: ${{ needs.frontend-tests.result }}"
             exit 1
           fi

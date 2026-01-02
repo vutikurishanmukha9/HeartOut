@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { HelmetProvider } from 'react-helmet-async';
+import { QueryClientProvider } from '@tanstack/react-query';
+import queryClient from './config/queryClient';
 import './index.css';
 
 // Simple wrapper to catch errors
@@ -72,14 +74,16 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <ErrorBoundary>
             <HelmetProvider>
                 <React.Suspense fallback={<Loading />}>
-                    <BrowserRouter>
-                        <ThemeProvider>
-                            <AuthProvider>
-                                <App />
-                                <Toaster position="top-right" />
-                            </AuthProvider>
-                        </ThemeProvider>
-                    </BrowserRouter>
+                    <QueryClientProvider client={queryClient}>
+                        <BrowserRouter>
+                            <ThemeProvider>
+                                <AuthProvider>
+                                    <App />
+                                    <Toaster position="top-right" />
+                                </AuthProvider>
+                            </ThemeProvider>
+                        </BrowserRouter>
+                    </QueryClientProvider>
                 </React.Suspense>
             </HelmetProvider>
         </ErrorBoundary>

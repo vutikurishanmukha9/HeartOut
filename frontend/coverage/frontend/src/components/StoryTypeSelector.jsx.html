@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.14% </span>
+                <span class="strong">82.44% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>149/175</span>
+                <span class='fraction'>155/188</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.14% </span>
+                <span class="strong">82.44% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>149/175</span>
+                <span class='fraction'>155/188</span>
             </div>
         
             
@@ -238,7 +238,26 @@
 <a name='L173'></a><a href='#L173'>173</a>
 <a name='L174'></a><a href='#L174'>174</a>
 <a name='L175'></a><a href='#L175'>175</a>
-<a name='L176'></a><a href='#L176'>176</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a>
+<a name='L179'></a><a href='#L179'>179</a>
+<a name='L180'></a><a href='#L180'>180</a>
+<a name='L181'></a><a href='#L181'>181</a>
+<a name='L182'></a><a href='#L182'>182</a>
+<a name='L183'></a><a href='#L183'>183</a>
+<a name='L184'></a><a href='#L184'>184</a>
+<a name='L185'></a><a href='#L185'>185</a>
+<a name='L186'></a><a href='#L186'>186</a>
+<a name='L187'></a><a href='#L187'>187</a>
+<a name='L188'></a><a href='#L188'>188</a>
+<a name='L189'></a><a href='#L189'>189</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -318,6 +337,13 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -414,78 +440,84 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from 'react';
-import { Trophy, Heart, Mail, HeartHandshake, BookOpen, Sparkles, Check } from 'lucide-react';
+import { Medal, CloudRain, Send, Gift, Compass, Shapes, Check } from 'lucide-react';
 &nbsp;
 const storyTypes = [
     {
         value: 'achievement',
         label: 'Achievement',
-        icon: Trophy,
+        icon: Medal,
         description: 'Celebrate your victories and milestones',
         color: 'from-emerald-500 to-green-600',
         bgColor: 'bg-emerald-50 dark:bg-emerald-900/20',
         borderColor: 'border-emerald-200 dark:border-emerald-800',
         textColor: 'text-emerald-700 dark:text-emerald-300',
+        hoverTextColor: 'group-hover:text-emerald-600 dark:group-hover:text-emerald-400',
         shadowColor: 'shadow-emerald-500/20',
         chartColor: '#10b981'
     },
     {
         value: 'regret',
         label: 'Regret',
-        icon: Heart,
+        icon: CloudRain,
         description: 'Lessons learned from experiences',
         color: 'from-blue-500 to-indigo-600',
         bgColor: 'bg-blue-50 dark:bg-blue-900/20',
         borderColor: 'border-blue-200 dark:border-blue-800',
         textColor: 'text-blue-700 dark:text-blue-300',
+        hoverTextColor: 'group-hover:text-blue-600 dark:group-hover:text-blue-400',
         shadowColor: 'shadow-blue-500/20',
         chartColor: '#3b82f6'
     },
     {
         value: 'unsent_letter',
         label: 'Unsent Letter',
-        icon: Mail,
+        icon: Send,
         description: 'Words you never got to say',
         color: 'from-gray-500 to-slate-600',
         bgColor: 'bg-gray-50 dark:bg-gray-900/20',
         borderColor: 'border-gray-200 dark:border-gray-800',
         textColor: 'text-gray-700 dark:text-gray-300',
+        hoverTextColor: 'group-hover:text-slate-600 dark:group-hover:text-slate-400',
         shadowColor: 'shadow-gray-500/20',
         chartColor: '#6b7280'
     },
     {
         value: 'sacrifice',
         label: 'Sacrifice',
-        icon: HeartHandshake,
+        icon: Gift,
         description: 'What you gave up for others',
         color: 'from-red-500 to-rose-600',
         bgColor: 'bg-red-50 dark:bg-red-900/20',
         borderColor: 'border-red-200 dark:border-red-800',
         textColor: 'text-red-700 dark:text-red-300',
+        hoverTextColor: 'group-hover:text-red-600 dark:group-hover:text-red-400',
         shadowColor: 'shadow-red-500/20',
         chartColor: '#ef4444'
     },
     {
         value: 'life_story',
         label: 'Life Story',
-        icon: BookOpen,
+        icon: Compass,
         description: 'Your personal journey and growth',
         color: 'from-amber-500 to-yellow-600',
         bgColor: 'bg-amber-50 dark:bg-amber-900/20',
         borderColor: 'border-amber-200 dark:border-amber-800',
         textColor: 'text-amber-700 dark:text-amber-300',
+        hoverTextColor: 'group-hover:text-amber-600 dark:group-hover:text-amber-400',
         shadowColor: 'shadow-amber-500/20',
         chartColor: '#f59e0b'
     },
     {
         value: 'other',
         label: 'Other',
-        icon: Sparkles,
+        icon: Shapes,
         description: 'Stories that don\'t fit a category',
         color: 'from-gray-300 to-gray-400',
         bgColor: 'bg-gray-50 dark:bg-gray-900/20',
         borderColor: 'border-gray-200 dark:border-gray-800',
         textColor: 'text-gray-600 dark:text-gray-400',
+        hoverTextColor: 'group-hover:text-gray-600 dark:group-hover:text-gray-300',
         shadowColor: 'shadow-gray-400/20',
         chartColor: '#d1d5db'
     }
@@ -494,7 +526,7 @@ const storyTypes = [
 export default function StoryTypeSelector({ selected, onChange, variant = 'cards' }) {
     if (variant === 'tabs') <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
 <span class="cstat-no" title="statement not covered" >        return (</span>
-<span class="cstat-no" title="statement not covered" >            &lt;div className="flex flex-wrap gap-2"&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;&gt;</span>
 <span class="cstat-no" title="statement not covered" >                {storyTypes.map((type) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >                    const Icon = type.icon;</span>
 <span class="cstat-no" title="statement not covered" >                    const isSelected = selected === type.value;</span>
@@ -503,20 +535,27 @@ export default function StoryTypeSelector({ selected, onChange, variant = 'cards
 <span class="cstat-no" title="statement not covered" >                        &lt;button</span>
 <span class="cstat-no" title="statement not covered" >                            key={type.value}</span>
 <span class="cstat-no" title="statement not covered" >                            onClick={() =&gt; onChange(type.value)}</span>
+<span class="cstat-no" title="statement not covered" >                            title={type.label}</span>
 <span class="cstat-no" title="statement not covered" >                            className={`</span>
-<span class="cstat-no" title="statement not covered" >                                flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all duration-300</span>
+<span class="cstat-no" title="statement not covered" >                                group relative flex items-center justify-center gap-1.5 px-2.5 sm:px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-300</span>
 <span class="cstat-no" title="statement not covered" >                                ${isSelected</span>
-<span class="cstat-no" title="statement not covered" >                                    ? `${type.bgColor} ${type.textColor} border-2 ${type.borderColor} shadow-md`</span>
-<span class="cstat-no" title="statement not covered" >                                    : 'bg-white/80 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm'</span>
+<span class="cstat-no" title="statement not covered" >                                    ? `${type.textColor} ${type.bgColor}`</span>
+<span class="cstat-no" title="statement not covered" >                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'</span>
 <span class="cstat-no" title="statement not covered" >                                }</span>
 <span class="cstat-no" title="statement not covered" >                            `}</span>
 <span class="cstat-no" title="statement not covered" >                        &gt;</span>
-<span class="cstat-no" title="statement not covered" >                            &lt;Icon className="w-4 h-4" /&gt;</span>
-<span class="cstat-no" title="statement not covered" >                            &lt;span&gt;{type.label}&lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >                            &lt;Icon className={`w-4 h-4 shrink-0 transition-all duration-300 ${isSelected ? '' : 'group-hover:scale-110'}`} /&gt;</span>
+<span class="cstat-no" title="statement not covered" >                            &lt;span className="hidden sm:inline relative"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                {type.label}</span>
+<span class="cstat-no" title="statement not covered" >                                &lt;span className={`absolute -bottom-1 left-0 h-0.5 transition-all duration-300 ${isSelected</span>
+<span class="cstat-no" title="statement not covered" >                                    ? `w-full bg-gradient-to-r ${type.color}`</span>
+<span class="cstat-no" title="statement not covered" >                                    : 'w-0 group-hover:w-full bg-gray-400 dark:bg-gray-500'</span>
+<span class="cstat-no" title="statement not covered" >                                    }`} /&gt;</span>
+<span class="cstat-no" title="statement not covered" >                            &lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >                        &lt;/button&gt;</span>
 <span class="cstat-no" title="statement not covered" >                    );</span>
 <span class="cstat-no" title="statement not covered" >                })}</span>
-<span class="cstat-no" title="statement not covered" >            &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;/&gt;</span>
 <span class="cstat-no" title="statement not covered" >        );</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
@@ -595,7 +634,7 @@ export { storyTypes };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-24T17:39:42.938Z
+                at 2026-01-02T16:25:36.297Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

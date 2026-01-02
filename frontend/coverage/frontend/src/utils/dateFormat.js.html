@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/54</span>
+                <span class='fraction'>0/69</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/54</span>
+                <span class='fraction'>0/69</span>
             </div>
         
             
@@ -117,7 +117,37 @@
 <a name='L52'></a><a href='#L52'>52</a>
 <a name='L53'></a><a href='#L53'>53</a>
 <a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -172,12 +202,27 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >/**</span></span></span>
+<span class="cstat-no" title="statement not covered" > * Parse a date string, ensuring UTC timestamps are handled correctly</span>
+<span class="cstat-no" title="statement not covered" > * Backend returns timestamps in UTC without 'Z' suffix, so we append it</span>
+<span class="cstat-no" title="statement not covered" > * @param {string} dateString - ISO date string</span>
+<span class="cstat-no" title="statement not covered" > * @returns {Date} Parsed Date object</span>
+<span class="cstat-no" title="statement not covered" > */</span>
+<span class="cstat-no" title="statement not covered" >function parseUTCDate(dateString) {</span>
+<span class="cstat-no" title="statement not covered" >    if (!dateString) return new Date();</span>
+<span class="cstat-no" title="statement not covered" >    // If the date string doesn't have timezone info, assume it's UTC</span>
+<span class="cstat-no" title="statement not covered" >    if (!dateString.endsWith('Z') &amp;&amp; !dateString.includes('+') &amp;&amp; !dateString.includes('-', 10)) {</span>
+<span class="cstat-no" title="statement not covered" >        return new Date(dateString + 'Z');</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
+<span class="cstat-no" title="statement not covered" >    return new Date(dateString);</span>
+<span class="cstat-no" title="statement not covered" >}</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >/**</span>
 <span class="cstat-no" title="statement not covered" > * Format a date string to a human-readable relative time</span>
 <span class="cstat-no" title="statement not covered" > * @param {string} dateString - ISO date string</span>
 <span class="cstat-no" title="statement not covered" > * @returns {string} Formatted date string</span>
 <span class="cstat-no" title="statement not covered" > */</span>
 <span class="cstat-no" title="statement not covered" >export function formatRelativeDate(dateString) {</span>
-<span class="cstat-no" title="statement not covered" >    const date = new Date(dateString);</span>
+<span class="cstat-no" title="statement not covered" >    const date = parseUTCDate(dateString);</span>
 <span class="cstat-no" title="statement not covered" >    const now = new Date();</span>
 <span class="cstat-no" title="statement not covered" >    const diffTime = Math.abs(now - date);</span>
 <span class="cstat-no" title="statement not covered" >    const diffMinutes = Math.floor(diffTime / (1000 * 60));</span>
@@ -198,7 +243,7 @@
 <span class="cstat-no" title="statement not covered" > * @returns {string} Formatted full date string</span>
 <span class="cstat-no" title="statement not covered" > */</span>
 <span class="cstat-no" title="statement not covered" >export function formatFullDate(dateString) {</span>
-<span class="cstat-no" title="statement not covered" >    const date = new Date(dateString);</span>
+<span class="cstat-no" title="statement not covered" >    const date = parseUTCDate(dateString);</span>
 <span class="cstat-no" title="statement not covered" >    return date.toLocaleDateString('en-US', {</span>
 <span class="cstat-no" title="statement not covered" >        year: 'numeric',</span>
 <span class="cstat-no" title="statement not covered" >        month: 'long',</span>
@@ -212,7 +257,7 @@
 <span class="cstat-no" title="statement not covered" > * @returns {string} Formatted date string</span>
 <span class="cstat-no" title="statement not covered" > */</span>
 <span class="cstat-no" title="statement not covered" >export function formatCommentDate(dateString) {</span>
-<span class="cstat-no" title="statement not covered" >    const date = new Date(dateString);</span>
+<span class="cstat-no" title="statement not covered" >    const date = parseUTCDate(dateString);</span>
 <span class="cstat-no" title="statement not covered" >    const now = new Date();</span>
 <span class="cstat-no" title="statement not covered" >    const diffTime = Math.abs(now - date);</span>
 <span class="cstat-no" title="statement not covered" >    const diffMinutes = Math.floor(diffTime / (1000 * 60));</span>
@@ -232,7 +277,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-24T17:39:42.938Z
+                at 2026-01-02T16:25:36.297Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

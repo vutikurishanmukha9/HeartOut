@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/150</span>
+                <span class='fraction'>0/145</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/150</span>
+                <span class='fraction'>0/145</span>
             </div>
         
             
@@ -208,17 +208,7 @@
 <a name='L143'></a><a href='#L143'>143</a>
 <a name='L144'></a><a href='#L144'>144</a>
 <a name='L145'></a><a href='#L145'>145</a>
-<a name='L146'></a><a href='#L146'>146</a>
-<a name='L147'></a><a href='#L147'>147</a>
-<a name='L148'></a><a href='#L148'>148</a>
-<a name='L149'></a><a href='#L149'>149</a>
-<a name='L150'></a><a href='#L150'>150</a>
-<a name='L151'></a><a href='#L151'>151</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L146'></a><a href='#L146'>146</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -430,29 +420,24 @@
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    useEffect(() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        if (serverStatus === 'warming' || serverStatus === 'checking') {</span>
-<span class="cstat-no" title="statement not covered" >            // Only show if it takes more than 2 seconds</span>
-<span class="cstat-no" title="statement not covered" >            const timer = setTimeout(() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >                if (serverStatus === 'warming' || serverStatus === 'checking') {</span>
-<span class="cstat-no" title="statement not covered" >                    setVisible(true);</span>
-<span class="cstat-no" title="statement not covered" >                }</span>
-<span class="cstat-no" title="statement not covered" >            }, 2000);</span>
-<span class="cstat-no" title="statement not covered" >            return () =&gt; clearTimeout(timer);</span>
+<span class="cstat-no" title="statement not covered" >            // Show immediately when server is waking up</span>
+<span class="cstat-no" title="statement not covered" >            setVisible(true);</span>
 <span class="cstat-no" title="statement not covered" >        } else if (serverStatus === 'ready' &amp;&amp; visible) {</span>
 <span class="cstat-no" title="statement not covered" >            setShowSuccess(true);</span>
 <span class="cstat-no" title="statement not covered" >            setTimeout(() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >                setVisible(false);</span>
 <span class="cstat-no" title="statement not covered" >                setShowSuccess(false);</span>
-<span class="cstat-no" title="statement not covered" >            }, 3000);</span>
+<span class="cstat-no" title="statement not covered" >            }, 6000);</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
 <span class="cstat-no" title="statement not covered" >    }, [serverStatus, visible]);</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    if (!visible) return null;</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    return (</span>
-<span class="cstat-no" title="statement not covered" >        &lt;div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 z-50 animate-slide-up"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;div className="fixed bottom-20 right-4 w-auto max-w-[200px] md:bottom-4 md:max-w-none md:w-80 z-[100] animate-slide-up"&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;div className={`rounded-2xl shadow-2xl border backdrop-blur-xl p-4 ${showSuccess</span>
-<span class="cstat-no" title="statement not covered" >                    ? 'bg-green-50/95 dark:bg-green-900/30 border-green-200 dark:border-green-800'</span>
-<span class="cstat-no" title="statement not covered" >                    : 'bg-white/95 dark:bg-gray-800/95 border-gray-200 dark:border-gray-700'</span>
+<span class="cstat-no" title="statement not covered" >                ? 'bg-green-50/95 dark:bg-green-900/30 border-green-200 dark:border-green-800'</span>
+<span class="cstat-no" title="statement not covered" >                : 'bg-white/95 dark:bg-gray-800/95 border-gray-200 dark:border-gray-700'</span>
 <span class="cstat-no" title="statement not covered" >                }`}&gt;</span>
 <span class="cstat-no" title="statement not covered" >                {showSuccess ? (</span>
 <span class="cstat-no" title="statement not covered" >                    &lt;div className="flex items-center gap-3"&gt;</span>
@@ -464,7 +449,7 @@
 <span class="cstat-no" title="statement not covered" >                                Server is ready!</span>
 <span class="cstat-no" title="statement not covered" >                            &lt;/p&gt;</span>
 <span class="cstat-no" title="statement not covered" >                            &lt;p className="text-sm text-green-600 dark:text-green-400"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                                Warmed up in {warmupTime}s. Enjoy! 🎉</span>
+<span class="cstat-no" title="statement not covered" >                                Warmed up in {warmupTime}s. Enjoy!</span>
 <span class="cstat-no" title="statement not covered" >                            &lt;/p&gt;</span>
 <span class="cstat-no" title="statement not covered" >                        &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >                    &lt;/div&gt;</span>
@@ -502,7 +487,7 @@
 <span class="cstat-no" title="statement not covered" >                                    style={{ width: '60%' }} /&gt;</span>
 <span class="cstat-no" title="statement not covered" >                            &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >                            &lt;p className="text-xs text-gray-500 dark:text-gray-500 mt-1"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                                Thanks for your patience! ☕</span>
+<span class="cstat-no" title="statement not covered" >                                Thanks for your patience!</span>
 <span class="cstat-no" title="statement not covered" >                            &lt;/p&gt;</span>
 <span class="cstat-no" title="statement not covered" >                        &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >                    &lt;/div&gt;</span>
@@ -520,7 +505,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-24T17:39:42.938Z
+                at 2026-01-02T16:25:36.297Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

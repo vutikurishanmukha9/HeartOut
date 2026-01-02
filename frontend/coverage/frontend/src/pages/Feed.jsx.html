@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/277</span>
+                <span class='fraction'>0/286</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/277</span>
+                <span class='fraction'>0/286</span>
             </div>
         
             
@@ -340,7 +340,25 @@
 <a name='L275'></a><a href='#L275'>275</a>
 <a name='L276'></a><a href='#L276'>276</a>
 <a name='L277'></a><a href='#L277'>277</a>
-<a name='L278'></a><a href='#L278'>278</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L278'></a><a href='#L278'>278</a>
+<a name='L279'></a><a href='#L279'>279</a>
+<a name='L280'></a><a href='#L280'>280</a>
+<a name='L281'></a><a href='#L281'>281</a>
+<a name='L282'></a><a href='#L282'>282</a>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a>
+<a name='L285'></a><a href='#L285'>285</a>
+<a name='L286'></a><a href='#L286'>286</a>
+<a name='L287'></a><a href='#L287'>287</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -776,37 +794,46 @@
 <span class="cstat-no" title="statement not covered" >                                    &lt;button</span>
 <span class="cstat-no" title="statement not covered" >                                        key={option.value}</span>
 <span class="cstat-no" title="statement not covered" >                                        onClick={() =&gt; setSortBy(option.value)}</span>
+<span class="cstat-no" title="statement not covered" >                                        title={option.label}</span>
 <span class="cstat-no" title="statement not covered" >                                        className={`</span>
-<span class="cstat-no" title="statement not covered" >                                        flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all duration-300</span>
-<span class="cstat-no" title="statement not covered" >                                        ${isActive</span>
-<span class="cstat-no" title="statement not covered" >                                                ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg shadow-primary-500/30 scale-105'</span>
-<span class="cstat-no" title="statement not covered" >                                                : 'bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-primary-400 hover:shadow-md'</span>
+<span class="cstat-no" title="statement not covered" >                                            group relative flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-300</span>
+<span class="cstat-no" title="statement not covered" >                                            ${isActive</span>
+<span class="cstat-no" title="statement not covered" >                                                ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'</span>
+<span class="cstat-no" title="statement not covered" >                                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'</span>
 <span class="cstat-no" title="statement not covered" >                                            }</span>
-<span class="cstat-no" title="statement not covered" >                                    `}</span>
+<span class="cstat-no" title="statement not covered" >                                        `}</span>
 <span class="cstat-no" title="statement not covered" >                                    &gt;</span>
-<span class="cstat-no" title="statement not covered" >                                        &lt;Icon className="w-4 h-4" /&gt;</span>
-<span class="cstat-no" title="statement not covered" >                                        {option.label}</span>
+<span class="cstat-no" title="statement not covered" >                                        &lt;Icon className={`w-4 h-4 shrink-0 transition-all duration-300 ${isActive ? 'text-primary-500' : 'group-hover:scale-110 group-hover:text-primary-500'}`} /&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                        &lt;span className="hidden sm:inline relative"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                            {option.label}</span>
+<span class="cstat-no" title="statement not covered" >                                            &lt;span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`} /&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                        &lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >                                    &lt;/button&gt;</span>
 <span class="cstat-no" title="statement not covered" >                                );</span>
 <span class="cstat-no" title="statement not covered" >                            })}</span>
 <span class="cstat-no" title="statement not covered" >                        &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >                    &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >                    {/* Category Filters - Horizontal Scroll on Mobile */}</span>
+<span class="cstat-no" title="statement not covered" >                    {/* Category Filters - Horizontal Scroll on Mobile, Justified on Desktop */}</span>
 <span class="cstat-no" title="statement not covered" >                    &lt;div className="-mx-4 px-4 md:mx-0 md:px-0 overflow-x-auto scrollbar-hide"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                        &lt;div className="flex items-center gap-2 md:gap-3 min-w-max pb-2"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                        &lt;div className="flex items-center gap-2 md:gap-0 md:justify-between min-w-max md:min-w-0 pb-2"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                            &lt;span className="text-sm font-medium text-gray-500 dark:text-gray-400 shrink-0"&gt;Type:&lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >                            &lt;button</span>
 <span class="cstat-no" title="statement not covered" >                                onClick={() =&gt; setSelectedCategory('all')}</span>
+<span class="cstat-no" title="statement not covered" >                                title="All Stories"</span>
 <span class="cstat-no" title="statement not covered" >                                className={`</span>
-<span class="cstat-no" title="statement not covered" >                                px-5 py-2.5 rounded-xl font-medium transition-all duration-300</span>
-<span class="cstat-no" title="statement not covered" >                                ${selectedCategory === 'all'</span>
-<span class="cstat-no" title="statement not covered" >                                        ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-lg'</span>
-<span class="cstat-no" title="statement not covered" >                                        : 'bg-white/80 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-400'</span>
+<span class="cstat-no" title="statement not covered" >                                    group relative px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-300</span>
+<span class="cstat-no" title="statement not covered" >                                    ${selectedCategory === 'all'</span>
+<span class="cstat-no" title="statement not covered" >                                        ? 'text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800'</span>
+<span class="cstat-no" title="statement not covered" >                                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'</span>
 <span class="cstat-no" title="statement not covered" >                                    }</span>
-<span class="cstat-no" title="statement not covered" >                            `}</span>
+<span class="cstat-no" title="statement not covered" >                                `}</span>
 <span class="cstat-no" title="statement not covered" >                            &gt;</span>
-<span class="cstat-no" title="statement not covered" >                                All Stories</span>
+<span class="cstat-no" title="statement not covered" >                                &lt;span className="relative"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                    &lt;span className="sm:hidden"&gt;All&lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                    &lt;span className="hidden sm:inline"&gt;All Stories&lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                    &lt;span className={`absolute -bottom-1 left-0 h-0.5 bg-gray-900 dark:bg-white transition-all duration-300 ${selectedCategory === 'all' ? 'w-full' : 'w-0 group-hover:w-full'}`} /&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                &lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >                            &lt;/button&gt;</span>
 <span class="cstat-no" title="statement not covered" >                            &lt;StoryTypeSelector</span>
 <span class="cstat-no" title="statement not covered" >                                selected={selectedCategory === 'all' ? '' : selectedCategory}</span>
@@ -901,7 +928,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-24T17:39:42.938Z
+                at 2026-01-02T16:25:36.297Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

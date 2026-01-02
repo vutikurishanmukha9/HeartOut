@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/501</span>
+                <span class='fraction'>0/503</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/501</span>
+                <span class='fraction'>0/503</span>
             </div>
         
             
@@ -564,7 +564,11 @@
 <a name='L499'></a><a href='#L499'>499</a>
 <a name='L500'></a><a href='#L500'>500</a>
 <a name='L501'></a><a href='#L501'>501</a>
-<a name='L502'></a><a href='#L502'>502</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L502'></a><a href='#L502'>502</a>
+<a name='L503'></a><a href='#L503'>503</a>
+<a name='L504'></a><a href='#L504'>504</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1433,72 +1437,74 @@
 <span class="cstat-no" title="statement not covered" >                    )}</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >                    {/* Story Content */}</span>
-<span class="cstat-no" title="statement not covered" >                    &lt;div className="prose prose-lg dark:prose-invert max-w-none mb-12"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                        &lt;div className="text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                    &lt;div className="w-full mb-12"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                        &lt;p className="w-full text-gray-800 dark:text-gray-200 text-lg leading-relaxed whitespace-pre-wrap text-justify"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                            {sanitizeText(story.content)}</span>
-<span class="cstat-no" title="statement not covered" >                        &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >                        &lt;/p&gt;</span>
 <span class="cstat-no" title="statement not covered" >                    &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >                    {/* Actions */}</span>
-<span class="cstat-no" title="statement not covered" >                    &lt;div className="flex flex-wrap items-center gap-2 sm:gap-4 py-6 border-y border-gray-200 dark:border-gray-700 mb-8"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                        &lt;ReactionButton</span>
-<span class="cstat-no" title="statement not covered" >                            storyId={story.id}</span>
-<span class="cstat-no" title="statement not covered" >                            currentReaction={userReaction}</span>
-<span class="cstat-no" title="statement not covered" >                            onReact={handleReact}</span>
-<span class="cstat-no" title="statement not covered" >                            supportCount={supportCount}</span>
-<span class="cstat-no" title="statement not covered" >                        /&gt;</span>
+<span class="cstat-no" title="statement not covered" >                    &lt;div className="border-y border-gray-200 dark:border-gray-700 py-6 mb-8"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                        &lt;div className="flex flex-wrap items-center gap-2 sm:gap-4"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                            &lt;ReactionButton</span>
+<span class="cstat-no" title="statement not covered" >                                storyId={story.id}</span>
+<span class="cstat-no" title="statement not covered" >                                currentReaction={userReaction}</span>
+<span class="cstat-no" title="statement not covered" >                                onReact={handleReact}</span>
+<span class="cstat-no" title="statement not covered" >                                supportCount={supportCount}</span>
+<span class="cstat-no" title="statement not covered" >                            /&gt;</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >                        &lt;button</span>
-<span class="cstat-no" title="statement not covered" >                            onClick={handleShare}</span>
-<span class="cstat-no" title="statement not covered" >                            aria-label="Share this story"</span>
-<span class="cstat-no" title="statement not covered" >                            className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-primary-400 transition-all"</span>
-<span class="cstat-no" title="statement not covered" >                        &gt;</span>
-<span class="cstat-no" title="statement not covered" >                            &lt;Share2 className="w-5 h-5" aria-hidden="true" /&gt;</span>
-<span class="cstat-no" title="statement not covered" >                            &lt;span className="hidden sm:inline"&gt;Share&lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >                        &lt;/button&gt;</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >                        {user &amp;&amp; (</span>
 <span class="cstat-no" title="statement not covered" >                            &lt;button</span>
-<span class="cstat-no" title="statement not covered" >                                onClick={handleToggleBookmark}</span>
-<span class="cstat-no" title="statement not covered" >                                aria-label={isBookmarked ? 'Remove from saved' : 'Save this story'}</span>
-<span class="cstat-no" title="statement not covered" >                                className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg border transition-all ${isBookmarked</span>
-<span class="cstat-no" title="statement not covered" >                                    ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400'</span>
-<span class="cstat-no" title="statement not covered" >                                    : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-amber-400'</span>
-<span class="cstat-no" title="statement not covered" >                                    }`}</span>
+<span class="cstat-no" title="statement not covered" >                                onClick={handleShare}</span>
+<span class="cstat-no" title="statement not covered" >                                aria-label="Share this story"</span>
+<span class="cstat-no" title="statement not covered" >                                className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-primary-400 transition-all"</span>
 <span class="cstat-no" title="statement not covered" >                            &gt;</span>
-<span class="cstat-no" title="statement not covered" >                                &lt;Bookmark className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} aria-hidden="true" /&gt;</span>
-<span class="cstat-no" title="statement not covered" >                                &lt;span className="hidden sm:inline"&gt;{isBookmarked ? 'Saved' : 'Save'}&lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                &lt;Share2 className="w-5 h-5" aria-hidden="true" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                &lt;span className="hidden sm:inline"&gt;Share&lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >                            &lt;/button&gt;</span>
-<span class="cstat-no" title="statement not covered" >                        )}</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >                        &lt;div className="flex items-center gap-2 text-gray-600 dark:text-gray-400"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                            &lt;MessageCircle className="w-5 h-5" aria-hidden="true" /&gt;</span>
-<span class="cstat-no" title="statement not covered" >                            &lt;span className="text-sm sm:text-base"&gt;{story.comment_count} &lt;span className="hidden sm:inline"&gt;comments&lt;/span&gt;&lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >                        &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >                            {user &amp;&amp; (</span>
+<span class="cstat-no" title="statement not covered" >                                &lt;button</span>
+<span class="cstat-no" title="statement not covered" >                                    onClick={handleToggleBookmark}</span>
+<span class="cstat-no" title="statement not covered" >                                    aria-label={isBookmarked ? 'Remove from saved' : 'Save this story'}</span>
+<span class="cstat-no" title="statement not covered" >                                    className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg border transition-all ${isBookmarked</span>
+<span class="cstat-no" title="statement not covered" >                                        ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400'</span>
+<span class="cstat-no" title="statement not covered" >                                        : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-amber-400'</span>
+<span class="cstat-no" title="statement not covered" >                                        }`}</span>
+<span class="cstat-no" title="statement not covered" >                                &gt;</span>
+<span class="cstat-no" title="statement not covered" >                                    &lt;Bookmark className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} aria-hidden="true" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                    &lt;span className="hidden sm:inline"&gt;{isBookmarked ? 'Saved' : 'Save'}&lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                &lt;/button&gt;</span>
+<span class="cstat-no" title="statement not covered" >                            )}</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >                        {/* Author Actions - Edit/Delete */}</span>
-<span class="cstat-no" title="statement not covered" >                        {isAuthor &amp;&amp; (</span>
-<span class="cstat-no" title="statement not covered" >                            &lt;div className="ml-auto flex items-center gap-2"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                                &lt;button</span>
-<span class="cstat-no" title="statement not covered" >                                    onClick={() =&gt; navigate(`/edit/${story.id}`)}</span>
-<span class="cstat-no" title="statement not covered" >                                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-blue-300 dark:border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"</span>
-<span class="cstat-no" title="statement not covered" >                                &gt;</span>
-<span class="cstat-no" title="statement not covered" >                                    &lt;Edit className="w-4 h-4" /&gt;</span>
-<span class="cstat-no" title="statement not covered" >                                    Edit</span>
-<span class="cstat-no" title="statement not covered" >                                &lt;/button&gt;</span>
-<span class="cstat-no" title="statement not covered" >                                &lt;button</span>
-<span class="cstat-no" title="statement not covered" >                                    onClick={handleDelete}</span>
-<span class="cstat-no" title="statement not covered" >                                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"</span>
-<span class="cstat-no" title="statement not covered" >                                &gt;</span>
-<span class="cstat-no" title="statement not covered" >                                    &lt;Trash2 className="w-4 h-4" /&gt;</span>
-<span class="cstat-no" title="statement not covered" >                                    Delete</span>
-<span class="cstat-no" title="statement not covered" >                                &lt;/button&gt;</span>
+<span class="cstat-no" title="statement not covered" >                            &lt;div className="flex items-center gap-2 text-gray-600 dark:text-gray-400"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                &lt;MessageCircle className="w-5 h-5" aria-hidden="true" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                &lt;span className="text-sm sm:text-base"&gt;{story.comment_count} &lt;span className="hidden sm:inline"&gt;comments&lt;/span&gt;&lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >                            &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >                        )}</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >                            {/* Author Actions - Edit/Delete */}</span>
+<span class="cstat-no" title="statement not covered" >                            {isAuthor &amp;&amp; (</span>
+<span class="cstat-no" title="statement not covered" >                                &lt;div className="ml-auto flex items-center gap-2"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                    &lt;button</span>
+<span class="cstat-no" title="statement not covered" >                                        onClick={() =&gt; navigate(`/edit/${story.id}`)}</span>
+<span class="cstat-no" title="statement not covered" >                                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-blue-300 dark:border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"</span>
+<span class="cstat-no" title="statement not covered" >                                    &gt;</span>
+<span class="cstat-no" title="statement not covered" >                                        &lt;Edit className="w-4 h-4" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                        Edit</span>
+<span class="cstat-no" title="statement not covered" >                                    &lt;/button&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                    &lt;button</span>
+<span class="cstat-no" title="statement not covered" >                                        onClick={handleDelete}</span>
+<span class="cstat-no" title="statement not covered" >                                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"</span>
+<span class="cstat-no" title="statement not covered" >                                    &gt;</span>
+<span class="cstat-no" title="statement not covered" >                                        &lt;Trash2 className="w-4 h-4" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                        Delete</span>
+<span class="cstat-no" title="statement not covered" >                                    &lt;/button&gt;</span>
+<span class="cstat-no" title="statement not covered" >                                &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >                            )}</span>
+<span class="cstat-no" title="statement not covered" >                        &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >                    &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >                    {/* Comments Section */}</span>
-<span class="cstat-no" title="statement not covered" >                    &lt;div className="space-y-6"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                    &lt;div className="w-full space-y-6"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                        &lt;h2 className="text-2xl font-bold text-gray-900 dark:text-white"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                            Comments ({comments.length})</span>
 <span class="cstat-no" title="statement not covered" >                        &lt;/h2&gt;</span>
@@ -1573,7 +1579,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-24T17:39:42.938Z
+                at 2026-01-02T16:25:36.297Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

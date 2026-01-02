@@ -23,6 +23,7 @@ from app.schemas.posts import (
     BookmarkResponse, ReadProgressUpdate
 )
 from app.services.story_service import StoryService, calculate_reading_time
+from app.api.v1.websockets import notify_reaction, notify_comment
 
 
 router = APIRouter()
@@ -497,6 +498,17 @@ async def add_comment(
             'display_name': current_user.display_name
         }
     
+    # Send real-time notification to story author (if not commenting on own story)
+    if story.user_id != current_user.id:
+        commenter_name = "Anonymous" if comment_data.is_anonymous else current_user.username
+        await notify_comment(
+            story_author_id=story.user_id,
+            story_id=story.public_id,
+            story_title=story.title,
+            commenter_username=commenter_name,
+            comment_preview=comment_data.content
+        )
+    
     return {
         "message": "Comment added successfully",
         "comment": {
@@ -660,6 +672,17 @@ async def toggle_reaction(
         story.support_count = (story.support_count or 0) + 1
         await db.commit()
         await db.refresh(reaction)
+        
+        # Send real-time notification to story author (if not reacting to own story)
+        if story.user_id != current_user.id:
+            await notify_reaction(
+                story_author_id=story.user_id,
+                story_id=story.public_id,
+                story_title=story.title,
+                reactor_username=current_user.username,
+                reaction_type=support_data.support_type
+            )
+        
         return {
             "message": "Reaction added",
             "action": "added",
