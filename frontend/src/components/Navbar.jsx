@@ -60,7 +60,7 @@ const Navbar = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isProfileMenuOpen]);
+  }, [isProfileMenuOpen, isNotificationOpen]);
 
   const navItems = [
     { name: 'Feed', href: '/feed', icon: Flame, active: location.pathname.startsWith('/feed') && location.pathname !== '/feed/create' && location.pathname !== '/feed/drafts' },
