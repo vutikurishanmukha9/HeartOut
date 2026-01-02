@@ -413,7 +413,7 @@ pytest tests/test_security.py -v
 
 ## Recent Updates
 
-### v3.1 - Settings Page
+### v3.0.1 - Settings Page & Bug Fixes
 - **Settings Page** - Dedicated account management page at `/profile/settings`:
   - Theme toggle (Light/Dark/System)
   - Change password with validation
@@ -421,9 +421,11 @@ pytest tests/test_security.py -v
 - **New API Endpoints**:
   - `PUT /api/auth/change-password` - Secure password change
   - `DELETE /api/auth/me` - Account deletion
-- **Route Fix** - Added explicit `/settings` route before dynamic `/:userId`
+- **Bug Fixes**:
+  - Fixed timezone issue in comment timestamps (UTC parsing)
+  - Added explicit `/settings` route before dynamic `/:userId`
 
-### v3.0 - FastAPI Migration
+### v3.0.0 - FastAPI Migration
 - **Backend Migration** - Complete migration from Flask to FastAPI:
   - Async/await throughout with SQLAlchemy 2.0
   - Pydantic v2 for request/response validation
@@ -436,7 +438,7 @@ pytest tests/test_security.py -v
   - Updated deployment configs (Dockerfile, Procfile, render.yaml)
 - **Port Change**: Backend now runs on port 8000 (was 5000)
 
-### v2.8 - Backend Performance & UI Enhancements
+### v2.0.8 - Backend Performance & UI Enhancements
 - **Connection Pooling** - SQLAlchemy pool of 5-15 connections with auto-recycle
 - **Cache Utility** - Redis support with graceful memory fallback
 - **Query Optimization** - Eager loading for bookmarks, fewer N+1 queries
@@ -444,7 +446,7 @@ pytest tests/test_security.py -v
 - **Auto-Growing Textarea** - Mobile-first editor that expands with content
 - **Autofill Login Fix** - Browser autofill now works correctly with React state
 
-### v2.7 - Strict Testing & Mobile UI Fixes
+### v2.0.7 - Strict Testing & Mobile UI Fixes
 - **Strict Test Suite** (30 new tests):
   - Input validation boundaries (username, password, email formats)
   - Authorization checks (prevent cross-user modifications)
@@ -460,7 +462,7 @@ pytest tests/test_security.py -v
   - Premium Edit/Delete buttons with gradient styling
   - Pill-style buttons with labels and hover effects
 
-### v2.6 - Premium UI/UX Overhaul & Ranking Consolidation
+### v2.0.6 - Premium UI/UX Overhaul & Ranking Consolidation
 - **Gravity Sort Ranking** - Consolidated from 6 category-specific algorithms to single SQL-optimized query:
   - Formula: `score = points / (age_hours + 2) ^ 1.8` (Hacker News style)
   - Balances Recency vs Engagement in one query
@@ -494,7 +496,7 @@ pytest tests/test_security.py -v
   - Mobile logo with glow effect
   - Smaller scale animations on mobile
 
-### v2.5 - Smart Category-Based Ranking
+### v2.0.5 - Smart Category-Based Ranking
 - **Smart Ranking Algorithms** - 6 unique algorithms per story category:
   - *Achievements*: Learning-to-Rank (saves + completion rate)
   - *Regrets*: Emotion-Similarity (rereads + deep engagement)
@@ -508,7 +510,7 @@ pytest tests/test_security.py -v
 - **"For You" Feed** - Smart ranking as default sort option
 - **110 Backend Tests** - Comprehensive test coverage including 62 new ranking tests
 
-### v2.4 - Security & Performance
+### v2.0.4 - Security & Performance
 - **XSS Protection** - DOMPurify sanitization for all user content
 - **Redis Rate Limiting** - Production-ready distributed rate limiting
 - **Environment Validation** - Startup validation with secure fallbacks
@@ -517,7 +519,7 @@ pytest tests/test_security.py -v
 - **N+1 Query Fixes** - SQLAlchemy eager loading for stories
 - **Complete Pagination Metadata** - Added has_next, has_prev, next/prev_page
 
-### v2.3 - Testing & UI Improvements
+### v2.0.3 - Testing & UI Improvements
 - **Comprehensive Test Suite** - 85 tests covering backend and frontend
 - **Navbar Support Button** - Quick access to mental health resources
 - **Profile Dropdown Fix** - Click outside to close
@@ -526,7 +528,7 @@ pytest tests/test_security.py -v
 - Frontend tests with Vitest (56 tests)
 
 
-### v2.2 - Mental Health Support Integration
+### v2.0.2 - Mental Health Support Integration
 - **Tele MANAS Helpline** - Government of India 24/7 free helpline (14416 / 1800-891-4416)
 - **iCall Helpline** - TISS mental health support (9152987821)
 - Floating "Need Support?" button with quick access panel
@@ -535,7 +537,7 @@ pytest tests/test_security.py -v
 - Copy number buttons for desktop users
 - Emergency information and additional resources
 
-### v2.1 - Story Analytics & Improvements
+### v2.0.1 - Story Analytics & Improvements
 - **Story Analytics Dashboard** - Interactive donut pie chart on Profile page
 - Category filtering with clickable slices and legend
 - Gradient fills with 3D reflection effects
@@ -545,7 +547,7 @@ pytest tests/test_security.py -v
 - New color scheme: Green (Achievements), Blue (Regrets), Gray (Unsent Letters), Red (Sacrifices), Yellow (Life Stories)
 
 
-### v2.0 - Premium Upgrade
+### v2.0.0 - Premium Upgrade
 - Complete UI redesign with glass morphism
 - 5 premium reaction types
 - Story search endpoint
