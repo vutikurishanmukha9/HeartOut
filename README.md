@@ -8,13 +8,58 @@ A modern, premium storytelling platform for authentic personal expression.
 
 [![GitHub](https://img.shields.io/badge/GitHub-vutikurishanmukha9%2FHeartOut-blue)](https://github.com/vutikurishanmukha9/HeartOut)
 [![CI](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml/badge.svg)](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/Tests-123+-brightgreen)](https://github.com/vutikurishanmukha9/HeartOut/actions)
+[![Tests](https://img.shields.io/badge/Tests-541+-brightgreen)](https://github.com/vutikurishanmukha9/HeartOut/actions)
 [![Coverage](https://img.shields.io/badge/Coverage-70%25-yellow)](https://github.com/vutikurishanmukha9/HeartOut)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![React](https://img.shields.io/badge/React-18+-61DAFB.svg)](https://react.dev)
 
 </div>
+
+---
+
+## About HeartOut
+
+### What is HeartOut?
+
+HeartOut is a **safe, empathetic storytelling platform** where people can anonymously share their life experiences, emotions, and personal journeys. In a world where social media often feels performative, HeartOut offers a refreshing space for **authentic human connection** through storytelling.
+
+> *"Everyone has a story worth telling. HeartOut gives you the space to tell yours."*
+
+### Our Mission
+
+We believe that sharing personal stories has the power to:
+- **Heal** - Writing about experiences can be therapeutic
+- **Connect** - Readers find comfort knowing they're not alone
+- **Inspire** - Your story might be the light someone needs today
+
+### What Can Users Do?
+
+| Feature | Description |
+|---------|-------------|
+| **Share Stories** | Write about achievements, regrets, unsent letters, sacrifices, and life experiences |
+| **Stay Anonymous** | Post without revealing your identity - your story matters, not your name |
+| **React & Support** | Show empathy with reactions like Love, Hug, Inspiring, and Mind-blown |
+| **Save Stories** | Bookmark stories that resonate with you for later reading |
+| **Comment** | Engage in supportive conversations with other storytellers |
+| **Track Progress** | See reading analytics and engagement on your stories |
+| **Dark Mode** | Read comfortably at any time with our eye-friendly dark theme |
+| **Mental Health Support** | Quick access to helplines like Tele MANAS and iCall |
+
+### Who is HeartOut For?
+
+- **Writers** seeking a judgment-free space to express themselves
+- **Readers** looking for authentic human stories, not curated highlight reels
+- **Anyone** who believes in the power of shared experiences
+- **People** who want to reflect on their journey or find solace in others' stories
+
+### Why HeartOut?
+
+Unlike typical social platforms focused on likes and followers, HeartOut prioritizes:
+- **Privacy** - Anonymous posting by default
+- **Empathy** - Reactions are supportive, not competitive
+- **Depth** - Long-form content encouraged, not character-limited
+- **Mental Wellness** - Integrated mental health resources
 
 ---
 
@@ -251,8 +296,8 @@ FLASK_ENV=production
 
 | Job | Description |
 |-----|-------------|
-| `backend-tests` | Runs 55 pytest tests with coverage |
-| `frontend-tests` | Runs 68 Vitest tests + builds bundle |
+| `backend-tests` | Runs 327 pytest tests |
+| `frontend-tests` | Runs 214 Vitest tests + builds bundle |
 | `code-quality` | Flake8 linting for critical errors |
 | `security-scan` | Trivy vulnerability scanner |
 | `ci-success` | Final gate (all must pass) |
@@ -263,7 +308,7 @@ FLASK_ENV=production
 
 ### Badges
 [![CI](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml/badge.svg)](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/Tests-123+-brightgreen)](https://github.com/vutikurishanmukha9/HeartOut/actions)
+[![Tests](https://img.shields.io/badge/Tests-541+-brightgreen)](https://github.com/vutikurishanmukha9/HeartOut/actions)
 
 ---
 
@@ -271,7 +316,7 @@ FLASK_ENV=production
 
 ### Unit Tests
 
-#### Backend (pytest - 55 tests)
+#### Backend (pytest - 327 tests)
 ```bash
 cd backend
 .\venv\Scripts\activate
@@ -280,16 +325,23 @@ pytest app/tests -v
 
 | Test Suite | Tests | Description |
 |------------|-------|-------------|
+| Models | 35 | User, Post, Comment, Support models |
+| Validators | 30 | Password hashing, JWT tokens |
+| Schemas | 35 | Pydantic schema validation |
+| Config | 15 | Settings, JWT config |
+| Utils | 15 | Reading time, utilities |
 | Health & Root | 3 | API endpoints |
-| Authentication | 12 | Login, Register, Tokens |
-| Stories CRUD | 15 | Create, Read, Update, Delete |
-| Comments | 2 | Add, Get comments |
-| Reactions | 2 | Toggle, Get my reaction |
-| Bookmarks | 2 | Toggle, Get bookmarks |
-| Pagination | 3 | Edge cases validation |
-| WebSocket | 15 | Connection manager, readers |
+| Authentication | 25 | Login, Register, Tokens, Profile |
+| Stories CRUD | 40 | Create, Read, Update, Delete |
+| Comments | 15 | Add, Get, Nested comments |
+| Reactions | 25 | Toggle, Get reactions |
+| Bookmarks | 15 | Toggle, Get bookmarks |
+| Security | 25 | JWT blocklist, auth flows |
+| Ranking | 20 | Smart ranking algorithm |
+| WebSocket | 20 | Connection manager, readers |
+| Integration | 10 | End-to-end API flows |
 
-#### Frontend (Vitest - 68 tests)
+#### Frontend (Vitest - 214 tests)
 ```bash
 cd frontend
 npm run test:run
@@ -297,6 +349,13 @@ npm run test:run
 
 | Test Suite | Tests | Description |
 |------------|-------|-------------|
+| Feed | 20 | Feed page, sorting, filtering |
+| Login | 21 | Form validation, loading, errors |
+| Register | 24 | Registration, password strength |
+| PostCard | 23 | Story cards, bookmarks, reactions |
+| Toast | 21 | Notifications, types, close |
+| ThemeContext | 15 | Theme provider, dark mode |
+| API Utils | 24 | URL construction, fetch |
 | Utils | 17 | Validation, Dates, Errors |
 | HelplineCard | 13 | Rendering, Links, Data |
 | StoryTypeSelector | 10 | Selection, Rendering |

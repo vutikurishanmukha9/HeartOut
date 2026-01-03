@@ -158,13 +158,61 @@ async def root():
 
 
 # WebSocket endpoint for real-time notifications
-from fastapi import WebSocket, WebSocketDisconnect
+from fastapi import WebSocket, WebSocketDisconnect, Query
 from app.api.v1.websockets import manager
+from app.core.security import decode_token
+from app.core.database import async_session_maker
+from sqlalchemy import select
 
 
-@app.websocket("/ws/{user_id}")
-async def websocket_endpoint(websocket: WebSocket, user_id: int):
-    """WebSocket endpoint for real-time notifications"""
+@app.websocket("/ws")
+async def websocket_endpoint(
+    websocket: WebSocket, 
+    token: str = Query(None, description="JWT access token")
+):
+    """WebSocket endpoint for real-time notifications with JWT authentication"""
+    # Validate token
+    if not token:
+        await websocket.close(code=4001, reason="Authentication required")
+        return
+    
+    payload = decode_token(token)
+    if not payload:
+        await websocket.close(code=4001, reason="Invalid token")
+        return
+    
+    # Get user from database to verify they exist
+    user_public_id = payload.get("sub")
+    if not user_public_id:
+        await websocket.close(code=4001, reason="Invalid token payload")
+        return
+    
+    # Check token is not revoked
+    jti = payload.get("jti")
+    async with async_session_maker() as db:
+        from app.models.models import User, TokenBlocklist
+        
+        if jti:
+            blocklist_result = await db.execute(
+                select(TokenBlocklist).where(TokenBlocklist.jti == jti)
+            )
+            if blocklist_result.scalar_one_or_none():
+                await websocket.close(code=4001, reason="Token revoked")
+                return
+        
+        # Get user
+        result = await db.execute(
+            select(User).where(User.public_id == user_public_id)
+        )
+        user = result.scalar_one_or_none()
+        
+        if not user or not user.is_active:
+            await websocket.close(code=4001, reason="User not found")
+            return
+        
+        user_id = user.id
+    
+    # Connection authenticated - proceed
     await manager.connect(websocket, user_id)
     try:
         while True:

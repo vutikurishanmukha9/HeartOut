@@ -32,10 +32,12 @@ export function WebSocketProvider({ children, userId }) {
 
     // Connect to WebSocket
     const connect = useCallback(() => {
-        if (!userId || wsRef.current?.readyState === WebSocket.OPEN) return;
+        const token = localStorage.getItem('access_token');
+        if (!userId || !token || wsRef.current?.readyState === WebSocket.OPEN) return;
 
         try {
-            const wsUrl = `${getWsUrl()}/ws/${userId}`;
+            // Pass token as query parameter for authentication
+            const wsUrl = `${getWsUrl()}/ws?token=${encodeURIComponent(token)}`;
             wsRef.current = new WebSocket(wsUrl);
 
             wsRef.current.onopen = () => {

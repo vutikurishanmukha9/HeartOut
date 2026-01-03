@@ -12,10 +12,10 @@ env:
 
 jobs:
   # ============================================
-  # Backend Tests (Python/FastAPI)
+  # Backend Tests - 327 pytest tests
   # ============================================
   backend-tests:
-    name: Backend Tests
+    name: Backend Tests (327 tests)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     
@@ -57,10 +57,10 @@ jobs:
         continue-on-error: true
 
   # ============================================
-  # Frontend Build & Tests (React/Vite)
+  # Frontend Tests - 214 Vitest tests
   # ============================================
   frontend-tests:
-    name: Frontend Tests
+    name: Frontend Tests (214 tests)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     
@@ -160,7 +160,7 @@ jobs:
       - name: Check all jobs passed
         run: |
           if [[ "${{ needs.backend-tests.result }}" == "success" && "${{ needs.frontend-tests.result }}" == "success" ]]; then
-            echo " All CI checks passed!"
+            echo "✅ All CI checks passed! (541 tests total)"
             exit 0
           else
             echo " Some CI checks failed"

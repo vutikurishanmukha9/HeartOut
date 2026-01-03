@@ -21,13 +21,8 @@ if settings.IS_SQLITE:
     )
 else:
     # PostgreSQL: use connection pooling with SSL for Neon
-    import ssl
-    
-    # Create SSL context for Neon (requires SSL)
-    ssl_context = ssl.create_default_context()
-    ssl_context.check_hostname = False
-    ssl_context.verify_mode = ssl.CERT_NONE  # Neon uses self-signed certs
-    
+    # Use 'require' SSL mode - enforces encryption but allows self-signed certs
+    # This is the recommended approach for Neon and similar serverless Postgres
     engine = create_async_engine(
         settings.ASYNC_DATABASE_URL,
         echo=settings.DEBUG,
@@ -35,7 +30,7 @@ else:
         max_overflow=10,
         pool_recycle=300,
         pool_pre_ping=True,
-        connect_args={"ssl": ssl_context},  # Enable SSL for asyncpg
+        connect_args={"ssl": "require"},  # Require SSL but skip cert verification (Neon compatible)
     )
 
 

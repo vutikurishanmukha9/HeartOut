@@ -179,9 +179,36 @@ async def refresh_access_token(
 
 # Logout
 @router.post("/logout")
-async def logout(current_user: User = Depends(get_current_user)):
-    """Logout user (invalidate token)"""
-    # In production, add token JTI to blocklist
+async def logout(
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Logout user (invalidate token in database)"""
+    from app.core.security import decode_token
+    
+    # Get the token from the request
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        token = auth_header[7:]
+        payload = decode_token(token)
+        
+        if payload:
+            # Get JTI (JWT ID) from token - if not present, use a hash of the token
+            jti = payload.get("jti") or str(hash(token))[:36]
+            exp = payload.get("exp")
+            
+            # Add token to blocklist
+            blocklist_entry = TokenBlocklist(
+                jti=jti,
+                token_type=payload.get("type", "access"),
+                user_id=current_user.id,
+                expires_at=datetime.fromtimestamp(exp) if exp else datetime.utcnow()
+            )
+            
+            db.add(blocklist_entry)
+            await db.commit()
+    
     return {"message": "Successfully logged out"}
 
 

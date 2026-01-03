@@ -3,6 +3,7 @@ Security utilities for JWT authentication and password hashing
 """
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Any
+import uuid
 from jose import jwt, JWTError
 import bcrypt
 from fastapi import Depends, HTTPException, status
@@ -35,20 +36,24 @@ def get_password_hash(password: str) -> str:
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
-    """Create a JWT access token"""
+    """Create a JWT access token with unique JTI"""
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + (
         expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
-    to_encode.update({"exp": expire, "type": "access"})
+    # Add JTI for token identification (used for logout/blocklist)
+    jti = str(uuid.uuid4())
+    to_encode.update({"exp": expire, "type": "access", "jti": jti})
     return jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
 
 def create_refresh_token(data: dict) -> str:
-    """Create a JWT refresh token"""
+    """Create a JWT refresh token with unique JTI"""
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
-    to_encode.update({"exp": expire, "type": "refresh"})
+    # Add JTI for token identification
+    jti = str(uuid.uuid4())
+    to_encode.update({"exp": expire, "type": "refresh", "jti": jti})
     return jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
 
@@ -70,7 +75,7 @@ async def get_current_user(
     db: AsyncSession = Depends(get_db)
 ):
     """Dependency to get current authenticated user"""
-    from app.models.models import User
+    from app.models.models import User, TokenBlocklist
     
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -85,6 +90,15 @@ async def get_current_user(
     user_id: str = payload.get("sub")
     if user_id is None:
         raise credentials_exception
+    
+    # Check if token is in blocklist (revoked)
+    jti = payload.get("jti")
+    if jti:
+        blocklist_result = await db.execute(
+            select(TokenBlocklist).where(TokenBlocklist.jti == jti)
+        )
+        if blocklist_result.scalar_one_or_none():
+            raise credentials_exception  # Token has been revoked
     
     # Get user from database
     result = await db.execute(
