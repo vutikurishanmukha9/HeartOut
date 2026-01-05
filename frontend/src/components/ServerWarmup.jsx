@@ -62,19 +62,40 @@ export function ServerWarmupToast() {
     const { serverStatus, warmupTime } = useServerStatus();
     const [visible, setVisible] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [startedAt, setStartedAt] = useState(null);
 
     useEffect(() => {
-        if (serverStatus === 'warming' || serverStatus === 'checking') {
-            // Show immediately when server is waking up
-            setVisible(true);
-        } else if (serverStatus === 'ready' && visible) {
-            setShowSuccess(true);
-            setTimeout(() => {
-                setVisible(false);
-                setShowSuccess(false);
-            }, 6000);
+        if (serverStatus === 'checking' && !startedAt) {
+            // Start timer when checking begins
+            setStartedAt(Date.now());
         }
-    }, [serverStatus, visible]);
+
+        if (serverStatus === 'warming') {
+            // Show immediately when server is in warming state
+            setVisible(true);
+        } else if (serverStatus === 'checking' && startedAt) {
+            // Only show toast if checking takes more than 2 seconds
+            const showAfterDelay = setTimeout(() => {
+                if (serverStatus === 'checking') {
+                    setVisible(true);
+                }
+            }, 2000);
+            return () => clearTimeout(showAfterDelay);
+        } else if (serverStatus === 'ready') {
+            // Only show success if we were actually visible (slow warmup)
+            if (visible) {
+                setShowSuccess(true);
+                setTimeout(() => {
+                    setVisible(false);
+                    setShowSuccess(false);
+                    setStartedAt(null);
+                }, 6000);
+            } else {
+                // Fast response - don't show anything
+                setStartedAt(null);
+            }
+        }
+    }, [serverStatus, visible, startedAt]);
 
     if (!visible) return null;
 
