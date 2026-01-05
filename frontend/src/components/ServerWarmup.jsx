@@ -57,108 +57,53 @@ export function ServerStatusProvider({ children }) {
     );
 }
 
-// Toast component to show during cold start
+// Compact loading indicator - always visible until server is ready
 export function ServerWarmupToast() {
     const { serverStatus, warmupTime } = useServerStatus();
-    const [visible, setVisible] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
-    const [startedAt, setStartedAt] = useState(null);
+    const [dismissed, setDismissed] = useState(false);
 
     useEffect(() => {
-        if (serverStatus === 'checking' && !startedAt) {
-            // Start timer when checking begins
-            setStartedAt(Date.now());
+        if (serverStatus === 'ready' && !showSuccess && !dismissed) {
+            setShowSuccess(true);
+            // Auto-hide success message after 3 seconds
+            setTimeout(() => {
+                setDismissed(true);
+            }, 3000);
         }
+    }, [serverStatus, showSuccess, dismissed]);
 
-        if (serverStatus === 'warming') {
-            // Show immediately when server is in warming state
-            setVisible(true);
-        } else if (serverStatus === 'checking' && startedAt) {
-            // Only show toast if checking takes more than 2 seconds
-            const showAfterDelay = setTimeout(() => {
-                if (serverStatus === 'checking') {
-                    setVisible(true);
-                }
-            }, 2000);
-            return () => clearTimeout(showAfterDelay);
-        } else if (serverStatus === 'ready') {
-            // Only show success if we were actually visible (slow warmup)
-            if (visible) {
-                setShowSuccess(true);
-                setTimeout(() => {
-                    setVisible(false);
-                    setShowSuccess(false);
-                    setStartedAt(null);
-                }, 6000);
-            } else {
-                // Fast response - don't show anything
-                setStartedAt(null);
-            }
-        }
-    }, [serverStatus, visible, startedAt]);
-
-    if (!visible) return null;
+    // Don't show if dismissed or if there's an error
+    if (dismissed) return null;
 
     return (
-        <div className="fixed bottom-20 right-4 w-auto max-w-[200px] md:bottom-4 md:max-w-none md:w-80 z-[100] animate-slide-up">
-            <div className={`rounded-2xl shadow-2xl border backdrop-blur-xl p-4 ${showSuccess
-                ? 'bg-green-50/95 dark:bg-green-900/30 border-green-200 dark:border-green-800'
-                : 'bg-white/95 dark:bg-gray-800/95 border-gray-200 dark:border-gray-700'
-                }`}>
-                {showSuccess ? (
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-green-100 dark:bg-green-800/50 rounded-xl">
-                            <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
-                        </div>
-                        <div>
-                            <p className="font-semibold text-green-800 dark:text-green-300">
-                                Server is ready!
-                            </p>
-                            <p className="text-sm text-green-600 dark:text-green-400">
-                                Warmed up in {warmupTime}s. Enjoy!
-                            </p>
-                        </div>
-                    </div>
-                ) : serverStatus === 'error' ? (
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-red-100 dark:bg-red-800/50 rounded-xl">
-                            <AlertCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
-                        </div>
-                        <div>
-                            <p className="font-semibold text-red-800 dark:text-red-300">
-                                Connection issue
-                            </p>
-                            <p className="text-sm text-red-600 dark:text-red-400">
-                                Please check your internet connection
-                            </p>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="flex items-start gap-3">
-                        <div className="p-2 bg-primary-100 dark:bg-primary-800/50 rounded-xl">
-                            <Coffee className="w-6 h-6 text-primary-600 dark:text-primary-400" />
-                        </div>
-                        <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                                <p className="font-semibold text-gray-800 dark:text-gray-200">
-                                    Waking up our server...
-                                </p>
-                                <Loader2 className="w-4 h-4 animate-spin text-primary-500" />
-                            </div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                Our free server sleeps when inactive. This usually takes 15-30 seconds on first visit.
-                            </p>
-                            <div className="mt-2 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                                <div className="h-full bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full animate-pulse"
-                                    style={{ width: '60%' }} />
-                            </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                                Thanks for your patience!
-                            </p>
-                        </div>
-                    </div>
-                )}
-            </div>
+        <div className="fixed bottom-20 right-4 z-[100] animate-slide-up md:bottom-4">
+            {showSuccess ? (
+                // Success state - compact green pill
+                <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-green-500/90 shadow-lg backdrop-blur-xl">
+                    <CheckCircle className="w-4 h-4 text-white" />
+                    <span className="text-sm font-medium text-white">
+                        Connected ({warmupTime}s)
+                    </span>
+                </div>
+            ) : serverStatus === 'error' ? (
+                // Error state - compact red pill
+                <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-red-500/90 shadow-lg backdrop-blur-xl">
+                    <AlertCircle className="w-4 h-4 text-white" />
+                    <span className="text-sm font-medium text-white">
+                        Connection failed
+                    </span>
+                </div>
+            ) : (
+                // Loading state - compact orange pill (always shown while checking/warming)
+                <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-orange-500/90 shadow-lg backdrop-blur-xl">
+                    <Coffee className="w-4 h-4 text-white" />
+                    <span className="text-sm font-medium text-white">
+                        {serverStatus === 'warming' ? 'Waking up...' : 'Connecting...'}
+                    </span>
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                </div>
+            )}
         </div>
     );
 }
