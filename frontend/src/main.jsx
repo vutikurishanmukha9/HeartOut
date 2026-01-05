@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import { HelmetProvider } from 'react-helmet-async';
 import { QueryClientProvider } from '@tanstack/react-query';
 import queryClient from './config/queryClient';
+import { ServerStatusProvider, ServerWarmupToast } from './components/ServerWarmup';
 import './index.css';
 
 // Simple wrapper to catch errors
@@ -48,6 +49,7 @@ const ThemeProvider = React.lazy(() => import('./context/ThemeContext').then(m =
 const InnovativeLoader = React.lazy(() => import('./components/InnovativeLoader'));
 
 // Loading component - uses a simple fallback until InnovativeLoader loads
+// Now includes the ServerWarmupToast to show connection status immediately
 const Loading = () => (
     <div className="min-h-screen flex items-center justify-center" style={{
         background: 'linear-gradient(-45deg, #fdf2f8, #fef7ee, #fefce8, #fff7ed)',
@@ -66,6 +68,8 @@ const Loading = () => (
                 HeartOut
             </h1>
         </div>
+        {/* Server connection indicator shows on this loading screen */}
+        <ServerWarmupToast />
     </div>
 );
 
@@ -73,19 +77,23 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <ErrorBoundary>
             <HelmetProvider>
-                <React.Suspense fallback={<Loading />}>
-                    <QueryClientProvider client={queryClient}>
-                        <BrowserRouter>
-                            <ThemeProvider>
-                                <AuthProvider>
-                                    <App />
-                                    <Toaster position="top-right" />
-                                </AuthProvider>
-                            </ThemeProvider>
-                        </BrowserRouter>
-                    </QueryClientProvider>
-                </React.Suspense>
+                {/* ServerStatusProvider wraps everything so status is tracked from the start */}
+                <ServerStatusProvider>
+                    <React.Suspense fallback={<Loading />}>
+                        <QueryClientProvider client={queryClient}>
+                            <BrowserRouter>
+                                <ThemeProvider>
+                                    <AuthProvider>
+                                        <App />
+                                        <Toaster position="top-right" />
+                                    </AuthProvider>
+                                </ThemeProvider>
+                            </BrowserRouter>
+                        </QueryClientProvider>
+                    </React.Suspense>
+                </ServerStatusProvider>
             </HelmetProvider>
         </ErrorBoundary>
     </React.StrictMode>
 );
+
