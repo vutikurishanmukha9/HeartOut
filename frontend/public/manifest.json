@@ -1,0 +1,53 @@
+{
+    "name": "HeartOut",
+    "short_name": "HeartOut",
+    "description": "A safe, empathetic storytelling platform where you can anonymously share achievements, regrets, unsent letters, sacrifices, and life stories. Where every story matters.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#1f2937",
+    "theme_color": "#f97316",
+    "orientation": "portrait-primary",
+    "categories": [
+        "lifestyle",
+        "social",
+        "health"
+    ],
+    "lang": "en",
+    "icons": [
+        {
+            "src": "/heart.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "screenshots": [],
+    "shortcuts": [
+        {
+            "name": "Feed",
+            "short_name": "Feed",
+            "description": "Browse all stories",
+            "url": "/feed",
+            "icons": [
+                {
+                    "src": "/heart.svg",
+                    "sizes": "96x96"
+                }
+            ]
+        },
+        {
+            "name": "Write Story",
+            "short_name": "Write",
+            "description": "Share your story",
+            "url": "/create",
+            "icons": [
+                {
+                    "src": "/heart.svg",
+                    "sizes": "96x96"
+                }
+            ]
+        }
+    ],
+    "related_applications": [],
+    "prefer_related_applications": false
+}

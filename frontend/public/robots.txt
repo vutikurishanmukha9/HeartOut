@@ -1,0 +1,20 @@
+# HeartOut Robots.txt
+# https://heartout.vercel.app/
+
+User-agent: *
+Allow: /
+Allow: /feed
+Allow: /story/*
+
+# Disallow authentication and admin pages
+Disallow: /auth/
+Disallow: /admin/
+Disallow: /settings
+Disallow: /drafts
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://heartout.vercel.app/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1

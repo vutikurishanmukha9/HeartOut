@@ -101,6 +101,46 @@ export default function SEO({
             {type === 'article' && storyType && (
                 <meta property="article:section" content={storyType} />
             )}
+
+            {/* JSON-LD Structured Data for Rich Results */}
+            <script type="application/ld+json">
+                {JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": type === 'article' ? "Article" : "WebSite",
+                    ...(type === 'article' ? {
+                        "headline": title,
+                        "description": finalDescription,
+                        "image": finalImage,
+                        "author": {
+                            "@type": "Person",
+                            "name": author || "Anonymous"
+                        },
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": SITE_NAME,
+                            "logo": {
+                                "@type": "ImageObject",
+                                "url": `${SITE_URL}/heart.svg`
+                            }
+                        },
+                        "datePublished": publishedTime,
+                        "mainEntityOfPage": {
+                            "@type": "WebPage",
+                            "@id": finalUrl
+                        },
+                        "articleSection": storyType
+                    } : {
+                        "name": SITE_NAME,
+                        "url": SITE_URL,
+                        "description": "Where every story matters. Share your authentic stories anonymously.",
+                        "potentialAction": {
+                            "@type": "SearchAction",
+                            "target": `${SITE_URL}/feed?search={search_term_string}`,
+                            "query-input": "required name=search_term_string"
+                        }
+                    })
+                })}
+            </script>
         </Helmet>
     );
 }
