@@ -305,7 +305,7 @@ class Support(Base):
     __tablename__ = 'supports'
     
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    support_type: Mapped[str] = mapped_column(String(50), default='heart')
+    support_type: Mapped[str] = mapped_column(String(50), default='felt_this')
     message: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     

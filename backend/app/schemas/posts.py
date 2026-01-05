@@ -11,7 +11,7 @@ import re
 # Valid story types and statuses
 VALID_STORY_TYPES = ['achievement', 'regret', 'unsent_letter', 'sacrifice', 'life_story', 'other']
 VALID_STATUSES = ['draft', 'published', 'flagged', 'removed']
-VALID_SUPPORT_TYPES = ['heart', 'applause', 'bookmark', 'hug', 'inspiring']
+VALID_SUPPORT_TYPES = ['felt_this', 'holding_space', 'moved', 'brave', 'grateful']
 
 
 class PostCreate(BaseModel):
@@ -131,7 +131,7 @@ class CommentResponse(BaseModel):
 
 class SupportCreate(BaseModel):
     """Schema for reaction/support creation"""
-    support_type: str = Field(default='heart')
+    support_type: str = Field(default='felt_this')
     message: Optional[str] = Field(None, max_length=500)
     
     @field_validator('support_type')

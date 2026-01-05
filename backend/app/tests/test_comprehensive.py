@@ -21,7 +21,7 @@ VALID_PASSWORD = "SecureP@ss123!"
 # Valid story types from schema
 VALID_STORY_TYPES = ['achievement', 'regret', 'unsent_letter', 'sacrifice', 'life_story', 'other']
 # Valid support types from schema  
-VALID_SUPPORT_TYPES = ['heart', 'applause', 'bookmark', 'hug', 'inspiring']
+VALID_SUPPORT_TYPES = ['felt_this', 'holding_space', 'moved', 'brave', 'grateful']
 
 
 # ============================================================================
@@ -439,14 +439,14 @@ class TestReactions:
         
         # Add reaction with valid type
         response = await client.post(f"/api/posts/{story_id}/toggle-react", json={
-            "support_type": "heart"
+            "support_type": "felt_this"
         }, headers=second_user_headers)
         assert response.status_code == 200
         assert response.json()["action"] == "added"
         
         # Remove reaction
         response = await client.post(f"/api/posts/{story_id}/toggle-react", json={
-            "support_type": "heart"
+            "support_type": "felt_this"
         }, headers=second_user_headers)
         assert response.json()["action"] == "removed"
     
@@ -462,12 +462,12 @@ class TestReactions:
         story_id = create.json()["story"]["id"]
         
         await client.post(f"/api/posts/{story_id}/toggle-react", json={
-            "support_type": "inspiring"
+            "support_type": "moved"
         }, headers=second_user_headers)
         
         response = await client.get(f"/api/posts/{story_id}/my-reaction", headers=second_user_headers)
         assert response.status_code == 200
-        assert response.json()["reaction_type"] == "inspiring"
+        assert response.json()["reaction_type"] == "moved"
 
 
 # ============================================================================

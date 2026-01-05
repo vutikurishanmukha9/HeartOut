@@ -39,7 +39,7 @@ We believe that sharing personal stories has the power to:
 |---------|-------------|
 | **Share Stories** | Write about achievements, regrets, unsent letters, sacrifices, and life experiences |
 | **Stay Anonymous** | Post without revealing your identity - your story matters, not your name |
-| **React & Support** | Show empathy with reactions like Love, Hug, Inspiring, and Mind-blown |
+| **React & Support** | Show empathy with reactions: Felt This, Holding Space, Moved, Brave, Grateful |
 | **Save Stories** | Bookmark stories that resonate with you for later reading |
 | **Comment** | Engage in supportive conversations with other storytellers |
 | **Track Progress** | See reading analytics and engagement on your stories |

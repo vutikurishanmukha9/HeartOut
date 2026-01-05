@@ -34,7 +34,7 @@ class TestReactions:
             response = await client.post(
                 f"/api/posts/{story_id}/toggle-react",
                 headers=auth_headers,
-                json={"support_type": "heart"}
+                json={"support_type": "felt_this"}
             )
             
             assert response.status_code in [200, 201]
@@ -61,14 +61,14 @@ class TestReactions:
             await client.post(
                 f"/api/posts/{story_id}/toggle-react",
                 headers=auth_headers,
-                json={"support_type": "inspiring"}
+                json={"support_type": "moved"}
             )
             
             # Toggle off (same reaction again)
             response = await client.post(
                 f"/api/posts/{story_id}/toggle-react",
                 headers=auth_headers,
-                json={"support_type": "inspiring"}
+                json={"support_type": "moved"}
             )
             
             assert response.status_code in [200, 201]
@@ -81,7 +81,7 @@ class TestReactions:
         response = await client.post(
             "/api/posts/nonexistent-id/toggle-react",
             headers=auth_headers,
-            json={"support_type": "heart"}
+            json={"support_type": "felt_this"}
         )
         
         assert response.status_code == 404
@@ -108,7 +108,7 @@ class TestReactions:
             await client.post(
                 f"/api/posts/{story_id}/toggle-react",
                 headers=auth_headers,
-                json={"support_type": "heart"}
+                json={"support_type": "felt_this"}
             )
             
             # Get my reaction
@@ -120,15 +120,15 @@ class TestReactions:
             assert response.status_code == 200
             data = response.json()
             assert "reaction_type" in data
-            assert data["reaction_type"] == "heart"
+            assert data["reaction_type"] == "felt_this"
 
 
 class TestReactionTypes:
     """Test different reaction types"""
     
     @pytest.mark.asyncio
-    async def test_heart_reaction(self, client, auth_headers):
-        """Test heart reaction type"""
+    async def test_felt_this_reaction(self, client, auth_headers):
+        """Test felt_this reaction type"""
         create_response = await client.post(
             "/api/posts",
             headers=auth_headers,
@@ -146,7 +146,7 @@ class TestReactionTypes:
             response = await client.post(
                 f"/api/posts/{story_id}/toggle-react",
                 headers=auth_headers,
-                json={"support_type": "heart"}
+                json={"support_type": "felt_this"}
             )
             
             assert response.status_code in [200, 201]
@@ -197,14 +197,14 @@ class TestReactionTypes:
             await client.post(
                 f"/api/posts/{story_id}/toggle-react",
                 headers=auth_headers,
-                json={"support_type": "heart"}
+                json={"support_type": "felt_this"}
             )
             
             # Change to different type
             response = await client.post(
                 f"/api/posts/{story_id}/toggle-react",
                 headers=auth_headers,
-                json={"support_type": "inspiring"}
+                json={"support_type": "moved"}
             )
             
             # When toggling same story with different type, it might remove first

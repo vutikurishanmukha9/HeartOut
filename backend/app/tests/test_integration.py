@@ -106,7 +106,7 @@ class TestMultiUserInteraction:
         react_response = await client.post(
             f"/api/posts/{story_id}/toggle-react",
             headers=headers2,
-            json={"support_type": "heart"}
+            json={"support_type": "felt_this"}
         )
         
         assert react_response.status_code in [200, 201]

@@ -1,66 +1,73 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Heart, Award, Bookmark, Sparkles, HeartHandshake } from 'lucide-react';
+import { Flame, Sparkles, Droplet, Star, Heart } from 'lucide-react';
 
+// NEW: Emotional Resonance Reaction System
+// Unique to HeartOut - designed for emotional storytelling
 const reactionTypes = [
   {
-    value: 'heart',
-    label: 'Love it',
-    ariaLabel: 'React with Love',
+    value: 'felt_this',
+    label: 'Felt This',
+    ariaLabel: 'React with Felt This - I deeply relate',
     icon: Heart,
     color: 'text-rose-500',
     bgColor: 'bg-rose-50 dark:bg-rose-900/20',
     borderColor: 'border-rose-200 dark:border-rose-700',
     gradient: 'from-rose-400 to-pink-500',
     hoverBg: 'hover:bg-rose-100 dark:hover:bg-rose-900/30',
-    fillClass: 'fill-rose-500'
+    fillClass: 'fill-rose-500',
+    description: 'I deeply relate to this story'
   },
   {
-    value: 'applause',
-    label: 'Inspiring',
-    ariaLabel: 'React with Inspiring',
-    icon: Award,
+    value: 'holding_space',
+    label: 'Holding Space',
+    ariaLabel: 'React with Holding Space - Silent support',
+    icon: Sparkles, // Candle-like glow for holding space
     color: 'text-amber-500',
     bgColor: 'bg-amber-50 dark:bg-amber-900/20',
     borderColor: 'border-amber-200 dark:border-amber-700',
     gradient: 'from-amber-400 to-orange-500',
     hoverBg: 'hover:bg-amber-100 dark:hover:bg-amber-900/30',
-    fillClass: 'fill-amber-500'
+    fillClass: 'fill-amber-500',
+    description: 'I am here with you, silently supporting'
   },
   {
-    value: 'bookmark',
-    label: 'Save',
-    ariaLabel: 'Save this story',
-    icon: Bookmark,
+    value: 'moved',
+    label: 'Moved',
+    ariaLabel: 'React with Moved - Emotionally touched',
+    icon: Droplet,
     color: 'text-blue-500',
     bgColor: 'bg-blue-50 dark:bg-blue-900/20',
     borderColor: 'border-blue-200 dark:border-blue-700',
     gradient: 'from-blue-400 to-cyan-500',
     hoverBg: 'hover:bg-blue-100 dark:hover:bg-blue-900/30',
-    fillClass: 'fill-blue-500'
+    fillClass: 'fill-blue-500',
+    description: 'This story touched me emotionally'
   },
   {
-    value: 'hug',
-    label: 'Hug',
-    ariaLabel: 'Send a virtual Hug',
-    icon: HeartHandshake,
+    value: 'brave',
+    label: 'Brave',
+    ariaLabel: 'React with Brave - Acknowledging courage',
+    icon: Star,
     color: 'text-purple-500',
     bgColor: 'bg-purple-50 dark:bg-purple-900/20',
     borderColor: 'border-purple-200 dark:border-purple-700',
     gradient: 'from-purple-400 to-violet-500',
     hoverBg: 'hover:bg-purple-100 dark:hover:bg-purple-900/30',
-    fillClass: 'fill-purple-500'
+    fillClass: 'fill-purple-500',
+    description: 'Thank you for being brave enough to share'
   },
   {
-    value: 'inspiring',
-    label: 'Mind-blown',
-    ariaLabel: 'React with Mind-blown',
-    icon: Sparkles,
+    value: 'grateful',
+    label: 'Grateful',
+    ariaLabel: 'React with Grateful - Thank you for sharing',
+    icon: Flame,
     color: 'text-emerald-500',
     bgColor: 'bg-emerald-50 dark:bg-emerald-900/20',
     borderColor: 'border-emerald-200 dark:border-emerald-700',
     gradient: 'from-emerald-400 to-teal-500',
     hoverBg: 'hover:bg-emerald-100 dark:hover:bg-emerald-900/30',
-    fillClass: 'fill-emerald-500'
+    fillClass: 'fill-emerald-500',
+    description: 'I am grateful you shared this story'
   }
 ];
 
@@ -68,7 +75,7 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
   const [isOpen, setIsOpen] = useState(false);
   const [reacting, setReacting] = useState(false);
   const [animatingReaction, setAnimatingReaction] = useState(null);
-  const [floatingReaction, setFloatingReaction] = useState(null); // For float-up animation
+  const [floatingReaction, setFloatingReaction] = useState(null);
   const dropdownRef = useRef(null);
   const mainButtonRef = useRef(null);
 
@@ -83,7 +90,7 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
     const handleKeyDown = (event) => {
       if (event.key === 'Escape' && isOpen) {
         setIsOpen(false);
-        mainButtonRef.current?.focus(); // Return focus to main button
+        mainButtonRef.current?.focus();
       }
     };
 
@@ -99,27 +106,22 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
   const handleReact = async (type) => {
     if (reacting) return;
 
-    // Find the reaction type for floating animation
     const reactionData = reactionTypes.find(r => r.value === type);
 
-    // Optimistic UI - show animation immediately
     setAnimatingReaction(type);
     setFloatingReaction(reactionData);
     setReacting(true);
 
-    // Close picker quickly for snappy feel
     setTimeout(() => {
       setIsOpen(false);
       setAnimatingReaction(null);
     }, 200);
 
-    // Clear floating after animation
     setTimeout(() => {
       setFloatingReaction(null);
       setReacting(false);
     }, 500);
 
-    // Fire API call in background (don't await - optimistic)
     onReact(type).catch(error => {
       console.error('Reaction failed:', error);
     });
@@ -178,18 +180,16 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
         )}
       </button>
 
-      {/* Floating Reaction Animation - Facebook Style */}
+      {/* Floating Reaction Animation */}
       {floatingReaction && (() => {
         const FloatingIcon = floatingReaction.icon;
         return (
           <div className="absolute -top-12 sm:-top-14 left-6 pointer-events-none z-50">
-            {/* Main floating icon */}
             <div className="animate-float-up-fade">
               <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br ${floatingReaction.gradient} flex items-center justify-center shadow-xl animate-pop-scale`}>
                 <FloatingIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
             </div>
-            {/* Particle burst effect */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
               {[...Array(6)].map((_, i) => (
                 <div
@@ -202,6 +202,7 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
           </div>
         );
       })()}
+
       {/* Reaction Picker Dropdown */}
       {isOpen && (
         <div
@@ -211,7 +212,6 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
         >
           {/* Arrow */}
           <div className="absolute -bottom-2 left-6 w-4 h-4 rotate-45 bg-white dark:bg-gray-800 border-r border-b border-gray-100 dark:border-gray-700" aria-hidden="true" />
-
 
           {reactionTypes.map((reaction, index) => {
             const Icon = reaction.icon;
@@ -258,7 +258,7 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
                   aria-hidden="true"
                 />
 
-                {/* Label tooltip - visible on hover, hidden from screen readers (announced via aria-label) */}
+                {/* Label tooltip */}
                 <span
                   className={`
                     absolute -top-8 left-1/2 -translate-x-1/2 
