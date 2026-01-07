@@ -104,27 +104,27 @@ Our modern, scalable architecture ensures security and performance:
 
 ```mermaid
 graph TD
-    User[User Device] -->|HTTPS/WSS| CDN[CDN / Edge]
-    CDN -->|Static Assets| FE[Frontend (React + Vite)]
-    CDN -->|API Requests| LB[Load Balancer]
+    User["User Device"] -->|HTTPS/WSS| CDN["CDN / Edge"]
+    CDN -->|Static Assets| FE["Frontend (React + Vite)"]
+    CDN -->|API Requests| LB["Load Balancer"]
     
     subgraph "Frontend Layer"
-        FE -->|State Mgmt| Context[Auth & Theme Context]
-        FE -->|Data Fetching| Query[TanStack Query]
-        FE -->|Routing| Router[React Router]
+        FE -->|State Mgmt| Context["Auth & Theme Context"]
+        FE -->|Data Fetching| Query["TanStack Query"]
+        FE -->|Routing| Router["React Router"]
     end
     
-    LB -->|Requests| BE[Backend API (FastAPI)]
+    LB -->|Requests| BE["Backend API (FastAPI)"]
     
     subgraph "Backend Layer"
-        BE -->|Validation| Pydantic[Pydantic v2 Models]
-        BE -->|ORM| SQL[SQLAlchemy 2.0 (Async)]
-        BE -->|Auth| Sec[Security/JWT Service]
-        BE -->|Ranking| Rank[Smart Ranking Engine]
+        BE -->|Validation| Pydantic["Pydantic v2 Models"]
+        BE -->|ORM| SQL["SQLAlchemy 2.0 (Async)"]
+        BE -->|Auth| Sec["Security/JWT Service"]
+        BE -->|Ranking| Rank["Smart Ranking Engine"]
     end
     
-    SQL -->|Persist| DB[(PostgreSQL Database)]
-    BE -->|Cache| Redis[(Redis Cache)]
+    SQL -->|Persist| DB[("PostgreSQL Database")]
+    BE -->|Cache| Redis[("Redis Cache")]
 ```
 
 ### Future Vision
