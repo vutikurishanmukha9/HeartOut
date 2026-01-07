@@ -80,6 +80,8 @@ const LoadingDots = () => (
     </div>
 );
 
+import { ServerWarmupToast } from './ServerWarmup';
+
 export default function InnovativeLoader() {
     const [quoteIndex, setQuoteIndex] = useState(0);
     const [fadeIn, setFadeIn] = useState(true);
@@ -155,6 +157,9 @@ export default function InnovativeLoader() {
                     Preparing your storytelling experience
                 </p>
             </div>
+
+            {/* Server connection indicator shows on this loading screen */}
+            <ServerWarmupToast />
 
             {/* CSS Animations */}
             <style>{`
