@@ -7,7 +7,7 @@ import SupportFloatingButton from './components/SupportFloatingButton';
 import MobileBottomNav from './components/MobileBottomNav';
 import ErrorBoundary, { RouteErrorBoundary } from './components/ErrorBoundary';
 import InnovativeLoader, { RouteLoader } from './components/InnovativeLoader';
-import { ServerStatusProvider, ServerWarmupToast } from './components/ServerWarmup';
+import { ServerWarmupToast } from './components/ServerWarmup';
 import SkipToContent from './components/Accessibility';
 import { WebSocketProvider } from './hooks/useWebSocket.jsx';
 import NotificationToast from './components/NotificationToast';
@@ -58,7 +58,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <ServerStatusProvider>
+      <>
         {/* Skip to main content link for keyboard/screen reader users */}
         <SkipToContent targetId="main-content" />
 
@@ -139,7 +139,7 @@ function App() {
             <NotificationToast />
           </WebSocketProvider>
         </div>
-      </ServerStatusProvider>
+      </>
     </ErrorBoundary>
   );
 }

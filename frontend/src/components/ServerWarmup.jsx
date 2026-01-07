@@ -12,6 +12,7 @@ export function useServerStatus() {
 export function ServerStatusProvider({ children }) {
     const [serverStatus, setServerStatus] = useState('checking'); // checking, warming, ready, error
     const [warmupTime, setWarmupTime] = useState(0);
+    const [dismissed, setDismissed] = useState(false); // Global dismissed state
 
     useEffect(() => {
         warmupServer();
@@ -51,7 +52,7 @@ export function ServerStatusProvider({ children }) {
     };
 
     return (
-        <ServerStatusContext.Provider value={{ serverStatus, warmupTime, warmupServer }}>
+        <ServerStatusContext.Provider value={{ serverStatus, warmupTime, warmupServer, dismissed, setDismissed }}>
             {children}
         </ServerStatusContext.Provider>
     );
@@ -59,9 +60,8 @@ export function ServerStatusProvider({ children }) {
 
 // Compact loading indicator - always visible until server is ready
 export function ServerWarmupToast() {
-    const { serverStatus, warmupTime } = useServerStatus();
+    const { serverStatus, warmupTime, dismissed, setDismissed } = useServerStatus();
     const [showSuccess, setShowSuccess] = useState(false);
-    const [dismissed, setDismissed] = useState(false);
 
     useEffect(() => {
         if (serverStatus === 'ready' && !showSuccess && !dismissed) {
@@ -71,7 +71,7 @@ export function ServerWarmupToast() {
                 setDismissed(true);
             }, 3000);
         }
-    }, [serverStatus, showSuccess, dismissed]);
+    }, [serverStatus, showSuccess, dismissed, setDismissed]);
 
     // Don't show if dismissed or if there's an error
     if (dismissed) return null;
