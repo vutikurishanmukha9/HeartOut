@@ -63,6 +63,78 @@ Unlike typical social platforms focused on likes and followers, HeartOut priorit
 
 ---
 
+## Project Journey & Vision
+
+### What HeartOut Means
+HeartOut is more than code—it's a digital sanctuary. We built this platform on the philosophy that **unexpressed emotions weigh heavy on the heart**. By providing a safe, anonymous space to "pour your heart out," we transform personal burdens into shared human experiences.
+
+### The Problem We Solved
+| The Problem | Our Solution |
+|-------------|--------------|
+| **Social Fatigue** | No likes, no followers, no social pressure |
+| **Fear of Judgment** | Complete anonymity by default |
+| **Isolation** | "Emotional Resonance" reactions show deep understanding |
+| **Superficiality** | Long-form storytelling encouraged over short bites |
+
+### Development Roadmap
+We are building HeartOut in distinct phases. Here is our current progress:
+
+- [x] **Phase 1: Foundation (Solved)**
+  - [x] Secure anonymous authentication
+  - [x] CRUD operations for stories
+  - [x] Dark mode & responsive design
+
+- [x] **Phase 2: Emotional Intelligence (Solved)**
+  - [x] Custom "Emotional Resonance" reaction system
+  - [x] Smart feed ranking algorithms
+  - [x] Bookmark & Read progress tracking
+
+- [x] **Phase 3: Community Safety (Solved)**
+  - [x] Mental health helpline integration
+  - [x] XSS protection & Content sanitization
+  - [x] Report & Moderation tools
+
+- [ ] **Phase 4: Deep Connection (Planned)**
+  - [ ] Voice stories (Audio recording)
+  - [ ] Private support groups
+  - [ ] AI-driven emotional insights
+
+### System Architecture
+Our modern, scalable architecture ensures security and performance:
+
+```mermaid
+graph TD
+    User[User Device] -->|HTTPS/WSS| CDN[CDN / Edge]
+    CDN -->|Static Assets| FE[Frontend (React + Vite)]
+    CDN -->|API Requests| LB[Load Balancer]
+    
+    subgraph "Frontend Layer"
+        FE -->|State Mgmt| Context[Auth & Theme Context]
+        FE -->|Data Fetching| Query[TanStack Query]
+        FE -->|Routing| Router[React Router]
+    end
+    
+    LB -->|Requests| BE[Backend API (FastAPI)]
+    
+    subgraph "Backend Layer"
+        BE -->|Validation| Pydantic[Pydantic v2 Models]
+        BE -->|ORM| SQL[SQLAlchemy 2.0 (Async)]
+        BE -->|Auth| Sec[Security/JWT Service]
+        BE -->|Ranking| Rank[Smart Ranking Engine]
+    end
+    
+    SQL -->|Persist| DB[(PostgreSQL Database)]
+    BE -->|Cache| Redis[(Redis Cache)]
+```
+
+### Future Vision
+We are moving towards a **"Compassionate AI"** future where the platform doesn't just host stories but actively helps users feel heard through:
+1.  **Sentiment-matched content delivery**
+2.  **Gentle nudges** to check in on others
+3.  **Accessibility first** voice interactions
+
+---
+
 ## Features
 
 ### Story Categories
