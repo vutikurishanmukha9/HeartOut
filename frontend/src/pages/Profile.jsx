@@ -218,9 +218,14 @@ export default function Profile() {
                                     <h1 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
                                         {profile?.display_name || profile?.username}
                                     </h1>
-                                    <p className="text-gray-500 dark:text-gray-400 font-medium text-sm mb-3">
+                                    <p className="text-gray-500 dark:text-gray-400 font-medium text-sm mb-1">
                                         @{profile?.username}
                                     </p>
+                                    {isOwnProfile && (
+                                        <p className="text-xs text-stone-400 dark:text-stone-500 italic mb-3">
+                                            Your stories, at your pace
+                                        </p>
+                                    )}
                                     {profile?.bio && (
                                         <p className="text-gray-700 dark:text-gray-300 text-sm mb-3">
                                             {profile.bio}
@@ -340,6 +345,11 @@ export default function Profile() {
                                                 <p className="text-gray-500 dark:text-gray-400 font-medium">
                                                     @{profile?.username}
                                                 </p>
+                                                {isOwnProfile && (
+                                                    <p className="text-sm text-stone-400 dark:text-stone-500 italic mt-1">
+                                                        Your stories, at your pace
+                                                    </p>
+                                                )}
                                             </div>
                                             {isOwnProfile && (
                                                 <button
@@ -395,12 +405,12 @@ export default function Profile() {
                         {/* Header */}
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
                             <div className="flex items-center gap-3">
-                                <div className="p-2.5 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-500/25">
+                                <div className="p-2.5 rounded-xl bg-gradient-to-br from-stone-500 to-stone-600 shadow-lg shadow-stone-500/25">
                                     <BookOpen className="w-5 h-5 text-white" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Story Analytics</h3>
-                                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Your writing journey at a glance</p>
+                                    <h3 className="text-xl sm:text-2xl font-medium text-gray-900 dark:text-white">Your Writing Journey</h3>
+                                    <p className="text-xs sm:text-sm text-stone-400 dark:text-stone-500">A reflection, not a scorecard</p>
                                 </div>
                             </div>
                             {selectedCategory && (
@@ -443,13 +453,13 @@ export default function Profile() {
                                             <div className={`absolute inset-0 bg-gradient-to-br ${type.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
                                         )}
                                         <div className="relative">
-                                            <div className={`inline-flex p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-gradient-to-br ${type.color} mb-2 shadow-md group-hover:shadow-lg transition-shadow`}>
+                                            <div className={`inline-flex p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-gradient-to-br ${type.color} mb-2 shadow-md group-hover:shadow-lg transition-shadow opacity-80`}>
                                                 <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                                             </div>
-                                            <p className={`text-xl sm:text-2xl font-bold transition-colors ${isSelected ? 'text-violet-600 dark:text-violet-400' : 'text-gray-900 dark:text-white'}`}>
+                                            <p className="text-xs sm:text-sm font-medium text-stone-600 dark:text-stone-400 mb-1">{type.label}</p>
+                                            <p className={`text-base sm:text-lg font-medium transition-colors ${isSelected ? 'text-stone-800 dark:text-stone-200' : 'text-stone-500 dark:text-stone-400'}`}>
                                                 {count}
                                             </p>
-                                            <p className="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 mt-0.5 sm:mt-1">{type.label}</p>
                                         </div>
                                         {isSelected && (
                                             <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
@@ -460,6 +470,11 @@ export default function Profile() {
                                 );
                             })}
                         </div>
+
+                        {/* Helper text - reduces self-judgment */}
+                        <p className="text-xs text-stone-400 dark:text-stone-500 italic text-center mb-6">
+                            There's no right balance. This is just a snapshot.
+                        </p>
 
                         {/* Pie Chart Card - Premium Design */}
                         {stories.length > 0 && (
@@ -587,8 +602,8 @@ export default function Profile() {
                                     {/* Legend and Stats */}
                                     <div className="w-full lg:w-1/2 space-y-4 sm:space-y-5">
                                         <div className="text-center lg:text-left">
-                                            <p className="text-3xl sm:text-5xl font-black bg-gradient-to-r from-violet-600 to-purple-600 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">{stories.length}</p>
-                                            <p className="text-base sm:text-lg font-medium text-gray-500 dark:text-gray-400 mt-1">Total Stories</p>
+                                            <p className="text-3xl sm:text-4xl font-medium text-stone-700 dark:text-stone-300">{stories.length}</p>
+                                            <p className="text-sm sm:text-base text-stone-500 dark:text-stone-400 mt-1">Moments Shared</p>
                                         </div>
 
                                         <div className="space-y-2 sm:space-y-3">
@@ -616,12 +631,19 @@ export default function Profile() {
                                             })}
                                         </div>
 
-                                        <p className="text-center lg:text-left text-xs sm:text-sm text-gray-400 dark:text-gray-500 italic pt-2">
-                                            Click on a slice or legend to filter stories
+                                        <p className="text-center lg:text-left text-xs sm:text-sm text-stone-400 dark:text-stone-500 italic pt-2">
+                                            Explore moments from different parts of your journey
                                         </p>
                                     </div>
                                 </div>
                             </div>
+                        )}
+
+                        {/* Grounding sentence */}
+                        {isOwnProfile && (
+                            <p className="text-center text-xs text-stone-400 dark:text-stone-500 italic mt-4">
+                                There's no finish line here.
+                            </p>
                         )}
                     </div>
                 </div>
