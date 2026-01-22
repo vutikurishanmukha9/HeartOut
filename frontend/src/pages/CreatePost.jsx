@@ -327,7 +327,7 @@ export default function CreatePost() {
                                 </span>
                             )}
                             {!lastSaved && !autoSaved && (
-                                <span className="text-gray-400">Draft not saved</span>
+                                <span className="text-stone-400 dark:text-stone-500 text-xs">Draft is safe</span>
                             )}
                         </div>
                     </div>
@@ -365,8 +365,8 @@ export default function CreatePost() {
                                         value={formData.content}
                                         onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                                         placeholder="Start anywhere. Even the middle is fine."
-                                        className="w-full px-6 py-5 border border-stone-200 dark:border-zinc-700 rounded-xl bg-white dark:bg-zinc-900/50 text-stone-700 dark:text-stone-200 placeholder-stone-400 focus:ring-0 focus:border-amber-500 transition-all duration-300 resize-none leading-loose min-h-[200px] sm:min-h-[400px] overflow-y-auto"
-                                        style={{ maxHeight: '500px' }}
+                                        className="w-full px-8 py-6 border border-stone-200 dark:border-zinc-700 rounded-xl bg-white dark:bg-zinc-900/50 text-stone-700 dark:text-stone-200 placeholder-stone-400 focus:ring-0 focus:border-amber-500 transition-all duration-300 resize-none leading-[2.5] min-h-[250px] sm:min-h-[450px] overflow-y-auto"
+                                        style={{ maxHeight: '550px' }}
                                     />
                                 </div>
 
@@ -380,51 +380,46 @@ export default function CreatePost() {
                                 )}
                             </div>
 
-                            {/* Tags */}
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    Tags <span className="text-gray-400 font-normal">(up to 5)</span>
+                            {/* Tags - De-emphasized, optional feeling */}
+                            <div className="pt-4 border-t border-stone-100 dark:border-zinc-800">
+                                <label className="block text-xs font-medium text-stone-400 dark:text-stone-500 mb-2">
+                                    Tags <span className="font-normal">(optional)</span>
                                 </label>
-                                <div className="flex gap-2 mb-3">
+                                <div className="flex gap-2 mb-2">
                                     <div className="relative flex-1">
-                                        <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                         <input
                                             type="text"
                                             value={tagInput}
                                             onChange={(e) => setTagInput(e.target.value)}
                                             onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
                                             placeholder="Add a tag..."
-                                            className="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white/50 dark:bg-gray-800/50 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-0 focus:border-primary-500 transition-all"
+                                            className="w-full px-4 py-2 text-sm border border-stone-200 dark:border-zinc-700 rounded-lg bg-white/50 dark:bg-zinc-800/50 text-stone-700 dark:text-stone-300 placeholder-stone-400 focus:ring-0 focus:border-amber-500 transition-all"
                                             disabled={formData.tags.length >= 5}
                                         />
                                     </div>
                                     <button
                                         onClick={addTag}
-                                        disabled={formData.tags.length >= 5}
-                                        className="px-5 py-2.5 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-primary-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                        disabled={formData.tags.length >= 5 || !tagInput.trim()}
+                                        className="px-4 py-2 text-sm bg-stone-100 dark:bg-zinc-700 text-stone-600 dark:text-stone-400 rounded-lg font-medium hover:bg-stone-200 dark:hover:bg-zinc-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                                     >
                                         Add
                                     </button>
                                 </div>
-                                <div className="flex flex-wrap gap-2">
-                                    {formData.tags.map((tag, index) => (
+                                <div className="flex flex-wrap gap-1.5">
+                                    {formData.tags.map((tag) => (
                                         <span
                                             key={tag}
-                                            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/30 dark:to-secondary-900/30 text-primary-700 dark:text-primary-300 rounded-xl text-sm font-medium border border-primary-100 dark:border-primary-800/50 animate-scale-in"
-                                            style={{ animationDelay: `${index * 0.05}s` }}
+                                            className="inline-flex items-center gap-1.5 px-3 py-1 bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-stone-400 rounded-lg text-xs"
                                         >
                                             #{tag}
                                             <button
                                                 onClick={() => removeTag(tag)}
                                                 className="hover:text-red-500 transition-colors"
                                             >
-                                                <X className="w-4 h-4" />
+                                                <X className="w-3 h-3" />
                                             </button>
                                         </span>
                                     ))}
-                                    {formData.tags.length === 0 && (
-                                        <span className="text-sm text-gray-400">No tags added yet</span>
-                                    )}
                                 </div>
                             </div>
                         </div>
