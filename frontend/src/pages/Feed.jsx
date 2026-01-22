@@ -40,10 +40,10 @@ export default function Feed() {
     };
 
     const sortOptions = [
-        { value: 'smart', label: 'For You', icon: Sparkles },
-        { value: 'latest', label: 'Latest', icon: Clock },
-        { value: 'trending', label: 'Trending', icon: TrendingUp },
-        { value: 'most_viewed', label: 'Most Viewed', icon: Star }
+        { value: 'smart', label: 'Recommended for You', icon: Sparkles },
+        { value: 'latest', label: 'Recently Shared', icon: Clock },
+        { value: 'trending', label: 'Many Are Reading', icon: TrendingUp },
+        { value: 'most_viewed', label: 'Often Returned To', icon: Star }
     ];
 
     return (
@@ -201,38 +201,37 @@ export default function Feed() {
                     </div>
                 </div>
 
-                {/* Stories Grid - Full width on mobile */}
+                {/* Stories Grid - 2 columns for witnessing, not skimming */}
                 {loading ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                        {[...Array(6)].map((_, i) => (
-                            <div key={i} className="glass-card rounded-2xl overflow-hidden">
-                                <div className="p-5 border-b border-gray-100 dark:border-gray-700">
-                                    <div className="flex items-center gap-3">
-                                        <div className="skeleton w-10 h-10 rounded-xl" />
-                                        <div className="space-y-2 flex-1">
-                                            <div className="skeleton h-4 w-24 rounded" />
-                                            <div className="skeleton h-3 w-16 rounded" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="p-6 space-y-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+                        {[...Array(4)].map((_, i) => (
+                            <div key={i} className="bg-white/80 dark:bg-zinc-800/80 rounded-xl border border-stone-200/60 dark:border-zinc-700/60 overflow-hidden">
+                                <div className="p-5 space-y-4">
                                     <div className="skeleton h-6 w-3/4 rounded" />
                                     <div className="skeleton h-4 w-full rounded" />
-                                    <div className="skeleton h-4 w-2/3 rounded" />
-                                    <div className="flex gap-2 pt-4">
-                                        <div className="skeleton h-6 w-16 rounded-full" />
-                                        <div className="skeleton h-6 w-16 rounded-full" />
+                                    <div className="flex justify-between items-center pt-2">
+                                        <div className="skeleton h-6 w-24 rounded-full" />
+                                        <div className="skeleton h-4 w-16 rounded" />
                                     </div>
+                                </div>
+                                <div className="px-5 py-3 border-t border-stone-100 dark:border-zinc-700/50">
+                                    <div className="skeleton h-4 w-32 rounded" />
                                 </div>
                             </div>
                         ))}
                     </div>
                 ) : stories.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {stories.map((story, index) => (
-                            <StoryCard key={story.id} story={story} index={index} />
-                        ))}
-                    </div>
+                    <>
+                        {/* Emotional context intro */}
+                        <p className="text-center text-sm text-stone-500 dark:text-stone-400 italic mb-8">
+                            These are voices from people who chose to share something real.
+                        </p>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+                            {stories.map((story, index) => (
+                                <StoryCard key={story.id} story={story} index={index} />
+                            ))}
+                        </div>
+                    </>
                 ) : (
                     <div className="text-center py-20">
                         <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-900/30 dark:to-secondary-900/30 mb-6">
@@ -251,24 +250,22 @@ export default function Feed() {
                     </div>
                 )}
 
-                {/* Pagination - Premium */}
+                {/* Pagination - Quiet, centered */}
                 {stories.length > 0 && (
-                    <div className="mt-12 flex justify-center items-center gap-4">
+                    <div className="mt-16 flex justify-center items-center gap-6">
                         <button
                             onClick={() => setPage(Math.max(1, page - 1))}
                             disabled={page === 1}
-                            className="px-6 py-3 rounded-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:border-primary-400 hover:shadow-md transition-all duration-300"
+                            className="px-5 py-2.5 rounded-lg bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-700 text-stone-600 dark:text-stone-400 text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-stone-200 dark:hover:bg-zinc-700 transition-colors duration-200"
                         >
                             Previous
                         </button>
-                        <div className="flex items-center gap-2">
-                            <span className="px-4 py-2 rounded-xl bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-bold">
-                                {page}
-                            </span>
-                        </div>
+                        <span className="text-sm text-stone-500 dark:text-stone-400">
+                            Page {page}
+                        </span>
                         <button
                             onClick={() => setPage(page + 1)}
-                            className="px-6 py-3 rounded-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium hover:border-primary-400 hover:shadow-md transition-all duration-300"
+                            className="px-5 py-2.5 rounded-lg bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-700 text-stone-600 dark:text-stone-400 text-sm font-medium hover:bg-stone-200 dark:hover:bg-zinc-700 transition-colors duration-200"
                         >
                             Next
                         </button>
