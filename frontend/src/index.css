@@ -14,46 +14,48 @@
 }
 
 :root {
-  /* Premium Warm Sunset Palette */
-  --primary-50: #fff5f5;
-  --primary-100: #ffe3e3;
-  --primary-200: #ffc9c9;
-  --primary-300: #ffa8a8;
-  --primary-400: #ff8787;
-  --primary-500: #ff6b6b;
-  --primary-600: #fa5252;
-  --primary-700: #f03e3e;
-  --primary-800: #e03131;
-  --primary-900: #c92a2a;
+  /* Emotionally Grounded Palette - "Quiet Room" Energy */
 
-  /* Coral/Orange Accent */
-  --secondary-50: #fff4e6;
-  --secondary-100: #ffe8cc;
-  --secondary-200: #ffd8a8;
-  --secondary-300: #ffc078;
-  --secondary-400: #ffa94d;
-  --secondary-500: #ff922b;
-  --secondary-600: #fd7e14;
-  --secondary-700: #e8590c;
-  --secondary-800: #d9480f;
-  --secondary-900: #bf4000;
+  /* Primary: Warm Amber (like a late-night lamp) */
+  --primary-50: #fffbf5;
+  --primary-100: #fef3e2;
+  --primary-200: #fde6c4;
+  --primary-300: #fbd49e;
+  --primary-400: #f7bc6e;
+  --primary-500: #e69a45;
+  --primary-600: #d4832d;
+  --primary-700: #b86b22;
+  --primary-800: #955420;
+  --primary-900: #7a451d;
 
-  /* Deep Purple Accent */
-  --accent-50: #f8f0fc;
-  --accent-100: #f3d9fa;
-  --accent-200: #eebefa;
-  --accent-300: #e599f7;
-  --accent-400: #da77f2;
-  --accent-500: #cc5de8;
-  --accent-600: #be4bdb;
-  --accent-700: #ae3ec9;
-  --accent-800: #9c36b5;
-  --accent-900: #862e9c;
+  /* Secondary: Muted Slate/Rose (like a worn notebook) */
+  --secondary-50: #f9f8f7;
+  --secondary-100: #f0edeb;
+  --secondary-200: #e2ddd9;
+  --secondary-300: #cfc7c1;
+  --secondary-400: #b8ada4;
+  --secondary-500: #9c8e83;
+  --secondary-600: #847569;
+  --secondary-700: #6d6058;
+  --secondary-800: #5a504a;
+  --secondary-900: #4c4440;
+
+  /* Accent: Soft Dusty Rose (understated, not celebration) */
+  --accent-50: #faf7f6;
+  --accent-100: #f5edeb;
+  --accent-200: #ead9d5;
+  --accent-300: #dbbfb8;
+  --accent-400: #c79d94;
+  --accent-500: #b07d73;
+  --accent-600: #976560;
+  --accent-700: #7d534f;
+  --accent-800: #684645;
+  --accent-900: #583d3c;
 
   /* Glass morphism colors */
-  --glass-white: rgba(255, 255, 255, 0.7);
-  --glass-dark: rgba(17, 24, 39, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-white: rgba(255, 255, 255, 0.75);
+  --glass-dark: rgba(20, 20, 24, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.15);
 }
 
 * {
@@ -68,11 +70,13 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #fef9f9 0%, #fff5f0 50%, #f8f0fc 100%);
+  /* Morning fog, not sunset festival - 2 tones, desaturated */
+  background: linear-gradient(145deg, #faf9f7 0%, #f5f2ef 100%);
 }
 
 .dark body {
-  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%);
+  /* Quiet nighttime - muted, not dramatic */
+  background: linear-gradient(145deg, #18181b 0%, #1c1c20 100%);
 }
 
 code {
@@ -80,39 +84,39 @@ code {
     monospace;
 }
 
-/* Premium Scrollbar */
+/* Scrollbar - warm amber tones */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: linear-gradient(180deg, #f0f0f0 0%, #e0e0e0 100%);
+  background: linear-gradient(180deg, #f5f2ef 0%, #ebe6e1 100%);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #ff6b6b 0%, #ff922b 100%);
+  background: linear-gradient(180deg, #d4832d 0%, #b86b22 100%);
   border-radius: 10px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #fa5252 0%, #fd7e14 100%);
+  background: linear-gradient(180deg, #b86b22 0%, #955420 100%);
 }
 
 /* Dark mode scrollbar */
 .dark ::-webkit-scrollbar-track {
-  background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+  background: linear-gradient(180deg, #27272a 0%, #18181b 100%);
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #cc5de8 0%, #ff6b6b 100%);
+  background: linear-gradient(180deg, #9c8e83 0%, #6d6058 100%);
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #be4bdb 0%, #fa5252 100%);
+  background: linear-gradient(180deg, #b8ada4 0%, #847569 100%);
 }
 
 /* ===== PREMIUM ANIMATIONS ===== */
@@ -320,10 +324,13 @@ code {
 
 /* Slow breathing pulse - every ~12 seconds for calm attention */
 @keyframes breathe {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     box-shadow: 0 4px 6px rgba(217, 119, 6, 0.2);
   }
+
   50% {
     transform: scale(1.03);
     box-shadow: 0 8px 15px rgba(217, 119, 6, 0.35);
@@ -533,42 +540,42 @@ code {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-/* ===== PREMIUM GRADIENTS ===== */
+/* ===== EMOTIONALLY GROUNDED GRADIENTS ===== */
 
 .gradient-primary {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ff922b 100%);
+  background: linear-gradient(135deg, #e69a45 0%, #d4832d 100%);
 }
 
 .gradient-secondary {
-  background: linear-gradient(135deg, #ff922b 0%, #ffc078 100%);
+  background: linear-gradient(135deg, #9c8e83 0%, #847569 100%);
 }
 
 .gradient-accent {
-  background: linear-gradient(135deg, #cc5de8 0%, #ff6b6b 100%);
+  background: linear-gradient(135deg, #b07d73 0%, #976560 100%);
 }
 
-.gradient-sunset {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ff922b 50%, #cc5de8 100%);
+.gradient-warm {
+  background: linear-gradient(135deg, #e69a45 0%, #b86b22 100%);
 }
 
 .gradient-hero {
-  background: linear-gradient(135deg, #fff5f5 0%, #fff4e6 50%, #f8f0fc 100%);
+  background: linear-gradient(145deg, #faf9f7 0%, #f5f2ef 100%);
 }
 
 .dark .gradient-hero {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f0f 100%);
+  background: linear-gradient(145deg, #18181b 0%, #1c1c20 100%);
 }
 
-/* Gradient Text */
+/* Gradient Text - warm amber tones */
 .text-gradient {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ff922b 50%, #cc5de8 100%);
+  background: linear-gradient(135deg, #d4832d 0%, #b86b22 50%, #9c8e83 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .text-gradient-warm {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ff922b 100%);
+  background: linear-gradient(135deg, #e69a45 0%, #d4832d 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

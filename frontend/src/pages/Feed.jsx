@@ -47,14 +47,12 @@ export default function Feed() {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-rose-50/50 via-orange-50/30 to-purple-50/50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
+        <div className="min-h-screen bg-gradient-to-b from-stone-50 to-amber-50/30 dark:from-zinc-900 dark:to-zinc-900">
 
-            {/* Hero Section - pull up to fill navbar gap */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-primary-500/10 via-secondary-500/10 to-accent-500/10 dark:from-primary-900/20 dark:via-secondary-900/20 dark:to-accent-900/20 border-b border-white/20 dark:border-gray-800 -mt-16 pt-16">
-                {/* Floating Decorative Elements */}
-                <div className="absolute top-10 left-10 w-72 h-72 bg-primary-400/20 rounded-full blur-3xl animate-float" />
-                <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent-400/20 rounded-full blur-3xl animate-float-slow" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-secondary-400/10 rounded-full blur-2xl" />
+            {/* Hero Section - quieter, more grounded */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-amber-100/40 via-stone-100/20 to-transparent dark:from-amber-950/20 dark:via-zinc-900 dark:to-zinc-900 border-b border-stone-200/50 dark:border-zinc-800 -mt-16 pt-16">
+                {/* Single subtle floating orb - morning fog feel */}
+                <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/20 rounded-full blur-3xl" />
 
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 md:py-16 lg:py-24">
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
@@ -83,7 +81,7 @@ export default function Feed() {
                                     Discover
                                 </span>
                                 <span className="relative inline-block">
-                                    <span className="text-gradient bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 bg-clip-text text-transparent">
+                                    <span className="bg-gradient-to-r from-amber-600 via-amber-500 to-stone-500 bg-clip-text text-transparent">
                                         Real Stories
                                     </span>
                                     {/* Underline decoration - single muted amber for sincerity */}
@@ -98,16 +96,15 @@ export default function Feed() {
                                 Written by real people. Read by those who understand.
                             </p>
 
-                            {/* Subtext with better typography */}
                             <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-6 sm:mb-8 max-w-lg leading-relaxed px-2 sm:px-0">
-                                From <span className="font-semibold text-emerald-600 dark:text-emerald-400">achievements</span> to
-                                <span className="font-semibold text-violet-600 dark:text-violet-400"> life lessons</span>, explore
+                                From <span className="font-semibold text-amber-700 dark:text-amber-400">achievements</span> to
+                                <span className="font-semibold text-stone-600 dark:text-stone-400"> life lessons</span>, explore
                                 authentic narratives from storytellers worldwide.
                             </p>
 
                             {/* CTA Section */}
                             <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 justify-center lg:justify-start w-full sm:w-auto">
-                                <a href="/feed/create" className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-600 via-orange-500 to-rose-500 text-white font-bold shadow-xl shadow-amber-500/20 hover:shadow-2xl hover:shadow-amber-500/30 hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto text-sm sm:text-base">
+                                <a href="/feed/create" className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 text-white font-bold shadow-lg shadow-amber-600/20 hover:shadow-xl hover:shadow-amber-600/25 hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto text-sm sm:text-base">
                                     <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
                                     <span>Write Something You've Been Holding In</span>
                                     {/* Shine effect */}
