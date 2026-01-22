@@ -482,40 +482,40 @@ export default function Profile() {
                                 {/* Decorative gradient */}
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-violet-400/20 to-fuchsia-400/20 rounded-full blur-3xl" />
                                 <div className="relative flex flex-col lg:flex-row items-center gap-6 lg:gap-10">
-                                    {/* Chart with custom labels - responsive sizing */}
-                                    <div className="w-full lg:w-1/2 flex justify-center">
+                                    {/* Chart - NOW SECOND (supporting) */}
+                                    <div className="w-full lg:w-1/2 flex justify-center order-last lg:order-last opacity-80">
                                         <div className="relative w-[220px] h-[220px] sm:w-[280px] sm:h-[280px]">
                                             <ResponsiveContainer width="100%" height="100%">
                                                 <PieChart>
                                                     <defs>
-                                                        {/* Gradient definitions for 3D effect */}
+                                                        {/* Desaturated gradient definitions - muted tones */}
                                                         <linearGradient id="greenGrad" x1="0" y1="0" x2="1" y2="1">
-                                                            <stop offset="0%" stopColor="#34d399" />
-                                                            <stop offset="100%" stopColor="#059669" />
+                                                            <stop offset="0%" stopColor="#a8b5a0" />
+                                                            <stop offset="100%" stopColor="#8a9a82" />
                                                         </linearGradient>
                                                         <linearGradient id="blueGrad" x1="0" y1="0" x2="1" y2="1">
-                                                            <stop offset="0%" stopColor="#60a5fa" />
-                                                            <stop offset="100%" stopColor="#2563eb" />
+                                                            <stop offset="0%" stopColor="#a0b4c8" />
+                                                            <stop offset="100%" stopColor="#7a98b8" />
                                                         </linearGradient>
                                                         <linearGradient id="grayGrad" x1="0" y1="0" x2="1" y2="1">
-                                                            <stop offset="0%" stopColor="#9ca3af" />
-                                                            <stop offset="100%" stopColor="#6b7280" />
+                                                            <stop offset="0%" stopColor="#b8b8b8" />
+                                                            <stop offset="100%" stopColor="#9a9a9a" />
                                                         </linearGradient>
                                                         <linearGradient id="redGrad" x1="0" y1="0" x2="1" y2="1">
-                                                            <stop offset="0%" stopColor="#f87171" />
-                                                            <stop offset="100%" stopColor="#dc2626" />
+                                                            <stop offset="0%" stopColor="#d4a8a8" />
+                                                            <stop offset="100%" stopColor="#b88a8a" />
                                                         </linearGradient>
                                                         <linearGradient id="yellowGrad" x1="0" y1="0" x2="1" y2="1">
-                                                            <stop offset="0%" stopColor="#fcd34d" />
-                                                            <stop offset="100%" stopColor="#f59e0b" />
+                                                            <stop offset="0%" stopColor="#d4c8a0" />
+                                                            <stop offset="100%" stopColor="#c4b080" />
                                                         </linearGradient>
                                                         <linearGradient id="lightGrayGrad" x1="0" y1="0" x2="1" y2="1">
-                                                            <stop offset="0%" stopColor="#e5e7eb" />
-                                                            <stop offset="100%" stopColor="#d1d5db" />
+                                                            <stop offset="0%" stopColor="#d8d8d8" />
+                                                            <stop offset="100%" stopColor="#c4c4c4" />
                                                         </linearGradient>
-                                                        {/* Shadow filter */}
+                                                        {/* Shadow filter - softer */}
                                                         <filter id="chartShadow" x="-20%" y="-20%" width="140%" height="140%">
-                                                            <feDropShadow dx="0" dy="4" stdDeviation="8" floodOpacity="0.15" />
+                                                            <feDropShadow dx="0" dy="2" stdDeviation="4" floodOpacity="0.1" />
                                                         </filter>
                                                     </defs>
                                                     <Pie
@@ -599,8 +599,8 @@ export default function Profile() {
                                         </div>
                                     </div>
 
-                                    {/* Legend and Stats */}
-                                    <div className="w-full lg:w-1/2 space-y-4 sm:space-y-5">
+                                    {/* Legend and Stats - NOW FIRST (primary) */}
+                                    <div className="w-full lg:w-1/2 space-y-4 sm:space-y-5 order-first lg:order-first">
                                         <div className="text-center lg:text-left">
                                             <p className="text-3xl sm:text-4xl font-medium text-stone-700 dark:text-stone-300">{stories.length}</p>
                                             <p className="text-sm sm:text-base text-stone-500 dark:text-stone-400 mt-1">Moments Shared</p>
@@ -620,12 +620,11 @@ export default function Profile() {
                                                             }`}
                                                     >
                                                         <div
-                                                            className="w-4 h-4 sm:w-5 sm:h-5 rounded-md flex-shrink-0 shadow-sm"
+                                                            className="w-3 h-3 sm:w-4 sm:h-4 rounded-md flex-shrink-0 opacity-70"
                                                             style={{ backgroundColor: type.chartColor }}
                                                         />
-                                                        <span className="flex-1 text-left text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200">{type.label}</span>
-                                                        <span className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">{count}</span>
-                                                        <span className="text-xs sm:text-sm font-medium text-gray-400 dark:text-gray-500 w-14 sm:w-16 text-right">{percentage}%</span>
+                                                        <span className="flex-1 text-left text-sm font-medium text-stone-600 dark:text-stone-400">{type.label}</span>
+                                                        <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{count}</span>
                                                     </button>
                                                 );
                                             })}
