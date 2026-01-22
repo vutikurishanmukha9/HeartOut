@@ -287,11 +287,9 @@ export default function CreatePost() {
 
     // Step 2: Write Story
     return (
-        <div className="min-h-screen bg-gradient-to-br from-rose-50/50 via-orange-50/30 to-purple-50/50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 py-8 relative overflow-hidden">
-            {/* Decorative background elements */}
-            <div className="absolute top-20 -left-20 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl animate-float pointer-events-none" />
-            <div className="absolute bottom-40 -right-20 w-96 h-96 bg-accent-400/10 rounded-full blur-3xl animate-float-slow pointer-events-none" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-secondary-400/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="min-h-screen bg-gradient-to-b from-stone-50 to-amber-50/30 dark:from-zinc-900 dark:to-zinc-900 py-8 relative overflow-hidden">
+            {/* Single subtle floating orb */}
+            <div className="absolute top-40 right-10 w-80 h-80 bg-amber-100/20 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
@@ -306,14 +304,11 @@ export default function CreatePost() {
 
                     <div className="flex items-center justify-between flex-wrap gap-4">
                         <div>
-                            <div className="flex items-center gap-4 mb-3">
-                                <h1 className="text-4xl font-bold">
-                                    <span className="text-gray-900 dark:text-white">Write Your </span>
-                                    <span className="text-gradient">Story</span>
-                                </h1>
-                            </div>
-                            <p className="text-lg text-gray-600 dark:text-gray-400">
-                                Share your authentic experience with the world
+                            <h1 className="text-2xl sm:text-3xl font-medium text-stone-800 dark:text-stone-100 mb-2">
+                                This space is yours
+                            </h1>
+                            <p className="text-sm text-stone-500 dark:text-stone-400">
+                                You're in control of who sees this.
                             </p>
                         </div>
 
@@ -344,76 +339,45 @@ export default function CreatePost() {
                         <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl p-8 shadow-xl shadow-gray-200/50 dark:shadow-gray-900/50 border border-white/50 dark:border-gray-700/50 space-y-8">
                             {/* Title Input */}
                             <div className="group">
-                                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                                    <PenTool className="w-4 h-4 text-primary-500" />
-                                    Title <span className="text-primary-500">*</span>
+                                <label className="block text-xs font-medium text-stone-500 dark:text-stone-400 mb-2">
+                                    Title
                                 </label>
                                 <div className="relative">
                                     <input
                                         type="text"
                                         value={formData.title}
                                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                        placeholder="Give your story a compelling title..."
-                                        className="w-full px-5 py-4 text-xl font-semibold border-2 border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-900/50 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-0 focus:border-primary-500 focus:shadow-lg focus:shadow-primary-500/10 transition-all duration-300"
+                                        placeholder="Name this, or leave it blank for now."
+                                        className="w-full px-5 py-4 text-lg font-medium border border-stone-200 dark:border-zinc-700 rounded-xl bg-white dark:bg-zinc-900/50 text-stone-800 dark:text-stone-100 placeholder-stone-400 focus:ring-0 focus:border-amber-500 transition-all duration-300"
                                         maxLength={200}
                                     />
-                                    {/* Animated gradient border on focus */}
-                                    <div className="absolute inset-0 -z-10 rounded-2xl bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 opacity-0 group-focus-within:opacity-100 blur-sm transition-opacity duration-300" />
-                                </div>
-                                <div className="flex justify-between items-center mt-2 px-1">
-                                    <div className="h-1 flex-1 max-w-32 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                                        <div
-                                            className={`h-full transition-all duration-300 rounded-full ${titleProgress > 80 ? 'bg-gradient-to-r from-red-400 to-red-500' : titleProgress > 50 ? 'bg-gradient-to-r from-yellow-400 to-orange-500' : 'bg-gradient-to-r from-primary-400 to-secondary-500'}`}
-                                            style={{ width: `${titleProgress}%` }}
-                                        />
-                                    </div>
-                                    <span className={`text-xs font-medium ${titleProgress > 80 ? 'text-red-500' : 'text-gray-400'}`}>
-                                        {formData.title.length}/200
-                                    </span>
                                 </div>
                             </div>
 
                             {/* Content Textarea */}
                             <div className="relative">
-                                <label className="flex items-center justify-between text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                    <span>Your Story <span className="text-primary-500">*</span></span>
-                                    {formData.content.length > 0 && (
-                                        <span className="text-xs font-normal text-emerald-500 flex items-center gap-1 animate-fade-in">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                            Writing...
-                                        </span>
-                                    )}
+                                <label className="block text-xs font-medium text-stone-500 dark:text-stone-400 mb-2">
+                                    Your story
                                 </label>
                                 <div className="relative group">
                                     <textarea
                                         ref={textareaRef}
                                         value={formData.content}
                                         onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                        placeholder="Tell your story... Be authentic, be you."
-                                        className="w-full px-4 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-xl sm:rounded-2xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-0 focus:border-primary-500 focus:shadow-lg focus:shadow-primary-500/10 transition-all duration-300 resize-none leading-relaxed min-h-[120px] sm:min-h-[400px] overflow-y-auto"
-                                        style={{ maxHeight: '400px' }}
+                                        placeholder="Start anywhere. Even the middle is fine."
+                                        className="w-full px-6 py-5 border border-stone-200 dark:border-zinc-700 rounded-xl bg-white dark:bg-zinc-900/50 text-stone-700 dark:text-stone-200 placeholder-stone-400 focus:ring-0 focus:border-amber-500 transition-all duration-300 resize-none leading-loose min-h-[200px] sm:min-h-[400px] overflow-y-auto"
+                                        style={{ maxHeight: '500px' }}
                                     />
-                                    {/* Gradient fade at bottom when scrollable */}
-                                    <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white dark:from-gray-800 to-transparent pointer-events-none rounded-b-xl sm:rounded-b-2xl opacity-0 group-focus-within:opacity-100 transition-opacity" />
                                 </div>
 
-                                {/* Stats Bar - Enhanced */}
-                                <div className="flex items-center justify-between mt-3 px-1">
-                                    <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                                        <span className="flex items-center gap-1 sm:gap-1.5 px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700/50">
-                                            <PenTool className="w-3 h-3 sm:w-4 sm:h-4" />
-                                            <span className="font-medium">{wordCount}</span> words
-                                        </span>
-                                        <span className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700/50">
-                                            <Hash className="w-4 h-4" />
-                                            <span className="font-medium">{charCount}</span> chars
+                                {/* Stats Bar - Hidden until 50+ words */}
+                                {wordCount >= 50 && (
+                                    <div className="flex items-center justify-end mt-3 px-1 animate-fade-in">
+                                        <span className="text-xs text-stone-400 dark:text-stone-500">
+                                            {wordCount} words · ~{readingTime} min read
                                         </span>
                                     </div>
-                                    <span className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm text-gray-500 dark:text-gray-400 px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700/50">
-                                        <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                                        ~{readingTime} min
-                                    </span>
-                                </div>
+                                )}
                             </div>
 
                             {/* Tags */}
@@ -465,129 +429,77 @@ export default function CreatePost() {
                             </div>
                         </div>
 
-                        {/* Action Buttons */}
+                        {/* Action Buttons - Quieter */}
                         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                             <button
                                 onClick={() => handleSubmit(false)}
                                 disabled={submitting}
-                                className="group flex-1 flex items-center justify-center gap-2.5 px-6 py-3.5 sm:py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl sm:rounded-2xl font-semibold hover:border-violet-300 dark:hover:border-violet-700 hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:text-violet-700 dark:hover:text-violet-300 hover:shadow-lg hover:shadow-violet-500/10 active:scale-[0.98] transition-all duration-200 disabled:opacity-50"
+                                className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-700 text-stone-600 dark:text-stone-400 rounded-xl font-medium hover:bg-stone-50 dark:hover:bg-zinc-700 transition-all duration-200 disabled:opacity-50"
                             >
                                 Save as Draft
                             </button>
                             <button
                                 onClick={() => setShowPublishModal(true)}
                                 disabled={submitting || !formData.title || !formData.content}
-                                className="group flex-1 flex items-center justify-center gap-2.5 px-6 py-3.5 sm:py-4 bg-gradient-to-r from-orange-400 via-rose-400 to-pink-400 text-white rounded-xl sm:rounded-2xl font-semibold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                className={`flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium transition-all duration-200 disabled:cursor-not-allowed ${formData.content.length > 50
+                                    ? 'bg-amber-600 text-white hover:bg-amber-700'
+                                    : 'bg-stone-200 dark:bg-zinc-700 text-stone-400 dark:text-stone-500'
+                                    }`}
                             >
-                                <Sparkles className="w-5 h-5 transition-transform group-hover:rotate-12" />
-                                Publish Story
+                                {formData.content.length > 50 ? 'Publish when ready' : 'Publish (keep writing...)'}
                             </button>
                         </div>
                     </div>
 
                     {/* Sidebar */}
                     <div className="space-y-6 animate-slide-up stagger-2">
-                        {/* Anonymous Toggle Card */}
-                        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl p-6 shadow-lg shadow-gray-200/30 dark:shadow-gray-900/30 border border-white/50 dark:border-gray-700/50">
-                            <div className="flex items-center gap-2 mb-4">
-                                <div className="p-1.5 rounded-lg bg-primary-100 dark:bg-primary-900/30">
-                                    <Shield className="w-4 h-4 text-primary-600 dark:text-primary-400" />
-                                </div>
-                                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Privacy Settings</h3>
-                            </div>
+                        {/* Privacy - Warmer framing */}
+                        <div className="bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm rounded-xl p-5 border border-stone-200/50 dark:border-zinc-700/50">
+                            <h3 className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-3">
+                                Share when you're ready
+                            </h3>
                             <AnonymousToggle
                                 isAnonymous={formData.is_anonymous}
                                 onChange={(value) => setFormData({ ...formData, is_anonymous: value })}
                             />
+                            <p className="text-xs text-stone-400 dark:text-stone-500 mt-2 italic">
+                                You can stay anonymous if you choose.
+                            </p>
                         </div>
 
-                        {/* Writing Tips Card */}
-                        <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 backdrop-blur-xl rounded-2xl p-6 border border-amber-200/50 dark:border-amber-700/30">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="p-2 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-amber-500/30">
-                                    <Lightbulb className="w-5 h-5 text-white" />
-                                </div>
-                                <div>
-                                    <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Writing Tip</h3>
-                                    <p className="text-xs text-amber-600 dark:text-amber-400">For your story type</p>
-                                </div>
-                            </div>
-                            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic">
+                        {/* Writing Tips - Softer, less prominent */}
+                        <div className="bg-stone-50 dark:bg-zinc-800/50 rounded-xl p-5 border border-stone-100 dark:border-zinc-700/50">
+                            <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed italic">
                                 "{writingTips[formData.story_type] || writingTips.other}"
                             </p>
                         </div>
 
-                        {/* Preview Stats Card */}
-                        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl p-6 shadow-lg shadow-gray-200/30 dark:shadow-gray-900/30 border border-white/50 dark:border-gray-700/50">
-                            <div className="flex items-center gap-2 mb-5">
-                                <div className="p-1.5 rounded-lg bg-secondary-100 dark:bg-secondary-900/30">
-                                    <Sparkles className="w-4 h-4 text-secondary-600 dark:text-secondary-400" />
-                                </div>
-                                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Story Preview</h3>
-                            </div>
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <PenTool className="w-4 h-4 text-gray-400" />
-                                        <span className="text-sm text-gray-500 dark:text-gray-400">Words</span>
+                        {/* Story Preview - Only show after 50+ words */}
+                        {wordCount >= 50 && (
+                            <div className="bg-white/60 dark:bg-zinc-800/60 rounded-xl p-5 border border-stone-100 dark:border-zinc-700/50 animate-fade-in">
+                                <div className="space-y-3 text-sm text-stone-500 dark:text-stone-400">
+                                    <div className="flex justify-between">
+                                        <span>Words</span>
+                                        <span className="text-stone-700 dark:text-stone-300">{wordCount}</span>
                                     </div>
-                                    <span className="text-lg font-bold text-gradient">{wordCount}</span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <Clock className="w-4 h-4 text-gray-400" />
-                                        <span className="text-sm text-gray-500 dark:text-gray-400">Read time</span>
+                                    <div className="flex justify-between">
+                                        <span>Read time</span>
+                                        <span className="text-stone-700 dark:text-stone-300">~{readingTime} min</span>
                                     </div>
-                                    <span className="text-lg font-bold text-gray-900 dark:text-white">{readingTime} min</span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <Hash className="w-4 h-4 text-gray-400" />
-                                        <span className="text-sm text-gray-500 dark:text-gray-400">Tags</span>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        {[...Array(5)].map((_, i) => (
-                                            <div
-                                                key={i}
-                                                className={`w-2 h-2 rounded-full transition-colors ${i < formData.tags.length ? 'bg-primary-500' : 'bg-gray-200 dark:bg-gray-700'}`}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className="pt-3 border-t border-gray-100 dark:border-gray-700/50">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm text-gray-500 dark:text-gray-400">Visibility</span>
-                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${formData.is_anonymous
-                                            ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'
-                                            : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'}`}>
+                                    <div className="flex justify-between">
+                                        <span>Visibility</span>
+                                        <span className="text-stone-700 dark:text-stone-300">
                                             {formData.is_anonymous ? 'Anonymous' : 'Public'}
                                         </span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
 
-                        {/* Guidelines */}
-                        <div className="rounded-2xl bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20 border border-primary-100 dark:border-primary-800/30 p-5">
-                            <div className="flex items-center gap-2 mb-3">
-                                <AlertCircle className="w-5 h-5 text-primary-500" />
-                                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Guidelines</h3>
-                            </div>
-                            <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-2">
-                                <li className="flex items-start gap-2">
-                                    <Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" />
-                                    Be respectful and authentic
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" />
-                                    No hate speech or harassment
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <Check className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" />
-                                    Protect others' privacy
-                                </li>
-                            </ul>
-                        </div>
+                        {/* Guideline - Single reassuring line */}
+                        <p className="text-xs text-stone-400 dark:text-stone-500 text-center italic">
+                            Be authentic. Be kind. That's all.
+                        </p>
                     </div>
                 </div>
             </div>
