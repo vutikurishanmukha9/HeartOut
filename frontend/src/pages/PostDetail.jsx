@@ -257,8 +257,8 @@ export default function PostDetail() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+            <div className="min-h-screen bg-stone-50 dark:bg-zinc-900 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
             </div>
         );
     }
@@ -302,53 +302,26 @@ export default function PostDetail() {
                 </div>
 
                 {/* Story Content */}
-                <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-24 md:pb-12">
-                    {/* Story Type Badge */}
+                <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-24 md:pb-12">
+                    {/* Category - Subtle, above title */}
                     <div className="mb-6">
-                        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${storyType.bgColor} ${storyType.borderColor} border-2`}>
-                            <div className={`p-1.5 rounded-lg bg-gradient-to-br ${storyType.color}`}>
-                                <Icon className="w-4 h-4 text-white" />
-                            </div>
-                            <span className={`font-semibold ${storyType.textColor}`}>
-                                {storyType.label}
-                            </span>
-                        </div>
+                        <span className="text-xs font-medium text-stone-400 dark:text-stone-500 uppercase tracking-widest">
+                            {storyType.label}
+                        </span>
                     </div>
 
-                    {/* Title */}
-                    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+                    {/* Title - With breathing room */}
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-medium text-stone-800 dark:text-stone-100 mb-8 leading-relaxed">
                         {story.title}
                     </h1>
 
-                    {/* Meta Info */}
-                    <div className="flex flex-wrap items-center gap-6 mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
-                        {/* Author */}
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-400 to-secondary-500 flex items-center justify-center text-white text-lg font-semibold">
-                                {story.author?.username?.[0]?.toUpperCase() || 'A'}
-                            </div>
-                            <div>
-                                <p className="font-semibold text-gray-900 dark:text-white">
-                                    {story.author?.display_name || story.author?.username || 'Anonymous'}
-                                </p>
-                                <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                                    <Calendar className="w-4 h-4" />
-                                    {formatFullDate(story.created_at)}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Stats */}
-                        <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400">
-                            <div className="flex items-center gap-1">
-                                <Clock className="w-4 h-4" />
-                                <span className="text-sm">{story.reading_time} min read</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                                <Eye className="w-4 h-4" />
-                                <span className="text-sm">{story.view_count} views</span>
-                            </div>
-                        </div>
+                    {/* Meta Info - Very light, minimal visual weight */}
+                    <div className="flex flex-wrap items-center gap-3 text-sm text-stone-400 dark:text-stone-500 mb-12">
+                        <span>{story.author?.display_name || story.author?.username || 'Anonymous'}</span>
+                        <span>·</span>
+                        <span>{formatFullDate(story.created_at)}</span>
+                        <span>·</span>
+                        <span>{story.reading_time} min</span>
                     </div>
 
                     {/* Tags */}
@@ -357,7 +330,7 @@ export default function PostDetail() {
                             {story.tags.map((tag, index) => (
                                 <span
                                     key={index}
-                                    className="px-3 py-1 text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full"
+                                    className="px-3 py-1 text-xs font-medium bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-stone-400 rounded-full"
                                 >
                                     #{tag}
                                 </span>
@@ -365,66 +338,77 @@ export default function PostDetail() {
                         </div>
                     )}
 
-                    {/* Story Content */}
-                    <div className="w-full mb-12">
-                        <p className="w-full text-gray-800 dark:text-gray-200 text-lg leading-relaxed whitespace-pre-wrap text-justify">
+                    {/* Story Content - Maximum breathing room */}
+                    <div className="w-full mb-20">
+                        <p className="text-stone-700 dark:text-stone-300 text-lg leading-[2] whitespace-pre-wrap">
                             {sanitizeText(story.content)}
                         </p>
                     </div>
 
-                    {/* Actions */}
-                    <div className="border-y border-gray-200 dark:border-gray-700 py-6 mb-8">
-                        <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-                            <ReactionButton
-                                storyId={story.id}
-                                currentReaction={userReaction}
-                                onReact={handleReact}
-                                supportCount={supportCount}
-                            />
-
-                            <button
-                                onClick={handleShare}
-                                aria-label="Share this story"
-                                className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-primary-400 transition-all"
-                            >
-                                <Share2 className="w-5 h-5" aria-hidden="true" />
-                                <span className="hidden sm:inline">Share</span>
-                            </button>
+                    {/* Actions - Split: Immediate (Brave, Save) vs Secondary (Share, Stats) */}
+                    <div className="border-y border-stone-200/60 dark:border-zinc-700/60 py-6 mb-12">
+                        {/* Immediate actions - Primary row */}
+                        <div className="flex flex-wrap items-center gap-4 mb-4">
+                            <div className="flex flex-col items-start gap-1">
+                                <ReactionButton
+                                    storyId={story.id}
+                                    currentReaction={userReaction}
+                                    onReact={handleReact}
+                                    supportCount={supportCount}
+                                />
+                                {/* Microcopy for Brave */}
+                                <span className="text-[10px] text-stone-400 dark:text-stone-500 italic pl-1">
+                                    A quiet way to say "I read this."
+                                </span>
+                            </div>
 
                             {user && (
                                 <button
                                     onClick={handleToggleBookmark}
                                     aria-label={isBookmarked ? 'Remove from saved' : 'Save this story'}
-                                    className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg border transition-all ${isBookmarked
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${isBookmarked
                                         ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400'
-                                        : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-amber-400'
+                                        : 'border-stone-200 dark:border-zinc-600 text-stone-600 dark:text-stone-400 hover:border-amber-400'
                                         }`}
                                 >
-                                    <Bookmark className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} aria-hidden="true" />
-                                    <span className="hidden sm:inline">{isBookmarked ? 'Saved' : 'Save'}</span>
+                                    <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} aria-hidden="true" />
+                                    <span className="text-sm">{isBookmarked ? 'Saved' : 'Save'}</span>
                                 </button>
                             )}
+                        </div>
 
-                            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                                <MessageCircle className="w-5 h-5" aria-hidden="true" />
-                                <span className="text-sm sm:text-base">{story.comment_count} <span className="hidden sm:inline">comments</span></span>
-                            </div>
+                        {/* Secondary actions - Subtle row */}
+                        <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-stone-100 dark:border-zinc-800">
+                            <button
+                                onClick={handleShare}
+                                aria-label="Share this story"
+                                className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 transition-colors"
+                            >
+                                <Share2 className="w-3.5 h-3.5" aria-hidden="true" />
+                                <span>Share</span>
+                            </button>
+
+                            <span className="text-stone-300 dark:text-zinc-600">·</span>
+
+                            <span className="text-xs text-stone-400 dark:text-stone-500">
+                                {story.comment_count} responses
+                            </span>
 
                             {/* Author Actions - Edit/Delete */}
                             {isAuthor && (
                                 <div className="ml-auto flex items-center gap-2">
                                     <button
                                         onClick={() => navigate(`/edit/${story.id}`)}
-                                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-blue-300 dark:border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
+                                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-stone-200 dark:border-zinc-600 text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-all"
                                     >
-                                        <Edit className="w-4 h-4" />
+                                        <Edit className="w-3.5 h-3.5" />
                                         Edit
                                     </button>
                                     <button
                                         onClick={handleDelete}
-                                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+                                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
                                     >
-                                        <Trash2 className="w-4 h-4" />
+                                        <Trash2 className="w-3.5 h-3.5" />
                                         Delete
                                     </button>
                                 </div>
@@ -434,60 +418,62 @@ export default function PostDetail() {
 
                     {/* Comments Section */}
                     <div className="w-full space-y-6">
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                            Comments ({comments.length})
+                        <h2 className="text-xl font-semibold text-stone-700 dark:text-stone-200">
+                            Responses ({comments.length})
                         </h2>
 
-                        {/* Add Comment */}
-                        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+                        {/* Emotional guardrail */}
+                        <p className="text-xs text-stone-500 dark:text-stone-400 italic border-l-2 border-stone-200 dark:border-zinc-700 pl-3">
+                            Responses here are meant to support, not judge.
+                        </p>
+
+                        {/* Add Comment - Softer borders, thoughtful placeholder */}
+                        <div className="bg-stone-50/50 dark:bg-zinc-800/50 rounded-lg border border-stone-200/60 dark:border-zinc-700/60 p-4">
                             <textarea
                                 value={commentText}
                                 onChange={(e) => setCommentText(e.target.value)}
-                                placeholder="Share your thoughts..."
+                                placeholder="Write something kind, or simply be present."
                                 rows={3}
-                                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none mb-3"
+                                className="w-full px-4 py-3 border border-stone-200 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-stone-700 dark:text-stone-200 placeholder-stone-400 dark:placeholder-stone-500 focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 resize-none mb-3 text-sm"
                             />
                             <div className="flex items-center justify-between">
-                                <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                <label className="flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400 cursor-pointer">
                                     <input
                                         type="checkbox"
                                         checked={isAnonymousComment}
                                         onChange={(e) => setIsAnonymousComment(e.target.checked)}
-                                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                                        className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
                                     />
-                                    Comment anonymously
+                                    Share anonymously
                                 </label>
                                 <button
                                     onClick={handleComment}
                                     disabled={!commentText.trim()}
-                                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="px-4 py-2 bg-amber-600 text-white text-sm rounded-lg hover:bg-amber-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                                 >
-                                    Post Comment
+                                    Respond
                                 </button>
                             </div>
                         </div>
 
-                        {/* Comments List */}
+                        {/* Comments List - Softer styling */}
                         <div className="space-y-4">
                             {comments.map((comment) => (
                                 <div
                                     key={comment.id}
-                                    className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4"
+                                    className="bg-white/60 dark:bg-zinc-800/60 rounded-lg border border-stone-100 dark:border-zinc-700/50 p-4"
                                 >
                                     <div className="flex items-start gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-secondary-400 to-accent-500 flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
-                                            {comment.author?.username?.[0]?.toUpperCase() || 'A'}
-                                        </div>
                                         <div className="flex-1">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <span className="font-semibold text-gray-900 dark:text-white">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
                                                     {comment.author?.display_name || comment.author?.username || 'Anonymous'}
                                                 </span>
-                                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                <span className="text-xs text-stone-400 dark:text-stone-500">
                                                     {formatCommentDate(comment.created_at)}
                                                 </span>
                                             </div>
-                                            <p className="text-gray-700 dark:text-gray-300">
+                                            <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed">
                                                 {comment.content}
                                             </p>
                                         </div>
