@@ -90,7 +90,7 @@ export default function Drafts() {
                         </h1>
                     </div>
                     <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 ml-12">
-                        Continue working on your unfinished stories
+                        Things you started and can return to anytime.
                     </p>
                 </div>
 
@@ -105,18 +105,21 @@ export default function Drafts() {
                             <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center">
                                 <PenLine className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 dark:text-gray-500" />
                             </div>
-                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-3">
-                                No drafts yet
+                            <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white mb-3">
+                                Nothing saved yet
                             </h3>
-                            <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-sm mx-auto">
-                                Start writing a story and save it as a draft to continue later
+                            <p className="text-gray-600 dark:text-gray-400 mb-3 max-w-sm mx-auto">
+                                It's okay to start before you're ready. Drafts are just for you.
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-500 mb-8 max-w-sm mx-auto">
+                                Drafts are private and visible only to you.
                             </p>
                             <Link
                                 to="/feed/create"
-                                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-medium rounded-full shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 hover:scale-105 active:scale-95 transition-all duration-300"
+                                className="inline-flex items-center gap-2 px-6 py-3 border border-violet-300 dark:border-violet-600 text-violet-600 dark:text-violet-400 font-medium rounded-full hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:border-violet-400 dark:hover:border-violet-500 active:scale-95 transition-all duration-300"
                             >
                                 <Sparkles className="w-4 h-4" />
-                                Create Story
+                                Start Writing
                             </Link>
                         </div>
                     </div>
