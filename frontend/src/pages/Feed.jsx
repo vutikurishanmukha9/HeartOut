@@ -86,19 +86,17 @@ export default function Feed() {
                                     <span className="text-gradient bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 bg-clip-text text-transparent">
                                         Real Stories
                                     </span>
-                                    {/* Underline decoration */}
+                                    {/* Underline decoration - single muted amber for sincerity */}
                                     <svg className="absolute -bottom-2 left-0 w-full h-3" viewBox="0 0 200 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M2 8C30 4 70 2 100 6C130 10 170 8 198 4" stroke="url(#underline-gradient)" strokeWidth="4" strokeLinecap="round" />
-                                        <defs>
-                                            <linearGradient id="underline-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                <stop offset="0%" stopColor="#f97316" />
-                                                <stop offset="50%" stopColor="#ec4899" />
-                                                <stop offset="100%" stopColor="#8b5cf6" />
-                                            </linearGradient>
-                                        </defs>
+                                        <path d="M2 8C30 4 70 2 100 6C130 10 170 8 198 4" stroke="#d97706" strokeWidth="4" strokeLinecap="round" strokeOpacity="0.7" />
                                     </svg>
                                 </span>
                             </h1>
+
+                            {/* Grounding subline - emotional anchor */}
+                            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 italic mb-3 sm:mb-4">
+                                Written by real people. Read by those who understand.
+                            </p>
 
                             {/* Subtext with better typography */}
                             <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-6 sm:mb-8 max-w-lg leading-relaxed px-2 sm:px-0">
@@ -109,10 +107,9 @@ export default function Feed() {
 
                             {/* CTA Section */}
                             <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 justify-center lg:justify-start w-full sm:w-auto">
-                                <a href="/feed/create" className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 text-white font-bold shadow-xl shadow-primary-500/30 hover:shadow-2xl hover:shadow-primary-500/40 hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto text-sm sm:text-base">
+                                <a href="/feed/create" className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-600 via-orange-500 to-rose-500 text-white font-bold shadow-xl shadow-amber-500/20 hover:shadow-2xl hover:shadow-amber-500/30 hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto text-sm sm:text-base">
                                     <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
-                                    Share Your Story
-                                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                                    <span>Write Something You've Been Holding In</span>
                                     {/* Shine effect */}
                                     <div className="absolute inset-0 rounded-xl sm:rounded-2xl overflow-hidden">
                                         <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />

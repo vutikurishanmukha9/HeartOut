@@ -318,6 +318,22 @@ code {
   animation: spin-slow 8s linear infinite;
 }
 
+/* Slow breathing pulse - every ~12 seconds for calm attention */
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 6px rgba(217, 119, 6, 0.2);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 8px 15px rgba(217, 119, 6, 0.35);
+  }
+}
+
+.animate-breathe {
+  animation: breathe 12s ease-in-out infinite;
+}
+
 /* Facebook-style reaction animations */
 .animate-float-up-fade {
   animation: floatUpFade 0.5s ease-out forwards;

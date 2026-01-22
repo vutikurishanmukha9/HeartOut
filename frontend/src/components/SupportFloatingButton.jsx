@@ -61,19 +61,19 @@ export default function SupportFloatingButton() {
                 </div>
             )}
 
-            {/* Floating Button */}
+            {/* Floating Button - calm amber/rose, slow breathing pulse */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label={isOpen ? 'Close support resources' : 'Open support resources'}
                 aria-expanded={isOpen}
                 className={`
                     group flex items-center gap-1.5 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-full
-                    bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500
-                    text-white text-sm font-medium shadow-lg shadow-pink-500/30
-                    hover:shadow-xl hover:shadow-pink-500/40 hover:scale-105
+                    bg-gradient-to-r from-amber-500 via-amber-600 to-rose-500
+                    text-white text-sm font-medium shadow-lg shadow-amber-500/20
+                    hover:shadow-xl hover:shadow-amber-500/30 hover:scale-105
                     transition-all duration-300
-                    focus:outline-none focus:ring-4 focus:ring-pink-300 dark:focus:ring-pink-700
-                    ${isOpen ? 'ring-4 ring-pink-300 dark:ring-pink-700' : ''}
+                    focus:outline-none focus:ring-4 focus:ring-amber-300 dark:focus:ring-amber-700
+                    ${isOpen ? 'ring-4 ring-amber-300 dark:ring-amber-700' : 'animate-breathe'}
                 `}
             >
                 {isOpen ? (
@@ -82,10 +82,8 @@ export default function SupportFloatingButton() {
                     <>
                         <div className="relative">
                             <Heart className="w-4 h-4" aria-hidden="true" />
-                            <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-white rounded-full animate-ping" aria-hidden="true" />
-                            <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-white rounded-full" aria-hidden="true" />
                         </div>
-                        <span className="hidden sm:inline">Need Support?</span>
+                        <span className="hidden sm:inline">I need support right now</span>
                         <Phone className="w-3.5 h-3.5 sm:hidden" aria-hidden="true" />
                     </>
                 )}

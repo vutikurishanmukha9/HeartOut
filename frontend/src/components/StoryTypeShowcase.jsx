@@ -17,6 +17,7 @@ const storyCategories = [
     {
         id: 'achievement',
         label: 'Success Stories',
+        subtitle: '"I survived. Here\'s how."',
         icon: Trophy,
         bgColor: 'bg-emerald-500',
         lightBg: 'bg-emerald-50 dark:bg-emerald-900/20',
@@ -24,11 +25,13 @@ const storyCategories = [
         hoverShadow: 'hover:shadow-emerald-500/50',
         glowColor: 'rgba(16, 185, 129, 0.6)',
         ringColor: 'ring-emerald-500',
-        description: 'Celebrate victories & milestones'
+        description: 'Celebrate victories & milestones',
+        featured: false
     },
     {
         id: 'regret',
         label: 'Life Lessons',
+        subtitle: '"I learned this the hard way."',
         icon: Lightbulb,
         bgColor: 'bg-violet-500',
         lightBg: 'bg-violet-50 dark:bg-violet-900/20',
@@ -36,55 +39,64 @@ const storyCategories = [
         hoverShadow: 'hover:shadow-violet-500/50',
         glowColor: 'rgba(139, 92, 246, 0.6)',
         ringColor: 'ring-violet-500',
-        description: 'Wisdom from experience'
+        description: 'Wisdom from experience',
+        featured: false
     },
     {
         id: 'unsent_letter',
         label: 'Unsent Letters',
+        subtitle: '"Things I never said."',
         icon: Mail,
-        bgColor: 'bg-slate-500',
-        lightBg: 'bg-slate-50 dark:bg-slate-900/20',
-        shadowColor: 'shadow-slate-500/30',
-        hoverShadow: 'hover:shadow-slate-500/50',
-        glowColor: 'rgba(100, 116, 139, 0.6)',
-        ringColor: 'ring-slate-500',
-        description: 'Words left unspoken'
+        bgColor: 'bg-slate-600',
+        lightBg: 'bg-slate-100 dark:bg-slate-800/40',
+        shadowColor: 'shadow-slate-600/40',
+        hoverShadow: 'hover:shadow-slate-600/60',
+        glowColor: 'rgba(71, 85, 105, 0.7)',
+        ringColor: 'ring-slate-600',
+        description: 'Words left unspoken',
+        featured: true  // Higher visual priority
     },
     {
         id: 'sacrifice',
         label: 'Sacrifices',
+        subtitle: '"What it cost me."',
         icon: Heart,
-        bgColor: 'bg-rose-500',
-        lightBg: 'bg-rose-50 dark:bg-rose-900/20',
-        shadowColor: 'shadow-rose-500/30',
-        hoverShadow: 'hover:shadow-rose-500/50',
-        glowColor: 'rgba(244, 63, 94, 0.6)',
-        ringColor: 'ring-rose-500',
-        description: 'Given from the heart'
+        bgColor: 'bg-rose-600',
+        lightBg: 'bg-rose-100 dark:bg-rose-900/30',
+        shadowColor: 'shadow-rose-600/40',
+        hoverShadow: 'hover:shadow-rose-600/60',
+        glowColor: 'rgba(225, 29, 72, 0.7)',
+        ringColor: 'ring-rose-600',
+        description: 'Given from the heart',
+        featured: true  // Higher visual priority
     },
     {
         id: 'confession',
         label: 'Dreams',
+        subtitle: '"What I still hope for."',
         icon: Sparkles,
-        bgColor: 'bg-purple-500',
-        lightBg: 'bg-purple-50 dark:bg-purple-900/20',
-        shadowColor: 'shadow-purple-500/30',
-        hoverShadow: 'hover:shadow-purple-500/50',
-        glowColor: 'rgba(168, 85, 247, 0.6)',
-        ringColor: 'ring-purple-500',
-        description: 'Hopes & aspirations'
-    },
-    {
-        id: 'other',
-        label: 'Other Tales',
-        icon: BookOpen,
         bgColor: 'bg-amber-500',
         lightBg: 'bg-amber-50 dark:bg-amber-900/20',
         shadowColor: 'shadow-amber-500/30',
         hoverShadow: 'hover:shadow-amber-500/50',
         glowColor: 'rgba(245, 158, 11, 0.6)',
         ringColor: 'ring-amber-500',
-        description: 'Unique stories'
+        description: 'Hopes & aspirations',
+        featured: false
+    },
+    {
+        id: 'other',
+        label: 'Quiet Confessions',
+        subtitle: '"In between the lines."',
+        icon: BookOpen,
+        bgColor: 'bg-gray-500',
+        lightBg: 'bg-gray-50 dark:bg-gray-800/40',
+        shadowColor: 'shadow-gray-500/30',
+        hoverShadow: 'hover:shadow-gray-500/50',
+        glowColor: 'rgba(107, 114, 128, 0.5)',
+        ringColor: 'ring-gray-500',
+        description: 'Untitled narratives',
+        featured: false
     },
 ];
 
@@ -146,10 +158,10 @@ export default function StoryTypeShowcase({ selectedCategory, onSelectCategory }
                                 style={{ background: category.glowColor }}
                             />
 
-                            {/* Circular Icon Container */}
+                            {/* Circular Icon Container - larger for featured */}
                             <div className={`
                                 relative z-10
-                                w-14 h-14 sm:w-16 sm:h-16
+                                ${category.featured ? 'w-16 h-16 sm:w-20 sm:h-20' : 'w-14 h-14 sm:w-16 sm:h-16'}
                                 rounded-full
                                 ${category.bgColor}
                                 flex items-center justify-center
@@ -158,7 +170,7 @@ export default function StoryTypeShowcase({ selectedCategory, onSelectCategory }
                                 ${isHovered ? 'scale-110 shadow-xl' : ''}
                                 ${isSelected ? 'scale-110' : ''}
                             `}>
-                                <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" strokeWidth={2} />
+                                <Icon className={`${category.featured ? 'w-7 h-7 sm:w-8 sm:h-8' : 'w-6 h-6 sm:w-7 sm:h-7'} text-white`} strokeWidth={2} />
 
                                 {/* Shine overlay */}
                                 <div className="absolute inset-0 rounded-full overflow-hidden">
@@ -183,17 +195,15 @@ export default function StoryTypeShowcase({ selectedCategory, onSelectCategory }
                                 {category.label}
                             </h3>
 
-                            {/* Description - shows on hover */}
+                            {/* Emotional subtitle - always visible for emotional cue */}
                             <p className={`
                                 relative z-10
                                 text-[10px] sm:text-xs text-center
-                                text-gray-500 dark:text-gray-400
-                                mt-1 leading-tight
+                                ${category.featured ? 'text-gray-600 dark:text-gray-300' : 'text-gray-500 dark:text-gray-400'}
+                                mt-1 leading-tight italic
                                 transition-all duration-300
-                                ${isHovered ? 'opacity-100 max-h-10' : 'opacity-0 max-h-0'}
-                                overflow-hidden
                             `}>
-                                {category.description}
+                                {category.subtitle}
                             </p>
 
                             {/* Selected checkmark */}

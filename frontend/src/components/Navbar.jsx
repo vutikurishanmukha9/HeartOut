@@ -36,6 +36,7 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const ws = useWebSocket();
 
@@ -61,6 +62,15 @@ const Navbar = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isProfileMenuOpen, isNotificationOpen]);
+
+  // Scroll detection for nav divider
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const navItems = [
     { name: 'Feed', href: '/feed', icon: Flame, active: location.pathname.startsWith('/feed') && location.pathname !== '/feed/create' && location.pathname !== '/feed/drafts' },
@@ -92,7 +102,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b border-white/30 dark:border-gray-700/30 shadow-sm">
+      <nav className={`fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b transition-all duration-300 ${isScrolled ? 'border-gray-200/50 dark:border-gray-700/50 shadow-sm' : 'border-white/30 dark:border-gray-700/30'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
@@ -155,7 +165,7 @@ const Navbar = () => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onFocus={() => setIsSearchFocused(true)}
                     onBlur={() => setIsSearchFocused(false)}
-                    placeholder="Search stories..."
+                    placeholder="Try: loneliness, guilt, hope..."
                     className={`w-full pl-11 pr-4 py-2.5 bg-gray-100/80 dark:bg-gray-800/80 backdrop-blur-sm border-2 rounded-xl text-sm focus:outline-none transition-all duration-300 ${isSearchFocused
                       ? 'border-primary-500 shadow-lg shadow-primary-500/20'
                       : 'border-transparent hover:border-gray-200 dark:hover:border-gray-700'
