@@ -139,11 +139,11 @@ export default function Feed() {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 {/* Filters Section */}
-                <div className="mb-10 space-y-4">
+                <div className="mb-10 space-y-6">
                     {/* Sort Options - Horizontal Scroll on Mobile */}
                     <div className="-mx-4 px-4 md:mx-0 md:px-0 overflow-x-auto scrollbar-hide">
-                        <div className="flex items-center gap-2 md:gap-3 min-w-max pb-2">
-                            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 shrink-0">Sort:</span>
+                        <div className="flex items-center gap-3 md:gap-4 min-w-max pb-2">
+                            <span className="text-sm font-medium text-gray-600 dark:text-gray-300 shrink-0">Show me</span>
                             {sortOptions.map((option) => {
                                 const Icon = option.icon;
                                 const isActive = sortBy === option.value;
@@ -153,17 +153,17 @@ export default function Feed() {
                                         onClick={() => setSortBy(option.value)}
                                         title={option.label}
                                         className={`
-                                            group relative flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-300
+                                            group relative flex items-center justify-center gap-2 md:gap-2.5 px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm transition-all duration-300
                                             ${isActive
-                                                ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
-                                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                                                ? 'text-stone-800 dark:text-stone-200 bg-stone-100/80 dark:bg-stone-800/40 font-semibold'
+                                                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 font-medium'
                                             }
                                         `}
                                     >
-                                        <Icon className={`w-4 h-4 shrink-0 transition-all duration-300 ${isActive ? 'text-primary-500' : 'group-hover:scale-110 group-hover:text-primary-500'}`} />
+                                        <Icon className={`w-4 h-4 shrink-0 transition-all duration-300 ${isActive ? 'opacity-70' : 'opacity-50 group-hover:opacity-70'}`} />
                                         <span className="hidden sm:inline relative">
                                             {option.label}
-                                            <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+                                            <span className={`absolute -bottom-1 left-0 h-0.5 bg-stone-400 dark:bg-stone-500 transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`} />
                                         </span>
                                     </button>
                                 );
@@ -171,10 +171,13 @@ export default function Feed() {
                         </div>
                     </div>
 
+                    {/* Subtle divider */}
+                    <div className="border-t border-stone-200/50 dark:border-zinc-700/50" />
+
                     {/* Category Filters - Horizontal Scroll on Mobile, Justified on Desktop */}
                     <div className="-mx-4 px-4 md:mx-0 md:px-0 overflow-x-auto scrollbar-hide">
-                        <div className="flex items-center gap-2 md:gap-0 md:justify-between min-w-max md:min-w-0 pb-2">
-                            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 shrink-0">Type:</span>
+                        <div className="flex items-center gap-3 md:gap-4 min-w-max md:min-w-0 pb-2">
+                            <span className="text-sm font-medium text-gray-600 dark:text-gray-300 shrink-0">Kind of story</span>
                             <button
                                 onClick={() => setSelectedCategory('all')}
                                 title="All Stories"

@@ -3,17 +3,17 @@ import { Medal, CloudRain, Send, Gift, Compass, Shapes, Check } from 'lucide-rea
 
 const storyTypes = [
     {
-        value: 'achievement',
-        label: 'Achievement',
-        icon: Medal,
-        description: 'Something you\'re proud you survived or achieved',
-        color: 'from-stone-500 to-stone-600',
-        bgColor: 'bg-stone-50 dark:bg-stone-900/20',
-        borderColor: 'border-stone-200 dark:border-stone-700',
-        textColor: 'text-stone-700 dark:text-stone-300',
-        hoverTextColor: 'group-hover:text-stone-600 dark:group-hover:text-stone-400',
-        shadowColor: 'shadow-stone-500/15',
-        chartColor: '#78716c'
+        value: 'unsent_letter',
+        label: 'Unsent Letter',
+        icon: Send,
+        description: 'Something you wish they could hear',
+        color: 'from-zinc-500 to-zinc-600',
+        bgColor: 'bg-zinc-50 dark:bg-zinc-900/20',
+        borderColor: 'border-zinc-200 dark:border-zinc-700',
+        textColor: 'text-zinc-700 dark:text-zinc-300',
+        hoverTextColor: 'group-hover:text-zinc-600 dark:group-hover:text-zinc-400',
+        shadowColor: 'shadow-zinc-500/15',
+        chartColor: '#71717a'
     },
     {
         value: 'regret',
@@ -29,17 +29,17 @@ const storyTypes = [
         chartColor: '#64748b'
     },
     {
-        value: 'unsent_letter',
-        label: 'Unsent Letter',
-        icon: Send,
-        description: 'Something you wish they could hear',
-        color: 'from-zinc-500 to-zinc-600',
-        bgColor: 'bg-zinc-50 dark:bg-zinc-900/20',
-        borderColor: 'border-zinc-200 dark:border-zinc-700',
-        textColor: 'text-zinc-700 dark:text-zinc-300',
-        hoverTextColor: 'group-hover:text-zinc-600 dark:group-hover:text-zinc-400',
-        shadowColor: 'shadow-zinc-500/15',
-        chartColor: '#71717a'
+        value: 'life_story',
+        label: 'Life Story',
+        icon: Compass,
+        description: 'A moment that shaped who you are',
+        color: 'from-amber-500 to-amber-600',
+        bgColor: 'bg-amber-50 dark:bg-amber-900/20',
+        borderColor: 'border-amber-200 dark:border-amber-700',
+        textColor: 'text-amber-700 dark:text-amber-300',
+        hoverTextColor: 'group-hover:text-amber-600 dark:group-hover:text-amber-400',
+        shadowColor: 'shadow-amber-500/15',
+        chartColor: '#f59e0b'
     },
     {
         value: 'sacrifice',
@@ -55,17 +55,17 @@ const storyTypes = [
         chartColor: '#fb7185'
     },
     {
-        value: 'life_story',
-        label: 'Life Story',
-        icon: Compass,
-        description: 'A moment that shaped who you are',
-        color: 'from-amber-500 to-amber-600',
-        bgColor: 'bg-amber-50 dark:bg-amber-900/20',
-        borderColor: 'border-amber-200 dark:border-amber-700',
-        textColor: 'text-amber-700 dark:text-amber-300',
-        hoverTextColor: 'group-hover:text-amber-600 dark:group-hover:text-amber-400',
-        shadowColor: 'shadow-amber-500/15',
-        chartColor: '#f59e0b'
+        value: 'achievement',
+        label: 'Achievement',
+        icon: Medal,
+        description: 'Something you\'re proud you survived or achieved',
+        color: 'from-stone-500 to-stone-600',
+        bgColor: 'bg-stone-50 dark:bg-stone-900/20',
+        borderColor: 'border-stone-200 dark:border-stone-700',
+        textColor: 'text-stone-700 dark:text-stone-300',
+        hoverTextColor: 'group-hover:text-stone-600 dark:group-hover:text-stone-400',
+        shadowColor: 'shadow-stone-500/15',
+        chartColor: '#78716c'
     },
     {
         value: 'other',
@@ -103,7 +103,7 @@ export default function StoryTypeSelector({ selected, onChange, variant = 'cards
                                 }
                             `}
                         >
-                            <Icon className={`w-4 h-4 shrink-0 transition-all duration-300 ${isSelected ? '' : 'group-hover:scale-110'}`} />
+                            <Icon className={`w-4 h-4 shrink-0 transition-all duration-300 ${isSelected ? 'opacity-70' : 'opacity-50 group-hover:opacity-70'}`} />
                             <span className="hidden sm:inline relative">
                                 {type.label}
                                 <span className={`absolute -bottom-1 left-0 h-0.5 transition-all duration-300 ${isSelected
