@@ -647,28 +647,33 @@ export default function Profile() {
                     </div>
                 </div>
 
-                {/* Stories Grid */}
-                <div>
-                    <div className="flex items-center gap-3 mb-6">
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {/* Stories Grid - Archive, not feed */}
+                <div className="mt-8">
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-medium text-stone-800 dark:text-stone-200">
                             {selectedCategory
                                 ? `${storyTypes.find(t => t.value === selectedCategory)?.label || 'Filtered'} Stories`
-                                : 'Published Stories'
+                                : isOwnProfile ? 'Your Stories' : 'Stories'
                             }
                         </h2>
                         {selectedCategory && (
-                            <span className="px-3 py-1 text-sm bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full">
-                                {stories.filter(s => s.story_type === selectedCategory).length} stories
+                            <span className="px-3 py-1 text-xs bg-stone-100 dark:bg-zinc-800 text-stone-500 dark:text-stone-400 rounded-full">
+                                {stories.filter(s => s.story_type === selectedCategory).length}
                             </span>
                         )}
                     </div>
+                    {isOwnProfile && !selectedCategory && stories.length > 0 && (
+                        <p className="text-xs text-stone-400 dark:text-stone-500 italic mb-6">
+                            You can return to these anytime.
+                        </p>
+                    )}
                     {(() => {
                         const filteredStories = selectedCategory
                             ? stories.filter(s => s.story_type === selectedCategory)
                             : stories;
 
                         return filteredStories.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 {filteredStories.map((story) => (
                                     <StoryCard key={story.id} story={story} />
                                 ))}
