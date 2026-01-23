@@ -54,7 +54,7 @@ export default function Feed() {
                 {/* Single subtle floating orb - morning fog feel */}
                 <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/20 rounded-full blur-3xl" />
 
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 md:py-16 lg:py-24">
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-6 md:pt-2 md:pb-10 lg:pt-4 lg:pb-12">
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
                         {/* Left Content - Premium Hero */}
                         <div className="flex-1 text-center lg:text-left animate-slide-up relative">
