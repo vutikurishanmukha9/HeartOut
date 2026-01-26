@@ -15,9 +15,9 @@
     "lang": "en",
     "icons": [
         {
-            "src": "/heart.svg",
+            "src": "/favicon.png",
             "sizes": "any",
-            "type": "image/svg+xml",
+            "type": "image/png",
             "purpose": "any maskable"
         }
     ],
@@ -30,7 +30,7 @@
             "url": "/feed",
             "icons": [
                 {
-                    "src": "/heart.svg",
+                    "src": "/favicon.png",
                     "sizes": "96x96"
                 }
             ]
@@ -42,7 +42,7 @@
             "url": "/create",
             "icons": [
                 {
-                    "src": "/heart.svg",
+                    "src": "/favicon.png",
                     "sizes": "96x96"
                 }
             ]

@@ -120,7 +120,7 @@ export default function SEO({
                             "name": SITE_NAME,
                             "logo": {
                                 "@type": "ImageObject",
-                                "url": `${SITE_URL}/heart.svg`
+                                "url": `${SITE_URL}/favicon.png`
                             }
                         },
                         "datePublished": publishedTime,
