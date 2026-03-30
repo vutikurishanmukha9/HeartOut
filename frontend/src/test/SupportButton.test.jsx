@@ -126,7 +126,7 @@ describe('ReactionButton', () => {
 
             fireEvent.click(screen.getByText('Felt This'));
 
-            expect(mockOnReact).toHaveBeenCalledWith('heart');
+            expect(mockOnReact).toHaveBeenCalledWith('felt_this');
         });
 
         it('renders with existing reaction', () => {
