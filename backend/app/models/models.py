@@ -234,12 +234,19 @@ class Post(Base):
             'comment_count': self.comment_count or 0
         }
         
-        if include_author and not self.is_anonymous and self.author:
-            data['author'] = {
-                'id': self.author.public_id,
-                'username': self.author.username,
-                'display_name': self.author.display_name
-            }
+        if include_author and self.author:
+            if self.is_anonymous:
+                data['author'] = {
+                    'id': self.author.public_id,
+                    'username': 'Anonymous',
+                    'display_name': 'Anonymous User'
+                }
+            else:
+                data['author'] = {
+                    'id': self.author.public_id,
+                    'username': self.author.username,
+                    'display_name': self.author.display_name
+                }
         elif self.is_anonymous:
             data['author'] = {
                 'username': 'Anonymous',
