@@ -1,5 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Flame, Sparkles, Droplet, Star, Heart } from 'lucide-react';
+import { 
+  CrackedHeartIcon, 
+  OpenPalmsIcon, 
+  RippleTearIcon, 
+  DoubleStarIcon, 
+  BurstingSeedIcon 
+} from './ReactionIcons';
 
 // NEW: Emotional Resonance Reaction System
 // Unique to HeartOut - designed for emotional storytelling
@@ -8,7 +14,7 @@ const reactionTypes = [
     value: 'felt_this',
     label: 'Felt This',
     ariaLabel: 'React with Felt This - I deeply relate',
-    icon: Heart,
+    icon: CrackedHeartIcon,
     color: 'text-rose-500',
     bgColor: 'bg-rose-50 dark:bg-rose-900/20',
     borderColor: 'border-rose-200 dark:border-rose-700',
@@ -21,7 +27,7 @@ const reactionTypes = [
     value: 'holding_space',
     label: 'Holding Space',
     ariaLabel: 'React with Holding Space - Silent support',
-    icon: Sparkles, // Candle-like glow for holding space
+    icon: OpenPalmsIcon,
     color: 'text-amber-500',
     bgColor: 'bg-amber-50 dark:bg-amber-900/20',
     borderColor: 'border-amber-200 dark:border-amber-700',
@@ -34,7 +40,7 @@ const reactionTypes = [
     value: 'moved',
     label: 'Moved',
     ariaLabel: 'React with Moved - Emotionally touched',
-    icon: Droplet,
+    icon: RippleTearIcon,
     color: 'text-blue-500',
     bgColor: 'bg-blue-50 dark:bg-blue-900/20',
     borderColor: 'border-blue-200 dark:border-blue-700',
@@ -47,7 +53,7 @@ const reactionTypes = [
     value: 'brave',
     label: 'Brave',
     ariaLabel: 'React with Brave - Acknowledging courage',
-    icon: Star,
+    icon: DoubleStarIcon,
     color: 'text-purple-500',
     bgColor: 'bg-purple-50 dark:bg-purple-900/20',
     borderColor: 'border-purple-200 dark:border-purple-700',
@@ -60,7 +66,7 @@ const reactionTypes = [
     value: 'grateful',
     label: 'Grateful',
     ariaLabel: 'React with Grateful - Thank you for sharing',
-    icon: Flame,
+    icon: BurstingSeedIcon,
     color: 'text-emerald-500',
     bgColor: 'bg-emerald-50 dark:bg-emerald-900/20',
     borderColor: 'border-emerald-200 dark:border-emerald-700',
@@ -152,7 +158,7 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
       >
         {currentReaction ? (
           <>
-            {React.createElement(currentReactionType?.icon || Heart, {
+            {React.createElement(currentReactionType?.icon || CrackedHeartIcon, {
               className: `w-5 h-5 ${currentReactionType?.color} ${currentReactionType?.fillClass} transition-transform duration-300 group-hover:scale-110`,
               'aria-hidden': 'true'
             })}
@@ -160,7 +166,7 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
           </>
         ) : (
           <>
-            <Heart className="w-5 h-5 transition-all duration-300 group-hover:text-rose-500 group-hover:scale-110" aria-hidden="true" />
+            <CrackedHeartIcon className="w-5 h-5 transition-all duration-300 group-hover:text-rose-500 group-hover:scale-110" aria-hidden="true" />
             <span>React</span>
           </>
         )}
