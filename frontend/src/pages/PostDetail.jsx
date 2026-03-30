@@ -21,6 +21,10 @@ export default function PostDetail() {
     const [userReaction, setUserReaction] = useState(null);
     const [supportCount, setSupportCount] = useState(0);
     const [isBookmarked, setIsBookmarked] = useState(false);
+    
+    // Delete Modal State
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     // Read progress tracking
     const startTimeRef = useRef(Date.now());
@@ -228,10 +232,7 @@ export default function PostDetail() {
     };
 
     const handleDelete = async () => {
-        if (!confirm('Are you sure you want to delete this story? This action cannot be undone.')) {
-            return;
-        }
-
+        setIsDeleting(true);
         try {
             const response = await fetch(getApiUrl(`/api/posts/${id}`), {
                 method: 'DELETE',
@@ -241,15 +242,19 @@ export default function PostDetail() {
             });
 
             if (response.ok) {
-                alert('Story deleted successfully');
+                // Don't show alert, just navigate away
                 navigate('/feed');
             } else {
                 const data = await response.json();
                 alert(data.error || 'Failed to delete story');
+                setShowDeleteModal(false);
+                setIsDeleting(false);
             }
         } catch (error) {
             console.error('Failed to delete story:', error);
             alert('Failed to delete story');
+            setShowDeleteModal(false);
+            setIsDeleting(false);
         }
     };
 
@@ -405,7 +410,7 @@ export default function PostDetail() {
                                         Edit
                                     </button>
                                     <button
-                                        onClick={handleDelete}
+                                        onClick={() => setShowDeleteModal(true)}
                                         className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
                                     >
                                         <Trash2 className="w-3.5 h-3.5" />
@@ -484,6 +489,53 @@ export default function PostDetail() {
                     </div>
                 </article>
             </div>
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0">
+                    <div className="fixed inset-0 bg-stone-900/40 dark:bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => !isDeleting && setShowDeleteModal(false)}></div>
+                    
+                    <div className="relative bg-white dark:bg-zinc-900 rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all animate-scale-in border border-stone-200 dark:border-zinc-800">
+                        <div className="p-6">
+                            <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-4 border border-red-200 dark:border-red-800">
+                                <Trash2 className="w-6 h-6 text-red-600 dark:text-red-400" />
+                            </div>
+                            
+                            <h3 className="text-xl font-medium text-stone-900 dark:text-white mb-2">
+                                Delete this story?
+                            </h3>
+                            
+                            <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed mb-8">
+                                Are you sure you want to delete <span className="font-medium text-stone-700 dark:text-stone-300">"{story.title}"</span>? This action cannot be undone and will remove all reactions and comments.
+                            </p>
+                            
+                            <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
+                                <button 
+                                    onClick={() => setShowDeleteModal(false)}
+                                    disabled={isDeleting}
+                                    className="px-5 py-2.5 text-sm font-medium rounded-xl text-stone-600 dark:text-stone-400 bg-stone-100 dark:bg-zinc-800 hover:bg-stone-200 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    onClick={handleDelete}
+                                    disabled={isDeleting}
+                                    className="flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium rounded-xl text-white bg-red-600 hover:bg-red-700 transition-colors disabled:opacity-50 min-w-[100px]"
+                                >
+                                    {isDeleting ? (
+                                        <>
+                                            <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin"></div>
+                                            Deleting...
+                                        </>
+                                    ) : (
+                                        'Delete Story'
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
