@@ -84,8 +84,12 @@ export function AuthProvider({ children }) {
       setUser(data.user);
       return { success: true };
     } else {
-      const error = await response.json();
-      return { success: false, error: error.error || error.detail };
+      const errorData = await response.json();
+      let errorMessage = errorData.error || errorData.detail;
+      if (Array.isArray(errorMessage)) {
+        errorMessage = errorMessage.map(e => e.msg).join(', ');
+      }
+      return { success: false, error: errorMessage || 'Login failed' };
     }
   };
 
@@ -106,8 +110,12 @@ export function AuthProvider({ children }) {
       setUser(data.user);
       return { success: true };
     } else {
-      const error = await response.json();
-      return { success: false, error: error.error || error.detail };
+      const errorData = await response.json();
+      let errorMessage = errorData.error || errorData.detail;
+      if (Array.isArray(errorMessage)) {
+        errorMessage = errorMessage.map(e => e.msg).join(', ');
+      }
+      return { success: false, error: errorMessage || 'Registration failed' };
     }
   };
 
@@ -159,8 +167,12 @@ export function AuthProvider({ children }) {
       setUser(data.user);
       return { success: true };
     } else {
-      const error = await response.json();
-      return { success: false, error: error.error || error.detail };
+      const errorData = await response.json();
+      let errorMessage = errorData.error || errorData.detail;
+      if (Array.isArray(errorMessage)) {
+        errorMessage = errorMessage.map(e => e.msg).join(', ');
+      }
+      return { success: false, error: errorMessage || 'Profile update failed' };
     }
   };
 

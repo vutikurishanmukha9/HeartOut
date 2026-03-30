@@ -11,6 +11,7 @@ import { ServerWarmupToast } from './components/ServerWarmup';
 import SkipToContent from './components/Accessibility';
 import { WebSocketProvider } from './hooks/useWebSocket.jsx';
 import NotificationToast from './components/NotificationToast';
+import ScrollToTop from './components/ScrollToTop';
 
 // Lazy load routes for better performance
 const AuthRoutes = lazy(() => import('./routes/AuthRoutes'));
@@ -64,6 +65,7 @@ function App() {
 
         <div className="min-h-screen bg-transparent transition-colors duration-200">
           {/* WebSocket Provider for real-time features */}
+          <ScrollToTop />
           <WebSocketProvider userId={user?.id}>
             {showNavbar && <Navbar />}
 
