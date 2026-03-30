@@ -253,7 +253,7 @@ export default function PostDetail() {
         }
     };
 
-    const isAuthor = user && story?.author?.id === user.public_id;
+    const isAuthor = user && story?.author?.id === user.id;
 
     if (loading) {
         return (
