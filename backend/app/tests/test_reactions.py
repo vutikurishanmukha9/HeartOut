@@ -152,13 +152,13 @@ class TestReactionTypes:
             assert response.status_code in [200, 201]
     
     @pytest.mark.asyncio
-    async def test_applause_reaction(self, client, auth_headers):
-        """Test applause reaction type"""
+    async def test_brave_reaction(self, client, auth_headers):
+        """Test brave reaction type"""
         create_response = await client.post(
             "/api/posts",
             headers=auth_headers,
             json={
-                "title": "Applause Test Story",
+                "title": "Brave Test Story",
                 "content": valid_content(),
                 "story_type": "achievement",
                 "status": "published"
@@ -171,7 +171,7 @@ class TestReactionTypes:
             response = await client.post(
                 f"/api/posts/{story_id}/toggle-react",
                 headers=auth_headers,
-                json={"support_type": "applause"}
+                json={"support_type": "brave"}
             )
             
             assert response.status_code in [200, 201]

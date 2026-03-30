@@ -14,7 +14,7 @@ const expectedStoryTypes = [
     { value: 'unsent_letter', label: 'Unsent Letter' },
     { value: 'sacrifice', label: 'Sacrifice' },
     { value: 'life_story', label: 'Life Story' },
-    { value: 'other', label: 'Other' }
+    { value: 'other', label: 'Not Sure Yet' }
 ];
 
 describe('StoryTypeSelector', () => {
@@ -42,7 +42,7 @@ describe('StoryTypeSelector', () => {
             expect(screen.getByText('Unsent Letter')).toBeInTheDocument();
             expect(screen.getByText('Sacrifice')).toBeInTheDocument();
             expect(screen.getByText('Life Story')).toBeInTheDocument();
-            expect(screen.getByText('Other')).toBeInTheDocument();
+            expect(screen.getByText('Not Sure Yet')).toBeInTheDocument();
         });
 
         it('renders story type descriptions', () => {

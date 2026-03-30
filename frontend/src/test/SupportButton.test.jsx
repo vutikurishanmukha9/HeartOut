@@ -6,7 +6,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ReactionButton from '../components/SupportButton';
 
 // Reaction types based on actual implementation
-const reactionLabels = ['Love it', 'Inspiring', 'Save', 'Hug', 'Mind-blown'];
+const reactionLabels = ['Felt This', 'Holding Space', 'Moved', 'Brave', 'Grateful'];
 
 // Mock function
 const mockOnReact = vi.fn().mockResolvedValue(undefined);
@@ -77,7 +77,7 @@ describe('ReactionButton', () => {
 
             // Should show reaction options after opening
             await waitFor(() => {
-                expect(screen.getByText('Love it')).toBeInTheDocument();
+                expect(screen.getByText('Felt This')).toBeInTheDocument();
             });
         });
 
@@ -121,10 +121,10 @@ describe('ReactionButton', () => {
 
             // Wait for dropdown and click a reaction
             await waitFor(() => {
-                expect(screen.getByText('Love it')).toBeInTheDocument();
+                expect(screen.getByText('Felt This')).toBeInTheDocument();
             });
 
-            fireEvent.click(screen.getByText('Love it'));
+            fireEvent.click(screen.getByText('Felt This'));
 
             expect(mockOnReact).toHaveBeenCalledWith('heart');
         });
@@ -147,7 +147,7 @@ describe('ReactionButton', () => {
 
 describe('Reaction Types Data', () => {
     it('has expected reaction labels', () => {
-        const expectedLabels = ['Love it', 'Inspiring', 'Save', 'Hug', 'Mind-blown'];
+        const expectedLabels = ['Felt This', 'Holding Space', 'Moved', 'Brave', 'Grateful'];
         expectedLabels.forEach(label => {
             expect(reactionLabels).toContain(label);
         });
