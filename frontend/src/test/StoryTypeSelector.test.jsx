@@ -48,8 +48,8 @@ describe('StoryTypeSelector', () => {
         it('renders story type descriptions', () => {
             render(<StoryTypeSelector selected={null} onChange={mockOnChange} />);
 
-            expect(screen.getByText(/Celebrate your victories/i)).toBeInTheDocument();
-            expect(screen.getByText(/Lessons learned/i)).toBeInTheDocument();
+            expect(screen.getByText(/Something you're proud you survived or achieved/i)).toBeInTheDocument();
+            expect(screen.getByText(/Something you still think about/i)).toBeInTheDocument();
         });
     });
 
