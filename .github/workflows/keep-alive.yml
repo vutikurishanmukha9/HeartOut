@@ -2,15 +2,98 @@ name: Keep Backend Alive
 
 on:
   schedule:
-    # Runs every 10 minutes to prevent Render Free Tier from sleeping
-    - cron: '*/10 * * * *'
-  workflow_dispatch: # Allows running manually from GitHub UI
+    # Ping every 5 minutes — Render sleeps after 15min of inactivity
+    # Using 5 different cron schedules for redundancy (GitHub sometimes skips runs)
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # Manual trigger from GitHub UI
+
+concurrency:
+  group: keep-alive
+  cancel-in-progress: false
 
 jobs:
   ping:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    strategy:
+      fail-fast: false
+
     steps:
-      - name: Ping HeartOut API
+      - name: Primary Ping - Health Endpoint
         run: |
-          echo "Hitting Render health endpoint to keep server warm..."
-          curl -f -m 10 https://heartout-kx89.onrender.com/api/health || echo "Ping failed, but server might still be waking up"
+          echo "=== HeartOut Keep-Alive Ping ==="
+          echo "Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo ""
+
+          MAX_RETRIES=5
+          RETRY_DELAY=10
+          SUCCESS=false
+
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "--- Attempt $i of $MAX_RETRIES ---"
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+              --max-time 30 \
+              --retry 2 \
+              --retry-delay 5 \
+              --retry-max-time 60 \
+              -H "User-Agent: HeartOut-KeepAlive/1.0" \
+              https://heartout-kx89.onrender.com/api/health)
+
+            echo "Response code: $HTTP_CODE"
+
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "Server is alive and healthy!"
+              SUCCESS=true
+              break
+            else
+              echo "Server returned $HTTP_CODE, waiting ${RETRY_DELAY}s before retry..."
+              sleep $RETRY_DELAY
+              # Increase delay for next retry (exponential backoff)
+              RETRY_DELAY=$((RETRY_DELAY * 2))
+            fi
+          done
+
+          if [ "$SUCCESS" = false ]; then
+            echo "Primary health check failed after $MAX_RETRIES attempts"
+          fi
+
+      - name: Secondary Ping - Auth Health
+        if: always()
+        run: |
+          curl -s -o /dev/null -w "Auth health: %{http_code}\n" \
+            --max-time 30 \
+            --retry 3 \
+            --retry-delay 5 \
+            -H "User-Agent: HeartOut-KeepAlive/1.0" \
+            https://heartout-kx89.onrender.com/api/auth/health || true
+
+      - name: Tertiary Ping - Root Endpoint
+        if: always()
+        run: |
+          curl -s -o /dev/null -w "Root endpoint: %{http_code}\n" \
+            --max-time 30 \
+            --retry 3 \
+            --retry-delay 5 \
+            -H "User-Agent: HeartOut-KeepAlive/1.0" \
+            https://heartout-kx89.onrender.com/ || true
+
+      - name: Connection Warmup - DB Query
+        if: always()
+        run: |
+          # Hit an endpoint that triggers a database query to keep Neon DB warm too
+          curl -s -o /dev/null -w "DB warmup (feed): %{http_code}\n" \
+            --max-time 30 \
+            --retry 2 \
+            --retry-delay 5 \
+            -H "User-Agent: HeartOut-KeepAlive/1.0" \
+            "https://heartout-kx89.onrender.com/api/posts?page=1&per_page=1" || true
+
+      - name: Log Summary
+        if: always()
+        run: |
+          echo ""
+          echo "==============================="
+          echo "  Keep-Alive Run Complete"
+          echo "  Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "==============================="
