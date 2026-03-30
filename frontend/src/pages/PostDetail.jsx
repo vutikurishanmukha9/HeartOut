@@ -399,22 +399,16 @@ export default function PostDetail() {
                                 {story.comment_count} responses
                             </span>
 
-                            {/* Author Actions - Edit/Delete */}
+                            {/* Author Actions - Delete Only */}
                             {isAuthor && (
-                                <div className="ml-auto flex items-center gap-2">
-                                    <button
-                                        onClick={() => navigate(`/edit/${story.id}`)}
-                                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-stone-200 dark:border-zinc-600 text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-all"
-                                    >
-                                        <Edit className="w-3.5 h-3.5" />
-                                        Edit
-                                    </button>
+                                <div className="ml-auto flex items-center">
                                     <button
                                         onClick={() => setShowDeleteModal(true)}
-                                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+                                        className="group flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full text-stone-400 dark:text-stone-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all duration-200"
+                                        aria-label="Delete story"
                                     >
-                                        <Trash2 className="w-3.5 h-3.5" />
-                                        Delete
+                                        <Trash2 className="w-3.5 h-3.5 group-hover:scale-110 transition-transform duration-200" />
+                                        <span>Delete</span>
                                     </button>
                                 </div>
                             )}
