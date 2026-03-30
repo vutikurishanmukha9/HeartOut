@@ -41,10 +41,12 @@ export function formatRelativeDate(dateString) {
  */
 export function formatFullDate(dateString) {
     const date = parseUTCDate(dateString);
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleString('en-US', {
         year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
     });
 }
 
