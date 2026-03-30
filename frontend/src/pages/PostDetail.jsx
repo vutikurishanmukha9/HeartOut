@@ -325,8 +325,6 @@ export default function PostDetail() {
                         <span>{story.author?.display_name || story.author?.username || 'Anonymous'}</span>
                         <span>·</span>
                         <span>{formatFullDate(story.created_at)}</span>
-                        <span>·</span>
-                        <span>{story.reading_time} min</span>
                     </div>
 
                     {/* Tags */}
