@@ -153,81 +153,66 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
       onMouseLeave={() => setOpen(false)}
     >
 
-      {/* Popup reaction picker */}
+      {/* Popup reaction picker wrapper to bridge the hover gap */}
       {open && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: "calc(100% + 10px)",
-            left: 0, /* Align to left edge of button to prevent jumping off screen */
-            background: "white",
-            border: "0.5px solid #e5e7eb",
-            borderRadius: "20px",
-            padding: "10px 14px",
-            display: "flex",
-            gap: "6px",
-            alignItems: "center",
-            boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
-            zIndex: 100,
-            whiteSpace: "nowrap",
-          }}
-        >
-          {reactions.map((r) => (
-            <button
-              key={r.key}
-              title={r.label}
-              onClick={() => handleReact(r.key)}
-              style={{
-                width: "44px",
-                height: "44px",
-                borderRadius: "50%",
-                border: currentReaction === r.key ? `2px solid ${r.color}` : "2px solid transparent",
-                background: currentReaction === r.key ? r.activeBg : r.bg,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "transform 0.15s, background 0.15s",
-                transform: animating === r.key ? "scale(1.35)" : "scale(1)",
-                padding: 0,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.2) translateY(-3px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-              }}
-            >
-              {r.icon}
-            </button>
-          ))}
-
-          {/* Tooltip labels below icons */}
+        <div style={{ position: "absolute", bottom: "100%", paddingBottom: "10px", left: 0, zIndex: 100 }}>
+          {/* Actual popup box */}
           <div
             style={{
-              position: "absolute",
-              bottom: "-22px",
-              left: 0,
-              right: 0,
+              background: "white",
+              border: "0.5px solid #e5e7eb",
+              borderRadius: "20px",
+              padding: "10px 14px",
               display: "flex",
-              justifyContent: "space-around",
-              pointerEvents: "none",
+              gap: "6px",
+              alignItems: "center",
+              boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
+              whiteSpace: "nowrap",
             }}
           >
             {reactions.map((r) => (
-              <span
-                key={r.key}
-                style={{
-                  fontSize: "9px",
-                  color: r.color,
-                  fontWeight: 500,
-                  textAlign: "center",
-                  width: "44px",
-                  letterSpacing: "0.2px",
-                }}
-              >
-                {r.label}
-              </span>
+              <div key={r.key} className="relative group flex justify-center">
+                <button
+                  aria-label={r.label}
+                  onClick={() => handleReact(r.key)}
+                  style={{
+                    width: "44px",
+                    height: "44px",
+                    borderRadius: "50%",
+                    border: currentReaction === r.key ? `2px solid ${r.color}` : "2px solid transparent",
+                    background: currentReaction === r.key ? r.activeBg : r.bg,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "transform 0.15s, background 0.15s",
+                    transform: animating === r.key ? "scale(1.35)" : "scale(1)",
+                    padding: 0,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "scale(1.2) translateY(-3px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
+                >
+                  {r.icon}
+                </button>
+                
+                {/* Individual floating tooltip - visible only on hover of this specific icon */}
+                <span
+                  className="absolute -bottom-6 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+                  style={{
+                    fontSize: "10px",
+                    color: r.color,
+                    fontWeight: 600,
+                    whiteSpace: "nowrap",
+                    letterSpacing: "0.3px",
+                  }}
+                >
+                  {r.label}
+                </span>
+              </div>
             ))}
           </div>
         </div>
