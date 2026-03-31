@@ -172,6 +172,26 @@ export default function PostDetail() {
             return;
         }
 
+        // --- Optimistic UI Update ---
+        const prevReaction = userReaction;
+        const prevCount = supportCount;
+        
+        // Define what the new state should look like
+        let newReaction = type;
+        let countDiff = 1;
+
+        if (prevReaction === type) {
+            newReaction = null; // Un-reacting
+            countDiff = -1;
+        } else if (prevReaction) {
+            countDiff = 0; // Changing reaction (count stays same)
+        }
+
+        // Apply instantly
+        setUserReaction(newReaction);
+        setSupportCount(Math.max(0, prevCount + countDiff));
+        // -----------------------------
+
         try {
             const response = await fetch(getApiUrl(`/api/posts/${id}/toggle-react`), {
                 method: 'POST',
@@ -184,11 +204,17 @@ export default function PostDetail() {
 
             if (response.ok) {
                 const data = await response.json();
+                // Ensure server truth overwrites our optimism just in case
                 setUserReaction(data.user_reaction);
                 setSupportCount(data.support_count);
+            } else {
+                throw new Error('API Rejection');
             }
         } catch (error) {
             console.error('Failed to react:', error);
+            // Revert on failure
+            setUserReaction(prevReaction);
+            setSupportCount(prevCount);
         }
     };
 

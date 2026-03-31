@@ -137,11 +137,10 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
 
   // Handle reaction submission seamlessly with PostDetail.jsx
   const handleReact = (key) => {
-    const next = currentReaction === key ? null : key;
     setAnimating(key);
     setTimeout(() => setAnimating(null), 400);
     setOpen(false);
-    if (onReact) onReact(next);
+    if (onReact) onReact(key);
   };
 
   const current = reactions.find((r) => r.key === currentReaction);
