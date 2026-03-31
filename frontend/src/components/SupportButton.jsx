@@ -224,8 +224,9 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
         style={{
           display: "flex",
           alignItems: "center",
+          height: "42px",
+          padding: "0 20px",
           gap: "8px",
-          padding: "10px 22px",
           borderRadius: "10px",
           border: currentReaction
             ? `1.5px solid ${current?.color}40`
@@ -237,25 +238,28 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
           color: currentReaction ? current?.color : "#6b7280",
           transition: "all 0.2s",
           fontFamily: "inherit",
+          boxSizing: "border-box",
         }}
       >
         {currentReaction ? (
           <>
-            <div style={{ transform: "scale(0.8)", transformOrigin: "center right", marginRight: "-4px" }}>
+            <div style={{ display: "flex", alignItems: "center", transform: "scale(0.85)", transformOrigin: "center", marginRight: "-4px" }}>
               {current?.icon}
             </div>
             {current?.label}
           </>
         ) : (
           <>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M12 21s-9-5.5-9-11A6 6 0 0 1 12 6a6 6 0 0 1 9 4c0 5.5-9 11-9 11z"
-                stroke="#9ca3af"
-                strokeWidth="1.8"
-                fill="none"
-              />
-            </svg>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 21s-9-5.5-9-11A6 6 0 0 1 12 6a6 6 0 0 1 9 4c0 5.5-9 11-9 11z"
+                  stroke="#9ca3af"
+                  strokeWidth="1.8"
+                  fill="none"
+                />
+              </svg>
+            </div>
             React
           </>
         )}
@@ -264,12 +268,18 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
         {supportCount > 0 && (
           <span
             style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
               fontSize: "12px",
               fontWeight: 700,
-              padding: "2px 8px",
-              borderRadius: "10px",
-              background: currentReaction ? "rgba(255,255,255,0.6)" : "#f3f4f6",
-              marginLeft: "6px"
+              height: "24px",
+              minWidth: "24px",
+              padding: "0 6px",
+              borderRadius: "12px",
+              background: currentReaction ? "rgba(255,255,255,0.7)" : "#f3f4f6",
+              marginLeft: "4px",
+              color: currentReaction ? current?.color : "#6b7280",
             }}
           >
             {supportCount}
