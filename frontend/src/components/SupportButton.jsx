@@ -147,7 +147,11 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
   const current = reactions.find((r) => r.key === currentReaction);
 
   return (
-    <div ref={dropdownRef} style={{ position: "relative", display: "inline-block", userSelect: "none", zIndex: 10 }}>
+    <div 
+      ref={dropdownRef} 
+      style={{ position: "relative", display: "inline-flex", userSelect: "none", zIndex: 10 }}
+      onMouseLeave={() => setOpen(false)}
+    >
 
       {/* Popup reaction picker */}
       {open && (
@@ -232,19 +236,20 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
       {/* Main React button */}
       <button
         onClick={() => setOpen((o) => !o)}
+        onMouseEnter={() => setOpen(true)}
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "7px",
-          padding: "8px 16px",
-          borderRadius: "20px",
+          gap: "8px",
+          padding: "10px 22px",
+          borderRadius: "24px",
           border: currentReaction
             ? `1.5px solid ${current?.color}40`
             : "1px solid #e5e7eb",
           background: currentReaction ? current?.activeBg : "white",
           cursor: "pointer",
-          fontSize: "13px",
-          fontWeight: 500,
+          fontSize: "15px",
+          fontWeight: 600,
           color: currentReaction ? current?.color : "#6b7280",
           transition: "all 0.2s",
           fontFamily: "inherit",
@@ -252,12 +257,14 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
       >
         {currentReaction ? (
           <>
-            {current?.icon}
+            <div style={{ transform: "scale(0.8)", transformOrigin: "center right", marginRight: "-4px" }}>
+              {current?.icon}
+            </div>
             {current?.label}
           </>
         ) : (
           <>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
               <path
                 d="M12 21s-9-5.5-9-11A6 6 0 0 1 12 6a6 6 0 0 1 9 4c0 5.5-9 11-9 11z"
                 stroke="#9ca3af"
@@ -273,12 +280,12 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
         {supportCount > 0 && (
           <span
             style={{
-              fontSize: "11px",
+              fontSize: "12px",
               fontWeight: 700,
               padding: "2px 8px",
               borderRadius: "10px",
               background: currentReaction ? "rgba(255,255,255,0.6)" : "#f3f4f6",
-              marginLeft: "4px"
+              marginLeft: "6px"
             }}
           >
             {supportCount}
