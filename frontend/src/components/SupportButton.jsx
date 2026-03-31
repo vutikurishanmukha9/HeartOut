@@ -242,7 +242,7 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
           alignItems: "center",
           gap: "8px",
           padding: "10px 22px",
-          borderRadius: "24px",
+          borderRadius: "10px",
           border: currentReaction
             ? `1.5px solid ${current?.color}40`
             : "1px solid #e5e7eb",
