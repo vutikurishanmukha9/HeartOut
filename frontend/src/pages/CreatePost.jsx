@@ -365,7 +365,7 @@ export default function CreatePost() {
                                         value={formData.content}
                                         onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                                         placeholder="Start anywhere. Even the middle is fine."
-                                        className="w-full px-8 py-6 border border-stone-200 dark:border-zinc-700 rounded-xl bg-white dark:bg-zinc-900/50 text-stone-700 dark:text-stone-200 placeholder-stone-400 focus:ring-0 focus:border-amber-500 transition-all duration-300 resize-none leading-[2.5] min-h-[250px] sm:min-h-[450px] overflow-y-auto"
+                                        className="w-full px-8 py-6 border border-stone-200 dark:border-zinc-700 rounded-xl bg-white dark:bg-zinc-900/50 text-stone-700 dark:text-stone-200 placeholder-stone-400 focus:ring-0 focus:border-amber-500 transition-all duration-300 resize-none text-base leading-relaxed min-h-[250px] sm:min-h-[450px] overflow-y-auto"
                                         style={{ maxHeight: '550px' }}
                                     />
                                 </div>

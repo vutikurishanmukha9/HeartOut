@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Sparkles, TrendingUp, Star, ArrowRight, BookOpen, Heart, Clock } from 'lucide-react';
 import StoryCard from '../components/PostCard';
 import StoryTypeSelector from '../components/StoryTypeSelector';
@@ -104,14 +105,14 @@ export default function Feed() {
 
                             {/* CTA Section */}
                             <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 justify-center lg:justify-start w-full sm:w-auto">
-                                <a href="/feed/create" className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 text-white font-bold shadow-lg shadow-amber-600/20 hover:shadow-xl hover:shadow-amber-600/25 hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto text-sm sm:text-base">
+                                <Link to="/feed/create" className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 text-white font-bold shadow-lg shadow-amber-600/20 hover:shadow-xl hover:shadow-amber-600/25 hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto text-sm sm:text-base">
                                     <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
                                     <span>Write Something You've Been Holding In</span>
                                     {/* Shine effect */}
                                     <div className="absolute inset-0 rounded-xl sm:rounded-2xl overflow-hidden">
                                         <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                                     </div>
-                                </a>
+                                </Link>
 
                                 {/* Simple authentic tagline */}
                                 <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50">
@@ -246,10 +247,10 @@ export default function Feed() {
                         <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
                             Be the first to share your story and inspire others with your experiences.
                         </p>
-                        <a href="/feed/create" className="btn-premium inline-flex items-center gap-2">
+                        <Link to="/feed/create" className="btn-premium inline-flex items-center gap-2">
                             <BookOpen className="w-5 h-5" />
                             Write the First Story
-                        </a>
+                        </Link>
                     </div>
                 )}
 
