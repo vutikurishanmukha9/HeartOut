@@ -20,10 +20,34 @@ export default function Drafts() {
                 credentials: 'include',
             });
 
+            let serverDrafts = [];
             if (response.ok) {
                 const data = await response.json();
-                setDrafts(data.drafts || []);
+                serverDrafts = data.drafts || [];
             }
+            
+            // Check for local unsaved draft
+            const savedDraft = localStorage.getItem('heartout_draft');
+            if (savedDraft) {
+                try {
+                    const parsed = JSON.parse(savedDraft);
+                    if (parsed.title || parsed.content) {
+                        const localDraft = {
+                            id: 'local',
+                            title: parsed.title || '(Unsaved local draft)',
+                            content: parsed.content || '',
+                            story_type: parsed.story_type || 'other',
+                            updated_at: parsed.savedAt || new Date().toISOString(),
+                            isLocal: true
+                        };
+                        setDrafts([localDraft, ...serverDrafts]);
+                        return;
+                    }
+                } catch (e) {
+                    console.error('Failed to parse local draft:', e);
+                }
+            }
+            setDrafts(serverDrafts);
         } catch (error) {
             console.error('Failed to fetch drafts:', error);
         } finally {
@@ -40,13 +64,18 @@ export default function Drafts() {
         if (!id) return;
 
         try {
-            const response = await fetch(getApiUrl(`/api/posts/${id}`), {
-                method: 'DELETE',
-                credentials: 'include',
-            });
-
-            if (response.ok) {
+            if (id === 'local') {
+                localStorage.removeItem('heartout_draft');
                 setDrafts(drafts.filter(d => d.id !== id));
+            } else {
+                const response = await fetch(getApiUrl(`/api/posts/${id}`), {
+                    method: 'DELETE',
+                    credentials: 'include',
+                });
+
+                if (response.ok) {
+                    setDrafts(drafts.filter(d => d.id !== id));
+                }
             }
         } catch (error) {
             console.error('Failed to delete draft:', error);
@@ -163,7 +192,7 @@ export default function Drafts() {
                                         {/* Actions */}
                                         <div className="flex items-center gap-2 sm:gap-3 sm:ml-4">
                                             <Link
-                                                to={`/feed/create?draft=${draft.id}`}
+                                                to={draft.id === 'local' ? `/feed/create` : `/feed/create?draft=${draft.id}`}
                                                 className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-violet-500 to-purple-600 text-white text-sm font-medium rounded-xl shadow-md shadow-violet-500/20 hover:shadow-lg hover:shadow-violet-500/30 hover:scale-105 active:scale-95 transition-all duration-200"
                                             >
                                                 <Edit className="w-4 h-4" />

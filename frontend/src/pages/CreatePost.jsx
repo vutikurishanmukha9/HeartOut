@@ -95,23 +95,42 @@ export default function CreatePost() {
         localStorage.removeItem('heartout_draft');
     };
 
+    const handleDiscardLocalDraft = () => {
+        if (window.confirm('Are you sure you want to discard this local draft?')) {
+            clearLocalDraft();
+            setFormData({
+                title: '',
+                content: '',
+                story_type: '',
+                is_anonymous: false,
+                tags: [],
+                status: 'draft'
+            });
+            setStep(1);
+        }
+    };
+
     // Auto-save draft to localStorage every 5 seconds
     useEffect(() => {
-        if (!draftId && (formData.title || formData.content)) {
-            const timer = setTimeout(() => {
-                localStorage.setItem('heartout_draft', JSON.stringify({
-                    title: formData.title,
-                    content: formData.content,
-                    story_type: formData.story_type,
-                    is_anonymous: formData.is_anonymous,
-                    tags: formData.tags,
-                    savedAt: new Date().toISOString()
-                }));
-                setAutoSaved(true);
-                setLastSaved(new Date());
-                setTimeout(() => setAutoSaved(false), 2000);
-            }, 5000);
-            return () => clearTimeout(timer);
+        if (!draftId) {
+            if (formData.title || formData.content) {
+                const timer = setTimeout(() => {
+                    localStorage.setItem('heartout_draft', JSON.stringify({
+                        title: formData.title,
+                        content: formData.content,
+                        story_type: formData.story_type,
+                        is_anonymous: formData.is_anonymous,
+                        tags: formData.tags,
+                        savedAt: new Date().toISOString()
+                    }));
+                    setAutoSaved(true);
+                    setLastSaved(new Date());
+                    setTimeout(() => setAutoSaved(false), 2000);
+                }, 5000);
+                return () => clearTimeout(timer);
+            } else {
+                localStorage.removeItem('heartout_draft');
+            }
         }
     }, [formData.title, formData.content, formData.story_type, formData.is_anonymous, formData.tags, draftId]);
 
@@ -346,7 +365,7 @@ export default function CreatePost() {
                                         type="text"
                                         value={formData.title}
                                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                        placeholder="Name this, or leave it blank for now."
+                                        placeholder="Story Headline (Optional)"
                                         className="w-full px-5 py-4 text-lg font-medium border border-stone-200 dark:border-zinc-700 rounded-xl bg-white dark:bg-zinc-900/50 text-stone-800 dark:text-stone-100 placeholder-stone-400 focus:ring-0 focus:border-amber-500 transition-all duration-300"
                                         maxLength={200}
                                     />
@@ -424,7 +443,16 @@ export default function CreatePost() {
                         </div>
 
                         {/* Action Buttons - Quieter */}
-                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-8">
+                            {!draftId && (formData.title || formData.content) && (
+                                <button
+                                    type="button"
+                                    onClick={handleDiscardLocalDraft}
+                                    className="flex-none px-6 py-3.5 text-red-500 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-xl font-medium hover:bg-red-100 dark:hover:bg-red-500/30 transition-all duration-200"
+                                >
+                                    Discard
+                                </button>
+                            )}
                             <button
                                 onClick={() => handleSubmit(false)}
                                 disabled={submitting}
