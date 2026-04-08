@@ -24,6 +24,7 @@ export default function CreatePost() {
     const [tagInput, setTagInput] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [showPublishModal, setShowPublishModal] = useState(false);
+    const [showDiscardModal, setShowDiscardModal] = useState(false);
     const [autoSaved, setAutoSaved] = useState(false);
     const [lastSaved, setLastSaved] = useState(null);
 
@@ -96,18 +97,17 @@ export default function CreatePost() {
     };
 
     const handleDiscardLocalDraft = () => {
-        if (window.confirm('Are you sure you want to discard this local draft?')) {
-            clearLocalDraft();
-            setFormData({
-                title: '',
-                content: '',
-                story_type: '',
-                is_anonymous: false,
-                tags: [],
-                status: 'draft'
-            });
-            setStep(1);
-        }
+        clearLocalDraft();
+        setFormData({
+            title: '',
+            content: '',
+            story_type: '',
+            is_anonymous: false,
+            tags: [],
+            status: 'draft'
+        });
+        setStep(1);
+        setShowDiscardModal(false);
     };
 
     // Auto-save draft to localStorage every 5 seconds
@@ -305,7 +305,7 @@ export default function CreatePost() {
 
     // Step 2: Write Story
     return (
-        <div className="min-h-screen bg-gradient-to-b from-stone-50 to-amber-50/30 dark:from-zinc-900 dark:to-zinc-900 py-8 relative overflow-hidden">
+        <div className="min-h-screen bg-gradient-to-b from-stone-50 to-amber-50/30 dark:from-zinc-900 dark:to-zinc-900 pt-8 pb-32 sm:pb-24 relative overflow-hidden">
             {/* Single subtle floating orb */}
             <div className="absolute top-40 right-10 w-80 h-80 bg-amber-100/20 rounded-full blur-3xl pointer-events-none" />
 
@@ -447,7 +447,7 @@ export default function CreatePost() {
                             {!draftId && (formData.title || formData.content) && (
                                 <button
                                     type="button"
-                                    onClick={handleDiscardLocalDraft}
+                                    onClick={() => setShowDiscardModal(true)}
                                     className="flex-none px-6 py-3.5 text-red-500 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-xl font-medium hover:bg-red-100 dark:hover:bg-red-500/30 transition-all duration-200"
                                 >
                                     Discard
@@ -525,6 +525,40 @@ export default function CreatePost() {
                     </div>
                 </div>
             </div>
+
+            {/* Discard Confirmation Modal */}
+            {showDiscardModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+                    <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-2xl p-6 animate-scale-in border border-stone-200 dark:border-zinc-700 shadow-2xl">
+                        <div className="text-center mb-6">
+                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 mb-4">
+                                <AlertCircle className="w-8 h-8 text-red-600 dark:text-red-400" />
+                            </div>
+                            <h3 className="text-2xl font-bold text-stone-900 dark:text-white mb-2">
+                                Discard Draft?
+                            </h3>
+                            <p className="text-stone-600 dark:text-stone-400">
+                                This will permanently delete your unsaved changes. You won't be able to recover this draft.
+                            </p>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setShowDiscardModal(false)}
+                                className="flex-1 px-4 py-3 border-2 border-stone-200 dark:border-zinc-700 rounded-xl text-stone-700 dark:text-stone-300 font-medium hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors"
+                            >
+                                Keep Editing
+                            </button>
+                            <button
+                                onClick={handleDiscardLocalDraft}
+                                className="flex-1 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 shadow-lg shadow-red-500/25 transition-all py-3"
+                            >
+                                Discard
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Publish Confirmation Modal */}
             {showPublishModal && (
