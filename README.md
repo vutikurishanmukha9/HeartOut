@@ -94,6 +94,11 @@ We are building HeartOut in distinct phases. Here is our current progress:
   - [x] XSS protection & Content sanitization
   - [x] Report & Moderation tools
 
+- [x] **Phase 3.5: Security Hardening (Solved)**
+  - [x] HttpOnly Secure Cookie authentication (XSS-immune tokens)
+  - [x] Security headers (X-Frame-Options, HSTS, CSP)
+  - [x] CORS whitelist with strict origin validation
+
 - [ ] **Phase 4: Deep Connection (Planned)**
   - [ ] Voice stories (Audio recording)
   - [ ] Private support groups
@@ -119,7 +124,7 @@ graph TD
     subgraph "Backend Layer"
         BE -->|Validation| Pydantic["Pydantic v2 Models"]
         BE -->|ORM| SQL["SQLAlchemy 2.0 (Async)"]
-        BE -->|Auth| Sec["Security/JWT Service"]
+        BE -->|Auth| Sec["Security/JWT + HttpOnly Cookies"]
         BE -->|Ranking| Rank["Smart Ranking Engine"]
     end
     
@@ -156,7 +161,7 @@ We are moving towards a **"Compassionate AI"** future where the platform doesn't
 
 ### Key Features
 - Anonymous posting option
-- 5 reaction types (Love, Inspiring, Save, Hug, Mind-blown)
+- 5 reaction types (Felt This, Holding Space, Moved, Brave, Grateful)
 - **Smart Category-Based Ranking** - Unique algorithm per story type (Learning-to-Rank, Emotion-Similarity, etc.)
 - **Bookmark/Save Stories** - Save stories for later with engagement tracking
 - **Read Progress Tracking** - Scroll depth and time spent analytics
@@ -187,7 +192,7 @@ We are moving towards a **"Compassionate AI"** future where the platform doesn't
 | **Pydantic v2** | Data validation |
 | **Uvicorn** | ASGI server |
 | **SlowAPI** | Rate limiting |
-| JWT (PyJWT) | Authentication |
+| python-jose (JWT) | HttpOnly cookie-based authentication |
 
 ### Frontend
 | Technology | Purpose |
@@ -199,6 +204,7 @@ We are moving towards a **"Compassionate AI"** future where the platform doesn't
 | React Router | Navigation |
 | **Recharts** | Data visualization |
 | **react-helmet-async** | Dynamic SEO meta tags |
+| **TanStack Query** | Server state & caching |
 
 ---
 
@@ -283,8 +289,10 @@ HeartOut/
 | POST | `/api/auth/login` | Login |
 | GET | `/api/auth/profile` | Get profile |
 | PUT | `/api/auth/profile` | Update profile |
-| PUT | `/api/auth/change-password` | Change password |
-| DELETE | `/api/auth/me` | Delete account |
+| POST | `/api/auth/change-password` | Change password |
+| DELETE | `/api/auth/account` | Delete account |
+| POST | `/api/auth/refresh` | Refresh access token (via cookie) |
+| POST | `/api/auth/logout` | Logout (clears cookies + blocklists token) |
 | GET | `/api/auth/stats` | User statistics |
 
 ### Stories
@@ -308,26 +316,41 @@ HeartOut/
 ## Security Features
 
 ### Authentication & Authorization
-- **JWT-based authentication** with access and refresh tokens
-- **Persistent token blocklist** for secure logout
+- **HttpOnly Secure Cookie authentication** — JWT tokens stored in `HttpOnly` + `Secure` + `SameSite=None` cookies, completely immune to XSS token theft
+- **Dual-source token extraction** — Backend reads cookies first, falls back to `Authorization` header for backward compatibility
+- **Persistent token blocklist** for secure logout (database-backed)
 - **Strong password validation** (8+ chars, upper/lower/number/special)
-- **Email domain restriction** - Only Gmail, Outlook, Yahoo, iCloud allowed
+- **Access + Refresh token rotation** — 1-hour access, 30-day refresh
 - **Environment variable validation** on startup
 
+### Security Headers
+- `X-Frame-Options: DENY` — Clickjacking protection
+- `X-Content-Type-Options: nosniff` — MIME sniffing prevention
+- `X-XSS-Protection: 1; mode=block` — Legacy XSS filter
+- `Strict-Transport-Security` — HSTS in production
+- `Referrer-Policy: strict-origin-when-cross-origin`
+- `Permissions-Policy` — Camera, microphone, geolocation disabled
+
 ### Input Protection
-- **XSS Prevention** with DOMPurify sanitization
-- **Input validation** with Marshmallow schemas
-- **SQL injection protection** via SQLAlchemy ORM
+- **XSS Prevention** — React auto-escaping + DOMPurify sanitization
+- **Input validation** with Pydantic v2 schemas (strict field whitelisting)
+- **SQL injection protection** via SQLAlchemy 2.0 ORM (zero raw queries)
+- **Mass assignment prevention** — Pydantic schemas drop unknown fields
+
+### CORS Configuration
+- **Strict origin whitelist** — Only `localhost`, `vercel.app`, and `onrender.com` domains allowed
+- **No wildcard origins** — `Access-Control-Allow-Origin: *` is never used
+- **Credentials supported** — `allow_credentials=True` for cookie transport
 
 ### Rate Limiting
-- **Redis-backed rate limiting** for production (distributed)
+- **SlowAPI rate limiting** with per-IP tracking
+- **Redis-backed** for production (distributed)
 - **Memory fallback** for development
-- Default: 200/day, 50/hour per IP
 
 ### Error Handling
-- **Centralized error handlers** with consistent responses
+- **Centralized error handlers** with consistent JSON responses
 - **React Error Boundaries** for graceful UI failures
-- **Detailed logging** with rotating file handler
+- **Pydantic validation errors** serialized to JSON-safe format
 
 ### Production Configuration
 Set these environment variables for production:
@@ -547,14 +570,26 @@ pytest tests/test_security.py -v
 
 ## Recent Updates
 
+### v3.1.0 - HttpOnly Cookie Security Migration
+- **Security Architecture Overhaul** — Complete migration from `localStorage` JWT storage to `HttpOnly` Secure Cookies:
+  - Tokens are now invisible to JavaScript (immune to XSS token theft)
+  - Backend sets `HttpOnly`, `Secure`, `SameSite=None` cookies on login/register
+  - Frontend uses `credentials: 'include'` — zero manual token management
+  - Backward-compatible: backend still accepts `Authorization: Bearer` header as fallback
+- **Files Changed**: 12 files across backend and frontend
+- **Bug Fix**: Settings page was using wrong localStorage key (`token` instead of `access_token`), silently breaking password change and account deletion
+- **Emotional Resonance Reactions** — Optimistic UI updates for instant feedback
+- **Navigation Fix** — Client-side routing for "Write Something" CTA (no full-page reload)
+- **Editor UX** — Improved textarea line spacing for professional writing experience
+
 ### v3.0.1 - Settings Page & Bug Fixes
 - **Settings Page** - Dedicated account management page at `/profile/settings`:
   - Theme toggle (Light/Dark/System)
   - Change password with validation
   - Account deletion with confirmation modal
 - **New API Endpoints**:
-  - `PUT /api/auth/change-password` - Secure password change
-  - `DELETE /api/auth/me` - Account deletion
+  - `POST /api/auth/change-password` - Secure password change
+  - `DELETE /api/auth/account` - Account deletion
 - **Bug Fixes**:
   - Fixed timezone issue in comment timestamps (UTC parsing)
   - Added explicit `/settings` route before dynamic `/:userId`
@@ -690,71 +725,9 @@ pytest tests/test_security.py -v
 - Enhanced schema validations
 - Service layer architecture
 
----
-
-## Deployment
-
-### Quick Deploy to Render
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
-
-1. Fork this repository
-2. Connect your GitHub to Render
-3. Create a new **Blueprint** and select this repo
-4. Render will auto-detect `render.yaml` and create:
-   - PostgreSQL database
-   - Backend API service
-   - Frontend static site
-
-### Quick Deploy to Railway
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template)
-
-1. Fork this repository
-2. Create new project on Railway
-3. Add PostgreSQL database
-4. Deploy from GitHub repo
-5. Set environment variables:
-   - `SECRET_KEY`
-   - `JWT_SECRET_KEY`
-   - `DATABASE_URL` (auto-set by Railway)
-
-### Manual Deployment
-
-#### Backend (Render/Railway/Heroku)
-```bash
-# Start command:
-uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 2
-
-# Environment variables required:
-SECRET_KEY=<32+ char secret>
-JWT_SECRET_KEY=<32+ char secret>
-DATABASE_URL=postgresql://...
-CORS_ORIGINS=https://your-frontend-domain.com
-
-# Optional:
-REDIS_URL=redis://...  # For distributed rate limiting
-```
-
-#### Frontend (Vercel/Netlify/Render)
-```bash
-# Build command:
-npm run build
-
-# Publish directory:
-dist
-
-# Environment variable:
-VITE_API_URL=https://your-backend-api.com
-```
-
-### Deployment Files
-| File | Purpose |
-|------|---------|
-| `render.yaml` | Render Blueprint (auto-deploy) |
-| `railway.toml` | Railway configuration |
-| `Procfile` | Heroku/Railway process file |
-| `runtime.txt` | Python version specification |
 
 ---
+
 
 ## Roadmap
 

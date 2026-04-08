@@ -14,11 +14,8 @@ export default function SavedStories() {
 
     const fetchSavedStories = async () => {
         try {
-            const token = localStorage.getItem('access_token');
             const response = await fetch(getApiUrl('/api/posts/bookmarks'), {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                credentials: 'include',
             });
 
             if (response.ok) {

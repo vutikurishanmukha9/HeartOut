@@ -74,9 +74,9 @@ export default function Settings() {
         try {
             const response = await fetch(getApiUrl('/api/auth/change-password'), {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify({
                     current_password: passwordData.currentPassword,
@@ -111,9 +111,9 @@ export default function Settings() {
         try {
             const response = await fetch(getApiUrl('/api/auth/account'), {
                 method: 'DELETE',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify({ password: deletePassword })
             });

@@ -38,9 +38,7 @@ export default function Profile() {
     const fetchOwnProfile = async () => {
         try {
             const response = await fetch(getApiUrl('/api/auth/profile'), {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-                }
+                credentials: 'include',
             });
             const data = await response.json();
             setProfile(data.user);
@@ -82,11 +80,8 @@ export default function Profile() {
             }
 
             const endpoint = getApiUrl(`/api/posts/user/${targetUserId}/stories`);
-            const headers = isOwnProfile
-                ? { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` }
-                : {};
 
-            const response = await fetch(endpoint, { headers });
+            const response = await fetch(endpoint, { credentials: 'include' });
             const data = await response.json();
             setStories(data.stories || []);
         } catch (error) {
@@ -99,9 +94,9 @@ export default function Profile() {
         try {
             const response = await fetch(getApiUrl('/api/auth/profile'), {
                 method: 'PUT',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
                 },
                 body: JSON.stringify(formData)
             });

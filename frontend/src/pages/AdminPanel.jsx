@@ -17,11 +17,8 @@ export default function AdminPanel() {
 
     const fetchStats = async () => {
         try {
-            const token = localStorage.getItem('access_token');
             const response = await fetch(getApiUrl('/api/admin/stats'), {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                credentials: 'include',
             });
 
             if (response.ok) {

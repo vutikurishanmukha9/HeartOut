@@ -5,19 +5,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getApiUrl } from './api';
 
-// Helper to get auth headers
-const getAuthHeaders = () => {
-    const token = localStorage.getItem('access_token');
-    return token ? { Authorization: `Bearer ${token}` } : {};
-};
-
-// Generic fetch wrapper
+// Generic fetch wrapper with cookie-based auth
 const apiFetch = async (endpoint, options = {}) => {
     const response = await fetch(getApiUrl(endpoint), {
         ...options,
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
-            ...getAuthHeaders(),
             ...options.headers,
         },
     });

@@ -6,7 +6,7 @@ from typing import Optional, Any
 import uuid
 from jose import jwt, JWTError
 import bcrypt
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -71,10 +71,12 @@ def decode_token(token: str) -> Optional[dict]:
 
 
 async def get_current_user(
-    token: str = Depends(oauth2_scheme),
+    request: Request,
     db: AsyncSession = Depends(get_db)
 ):
-    """Dependency to get current authenticated user"""
+    """Dependency to get current authenticated user.
+    Reads JWT from HttpOnly cookie first, falls back to Authorization header.
+    """
     from app.models.models import User, TokenBlocklist
     
     credentials_exception = HTTPException(
@@ -82,6 +84,16 @@ async def get_current_user(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    
+    # Try cookie first, then Authorization header
+    token = request.cookies.get("access_token")
+    if not token:
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            token = auth_header[7:]
+    
+    if not token:
+        raise credentials_exception
     
     payload = decode_token(token)
     if payload is None:
@@ -113,25 +125,24 @@ async def get_current_user(
 
 
 async def get_current_user_optional(
-    db: AsyncSession = Depends(get_db),
-    authorization: Optional[str] = None
+    request: Request,
+    db: AsyncSession = Depends(get_db)
 ):
     """
     Dependency to get current user if authenticated, None otherwise.
     Does not require authentication - returns None for unauthenticated requests.
+    Reads JWT from HttpOnly cookie first, falls back to Authorization header.
     """
     from app.models.models import User
-    from fastapi import Request
     
-    if not authorization:
-        return None
+    # Try cookie first, then Authorization header
+    token = request.cookies.get("access_token")
+    if not token:
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            token = auth_header[7:]
     
-    # Extract token from "Bearer <token>" format
-    try:
-        scheme, token = authorization.split()
-        if scheme.lower() != "bearer":
-            return None
-    except ValueError:
+    if not token:
         return None
     
     payload = decode_token(token)

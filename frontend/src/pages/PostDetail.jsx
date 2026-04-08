@@ -63,15 +63,10 @@ export default function PostDetail() {
         if (timeSpent < 3) return; // Don't track very short visits
 
         try {
-            const headers = { 'Content-Type': 'application/json' };
-            const token = localStorage.getItem('access_token');
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
-
             await fetch(getApiUrl(`/api/posts/${id}/read-progress`), {
                 method: 'POST',
-                headers,
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     scroll_depth: maxScrollDepthRef.current,
                     time_spent: timeSpent
@@ -97,9 +92,7 @@ export default function PostDetail() {
     const fetchBookmarkStatus = async () => {
         try {
             const response = await fetch(getApiUrl(`/api/posts/${id}/bookmark`), {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-                }
+                credentials: 'include',
             });
             if (response.ok) {
                 const data = await response.json();
@@ -114,9 +107,7 @@ export default function PostDetail() {
         try {
             const response = await fetch(getApiUrl(`/api/posts/${id}/bookmark`), {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-                }
+                credentials: 'include',
             });
             if (response.ok) {
                 const data = await response.json();
@@ -143,9 +134,7 @@ export default function PostDetail() {
     const fetchUserReaction = async () => {
         try {
             const response = await fetch(getApiUrl(`/api/posts/${id}/my-reaction`), {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-                }
+                credentials: 'include',
             });
             if (response.ok) {
                 const data = await response.json();
@@ -195,9 +184,9 @@ export default function PostDetail() {
         try {
             const response = await fetch(getApiUrl(`/api/posts/${id}/toggle-react`), {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
                 },
                 body: JSON.stringify({ support_type: type })
             });
@@ -224,9 +213,9 @@ export default function PostDetail() {
         try {
             const response = await fetch(getApiUrl(`/api/posts/${id}/comments`), {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
                 },
                 body: JSON.stringify({
                     content: commentText,
@@ -262,9 +251,7 @@ export default function PostDetail() {
         try {
             const response = await fetch(getApiUrl(`/api/posts/${id}`), {
                 method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-                }
+                credentials: 'include',
             });
 
             if (response.ok) {

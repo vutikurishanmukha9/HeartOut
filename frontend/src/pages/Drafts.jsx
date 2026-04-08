@@ -16,11 +16,8 @@ export default function Drafts() {
 
     const fetchDrafts = async () => {
         try {
-            const token = localStorage.getItem('access_token');
             const response = await fetch(getApiUrl('/api/posts/drafts'), {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                credentials: 'include',
             });
 
             if (response.ok) {
@@ -43,12 +40,9 @@ export default function Drafts() {
         if (!id) return;
 
         try {
-            const token = localStorage.getItem('access_token');
             const response = await fetch(getApiUrl(`/api/posts/${id}`), {
                 method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                credentials: 'include',
             });
 
             if (response.ok) {

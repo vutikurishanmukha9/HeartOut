@@ -2,7 +2,7 @@
 FastAPI Authentication Routes
 Complete migration from Flask auth blueprint
 """
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from slowapi import Limiter
@@ -28,6 +28,44 @@ limiter = Limiter(key_func=get_remote_address)
 
 # JWT blocklist (in-memory for quick checks)
 jwt_blocklist = set()
+
+
+# Cookie configuration constants
+COOKIE_SECURE = True  # Always True for HTTPS (Vercel/Render)
+COOKIE_HTTPONLY = True
+COOKIE_SAMESITE = "none"  # Required for cross-origin (Vercel <-> Render)
+COOKIE_PATH = "/"
+ACCESS_TOKEN_MAX_AGE = 60 * 60  # 1 hour in seconds
+REFRESH_TOKEN_MAX_AGE = 30 * 24 * 60 * 60  # 30 days in seconds
+
+
+def set_auth_cookies(response: Response, access_token: str, refresh_token: str = None):
+    """Set HttpOnly authentication cookies on a response."""
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        max_age=ACCESS_TOKEN_MAX_AGE,
+        httponly=COOKIE_HTTPONLY,
+        secure=COOKIE_SECURE,
+        samesite=COOKIE_SAMESITE,
+        path=COOKIE_PATH,
+    )
+    if refresh_token:
+        response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            max_age=REFRESH_TOKEN_MAX_AGE,
+            httponly=COOKIE_HTTPONLY,
+            secure=COOKIE_SECURE,
+            samesite=COOKIE_SAMESITE,
+            path=COOKIE_PATH,
+        )
+
+
+def clear_auth_cookies(response: Response):
+    """Delete authentication cookies from the response."""
+    response.delete_cookie(key="access_token", path=COOKIE_PATH, samesite=COOKIE_SAMESITE, secure=COOKIE_SECURE)
+    response.delete_cookie(key="refresh_token", path=COOKIE_PATH, samesite=COOKIE_SAMESITE, secure=COOKIE_SECURE)
 
 
 def get_password_requirements() -> dict:
@@ -58,6 +96,7 @@ async def health_check():
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register(
     user_data: UserRegistration,
+    response: Response,
     db: AsyncSession = Depends(get_db)
 ):
     """Register a new user"""
@@ -102,10 +141,12 @@ async def register(
     access_token = create_access_token(data={"sub": user.public_id})
     refresh_token = create_refresh_token(data={"sub": user.public_id})
     
+    # Set HttpOnly cookies
+    set_auth_cookies(response, access_token, refresh_token)
+    
     return {
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "token_type": "bearer",
+        "message": "Registration successful",
+        "token_type": "cookie",
         "user": user.to_dict()
     }
 
@@ -114,9 +155,10 @@ async def register(
 @router.post("/login")
 async def login(
     credentials: UserLogin,
+    response: Response,
     db: AsyncSession = Depends(get_db)
 ):
-    """Authenticate user and return tokens"""
+    """Authenticate user and return tokens via HttpOnly cookies"""
     # Find user by email
     result = await db.execute(select(User).where(User.email == credentials.email))
     user = result.scalar_one_or_none()
@@ -141,10 +183,12 @@ async def login(
     access_token = create_access_token(data={"sub": user.public_id})
     refresh_token = create_refresh_token(data={"sub": user.public_id})
     
+    # Set HttpOnly cookies
+    set_auth_cookies(response, access_token, refresh_token)
+    
     return {
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "token_type": "bearer",
+        "message": "Login successful",
+        "token_type": "cookie",
         "user": user.to_dict(include_sensitive=True)
     }
 
@@ -152,11 +196,27 @@ async def login(
 # Refresh token
 @router.post("/refresh")
 async def refresh_access_token(
-    token_data: RefreshToken,
+    request: Request,
+    response: Response,
     db: AsyncSession = Depends(get_db)
 ):
-    """Refresh access token using refresh token"""
-    payload = decode_token(token_data.refresh_token)
+    """Refresh access token using refresh token from cookie"""
+    # Read refresh token from cookie first, then from JSON body as fallback
+    refresh_tok = request.cookies.get("refresh_token")
+    if not refresh_tok:
+        try:
+            body = await request.json()
+            refresh_tok = body.get("refresh_token")
+        except Exception:
+            pass
+    
+    if not refresh_tok:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No refresh token provided"
+        )
+    
+    payload = decode_token(refresh_tok)
     if not payload or payload.get("type") != "refresh":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -174,31 +234,37 @@ async def refresh_access_token(
         )
     
     new_access_token = create_access_token(data={"sub": user.public_id})
-    return {"access_token": new_access_token, "token_type": "bearer"}
+    
+    # Set new access_token cookie
+    set_auth_cookies(response, new_access_token)
+    
+    return {"message": "Token refreshed", "token_type": "cookie"}
 
 
 # Logout
 @router.post("/logout")
 async def logout(
     request: Request,
+    response: Response,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
-    """Logout user (invalidate token in database)"""
+    """Logout user (invalidate token in database and clear cookies)"""
     from app.core.security import decode_token
     
-    # Get the token from the request
-    auth_header = request.headers.get("Authorization", "")
-    if auth_header.startswith("Bearer "):
-        token = auth_header[7:]
+    # Get the token from cookie or Authorization header
+    token = request.cookies.get("access_token")
+    if not token:
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            token = auth_header[7:]
+    
+    if token:
         payload = decode_token(token)
-        
         if payload:
-            # Get JTI (JWT ID) from token - if not present, use a hash of the token
             jti = payload.get("jti") or str(hash(token))[:36]
             exp = payload.get("exp")
             
-            # Add token to blocklist
             blocklist_entry = TokenBlocklist(
                 jti=jti,
                 token_type=payload.get("type", "access"),
@@ -208,6 +274,9 @@ async def logout(
             
             db.add(blocklist_entry)
             await db.commit()
+    
+    # Clear HttpOnly cookies
+    clear_auth_cookies(response)
     
     return {"message": "Successfully logged out"}
 

@@ -60,10 +60,9 @@ export default function CreatePost() {
 
     const loadDraft = async (id) => {
         try {
-            const token = localStorage.getItem('access_token');
             console.log('Loading draft:', id);
             const response = await fetch(getApiUrl(`/api/posts/${id}`), {
-                headers: { 'Authorization': `Bearer ${token}` }
+                credentials: 'include',
             });
             if (response.ok) {
                 const data = await response.json();
@@ -150,9 +149,9 @@ export default function CreatePost() {
 
             const response = await fetch(url, {
                 method,
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
                 },
                 body: JSON.stringify({
                     ...formData,
