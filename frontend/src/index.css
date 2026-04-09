@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -11,6 +11,10 @@
 
 .font-body {
   font-family: 'Inter', sans-serif;
+}
+
+.font-editorial {
+  font-family: 'DM Serif Display', serif;
 }
 
 :root {
@@ -117,6 +121,199 @@ code {
 
 .dark ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #b8ada4 0%, #847569 100%);
+}
+
+/* ===== AUTH PAGE DESIGN SYSTEM ===== */
+
+/* Full-bleed gradient background — diagonal, lower saturation, crafted feel */
+.auth-gradient {
+  background: linear-gradient(135deg, 
+    hsl(270, 35%, 28%) 0%, 
+    hsl(340, 40%, 38%) 35%,
+    hsl(15, 55%, 50%) 65%,
+    hsl(32, 60%, 55%) 100%);
+  position: relative;
+}
+
+/* Grain/noise texture overlay — makes gradient feel designed, not generated */
+.auth-gradient::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.5;
+}
+
+.dark .auth-gradient {
+  background: linear-gradient(135deg,
+    hsl(270, 25%, 14%) 0%,
+    hsl(340, 20%, 18%) 35%,
+    hsl(15, 30%, 20%) 65%,
+    hsl(32, 35%, 22%) 100%);
+}
+
+/* Frosted glass form card */
+.auth-glass-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 
+    0 24px 48px rgba(0, 0, 0, 0.12),
+    0 8px 16px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border-radius: 24px;
+}
+
+.dark .auth-glass-card {
+  background: rgba(24, 24, 30, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.4),
+    0 8px 16px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Warm-filled input fields with animated focus */
+.auth-input {
+  width: 100%;
+  padding: 14px 16px 14px 48px;
+  background: #f7f2ec;
+  border: 1.5px solid #e5ddd4;
+  border-radius: 12px;
+  font-size: 15px;
+  color: #1a1a1a;
+  transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+  outline: none;
+}
+
+.auth-input::placeholder {
+  color: #a8a098;
+}
+
+.auth-input:hover {
+  border-color: #d4c8ba;
+  background: #f3ede6;
+}
+
+.auth-input:focus {
+  border-color: #d4832d;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(212, 131, 45, 0.15);
+}
+
+.dark .auth-input {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f0ebe4;
+}
+
+.dark .auth-input::placeholder {
+  color: #6b6560;
+}
+
+.dark .auth-input:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dark .auth-input:focus {
+  border-color: #e69a45;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(230, 154, 69, 0.2);
+}
+
+/* Custom styled checkbox — rounded, orange gradient fill */
+.auth-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #d4c8ba;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  transition: all 200ms ease;
+  flex-shrink: 0;
+}
+
+.auth-checkbox:hover {
+  border-color: #d4832d;
+}
+
+.auth-checkbox:checked {
+  background: linear-gradient(135deg, #e69a45, #d4832d);
+  border-color: #d4832d;
+}
+
+.auth-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.dark .auth-checkbox {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dark .auth-checkbox:hover {
+  border-color: #e69a45;
+}
+
+.dark .auth-checkbox:checked {
+  background: linear-gradient(135deg, #e69a45, #d4832d);
+  border-color: #e69a45;
+}
+
+/* Auth feature pills on glass card */
+.auth-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  background: rgba(212, 131, 45, 0.08);
+  color: #8b6914;
+  border: 1px solid rgba(212, 131, 45, 0.15);
+  transition: all 300ms ease;
+}
+
+.auth-pill:hover {
+  background: rgba(212, 131, 45, 0.14);
+  transform: translateY(-1px);
+}
+
+.dark .auth-pill {
+  background: rgba(230, 154, 69, 0.1);
+  color: #d4a85c;
+  border-color: rgba(230, 154, 69, 0.2);
+}
+
+.dark .auth-pill:hover {
+  background: rgba(230, 154, 69, 0.18);
+}
+
+/* Auth floating testimonial card */
+.auth-testimonial {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 20px 24px;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 320px;
 }
 
 /* ===== PREMIUM ANIMATIONS ===== */
@@ -643,8 +840,9 @@ code {
 }
 
 .btn-premium:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+  transform: scale(1.01) translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow: 0 8px 24px rgba(230, 100, 50, 0.35);
 }
 
 /* ===== UTILITY CLASSES ===== */

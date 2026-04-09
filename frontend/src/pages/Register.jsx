@@ -1,7 +1,14 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { Heart, Mail, Lock, User, ArrowRight, BookOpen, Sparkles, Check, Eye, EyeOff } from 'lucide-react';
+import { Heart, Mail, Lock, User, ArrowRight, Sparkles, Eye, EyeOff, Shield, Users } from 'lucide-react';
+
+const featurePills = [
+    { icon: EyeOff, label: 'Anonymous' },
+    { icon: Shield, label: 'Secure' },
+    { icon: Users, label: 'Community' },
+    { icon: Heart, label: 'Heartfelt' },
+];
 
 export default function Register() {
     const [formData, setFormData] = useState({
@@ -42,7 +49,7 @@ export default function Register() {
         }
     };
 
-    // Password strength check
+    // Password strength
     const getPasswordStrength = (password) => {
         if (!password) return { strength: 0, label: '', color: '' };
         let strength = 0;
@@ -64,234 +71,232 @@ export default function Register() {
     const passwordStrength = getPasswordStrength(formData.password);
 
     return (
-        <div className="min-h-screen flex">
-            {/* Left Side - Decorative */}
-            <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-rose-600 via-purple-700 to-indigo-800 relative overflow-hidden">
-                {/* Animated Background Elements */}
-                <div className="absolute inset-0">
-                    <div className="absolute top-20 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-float" />
-                    <div className="absolute bottom-20 right-20 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-float-slow" />
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white/5 rounded-full blur-2xl" />
+        <div className="min-h-screen auth-gradient flex flex-col">
+            {/* ===== MOBILE: Gradient Hero Header ===== */}
+            <div className="lg:hidden relative z-10 pt-12 pb-6 px-6 text-center">
+                {/* Logo */}
+                <div className="inline-flex items-center gap-2.5 mb-5">
+                    <div className="p-2.5 bg-white/15 backdrop-blur-sm rounded-xl border border-white/20">
+                        <Heart className="w-6 h-6 text-white" />
+                    </div>
+                    <span className="text-2xl font-heading font-extrabold tracking-tight">
+                        <span className="text-white/90">Heart</span>
+                        <span className="text-amber-200 font-bold">Out</span>
+                    </span>
                 </div>
 
-                {/* Content */}
-                <div className="relative z-10 flex flex-col justify-center px-8 lg:px-12 py-8 text-white h-full font-body">
-                    {/* Logo */}
-                    <div className="mb-8">
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="relative group">
-                                <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-rose-500 rounded-2xl blur-lg opacity-60 group-hover:opacity-80 transition-opacity" />
-                                <div className="relative p-4 bg-gradient-to-br from-orange-400 via-rose-400 to-purple-500 rounded-2xl shadow-2xl">
-                                    <Heart className="w-10 h-10 text-white animate-pulse" />
-                                </div>
-                            </div>
-                            <span className="text-4xl font-heading font-extrabold tracking-tight">
-                                <span className="text-white drop-shadow-lg">Heart</span>
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-300 to-rose-300">Out</span>
-                            </span>
-                        </div>
-                        <h2 className="font-heading text-3xl lg:text-4xl font-bold leading-tight tracking-wide">
-                            <span className="text-white drop-shadow-md">Don't Hold It In.</span> <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-300 via-rose-300 to-purple-300 tracking-wider">
-                                Heart It Out.
-                            </span>
-                        </h2>
-                    </div>
+                {/* Tagline */}
+                <h2 className="font-editorial text-2xl text-white/95 mb-3 leading-snug">
+                    Don't Hold It In.<br />Heart It Out.
+                </h2>
+                <p className="text-white/60 text-sm font-light">Share your authentic stories</p>
 
-                    {/* Premium Feature Cards */}
-                    <div className="space-y-3">
-                        {[
-                            { title: 'Send the Unsent', desc: 'Post the text, letter, or apology you never delivered.' },
-                            { title: 'Claim Your Wins', desc: 'Shout out the achievements you usually celebrate alone.' },
-                            { title: 'Vent Your Regrets', desc: 'Turn your painful mistakes into shared lessons.' },
-                            { title: 'Reveal the Cost', desc: 'Share the sacrifices behind your success.' },
-                            { title: 'Be Unapologetic', desc: 'No filters. No judgment. Just your life story.' },
-                        ].map((feature, index) => (
-                            <div
-                                key={index}
-                                className="group p-4 rounded-xl bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-300 cursor-default"
-                                style={{ animationDelay: `${index * 0.1}s` }}
-                            >
-                                <span className="font-heading font-semibold text-white group-hover:text-orange-300 transition-colors tracking-wide">
-                                    {feature.title}:
-                                </span>
-                                <span className="font-light text-white/90 ml-2">
-                                    {feature.desc}
-                                </span>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Footer */}
-                    <div className="mt-8 pt-6 border-t border-white/20">
-                        <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-lg shadow-green-400/50" />
-                            <p className="font-heading text-lg font-semibold text-white tracking-wide drop-shadow-md">
-                                Your voice has found its home.
-                            </p>
-                        </div>
-                    </div>
+                {/* Feature pills */}
+                <div className="flex flex-wrap justify-center gap-2 mt-4">
+                    {featurePills.map((pill, i) => {
+                        const Icon = pill.icon;
+                        return (
+                            <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/12 backdrop-blur-sm border border-white/20 text-white/90 text-xs font-medium">
+                                <Icon className="w-3 h-3" />
+                                {pill.label}
+                            </span>
+                        );
+                    })}
                 </div>
             </div>
 
-            {/* Right Side - Form */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center px-4 py-6 sm:p-8 bg-gradient-to-br from-rose-50/50 to-purple-50/50 dark:from-gray-900 dark:to-gray-800 min-h-screen lg:min-h-0 safe-area-top safe-area-bottom">
-                <div className="w-full max-w-md animate-slide-up font-body">
-                    {/* Mobile Logo - Premium Styling */}
-                    <div className="lg:hidden text-center mb-8">
-                        <div className="inline-flex items-center gap-3 mb-4">
-                            <div className="relative">
-                                <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl blur-md opacity-50" />
-                                <div className="relative p-2.5 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl shadow-lg">
-                                    <Heart className="w-7 h-7 text-white" />
+            {/* ===== MAIN CONTENT ===== */}
+            <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-6 lg:py-12">
+                {/* Animated floating orbs (desktop) */}
+                <div className="hidden lg:block">
+                    <div className="fixed top-16 left-[12%] w-72 h-72 bg-white/8 rounded-full blur-3xl animate-float pointer-events-none" />
+                    <div className="fixed bottom-24 right-[15%] w-96 h-96 bg-white/6 rounded-full blur-3xl animate-float-slow pointer-events-none" />
+                </div>
+
+                <div className="w-full max-w-md">
+                    {/* Glass Card */}
+                    <div className="auth-glass-card p-8 sm:p-10 animate-slide-up">
+                        {/* Desktop Logo + Branding */}
+                        <div className="hidden lg:block text-center mb-6">
+                            <div className="inline-flex items-center gap-3 mb-4">
+                                <div className="p-3 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-2xl border border-amber-500/20">
+                                    <Heart className="w-7 h-7 text-amber-600 dark:text-amber-400" />
                                 </div>
+                                <span className="text-3xl font-heading font-extrabold tracking-tight">
+                                    <span className="text-stone-700 dark:text-stone-200">Heart</span>
+                                    <span className="text-gradient font-bold">Out</span>
+                                </span>
                             </div>
-                            <span className="text-2xl font-heading font-extrabold tracking-tight text-gray-900 dark:text-white">
-                                Heart<span className="text-gradient">Out</span>
-                            </span>
-                        </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 font-light">
-                            Share your authentic stories
-                        </p>
-                    </div>
-
-                    <div className="text-center mb-8">
-                        <h1 className="font-heading text-3xl font-bold tracking-wide text-gray-900 dark:text-white mb-2">
-                            Create your account
-                        </h1>
-                        <p className="text-gray-600 dark:text-gray-400 font-light">
-                            Start your storytelling journey today
-                        </p>
-                    </div>
-
-                    <form onSubmit={handleSubmit} className="space-y-5 font-body">
-                        {error && (
-                            <div className="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm animate-slide-down font-medium">
-                                {error}
-                            </div>
-                        )}
-
-                        {/* Username Field */}
-                        <div className="space-y-2">
-                            <label className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-300 tracking-wide">
-                                Username
-                            </label>
-                            <div className="relative group">
-                                <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-secondary-500/20 rounded-xl opacity-0 group-focus-within:opacity-100 blur-xl transition-opacity duration-500" />
-                                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-primary-500 transition-colors duration-300" />
-                                <input
-                                    name="username"
-                                    type="text"
-                                    required
-                                    value={formData.username}
-                                    onChange={handleChange}
-                                    className="relative w-full pl-12 pr-4 py-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 dark:text-white transition-all duration-300 placeholder:text-gray-400 shadow-sm hover:shadow-md focus:shadow-lg"
-                                    placeholder="johndoe"
-                                />
-                            </div>
+                            <h2 className="font-editorial text-2xl text-stone-700 dark:text-stone-200 leading-snug">
+                                Don't Hold It In. Heart It Out.
+                            </h2>
                         </div>
 
-                        {/* Email Field */}
-                        <div className="space-y-2">
-                            <label className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-300 tracking-wide">
-                                Email
-                            </label>
-                            <div className="relative group">
-                                <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-secondary-500/20 rounded-xl opacity-0 group-focus-within:opacity-100 blur-xl transition-opacity duration-500" />
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-primary-500 transition-colors duration-300" />
-                                <input
-                                    name="email"
-                                    type="email"
-                                    required
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    className="relative w-full pl-12 pr-4 py-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 dark:text-white transition-all duration-300 placeholder:text-gray-400 shadow-sm hover:shadow-md focus:shadow-lg"
-                                    placeholder="you@gmail.com"
-                                />
-                            </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1.5 font-medium">
-                                <span className="inline-block w-1.5 h-1.5 bg-primary-500 rounded-full"></span>
-                                Use Gmail, Outlook, Yahoo, or iCloud email only
+                        {/* Heading */}
+                        <div className="text-center mb-8">
+                            <h1 className="font-editorial text-[28px] lg:text-[32px] text-stone-800 dark:text-stone-100 mb-2 leading-tight">
+                                Create your account
+                            </h1>
+                            <p className="text-stone-500 dark:text-stone-400 text-sm font-light">
+                                Start your storytelling journey today
                             </p>
                         </div>
 
-                        {/* Password Field */}
-                        <div className="space-y-2">
-                            <label className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-300 tracking-wide">
-                                Password
-                            </label>
-                            <div className="relative group">
-                                <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-secondary-500/20 rounded-xl opacity-0 group-focus-within:opacity-100 blur-xl transition-opacity duration-500" />
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-primary-500 transition-colors duration-300" />
-                                <input
-                                    name="password"
-                                    type={showPassword ? 'text' : 'password'}
-                                    required
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    className="relative w-full pl-12 pr-12 py-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 dark:text-white transition-all duration-300 placeholder:text-gray-400 shadow-sm hover:shadow-md focus:shadow-lg"
-                                    placeholder="••••••••"
-                                    minLength="8"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-500 transition-colors duration-300 focus:outline-none"
-                                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                                >
-                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                                </button>
-                            </div>
-
-                            {/* Password Strength Indicator */}
-                            {formData.password && (
-                                <div className="space-y-2 animate-slide-up">
-                                    <div className="flex gap-1">
-                                        {[...Array(4)].map((_, i) => (
-                                            <div
-                                                key={i}
-                                                className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${i < passwordStrength.strength
-                                                    ? passwordStrength.color
-                                                    : 'bg-gray-200 dark:bg-gray-700'
-                                                    }`}
-                                            />
-                                        ))}
-                                    </div>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                                        Password strength: <span className="font-medium">{passwordStrength.label || 'Too weak'}</span>
-                                    </p>
+                        {/* Form */}
+                        <form onSubmit={handleSubmit} className="space-y-5">
+                            {error && (
+                                <div className="p-3.5 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm animate-slide-down font-medium">
+                                    {error}
                                 </div>
                             )}
-                        </div>
 
-                        {/* Submit Button */}
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full btn-premium flex items-center justify-center gap-2 py-4 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {loading ? (
-                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            ) : (
-                                <>
-                                    <Sparkles className="w-5 h-5" />
-                                    Create Account
-                                    <ArrowRight className="w-4 h-4" />
-                                </>
-                            )}
-                        </button>
+                            {/* Username */}
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-stone-600 dark:text-stone-400">
+                                    Username
+                                </label>
+                                <div className="relative">
+                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-stone-400 pointer-events-none" />
+                                    <input
+                                        name="username"
+                                        type="text"
+                                        required
+                                        value={formData.username}
+                                        onChange={handleChange}
+                                        className="auth-input"
+                                        placeholder="johndoe"
+                                    />
+                                </div>
+                            </div>
 
-                        {/* Sign In Link */}
-                        <p className="text-center text-gray-600 dark:text-gray-400">
-                            Already have an account?{' '}
-                            <Link
-                                to="/auth/login"
-                                className="font-semibold text-primary-600 hover:text-primary-500 transition-colors"
+                            {/* Email */}
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-stone-600 dark:text-stone-400">
+                                    Email
+                                </label>
+                                <div className="relative">
+                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-stone-400 pointer-events-none" />
+                                    <input
+                                        name="email"
+                                        type="email"
+                                        required
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        className="auth-input"
+                                        placeholder="you@gmail.com"
+                                    />
+                                </div>
+                                <p className="flex items-center gap-1.5 text-[13px] text-stone-500 dark:text-stone-400 font-medium">
+                                    <span className="inline-block w-1.5 h-1.5 bg-amber-500 rounded-full flex-shrink-0"></span>
+                                    Use Gmail, Outlook, Yahoo, or iCloud email only
+                                </p>
+                            </div>
+
+                            {/* Password */}
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-stone-600 dark:text-stone-400">
+                                    Password
+                                </label>
+                                <div className="relative">
+                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-stone-400 pointer-events-none" />
+                                    <input
+                                        name="password"
+                                        type={showPassword ? 'text' : 'password'}
+                                        required
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        className="auth-input pr-12"
+                                        placeholder="••••••••"
+                                        minLength="8"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-amber-600 transition-colors duration-200 focus:outline-none"
+                                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                    >
+                                        {showPassword ? <EyeOff className="w-[18px] h-[18px]" strokeWidth={2} /> : <Eye className="w-[18px] h-[18px]" strokeWidth={2} />}
+                                    </button>
+                                </div>
+
+                                {/* Password Strength */}
+                                {formData.password && (
+                                    <div className="space-y-1.5 animate-slide-up">
+                                        <div className="flex gap-1">
+                                            {[...Array(4)].map((_, i) => (
+                                                <div
+                                                    key={i}
+                                                    className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                                                        i < passwordStrength.strength
+                                                            ? passwordStrength.color
+                                                            : 'bg-stone-200 dark:bg-stone-700'
+                                                    }`}
+                                                />
+                                            ))}
+                                        </div>
+                                        <p className="text-xs text-stone-500 dark:text-stone-400">
+                                            Strength: <span className="font-medium">{passwordStrength.label || 'Too weak'}</span>
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* CTA */}
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full btn-premium flex items-center justify-center gap-2 py-4 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                Sign in
-                            </Link>
+                                {loading ? (
+                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                ) : (
+                                    <>
+                                        <Sparkles className="w-[18px] h-[18px]" />
+                                        Create Account
+                                        <ArrowRight className="w-4 h-4" />
+                                    </>
+                                )}
+                            </button>
+
+                            {/* Sign In Link */}
+                            <p className="text-center text-sm text-stone-500 dark:text-stone-400">
+                                Already have an account?{' '}
+                                <Link
+                                    to="/auth/login"
+                                    className="font-medium text-amber-700 dark:text-amber-400 hover:text-amber-600 hover:underline transition-all"
+                                >
+                                    Sign in
+                                </Link>
+                            </p>
+                        </form>
+
+                        {/* Feature Pills — inside card (desktop) */}
+                        <div className="hidden lg:flex flex-wrap justify-center gap-2 mt-8 pt-6 border-t border-stone-200/60 dark:border-white/10">
+                            {featurePills.map((pill, i) => {
+                                const Icon = pill.icon;
+                                return (
+                                    <span key={i} className="auth-pill">
+                                        <Icon className="w-3.5 h-3.5" />
+                                        {pill.label}
+                                    </span>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Desktop: Floating branding — bottom left */}
+                <div className="hidden lg:block fixed bottom-8 left-8 z-20 animate-slide-up stagger-3">
+                    <div className="auth-testimonial">
+                        <p className="font-editorial text-lg leading-snug mb-2">
+                            <span className="text-white">Don't Hold It In.</span><br />
+                            <span className="text-amber-200/90">Heart It Out.</span>
                         </p>
-                    </form>
+                        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/10">
+                            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                            <p className="text-xs text-white/60 font-medium">Your voice has found its home.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
