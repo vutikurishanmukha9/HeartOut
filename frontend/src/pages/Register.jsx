@@ -73,7 +73,7 @@ export default function Register() {
     return (
         <div className="min-h-screen auth-gradient flex flex-col">
             {/* ===== MOBILE: Gradient Hero Header ===== */}
-            <div className="lg:hidden relative z-10 pt-12 pb-6 px-6 text-center">
+            <div className="lg:hidden relative z-10 pt-12 pb-4 px-6 text-center">
                 {/* Logo */}
                 <div className="inline-flex items-center gap-2.5 mb-5">
                     <div className="p-2.5 bg-white/15 backdrop-blur-sm rounded-xl border border-white/20">
@@ -103,6 +103,11 @@ export default function Register() {
                         );
                     })}
                 </div>
+
+                {/* Social proof — fills the gap between pills and card */}
+                <p className="text-white/50 text-xs mt-4 font-medium">
+                    Joined by 10,000+ storytellers
+                </p>
             </div>
 
             {/* ===== MAIN CONTENT ===== */}
@@ -113,12 +118,12 @@ export default function Register() {
                     <div className="fixed bottom-24 right-[15%] w-96 h-96 bg-white/6 rounded-full blur-3xl animate-float-slow pointer-events-none" />
                 </div>
 
-                <div className="w-full max-w-md">
+                <div className="w-full max-w-lg">
                     {/* Glass Card */}
-                    <div className="auth-glass-card p-8 sm:p-10 animate-slide-up">
-                        {/* Desktop Logo + Branding */}
+                    <div className="auth-glass-card p-8 sm:p-12 animate-slide-up">
+                        {/* Desktop Logo */}
                         <div className="hidden lg:block text-center mb-6">
-                            <div className="inline-flex items-center gap-3 mb-4">
+                            <div className="inline-flex items-center gap-3 mb-2">
                                 <div className="p-3 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-2xl border border-amber-500/20">
                                     <Heart className="w-7 h-7 text-amber-600 dark:text-amber-400" />
                                 </div>
@@ -127,9 +132,6 @@ export default function Register() {
                                     <span className="text-gradient font-bold">Out</span>
                                 </span>
                             </div>
-                            <h2 className="font-editorial text-2xl text-stone-700 dark:text-stone-200 leading-snug">
-                                Don't Hold It In. Heart It Out.
-                            </h2>
                         </div>
 
                         {/* Heading */}
@@ -281,20 +283,6 @@ export default function Register() {
                                     </span>
                                 );
                             })}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Desktop: Floating branding — bottom left */}
-                <div className="hidden lg:block fixed bottom-8 left-8 z-20 animate-slide-up stagger-3">
-                    <div className="auth-testimonial">
-                        <p className="font-editorial text-lg leading-snug mb-2">
-                            <span className="text-white">Don't Hold It In.</span><br />
-                            <span className="text-amber-200/90">Heart It Out.</span>
-                        </p>
-                        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/10">
-                            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                            <p className="text-xs text-white/60 font-medium">Your voice has found its home.</p>
                         </div>
                     </div>
                 </div>

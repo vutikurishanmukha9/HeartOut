@@ -128,10 +128,10 @@ code {
 /* Full-bleed gradient background — diagonal, lower saturation, crafted feel */
 .auth-gradient {
   background: linear-gradient(135deg, 
-    hsl(270, 35%, 28%) 0%, 
-    hsl(340, 40%, 38%) 35%,
-    hsl(15, 55%, 50%) 65%,
-    hsl(32, 60%, 55%) 100%);
+    hsl(28, 60%, 48%) 0%,
+    hsl(350, 40%, 38%) 40%,
+    hsl(280, 30%, 30%) 70%,
+    hsl(15, 45%, 42%) 100%);
   position: relative;
 }
 
@@ -154,21 +154,21 @@ code {
     hsl(32, 35%, 22%) 100%);
 }
 
-/* Frosted glass form card */
+/* Frosted glass form card — clean white for crisp contrast */
 .auth-glass-card {
-  background: rgba(255, 255, 255, 0.88);
+  background: #ffffff;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow: 
     0 24px 48px rgba(0, 0, 0, 0.12),
     0 8px 16px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
   border-radius: 24px;
 }
 
 .dark .auth-glass-card {
-  background: rgba(24, 24, 30, 0.85);
+  background: #1a1a1e;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
     0 24px 48px rgba(0, 0, 0, 0.4),
@@ -176,16 +176,16 @@ code {
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-/* Warm-filled input fields with animated focus */
+/* Warm-filled input fields — ONE background color, only border changes on focus */
 .auth-input {
   width: 100%;
   padding: 14px 16px 14px 48px;
-  background: #f7f2ec;
+  background: #f5f2ef;
   border: 1.5px solid #e5ddd4;
   border-radius: 12px;
   font-size: 15px;
   color: #1a1a1a;
-  transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
   outline: none;
 }
 
@@ -195,13 +195,20 @@ code {
 
 .auth-input:hover {
   border-color: #d4c8ba;
-  background: #f3ede6;
 }
 
 .auth-input:focus {
   border-color: #d4832d;
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(212, 131, 45, 0.15);
+  box-shadow: 0 0 0 3px rgba(212, 131, 45, 0.12);
+}
+
+/* Override browser autofill blue tint */
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover,
+.auth-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px #f5f2ef inset !important;
+  -webkit-text-fill-color: #1a1a1a !important;
+  border-color: #d4832d;
 }
 
 .dark .auth-input {
@@ -216,27 +223,39 @@ code {
 
 .dark .auth-input:hover {
   border-color: rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.08);
 }
 
 .dark .auth-input:focus {
   border-color: #e69a45;
-  background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 0 3px rgba(230, 154, 69, 0.2);
+}
+
+.dark .auth-input:-webkit-autofill,
+.dark .auth-input:-webkit-autofill:hover,
+.dark .auth-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px #1a1a1e inset !important;
+  -webkit-text-fill-color: #f0ebe4 !important;
+  border-color: #e69a45;
 }
 
 /* Custom styled checkbox — rounded, orange gradient fill */
 .auth-checkbox {
-  appearance: none;
-  -webkit-appearance: none;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
   width: 20px;
   height: 20px;
+  min-width: 20px;
+  min-height: 20px;
   border: 2px solid #d4c8ba;
   border-radius: 6px;
   cursor: pointer;
   position: relative;
   transition: all 200ms ease;
   flex-shrink: 0;
+  background: #f5f2ef;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .auth-checkbox:hover {
@@ -244,8 +263,8 @@ code {
 }
 
 .auth-checkbox:checked {
-  background: linear-gradient(135deg, #e69a45, #d4832d);
-  border-color: #d4832d;
+  background: linear-gradient(135deg, #e69a45, #d4832d) !important;
+  border-color: #d4832d !important;
 }
 
 .auth-checkbox:checked::after {
@@ -270,8 +289,8 @@ code {
 }
 
 .dark .auth-checkbox:checked {
-  background: linear-gradient(135deg, #e69a45, #d4832d);
-  border-color: #e69a45;
+  background: linear-gradient(135deg, #e69a45, #d4832d) !important;
+  border-color: #e69a45 !important;
 }
 
 /* Auth feature pills on glass card */

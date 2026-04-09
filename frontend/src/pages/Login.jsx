@@ -1,13 +1,8 @@
-import React, { useState, useContext, useRef, useEffect } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { Heart, Mail, Lock, ArrowRight, Sparkles, Eye, EyeOff, Shield, Users, EyeOff as Anon } from 'lucide-react';
+import { Heart, Mail, Lock, ArrowRight, Sparkles, Eye, EyeOff, Shield, Users } from 'lucide-react';
 
-const testimonials = [
-    { quote: "HeartOut gave me the courage to share my story.", author: "Anonymous Writer" },
-    { quote: "Finally, a safe space to express myself freely.", author: "First-time Storyteller" },
-    { quote: "The support from this community is incredible.", author: "Grateful Member" }
-];
 
 const featurePills = [
     { icon: EyeOff, label: 'Anonymous' },
@@ -22,20 +17,12 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const [activeTestimonial, setActiveTestimonial] = useState(0);
     const navigate = useNavigate();
     const { login } = useContext(AuthContext);
 
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
 
-    // Cycle testimonials
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setActiveTestimonial(prev => (prev + 1) % testimonials.length);
-        }, 4000);
-        return () => clearInterval(timer);
-    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -68,7 +55,7 @@ export default function Login() {
     return (
         <div className="min-h-screen auth-gradient flex flex-col">
             {/* ===== MOBILE: Gradient Hero Header ===== */}
-            <div className="lg:hidden relative z-10 pt-12 pb-8 px-6 text-center">
+            <div className="lg:hidden relative z-10 pt-12 pb-4 px-6 text-center">
                 {/* Logo */}
                 <div className="inline-flex items-center gap-2.5 mb-5">
                     <div className="p-2.5 bg-white/15 backdrop-blur-sm rounded-xl border border-white/20">
@@ -97,6 +84,11 @@ export default function Login() {
                         );
                     })}
                 </div>
+
+                {/* Social proof — fills the gap between pills and card */}
+                <p className="text-white/50 text-xs mt-4 font-medium">
+                    Joined by 10,000+ storytellers
+                </p>
             </div>
 
             {/* ===== MAIN CONTENT ===== */}
@@ -251,41 +243,6 @@ export default function Login() {
                     <p className="lg:hidden text-center text-xs text-white/60 mt-6">
                         Trusted by thousands of storytellers worldwide
                     </p>
-                </div>
-
-                {/* Desktop: Floating testimonial — bottom right */}
-                <div className="hidden lg:block fixed bottom-8 right-8 z-20 animate-slide-up stagger-3">
-                    <div className="auth-testimonial">
-                        <div className="relative h-16 overflow-hidden">
-                            {testimonials.map((t, i) => (
-                                <div
-                                    key={i}
-                                    className={`absolute inset-0 flex flex-col justify-center transition-all duration-700 ease-out ${
-                                        activeTestimonial === i
-                                            ? 'opacity-100 translate-y-0'
-                                            : 'opacity-0 translate-y-6 pointer-events-none'
-                                    }`}
-                                >
-                                    <p className="text-sm italic font-light leading-relaxed mb-1.5">"{t.quote}"</p>
-                                    <p className="text-xs font-medium flex items-center gap-1.5 text-white/75">
-                                        <Heart className="w-3 h-3 text-rose-400" fill="currentColor" />
-                                        {t.author}
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-                        {/* Progress dots */}
-                        <div className="flex justify-center gap-1.5 mt-3">
-                            {testimonials.map((_, i) => (
-                                <div
-                                    key={i}
-                                    className={`h-1 rounded-full transition-all duration-300 ${
-                                        activeTestimonial === i ? 'w-6 bg-white/80' : 'w-1.5 bg-white/30'
-                                    }`}
-                                />
-                            ))}
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
