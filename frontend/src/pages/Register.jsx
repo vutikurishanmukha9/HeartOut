@@ -122,8 +122,8 @@ export default function Register() {
                     {/* Glass Card */}
                     <div className="auth-glass-card p-8 sm:p-12 animate-slide-up">
                         {/* Desktop Logo */}
-                        <div className="hidden lg:block text-center mb-6">
-                            <div className="inline-flex items-center gap-3 mb-2">
+                        <div className="hidden lg:block text-center mb-4">
+                            <div className="inline-flex items-center gap-3 mb-3">
                                 <div className="p-3 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-2xl border border-amber-500/20">
                                     <Heart className="w-7 h-7 text-amber-600 dark:text-amber-400" />
                                 </div>
@@ -132,6 +132,9 @@ export default function Register() {
                                     <span className="text-gradient font-bold">Out</span>
                                 </span>
                             </div>
+                            <p className="text-[15px] text-stone-400 dark:text-stone-500 font-light italic">
+                                Don't Hold It In. Heart It Out.
+                            </p>
                         </div>
 
                         {/* Heading */}
@@ -272,17 +275,20 @@ export default function Register() {
                             </p>
                         </form>
 
-                        {/* Feature Pills — inside card (desktop) */}
-                        <div className="hidden lg:flex flex-wrap justify-center gap-2 mt-8 pt-6 border-t border-stone-200/60 dark:border-white/10">
-                            {featurePills.map((pill, i) => {
-                                const Icon = pill.icon;
-                                return (
-                                    <span key={i} className="auth-pill">
-                                        <Icon className="w-3.5 h-3.5" />
-                                        {pill.label}
-                                    </span>
-                                );
-                            })}
+                        {/* Feature Pills — inside card with divider */}
+                        <div className="hidden lg:block mt-8 pb-2">
+                            <div className="border-t border-stone-200/80 dark:border-white/10 mb-5" />
+                            <div className="flex flex-wrap justify-center gap-2">
+                                {featurePills.map((pill, i) => {
+                                    const Icon = pill.icon;
+                                    return (
+                                        <span key={i} className="auth-pill">
+                                            <Icon className="w-3.5 h-3.5" />
+                                            {pill.label}
+                                        </span>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
                 </div>

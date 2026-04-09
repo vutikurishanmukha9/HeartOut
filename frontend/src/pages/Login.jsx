@@ -1,7 +1,7 @@
 import React, { useState, useContext, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { Heart, Mail, Lock, ArrowRight, Sparkles, Eye, EyeOff, Shield, Users } from 'lucide-react';
+import { Heart, Mail, Lock, ArrowRight, Sparkles, Eye, EyeOff, Shield, Users, Check } from 'lucide-react';
 
 
 const featurePills = [
@@ -17,6 +17,7 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
     const navigate = useNavigate();
     const { login } = useContext(AuthContext);
 
@@ -184,16 +185,26 @@ export default function Login() {
                                 </div>
                             </div>
 
-                            {/* Remember Me */}
+                            {/* Remember Me — custom checkbox */}
                             <div className="flex items-center gap-3 pt-1">
-                                <input
-                                    id="remember"
-                                    type="checkbox"
-                                    className="auth-checkbox"
-                                />
-                                <label htmlFor="remember" className="text-sm text-stone-500 dark:text-stone-400 cursor-pointer select-none">
+                                <button
+                                    type="button"
+                                    onClick={() => setRememberMe(!rememberMe)}
+                                    className={`w-5 h-5 rounded flex items-center justify-center flex-shrink-0 transition-all duration-200 border-2 ${
+                                        rememberMe
+                                            ? 'bg-gradient-to-br from-amber-500 to-amber-700 border-amber-600'
+                                            : 'bg-stone-100 dark:bg-white/5 border-stone-300 dark:border-white/20 hover:border-amber-500'
+                                    }`}
+                                    aria-label="Keep me signed in"
+                                >
+                                    {rememberMe && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+                                </button>
+                                <span
+                                    onClick={() => setRememberMe(!rememberMe)}
+                                    className="text-sm text-stone-500 dark:text-stone-400 cursor-pointer select-none"
+                                >
                                     Keep me signed in
-                                </label>
+                                </span>
                             </div>
 
                             {/* CTA */}
@@ -225,17 +236,20 @@ export default function Login() {
                             </p>
                         </form>
 
-                        {/* Feature Pills — inside card */}
-                        <div className="hidden lg:flex flex-wrap justify-center gap-2 mt-8 pt-6 border-t border-stone-200/60 dark:border-white/10">
-                            {featurePills.map((pill, i) => {
-                                const Icon = pill.icon;
-                                return (
-                                    <span key={i} className="auth-pill">
-                                        <Icon className="w-3.5 h-3.5" />
-                                        {pill.label}
-                                    </span>
-                                );
-                            })}
+                        {/* Feature Pills — inside card with divider */}
+                        <div className="hidden lg:block mt-8 pb-2">
+                            <div className="border-t border-stone-200/80 dark:border-white/10 mb-5" />
+                            <div className="flex flex-wrap justify-center gap-2">
+                                {featurePills.map((pill, i) => {
+                                    const Icon = pill.icon;
+                                    return (
+                                        <span key={i} className="auth-pill">
+                                            <Icon className="w-3.5 h-3.5" />
+                                            {pill.label}
+                                        </span>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
 
