@@ -221,25 +221,17 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
       <button
         onClick={() => setOpen((o) => !o)}
         onMouseEnter={() => setOpen(true)}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          height: "42px",
-          padding: "0 20px",
-          gap: "8px",
-          borderRadius: "10px",
-          border: currentReaction
-            ? `1.5px solid ${current?.color}40`
-            : "1px solid #e5e7eb",
-          background: currentReaction ? current?.activeBg : "white",
-          cursor: "pointer",
-          fontSize: "15px",
-          fontWeight: 600,
-          color: currentReaction ? current?.color : "#6b7280",
-          transition: "all 0.2s",
-          fontFamily: "inherit",
-          boxSizing: "border-box",
-        }}
+        className={`group flex items-center h-[42px] px-5 gap-2 rounded-xl font-semibold text-[15px] transition-all duration-200
+          ${currentReaction 
+            ? '' 
+            : 'border border-amber-200 bg-white dark:border-zinc-700 dark:bg-zinc-800 text-stone-600 dark:text-stone-400 hover:border-amber-400 hover:shadow-sm'
+          }
+        `}
+        style={currentReaction ? {
+          border: `1.5px solid ${current?.color}40`,
+          background: current?.activeBg,
+          color: current?.color,
+        } : {}}
       >
         {currentReaction ? (
           <>
@@ -250,13 +242,11 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
           </>
         ) : (
           <>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <div className="flex items-center">
+              <svg className="w-5 h-5 transition-colors duration-200 fill-transparent stroke-stone-400 dark:stroke-stone-500 group-hover:stroke-amber-500 group-hover:fill-amber-100" viewBox="0 0 24 24">
                 <path
                   d="M12 21s-9-5.5-9-11A6 6 0 0 1 12 6a6 6 0 0 1 9 4c0 5.5-9 11-9 11z"
-                  stroke="#9ca3af"
                   strokeWidth="1.8"
-                  fill="none"
                 />
               </svg>
             </div>

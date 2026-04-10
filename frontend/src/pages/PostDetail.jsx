@@ -25,6 +25,7 @@ export default function PostDetail() {
     // Delete Modal State
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [showAuthorMenu, setShowAuthorMenu] = useState(false);
 
     // Read progress tracking
     const startTimeRef = useRef(Date.now());
@@ -305,9 +306,9 @@ export default function PostDetail() {
             {/* Dynamic SEO for social sharing */}
             <StorySEO story={story} />
 
-            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-24 md:pb-0">
+            <div className="min-h-screen bg-[#faf7f4] dark:bg-zinc-900 pb-24 md:pb-0 font-sans">
                 {/* Header */}
-                <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-b border-stone-200 dark:border-gray-700 sticky top-0 z-10 w-full transition-all">
                     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                         <button
                             onClick={() => navigate('/feed')}
@@ -320,7 +321,7 @@ export default function PostDetail() {
                 </div>
 
                 {/* Story Content */}
-                <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-24 md:pb-12">
+                <article className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-24 md:pb-12">
                     {/* Category - Subtle, above title */}
                     <div className="mb-6">
                         <span className="text-xs font-medium text-stone-400 dark:text-stone-500 uppercase tracking-widest">
@@ -329,7 +330,7 @@ export default function PostDetail() {
                     </div>
 
                     {/* Title - With breathing room */}
-                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-medium text-stone-800 dark:text-stone-100 mb-8 leading-relaxed">
+                    <h1 className="text-3xl sm:text-4xl md:text-[2.5rem] font-serif font-medium text-stone-800 dark:text-stone-100 mb-8 leading-tight tracking-tight">
                         {story.title}
                     </h1>
 
@@ -355,81 +356,96 @@ export default function PostDetail() {
                     )}
 
                     {/* Story Content - Maximum breathing room */}
-                    <div className="w-full mb-20">
-                        <p className="text-stone-700 dark:text-stone-300 text-lg leading-[2] whitespace-pre-wrap">
+                    <div className="w-full mb-16">
+                        <p className="text-stone-800 dark:text-stone-300 text-lg leading-[1.75] whitespace-pre-wrap font-medium">
                             {sanitizeText(story.content)}
                         </p>
                     </div>
 
-                    {/* Actions - Split: Immediate (Brave, Save) vs Secondary (Share, Stats) */}
-                    <div className="border-y border-stone-200/60 dark:border-zinc-700/60 py-6 mb-12">
-                        {/* Immediate actions - Primary row */}
-                        <div className="flex flex-wrap items-center gap-4 mb-4">
-                            <div className="flex flex-col items-start gap-1">
+                    {/* Actions - Unified Row */}
+                    <div className="flex flex-col mb-12">
+                        <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-stone-200/80 dark:border-zinc-700/60">
+                            {/* Left side actions */}
+                            <div className="flex items-center gap-3">
                                 <ReactionButton
                                     storyId={story.id}
                                     currentReaction={userReaction}
                                     onReact={handleReact}
                                     supportCount={supportCount}
                                 />
-                                {/* Microcopy for Brave */}
-                                <span className="text-[10px] text-stone-400 dark:text-stone-500 italic pl-1">
-                                    A quiet way to say "I read this."
-                                </span>
+                                {user && (
+                                    <button
+                                        onClick={handleToggleBookmark}
+                                        aria-label={isBookmarked ? 'Remove from saved' : 'Save this story'}
+                                        className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border transition-all ${isBookmarked
+                                            ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 font-medium shadow-sm shadow-amber-500/10'
+                                            : 'border-amber-200 bg-white dark:border-zinc-600 dark:bg-zinc-800 text-stone-600 dark:text-stone-400 hover:border-amber-400 hover:shadow-sm'
+                                            }`}
+                                    >
+                                        <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} aria-hidden="true" />
+                                        <span className="text-sm font-medium">{isBookmarked ? 'Saved' : 'Save'}</span>
+                                    </button>
+                                )}
                             </div>
 
-                            {user && (
+                            {/* Right side actions */}
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm text-stone-500 dark:text-stone-400 mr-2 hidden sm:inline-block">
+                                    {story.comment_count} responses
+                                </span>
                                 <button
-                                    onClick={handleToggleBookmark}
-                                    aria-label={isBookmarked ? 'Remove from saved' : 'Save this story'}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${isBookmarked
-                                        ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400'
-                                        : 'border-stone-200 dark:border-zinc-600 text-stone-600 dark:text-stone-400 hover:border-amber-400'
-                                        }`}
+                                    onClick={handleShare}
+                                    aria-label="Share this story"
+                                    className="flex items-center justify-center w-10 h-10 rounded-full text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-zinc-800 hover:text-stone-800 dark:hover:text-stone-200 transition-colors"
                                 >
-                                    <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} aria-hidden="true" />
-                                    <span className="text-sm">{isBookmarked ? 'Saved' : 'Save'}</span>
+                                    <Share2 className="w-4 h-4" aria-hidden="true" />
                                 </button>
-                            )}
+
+                                {/* Author Actions Menu */}
+                                {isAuthor && (
+                                    <div className="relative">
+                                        <button
+                                            onClick={() => setShowAuthorMenu(!showAuthorMenu)}
+                                            className="flex items-center justify-center w-10 h-10 rounded-full text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-zinc-800 hover:text-stone-800 dark:hover:text-stone-200 transition-colors"
+                                        >
+                                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                            </svg>
+                                        </button>
+                                        {showAuthorMenu && (
+                                            <>
+                                                <div className="fixed inset-0 z-10" onClick={() => setShowAuthorMenu(false)}></div>
+                                                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-zinc-800 rounded-xl shadow-xl border border-stone-200 dark:border-zinc-700 py-1 z-20 animate-scale-in origin-top-right">
+                                                    <button
+                                                        onClick={() => {
+                                                            setShowAuthorMenu(false);
+                                                            setShowDeleteModal(true);
+                                                        }}
+                                                        className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors font-medium"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                        Delete Story
+                                                    </button>
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
-                        {/* Secondary actions - Subtle row */}
-                        <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-stone-100 dark:border-zinc-800">
-                            <button
-                                onClick={handleShare}
-                                aria-label="Share this story"
-                                className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 transition-colors"
-                            >
-                                <Share2 className="w-3.5 h-3.5" aria-hidden="true" />
-                                <span>Share</span>
-                            </button>
-
-                            <span className="text-stone-300 dark:text-zinc-600">·</span>
-
-                            <span className="text-xs text-stone-400 dark:text-stone-500">
-                                {story.comment_count} responses
+                        {/* Quiet microcopy below */}
+                        <div className="mt-2 pl-3">
+                            <span className="text-xs text-stone-400 dark:text-stone-500 italic">
+                                A quiet way to say "I read this."
                             </span>
-
-                            {/* Author Actions - Delete Only */}
-                            {isAuthor && (
-                                <div className="ml-auto flex items-center">
-                                    <button
-                                        onClick={() => setShowDeleteModal(true)}
-                                        className="group flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full text-stone-400 dark:text-stone-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all duration-200"
-                                        aria-label="Delete story"
-                                    >
-                                        <Trash2 className="w-3.5 h-3.5 group-hover:scale-110 transition-transform duration-200" />
-                                        <span>Delete</span>
-                                    </button>
-                                </div>
-                            )}
                         </div>
                     </div>
 
                     {/* Comments Section */}
                     <div className="w-full space-y-6">
-                        <h2 className="text-xl font-semibold text-stone-700 dark:text-stone-200">
-                            Responses ({comments.length})
+                        <h2 className="text-lg font-semibold text-stone-700 dark:text-stone-200">
+                            Responses <span className="text-stone-400 font-normal">({comments.length})</span>
                         </h2>
 
                         {/* Emotional guardrail */}
@@ -437,29 +453,29 @@ export default function PostDetail() {
                             Responses here are meant to support, not judge.
                         </p>
 
-                        {/* Add Comment - Softer borders, thoughtful placeholder */}
-                        <div className="bg-stone-50/50 dark:bg-zinc-800/50 rounded-lg border border-stone-200/60 dark:border-zinc-700/60 p-4">
+                        {/* Add Comment - Warm Field Treatment */}
+                        <div className="bg-amber-50/50 dark:bg-amber-900/10 rounded-xl border border-amber-100 dark:border-amber-900/30 p-5 transition-colors group focus-within:border-amber-400 focus-within:bg-amber-50 dark:focus-within:bg-amber-900/20">
                             <textarea
                                 value={commentText}
                                 onChange={(e) => setCommentText(e.target.value)}
                                 placeholder="Write something kind, or simply be present."
                                 rows={3}
-                                className="w-full px-4 py-3 border border-stone-200 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-900 text-stone-700 dark:text-stone-200 placeholder-stone-400 dark:placeholder-stone-500 focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 resize-none mb-3 text-sm"
+                                className="w-full px-2 py-1 bg-transparent border-none text-stone-800 dark:text-stone-100 placeholder-stone-400 focus:ring-0 resize-none mb-3 text-base"
                             />
-                            <div className="flex items-center justify-between">
-                                <label className="flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400 cursor-pointer">
+                            <div className="flex items-center justify-between border-t border-amber-200/50 dark:border-amber-900/50 pt-3">
+                                <label className="flex items-center gap-2 text-sm text-stone-600 dark:text-stone-400 cursor-pointer">
                                     <input
                                         type="checkbox"
                                         checked={isAnonymousComment}
                                         onChange={(e) => setIsAnonymousComment(e.target.checked)}
-                                        className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
+                                        className="rounded border-amber-300 text-amber-600 focus:ring-amber-500 bg-white"
                                     />
                                     Share anonymously
                                 </label>
                                 <button
                                     onClick={handleComment}
                                     disabled={!commentText.trim()}
-                                    className="px-4 py-2 bg-amber-600 text-white text-sm rounded-lg hover:bg-amber-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                    className="btn-premium px-6 py-2.5 text-sm font-semibold rounded-lg shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
                                 >
                                     Respond
                                 </button>

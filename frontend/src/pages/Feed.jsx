@@ -209,9 +209,9 @@ export default function Feed() {
                     <div className="flex-1 w-full md:w-[65%] relative">
                         {/* Loading State Skeleton */}
                         {loading && stories.length === 0 ? (
-                            <div className="columns-1 lg:columns-2 gap-6 space-y-6">
+                            <div className="flex flex-col gap-6">
                                 {[...Array(6)].map((_, i) => (
-                                    <div key={i} className="break-inside-avoid bg-white/80 dark:bg-zinc-800/80 rounded-xl border border-stone-200/60 dark:border-zinc-700/60 overflow-hidden mb-6">
+                                    <div key={i} className="bg-white/80 dark:bg-zinc-800/80 rounded-xl border border-stone-200/60 dark:border-zinc-700/60 overflow-hidden">
                                         <div className="p-5 space-y-4">
                                             <div className="skeleton h-6 w-3/4 rounded bg-amber-500/10 animate-pulse" />
                                             <div className="skeleton h-4 w-full rounded bg-amber-500/10 animate-pulse" />
@@ -232,9 +232,9 @@ export default function Feed() {
                                         "These are voices from people who chose to share something real."
                                     </p>
                                 </div>
-                                <div className="columns-1 lg:columns-2 gap-6 space-y-6">
+                                <div className="flex flex-col gap-6">
                                     {stories.map((story, index) => (
-                                        <div key={story.id} className="break-inside-avoid mb-6 transform transition-all hover:z-10">
+                                        <div key={story.id} className="transform transition-all hover:z-10">
                                             <StoryCard story={story} index={index} />
                                         </div>
                                     ))}
@@ -244,9 +244,9 @@ export default function Feed() {
                                 <div className="mt-16 flex flex-col items-center justify-center">
                                     {loading ? (
                                         // Load More skeletons (append state)
-                                        <div className="columns-1 lg:columns-2 gap-6 space-y-6 w-full opacity-60">
+                                        <div className="flex flex-col gap-6 w-full opacity-60">
                                             {[...Array(2)].map((_, i) => (
-                                                <div key={i} className="break-inside-avoid bg-amber-50/40 dark:bg-zinc-800/80 rounded-xl border border-amber-100 dark:border-zinc-700 overflow-hidden mb-6 shadow-sm">
+                                                <div key={i} className="bg-amber-50/40 dark:bg-zinc-800/80 rounded-xl border border-amber-100 dark:border-zinc-700 overflow-hidden shadow-sm">
                                                     <div className="p-5 space-y-4">
                                                         <div className="skeleton h-6 w-3/4 rounded bg-amber-500/20 animate-pulse" />
                                                         <div className="skeleton h-4 w-full rounded bg-amber-500/20 animate-pulse delay-75" />
@@ -294,8 +294,8 @@ export default function Feed() {
                             </h3>
                             <ul className="space-y-5">
                                 {[
-                                    { title: "I finally quit my job without a backup plan.", views: "2.4k", cat: "bg-orange-600" }, // Success / Achievement
-                                    { title: "To the person who returned my wallet.", views: "1.8k", cat: "bg-[#c1714a]" }, // Life Lesson
+                                    { title: "I finally quit my job without a backup plan.", views: "2.4k", cat: "bg-orange-600" }, // Success
+                                    { title: "To the person who returned my wallet.", views: "1.8k", cat: "bg-[#9e5a5a]" }, // Unsent Letter
                                     { title: "I'm not exactly sure what I'm doing.", views: "1.2k", cat: "bg-amber-900" }, // Quiet Confession
                                     { title: "Ten years later, I finally sent it.", views: "856", cat: "bg-[#9e5a5a]" } // Unsent Letter
                                 ].map((item, i) => (
