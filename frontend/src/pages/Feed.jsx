@@ -203,13 +203,13 @@ export default function Feed() {
                 </div>
 
                 {/* Main Content Layout: 65/35 Split */}
-                <div className="flex flex-col xl:flex-row gap-8 lg:gap-12 mt-8">
+                <div className="flex flex-col md:flex-row gap-8 lg:gap-12 mt-8">
                     
                     {/* Left Column: Main Feed */}
-                    <div className="flex-1 w-full relative">
+                    <div className="flex-1 w-full md:w-[65%] relative">
                         {/* Loading State Skeleton */}
                         {loading && stories.length === 0 ? (
-                            <div className="columns-1 sm:columns-2 gap-6 space-y-6">
+                            <div className="columns-1 lg:columns-2 gap-6 space-y-6">
                                 {[...Array(6)].map((_, i) => (
                                     <div key={i} className="break-inside-avoid bg-white/80 dark:bg-zinc-800/80 rounded-xl border border-stone-200/60 dark:border-zinc-700/60 overflow-hidden mb-6">
                                         <div className="p-5 space-y-4">
@@ -232,7 +232,7 @@ export default function Feed() {
                                         "These are voices from people who chose to share something real."
                                     </p>
                                 </div>
-                                <div className="columns-1 sm:columns-2 gap-6 space-y-6">
+                                <div className="columns-1 lg:columns-2 gap-6 space-y-6">
                                     {stories.map((story, index) => (
                                         <div key={story.id} className="break-inside-avoid mb-6 transform transition-all hover:z-10">
                                             <StoryCard story={story} index={index} />
@@ -244,7 +244,7 @@ export default function Feed() {
                                 <div className="mt-16 flex flex-col items-center justify-center">
                                     {loading ? (
                                         // Load More skeletons (append state)
-                                        <div className="columns-1 sm:columns-2 gap-6 space-y-6 w-full opacity-60">
+                                        <div className="columns-1 lg:columns-2 gap-6 space-y-6 w-full opacity-60">
                                             {[...Array(2)].map((_, i) => (
                                                 <div key={i} className="break-inside-avoid bg-amber-50/40 dark:bg-zinc-800/80 rounded-xl border border-amber-100 dark:border-zinc-700 overflow-hidden mb-6 shadow-sm">
                                                     <div className="p-5 space-y-4">
@@ -285,7 +285,7 @@ export default function Feed() {
                     </div>
 
                     {/* Right Column: Sidebar (Hidden on mobile) */}
-                    <div className="hidden xl:block w-80 shrink-0 space-y-12 pl-8 border-l border-stone-200/50 dark:border-zinc-800">
+                    <div className="hidden md:block w-full md:w-[35%] shrink-0 space-y-12 pl-0 md:pl-8 lg:pl-10 md:border-l border-stone-200/50 dark:border-zinc-800">
                         {/* Trending Stories */}
                         <div>
                             <h3 className="text-xs font-bold tracking-widest text-stone-500 dark:text-stone-400 uppercase mb-5 flex items-center gap-2">
@@ -294,10 +294,10 @@ export default function Feed() {
                             </h3>
                             <ul className="space-y-5">
                                 {[
-                                    { title: "I finally quit my job without a backup plan.", views: "2.4k", cat: "bg-orange-500" },
-                                    { title: "To the person who returned my wallet.", views: "1.8k", cat: "bg-[#c1714a]" },
-                                    { title: "I'm not exactly sure what I'm doing.", views: "1.2k", cat: "bg-amber-800" },
-                                    { title: "Ten years later, I finally sent it.", views: "856", cat: "bg-[#9e5a5a]" }
+                                    { title: "I finally quit my job without a backup plan.", views: "2.4k", cat: "bg-orange-600" }, // Success / Achievement
+                                    { title: "To the person who returned my wallet.", views: "1.8k", cat: "bg-[#c1714a]" }, // Life Lesson
+                                    { title: "I'm not exactly sure what I'm doing.", views: "1.2k", cat: "bg-amber-900" }, // Quiet Confession
+                                    { title: "Ten years later, I finally sent it.", views: "856", cat: "bg-[#9e5a5a]" } // Unsent Letter
                                 ].map((item, i) => (
                                     <li key={i} className="group cursor-pointer">
                                         <div className="flex gap-3 items-start">
