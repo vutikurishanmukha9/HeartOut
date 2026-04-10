@@ -92,7 +92,7 @@ export default function Drafts() {
         return (
             <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="w-12 h-12 border-4 border-violet-200 rounded-full animate-spin border-t-violet-600 mx-auto"></div>
+                    <div className="w-12 h-12 border-4 border-amber-200 rounded-full animate-spin border-t-amber-600 mx-auto"></div>
                     <p className="mt-4 text-gray-600 dark:text-gray-400">Loading drafts...</p>
                 </div>
             </div>
@@ -105,7 +105,7 @@ export default function Drafts() {
                 {/* Header */}
                 <div className="mb-6 sm:mb-8">
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2.5 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-500/25">
+                        <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 shadow-lg shadow-amber-500/25">
                             <FileText className="w-5 h-5 text-white" />
                         </div>
                         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
@@ -119,14 +119,14 @@ export default function Drafts() {
 
                 {drafts.length === 0 ? (
                     /* Empty State - Premium Design */
-                    <div className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-8 sm:p-12 text-center">
+                    <div className="relative overflow-hidden bg-amber-50/30 dark:bg-zinc-800/80 rounded-2xl border border-amber-100 dark:border-zinc-700 shadow-sm p-8 sm:p-12 text-center">
                         {/* Decorative gradient orbs */}
-                        <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-violet-400 to-purple-500 rounded-full blur-3xl opacity-10" />
-                        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full blur-3xl opacity-10" />
+                        <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full blur-3xl opacity-10" />
+                        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-gradient-to-br from-orange-300 to-rose-400 rounded-full blur-3xl opacity-10" />
 
                         <div className="relative">
-                            <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center">
-                                <PenLine className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 dark:text-gray-500" />
+                            <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-6 rounded-2xl bg-amber-100/50 dark:bg-amber-900/20 flex items-center justify-center border border-amber-200/50 dark:border-amber-700/30">
+                                <PenLine className="w-10 h-10 sm:w-12 sm:h-12 text-amber-600 dark:text-amber-500" />
                             </div>
                             <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white mb-3">
                                 Nothing saved yet
@@ -139,7 +139,7 @@ export default function Drafts() {
                             </p>
                             <Link
                                 to="/feed/create"
-                                className="inline-flex items-center gap-2 px-6 py-3 border border-violet-300 dark:border-violet-600 text-violet-600 dark:text-violet-400 font-medium rounded-full hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:border-violet-400 dark:hover:border-violet-500 active:scale-95 transition-all duration-300"
+                                className="btn-premium inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-white font-medium shadow-sm active:scale-95 transition-all duration-300"
                             >
                                 <Sparkles className="w-4 h-4" />
                                 Start Writing
@@ -193,7 +193,7 @@ export default function Drafts() {
                                         <div className="flex items-center gap-2 sm:gap-3 sm:ml-4">
                                             <Link
                                                 to={draft.id === 'local' ? `/feed/create` : `/feed/create?draft=${draft.id}`}
-                                                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-violet-500 to-purple-600 text-white text-sm font-medium rounded-xl shadow-md shadow-violet-500/20 hover:shadow-lg hover:shadow-violet-500/30 hover:scale-105 active:scale-95 transition-all duration-200"
+                                                className="flex-1 sm:flex-none btn-premium inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm font-medium shadow-md shadow-orange-500/10 active:scale-95 transition-all duration-200"
                                             >
                                                 <Edit className="w-4 h-4" />
                                                 <span>Continue</span>
