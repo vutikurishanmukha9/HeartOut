@@ -1,91 +1,97 @@
 import React from 'react';
-import { Medal, CloudRain, Send, Gift, Compass, Shapes, Check } from 'lucide-react';
+import { Trophy, Lightbulb, Mail, Heart, Sparkles, BookOpen, Check } from 'lucide-react';
 
 const storyTypes = [
     {
-        value: 'unsent_letter',
-        label: 'Unsent Letter',
-        icon: Send,
-        description: 'Something you wish they could hear',
-        color: 'from-zinc-500 to-zinc-600',
-        bgColor: 'bg-zinc-50 dark:bg-zinc-900/20',
-        borderColor: 'border-zinc-200 dark:border-zinc-700',
-        textColor: 'text-zinc-700 dark:text-zinc-300',
-        hoverTextColor: 'group-hover:text-zinc-600 dark:group-hover:text-zinc-400',
-        shadowColor: 'shadow-zinc-500/15',
-        chartColor: '#71717a'
+        value: 'achievement',
+        label: 'Success Stories',
+        icon: Trophy,
+        description: 'Celebrate victories & milestones',
+        color: 'from-orange-500 to-orange-600',
+        bgColor: 'bg-orange-50 dark:bg-orange-950/20',
+        borderColor: 'border-orange-200 dark:border-orange-700',
+        textColor: 'text-orange-600 dark:text-orange-400',
+        hoverTextColor: 'group-hover:text-orange-500',
+        shadowColor: 'shadow-orange-500/15',
+        chartColor: '#ea580c',
+        canonicalBg: 'bg-orange-600'
+    },
+    {
+        value: 'confession',
+        label: 'Dreams',
+        icon: Sparkles,
+        description: 'Hopes & aspirations',
+        color: 'from-amber-500 to-amber-600',
+        bgColor: 'bg-amber-50 dark:bg-amber-950/20',
+        borderColor: 'border-amber-200 dark:border-amber-700',
+        textColor: 'text-amber-600 dark:text-amber-400',
+        hoverTextColor: 'group-hover:text-amber-500',
+        shadowColor: 'shadow-amber-500/15',
+        chartColor: '#d97706',
+        canonicalBg: 'bg-amber-600'
     },
     {
         value: 'regret',
-        label: 'Regret',
-        icon: CloudRain,
-        description: 'Something you still think about',
-        color: 'from-slate-500 to-slate-600',
-        bgColor: 'bg-slate-50 dark:bg-slate-900/20',
-        borderColor: 'border-slate-200 dark:border-slate-700',
-        textColor: 'text-slate-700 dark:text-slate-300',
-        hoverTextColor: 'group-hover:text-slate-600 dark:group-hover:text-slate-400',
-        shadowColor: 'shadow-slate-500/15',
-        chartColor: '#64748b'
+        label: 'Life Lessons',
+        icon: Lightbulb,
+        description: 'Wisdom from experience',
+        color: 'from-[#c1714a]/80 to-[#c1714a]',
+        bgColor: 'bg-[#c1714a]/10 dark:bg-[#c1714a]/20',
+        borderColor: 'border-[#c1714a]/30 dark:border-[#c1714a]/40',
+        textColor: 'text-[#c1714a] dark:text-[#de8a60]',
+        hoverTextColor: 'group-hover:text-[#c1714a]',
+        shadowColor: 'shadow-[#c1714a]/15',
+        chartColor: '#c1714a',
+        canonicalBg: 'bg-[#c1714a]'
     },
     {
-        value: 'life_story',
-        label: 'Life Story',
-        icon: Compass,
-        description: 'A moment that shaped who you are',
-        color: 'from-amber-500 to-amber-600',
-        bgColor: 'bg-amber-50 dark:bg-amber-900/20',
-        borderColor: 'border-amber-200 dark:border-amber-700',
-        textColor: 'text-amber-700 dark:text-amber-300',
-        hoverTextColor: 'group-hover:text-amber-600 dark:group-hover:text-amber-400',
-        shadowColor: 'shadow-amber-500/15',
-        chartColor: '#f59e0b'
+        value: 'unsent_letter',
+        label: 'Unsent Letters',
+        icon: Mail,
+        description: 'Words left unspoken',
+        color: 'from-[#9e5a5a]/80 to-[#9e5a5a]',
+        bgColor: 'bg-[#9e5a5a]/10 dark:bg-[#9e5a5a]/20',
+        borderColor: 'border-[#9e5a5a]/30 dark:border-[#9e5a5a]/40',
+        textColor: 'text-[#9e5a5a] dark:text-[#bd7272]',
+        hoverTextColor: 'group-hover:text-[#9e5a5a]',
+        shadowColor: 'shadow-[#9e5a5a]/15',
+        chartColor: '#9e5a5a',
+        canonicalBg: 'bg-[#9e5a5a]'
     },
     {
         value: 'sacrifice',
-        label: 'Sacrifice',
-        icon: Gift,
-        description: 'Something you gave up for someone',
-        color: 'from-rose-400 to-rose-500',
-        bgColor: 'bg-rose-50 dark:bg-rose-900/20',
-        borderColor: 'border-rose-200 dark:border-rose-700',
-        textColor: 'text-rose-700 dark:text-rose-300',
-        hoverTextColor: 'group-hover:text-rose-600 dark:group-hover:text-rose-400',
-        shadowColor: 'shadow-rose-400/15',
-        chartColor: '#fb7185'
-    },
-    {
-        value: 'achievement',
-        label: 'Achievement',
-        icon: Medal,
-        description: 'Something you\'re proud you survived or achieved',
-        color: 'from-stone-500 to-stone-600',
-        bgColor: 'bg-stone-50 dark:bg-stone-900/20',
-        borderColor: 'border-stone-200 dark:border-stone-700',
-        textColor: 'text-stone-700 dark:text-stone-300',
-        hoverTextColor: 'group-hover:text-stone-600 dark:group-hover:text-stone-400',
-        shadowColor: 'shadow-stone-500/15',
-        chartColor: '#78716c'
+        label: 'Sacrifices',
+        icon: Heart,
+        description: 'Given from the heart',
+        color: 'from-red-700 to-red-800',
+        bgColor: 'bg-red-50 dark:bg-red-950/20',
+        borderColor: 'border-red-200 dark:border-red-700',
+        textColor: 'text-red-800 dark:text-red-400',
+        hoverTextColor: 'group-hover:text-red-700',
+        shadowColor: 'shadow-red-800/15',
+        chartColor: '#991b1b',
+        canonicalBg: 'bg-red-800'
     },
     {
         value: 'other',
-        label: 'Not Sure Yet',
-        icon: Shapes,
-        description: 'You can figure it out as you write',
-        color: 'from-stone-300 to-stone-400',
-        bgColor: 'bg-stone-50 dark:bg-stone-900/20',
-        borderColor: 'border-stone-200 dark:border-stone-700',
-        textColor: 'text-stone-600 dark:text-stone-400',
-        hoverTextColor: 'group-hover:text-stone-600 dark:group-hover:text-stone-300',
-        shadowColor: 'shadow-stone-300/15',
-        chartColor: '#d6d3d1'
+        label: 'Quiet Confessions',
+        icon: BookOpen,
+        description: 'Untitled narratives',
+        color: 'from-amber-800 to-amber-900',
+        bgColor: 'bg-amber-100/40 dark:bg-amber-950/40',
+        borderColor: 'border-amber-200 dark:border-amber-700',
+        textColor: 'text-amber-900 dark:text-amber-400',
+        hoverTextColor: 'group-hover:text-amber-800',
+        shadowColor: 'shadow-amber-900/15',
+        chartColor: '#78350f',
+        canonicalBg: 'bg-amber-900'
     }
 ];
 
 export default function StoryTypeSelector({ selected, onChange, variant = 'cards' }) {
     if (variant === 'tabs') {
         return (
-            <>
+            <div className="flex gap-2 p-1">
                 {storyTypes.map((type) => {
                     const Icon = type.icon;
                     const isSelected = selected === type.value;
@@ -96,25 +102,21 @@ export default function StoryTypeSelector({ selected, onChange, variant = 'cards
                             onClick={() => onChange(type.value)}
                             title={type.label}
                             className={`
-                                group relative flex items-center justify-center gap-1.5 px-2.5 sm:px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-300
+                                group relative flex items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
                                 ${isSelected
-                                    ? `${type.textColor} ${type.bgColor}`
-                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                                    ? 'bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400 ring-1 ring-primary-500/20'
+                                    : 'text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-zinc-800/50'
                                 }
                             `}
                         >
-                            <Icon className={`w-4 h-4 shrink-0 transition-all duration-300 ${isSelected ? 'opacity-70' : 'opacity-50 group-hover:opacity-70'}`} />
+                            <Icon strokeWidth={1.5} className={`w-4 h-4 shrink-0 transition-all duration-300 ${isSelected ? 'opacity-100 scale-110' : 'opacity-70 group-hover:scale-105'}`} />
                             <span className="hidden sm:inline relative">
                                 {type.label}
-                                <span className={`absolute -bottom-1 left-0 h-0.5 transition-all duration-300 ${isSelected
-                                    ? `w-full bg-gradient-to-r ${type.color}`
-                                    : 'w-0 group-hover:w-full bg-gray-400 dark:bg-gray-500'
-                                    }`} />
                             </span>
                         </button>
                     );
                 })}
-            </>
+            </div>
         );
     }
 
