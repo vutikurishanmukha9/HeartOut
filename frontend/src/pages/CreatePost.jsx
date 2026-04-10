@@ -377,7 +377,7 @@ export default function CreatePost() {
                                         value={formData.title}
                                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                         placeholder="Story Headline (Optional)"
-                                        className="w-full px-5 py-4 text-lg font-medium border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/20 dark:bg-zinc-900/50 text-stone-800 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 transition-all duration-300"
+                                        className="w-full px-5 py-4 text-lg font-medium border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/40 dark:bg-zinc-900/50 text-stone-800 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 transition-all duration-300"
                                         maxLength={200}
                                     />
                                 </div>
@@ -482,9 +482,9 @@ export default function CreatePost() {
                     </div>
 
                     {/* Sidebar */}
-                    <div className={`space-y-6 transition-all duration-500 ${isFocusMode ? 'hidden opacity-0' : 'animate-slide-up stagger-2 opacity-100 block'}`}>
+                    <div className={`space-y-6 pb-28 sm:pb-24 lg:pb-0 transition-all duration-500 ${isFocusMode ? 'hidden opacity-0' : 'animate-slide-up stagger-2 opacity-100 block'}`}>
                         {/* Privacy - Warmer framing */}
-                        <div className="bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm rounded-xl p-5 border border-stone-200/50 dark:border-zinc-700/50">
+                        <div className="bg-amber-50/30 dark:bg-zinc-800/80 backdrop-blur-sm rounded-xl p-5 border border-amber-100 dark:border-zinc-700/50">
                             <h3 className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-3">
                                 Share when you're ready
                             </h3>

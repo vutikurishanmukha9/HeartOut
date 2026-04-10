@@ -8,10 +8,10 @@ export default function AnonymousToggle({ isAnonymous, onChange, disabled = fals
     return (
         <div
             className={`
-                relative p-4 rounded-2xl border-2 transition-all duration-300 cursor-pointer
+                relative p-4 rounded-2xl border-[1.5px] transition-all duration-300 cursor-pointer
                 ${checked
-                    ? 'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-700'
-                    : 'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                    ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700'
+                    : 'bg-stone-50 dark:bg-stone-800/50 border-stone-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-600'
                 }
             `}
             onClick={() => !disabled && onChange(!checked)}
@@ -21,21 +21,21 @@ export default function AnonymousToggle({ isAnonymous, onChange, disabled = fals
                     <div className={`
                         p-2.5 rounded-xl transition-all duration-300
                         ${checked
-                            ? 'bg-indigo-600 dark:bg-indigo-500 shadow-lg shadow-indigo-500/25'
-                            : 'bg-gray-200 dark:bg-gray-700'
+                            ? 'bg-amber-500 dark:bg-amber-600 shadow-lg shadow-amber-500/25'
+                            : 'bg-stone-200 dark:bg-stone-700'
                         }
                     `}>
                         {checked ? (
                             <Shield className="w-5 h-5 text-white" />
                         ) : (
-                            <Users className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                            <Users className="w-5 h-5 text-stone-500 dark:text-stone-400" />
                         )}
                     </div>
                     <div>
-                        <label className="text-sm font-semibold text-gray-900 dark:text-white cursor-pointer block">
+                        <label className="text-sm font-semibold text-stone-900 dark:text-white cursor-pointer block">
                             {checked ? 'Post Anonymously' : 'Post Publicly'}
                         </label>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                        <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
                             {checked
                                 ? 'Your identity will be hidden from other users'
                                 : 'Your name will be visible to readers'
@@ -55,11 +55,11 @@ export default function AnonymousToggle({ isAnonymous, onChange, disabled = fals
                     }}
                     className={`
                         relative inline-flex h-7 w-12 items-center rounded-full transition-all duration-300
-                        focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
+                        focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2
                         disabled:opacity-50 disabled:cursor-not-allowed
                         ${checked
-                            ? 'bg-indigo-600 dark:bg-indigo-500'
-                            : 'bg-gray-300 dark:bg-gray-600'
+                            ? 'bg-amber-500 dark:bg-amber-600'
+                            : 'bg-stone-300 dark:bg-stone-600'
                         }
                     `}
                 >
@@ -75,8 +75,8 @@ export default function AnonymousToggle({ isAnonymous, onChange, disabled = fals
 
             {/* Privacy indicator */}
             {checked && (
-                <div className="mt-3 pt-3 border-t border-indigo-200 dark:border-indigo-800/50">
-                    <div className="flex items-center gap-2 text-xs text-indigo-600 dark:text-indigo-400">
+                <div className="mt-3 pt-3 border-t border-amber-200 dark:border-amber-800/50">
+                    <div className="flex items-center gap-2 text-xs text-amber-700 dark:text-amber-400">
                         <EyeOff className="w-3.5 h-3.5" />
                         <span>Only you can see your identity on this story</span>
                     </div>
