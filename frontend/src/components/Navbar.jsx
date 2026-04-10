@@ -113,8 +113,9 @@ const Navbar = () => {
                 </div>
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white dark:border-gray-900 animate-pulse" />
               </div>
-              <span className="text-xl font-bold text-gray-900 dark:text-white">
-                Heart<span className="text-primary-600">Out</span>
+              <span className="text-xl tracking-tight flex items-center">
+                <span className="font-extrabold text-gray-900 dark:text-white">Heart</span>
+                <span className="font-semibold text-primary-600">Out</span>
               </span>
             </Link>
 

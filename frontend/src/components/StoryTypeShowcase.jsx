@@ -33,12 +33,12 @@ const storyCategories = [
         label: 'Life Lessons',
         subtitle: '"I learned this the hard way."',
         icon: Lightbulb,
-        bgColor: 'bg-teal-700',
-        lightBg: 'bg-teal-50/40 dark:bg-teal-950/20',
-        shadowColor: 'shadow-teal-700/25',
-        hoverShadow: 'hover:shadow-teal-700/40',
-        glowColor: 'rgba(15, 118, 110, 0.5)',
-        ringColor: 'ring-teal-700',
+        bgColor: 'bg-stone-500',
+        lightBg: 'bg-stone-50/40 dark:bg-stone-900/20',
+        shadowColor: 'shadow-stone-500/25',
+        hoverShadow: 'hover:shadow-stone-500/40',
+        glowColor: 'rgba(120, 113, 108, 0.5)',
+        ringColor: 'ring-stone-500',
         description: 'Wisdom from experience',
         featured: false
     },
@@ -47,12 +47,12 @@ const storyCategories = [
         label: 'Unsent Letters',
         subtitle: '"Things I never said."',
         icon: Mail,
-        bgColor: 'bg-slate-600',
-        lightBg: 'bg-slate-50/40 dark:bg-slate-900/20',
-        shadowColor: 'shadow-slate-600/30',
-        hoverShadow: 'hover:shadow-slate-600/50',
-        glowColor: 'rgba(71, 85, 105, 0.6)',
-        ringColor: 'ring-slate-600',
+        bgColor: 'bg-stone-600',
+        lightBg: 'bg-stone-100/40 dark:bg-stone-800/20',
+        shadowColor: 'shadow-stone-600/30',
+        hoverShadow: 'hover:shadow-stone-600/50',
+        glowColor: 'rgba(87, 83, 78, 0.6)',
+        ringColor: 'ring-stone-600',
         description: 'Words left unspoken',
         featured: true
     },
@@ -61,12 +61,12 @@ const storyCategories = [
         label: 'Sacrifices',
         subtitle: '"What it cost me."',
         icon: Heart,
-        bgColor: 'bg-rose-800',
-        lightBg: 'bg-rose-50/40 dark:bg-rose-950/20',
-        shadowColor: 'shadow-rose-800/30',
-        hoverShadow: 'hover:shadow-rose-800/50',
-        glowColor: 'rgba(159, 18, 57, 0.6)',
-        ringColor: 'ring-rose-800',
+        bgColor: 'bg-red-800',
+        lightBg: 'bg-red-50/40 dark:bg-red-950/20',
+        shadowColor: 'shadow-red-800/30',
+        hoverShadow: 'hover:shadow-red-800/50',
+        glowColor: 'rgba(153, 27, 27, 0.6)',
+        ringColor: 'ring-red-800',
         description: 'Given from the heart',
         featured: true
     },
@@ -89,12 +89,12 @@ const storyCategories = [
         label: 'Quiet Confessions',
         subtitle: '"In between the lines."',
         icon: BookOpen,
-        bgColor: 'bg-stone-700',
-        lightBg: 'bg-stone-50/40 dark:bg-stone-900/20',
-        shadowColor: 'shadow-stone-700/25',
-        hoverShadow: 'hover:shadow-stone-700/40',
-        glowColor: 'rgba(68, 64, 60, 0.5)',
-        ringColor: 'ring-stone-700',
+        bgColor: 'bg-amber-900',
+        lightBg: 'bg-amber-100/40 dark:bg-amber-950/40',
+        shadowColor: 'shadow-amber-900/25',
+        hoverShadow: 'hover:shadow-amber-900/40',
+        glowColor: 'rgba(120, 53, 15, 0.4)',
+        ringColor: 'ring-amber-900',
         description: 'Untitled narratives',
         featured: false
     },
@@ -105,13 +105,6 @@ export default function StoryTypeShowcase({ selectedCategory, onSelectCategory }
 
     return (
         <div className="story-showcase-container relative">
-            {/* Floating background orbs */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-3xl">
-                <div className="floating-orb orb-1" />
-                <div className="floating-orb orb-2" />
-                <div className="floating-orb orb-3" />
-            </div>
-
             {/* Cards Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 relative z-10 p-2 sm:p-4">
                 {storyCategories.map((category, index) => {
@@ -221,7 +214,7 @@ export default function StoryTypeShowcase({ selectedCategory, onSelectCategory }
             </div>
 
             {/* "All Stories" link */}
-            <div className="flex justify-center mt-6 sm:mt-8 w-full">
+            <div className="flex justify-center mt-8 mb-6 sm:mb-8 w-full relative z-20">
                 <button
                     onClick={() => onSelectCategory('all')}
                     className="btn-premium flex items-center justify-center gap-2 px-8 py-3.5"
@@ -252,46 +245,6 @@ export default function StoryTypeShowcase({ selectedCategory, onSelectCategory }
                     }
                 }
 
-                .floating-orb {
-                    position: absolute;
-                    border-radius: 50%;
-                    filter: blur(50px);
-                    animation: floatOrb 15s ease-in-out infinite;
-                }
-
-                .orb-1 {
-                    width: 180px;
-                    height: 180px;
-                    background: linear-gradient(135deg, rgba(251, 146, 60, 0.4), rgba(244, 63, 94, 0.3));
-                    top: -40px;
-                    right: -30px;
-                    animation-delay: 0s;
-                }
-
-                .orb-2 {
-                    width: 140px;
-                    height: 140px;
-                    background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(59, 130, 246, 0.3));
-                    bottom: -20px;
-                    left: -20px;
-                    animation-delay: -5s;
-                }
-
-                .orb-3 {
-                    width: 100px;
-                    height: 100px;
-                    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(6, 182, 212, 0.3));
-                    top: 40%;
-                    right: 20%;
-                    animation-delay: -10s;
-                }
-
-                @keyframes floatOrb {
-                    0%, 100% { transform: translate(0, 0) scale(1); }
-                    33% { transform: translate(15px, -15px) scale(1.05); }
-                    66% { transform: translate(-10px, 10px) scale(0.95); }
-                }
-
                 @keyframes ping-slow {
                     0% {
                         transform: scale(1);
@@ -312,10 +265,6 @@ export default function StoryTypeShowcase({ selectedCategory, onSelectCategory }
                 }
 
                 /* Dark mode adjustments */
-                .dark .floating-orb {
-                    opacity: 0.4;
-                }
-
                 .dark .story-card-modern {
                     background: rgba(31, 41, 55, 0.85);
                 }

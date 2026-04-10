@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useContext, useRef, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { Heart, Mail, Lock, ArrowRight, Sparkles, Eye, EyeOff, Shield, Users, Check } from 'lucide-react';
@@ -23,6 +23,16 @@ export default function Login() {
 
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
+
+    // Ambient floating hearts
+    const ambientHearts = useMemo(() => [...Array(12)].map((_, i) => ({
+        id: i,
+        left: `${10 + Math.random() * 80}%`, // 10% to 90% wide
+        animationDuration: `${15 + Math.random() * 20}s`, // 15s to 35s
+        animationDelay: `${Math.random() * 10}s`, // 0s to 10s
+        size: `${12 + Math.random() * 16}px`, // 12px to 28px
+        rotate: `${-30 + Math.random() * 60}deg`
+    })), []);
 
 
     const handleSubmit = async (e) => {
@@ -54,7 +64,28 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen auth-gradient flex flex-col">
+        <div className="min-h-screen auth-gradient flex flex-col relative overflow-hidden">
+            {/* Ambient Hearts Background */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                {ambientHearts.map(h => (
+                    <div 
+                        key={h.id} 
+                        className="particle" 
+                        style={{ 
+                            left: h.left, 
+                            animationDuration: h.animationDuration, 
+                            animationDelay: h.animationDelay 
+                        }}
+                    >
+                        <Heart 
+                            style={{ width: h.size, height: h.size, transform: `rotate(${h.rotate})` }} 
+                            fill="currentColor" 
+                            strokeWidth={0}
+                        />
+                    </div>
+                ))}
+            </div>
+
             {/* ===== MOBILE: Gradient Hero Header ===== */}
             <div className="lg:hidden relative z-10 pt-12 pb-4 px-6 text-center">
                 {/* Logo */}
@@ -102,7 +133,7 @@ export default function Login() {
 
                 <div className="w-full max-w-md">
                     {/* Glass Card */}
-                    <div className="auth-glass-card p-8 sm:p-10 animate-slide-up">
+                    <div className="auth-glass-card p-8 sm:p-10 animate-card-enter">
                         {/* Desktop Logo */}
                         <div className="hidden lg:block text-center mb-6">
                             <div className="inline-flex items-center gap-3 mb-2">
@@ -211,7 +242,7 @@ export default function Login() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full btn-premium flex items-center justify-center gap-2 py-4 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full btn-premium flex items-center justify-center gap-2 py-4 mt-2 disabled:opacity-50 disabled:cursor-not-allowed animate-cta-pulse"
                             >
                                 {loading ? (
                                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

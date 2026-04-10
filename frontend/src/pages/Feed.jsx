@@ -104,20 +104,20 @@ export default function Feed() {
                             </p>
 
                             {/* CTA Section */}
-                            <div className="flex flex-col sm:flex-row items-center gap-4 mt-8 justify-center lg:justify-start w-full sm:w-auto">
+                            <div className="flex flex-col items-center lg:items-start gap-3 mt-8 w-full sm:w-auto">
+                                {/* Simple authentic tagline */}
+                                <div className="auth-pill mb-1">
+                                    <div className="flex items-center gap-1">
+                                        <Heart className="w-3 h-3 text-rose-500 fill-rose-500" />
+                                        <Heart className="w-2.5 h-2.5 text-rose-400 fill-rose-400 -ml-1.5 mt-1.5" />
+                                    </div>
+                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Community-powered</span>
+                                </div>
+
                                 <Link to="/feed/create" className="btn-premium flex items-center justify-center gap-2 px-8 py-3.5 w-full sm:w-auto text-sm sm:text-base">
                                     <BookOpen className="w-5 h-5" />
                                     <span>Write Something You've Been Holding In</span>
                                 </Link>
-
-                                {/* Simple authentic tagline */}
-                                <div className="auth-pill">
-                                    <div className="flex items-center gap-1">
-                                        <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
-                                        <Heart className="w-2.5 h-2.5 text-rose-400 fill-rose-400 -ml-1.5 mt-1.5" />
-                                    </div>
-                                    <span>Community-powered</span>
-                                </div>
                             </div>
                         </div>
 
