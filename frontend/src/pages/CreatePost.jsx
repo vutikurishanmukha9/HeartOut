@@ -268,9 +268,9 @@ export default function CreatePost() {
     // Step 1: Story Type Selection
     if (step === 1) {
         return (
-            <div className="min-h-screen bg-gradient-to-b from-stone-50 to-amber-50/30 dark:from-zinc-900 dark:to-zinc-900 py-12">
+            <div className="min-h-screen bg-gradient-to-b from-stone-50 to-amber-50/30 dark:from-zinc-900 dark:to-zinc-900 pt-28 pb-12">
                 {/* Single subtle floating orb - morning fog feel */}
-                <div className="fixed top-40 right-20 w-80 h-80 bg-amber-100/30 rounded-full blur-3xl pointer-events-none" />
+                <div className="fixed top-40 right-20 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
                 <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12 animate-slide-up">
