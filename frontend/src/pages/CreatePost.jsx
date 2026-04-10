@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { PenTool, Save, Send, ArrowLeft, Sparkles, Clock, Hash, Check, X, Heart, Lightbulb, AlertCircle, Shield } from 'lucide-react';
+import { PenTool, Save, Send, ArrowLeft, Sparkles, Clock, Hash, Check, X, Heart, Lightbulb, AlertCircle, Shield, Maximize2, Minimize2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import StoryTypeSelector from '../components/StoryTypeSelector';
 import AnonymousToggle from '../components/AnonymousToggle';
@@ -11,6 +11,7 @@ export default function CreatePost() {
     const [searchParams] = useSearchParams();
     const textareaRef = useRef(null);
     const [step, setStep] = useState(1);
+    const [isFocusMode, setIsFocusMode] = useState(false);
     const [draftId, setDraftId] = useState(null);
     const [loadingDraft, setLoadingDraft] = useState(false); // Prevents flash when loading draft
     const [formData, setFormData] = useState({
@@ -311,16 +312,16 @@ export default function CreatePost() {
 
             <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
-                <div className="mb-8 animate-slide-up">
+                <div className={`transition-all duration-500 ${isFocusMode ? 'opacity-0 h-0 overflow-hidden' : 'mb-12 animate-slide-up'}`}>
                     <button
                         onClick={() => setStep(1)}
-                        className="group inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all mb-6"
+                        className="group inline-flex items-center gap-2 text-stone-500 dark:text-stone-400 hover:text-amber-600 dark:hover:text-amber-400 transition-all mb-10"
                     >
                         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                         <span className="text-sm font-medium">Change Story Type</span>
                     </button>
 
-                    <div className="flex items-center justify-between flex-wrap gap-4">
+                    <div className="flex items-end justify-between flex-wrap gap-4">
                         <div>
                             <h1 className="text-2xl sm:text-3xl font-medium text-stone-800 dark:text-stone-100 mb-2">
                                 This space is yours
@@ -351,12 +352,22 @@ export default function CreatePost() {
                     </div>
                 </div>
 
-                <div className="grid lg:grid-cols-3 gap-8">
+                <div className={`grid gap-8 transition-all duration-500 ${isFocusMode ? 'grid-cols-1 max-w-3xl mx-auto' : 'lg:grid-cols-3'}`}>
                     {/* Main Editor */}
-                    <div className="lg:col-span-2 space-y-6 animate-slide-up">
-                        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl p-8 shadow-xl shadow-gray-200/50 dark:shadow-gray-900/50 border border-white/50 dark:border-gray-700/50 space-y-8">
+                    <div className={`${isFocusMode ? '' : 'lg:col-span-2'} space-y-6 animate-slide-up transition-all duration-500`}>
+                        <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl p-8 shadow-xl shadow-gray-200/50 dark:shadow-gray-900/50 border border-white/50 dark:border-gray-700/50 space-y-8">
+                            
+                            {/* Focus Mode Toggle */}
+                            <button 
+                                onClick={() => setIsFocusMode(!isFocusMode)}
+                                className="absolute top-6 right-6 p-2 text-stone-400 hover:text-amber-600 transition-colors rounded-lg hover:bg-amber-50 dark:hover:bg-zinc-800"
+                                aria-label={isFocusMode ? "Exit focus mode" : "Enter focus mode"}
+                            >
+                                {isFocusMode ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
+                            </button>
+
                             {/* Title Input */}
-                            <div className="group">
+                            <div className="group pt-2">
                                 <label className="block text-xs font-medium text-stone-500 dark:text-stone-400 mb-2">
                                     Title
                                 </label>
@@ -366,7 +377,7 @@ export default function CreatePost() {
                                         value={formData.title}
                                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                         placeholder="Story Headline (Optional)"
-                                        className="w-full px-5 py-4 text-lg font-medium border border-stone-200 dark:border-zinc-700 rounded-xl bg-white dark:bg-zinc-900/50 text-stone-800 dark:text-stone-100 placeholder-stone-400 focus:ring-0 focus:border-amber-500 transition-all duration-300"
+                                        className="w-full px-5 py-4 text-lg font-medium border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/20 dark:bg-zinc-900/50 text-stone-800 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 transition-all duration-300"
                                         maxLength={200}
                                     />
                                 </div>
@@ -383,7 +394,7 @@ export default function CreatePost() {
                                         value={formData.content}
                                         onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                                         placeholder="Start anywhere. Even the middle is fine."
-                                        className="w-full px-8 py-6 border border-stone-200 dark:border-zinc-700 rounded-xl bg-white dark:bg-zinc-900/50 text-stone-700 dark:text-stone-200 placeholder-stone-400 focus:ring-0 focus:border-amber-500 transition-all duration-300 resize-none text-base leading-relaxed min-h-[250px] sm:min-h-[450px] overflow-y-auto"
+                                        className="w-full px-8 py-6 border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/20 dark:bg-zinc-900/50 text-stone-700 dark:text-stone-200 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 transition-all duration-300 resize-none text-base leading-relaxed min-h-[250px] sm:min-h-[450px] overflow-y-auto"
                                         style={{ maxHeight: '550px' }}
                                     />
                                 </div>
@@ -410,15 +421,15 @@ export default function CreatePost() {
                                             value={tagInput}
                                             onChange={(e) => setTagInput(e.target.value)}
                                             onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                                            placeholder="Add a tag..."
-                                            className="w-full px-4 py-2 text-sm border border-stone-200 dark:border-zinc-700 rounded-lg bg-white/50 dark:bg-zinc-800/50 text-stone-700 dark:text-stone-300 placeholder-stone-400 focus:ring-0 focus:border-amber-500 transition-all"
+                                            placeholder="Add a feeling, a theme..."
+                                            className="w-full px-4 py-2 text-sm border border-amber-100 dark:border-zinc-700 rounded-lg bg-amber-50/20 dark:bg-zinc-800/50 text-stone-700 dark:text-stone-300 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 transition-all"
                                             disabled={formData.tags.length >= 5}
                                         />
                                     </div>
                                     <button
                                         onClick={addTag}
                                         disabled={formData.tags.length >= 5 || !tagInput.trim()}
-                                        className="px-4 py-2 text-sm bg-stone-100 dark:bg-zinc-700 text-stone-600 dark:text-stone-400 rounded-lg font-medium hover:bg-stone-200 dark:hover:bg-zinc-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                                        className="px-4 py-2 text-sm text-amber-600 dark:text-amber-500 rounded-lg font-semibold hover:bg-amber-50 dark:hover:bg-zinc-800 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                                     >
                                         Add
                                     </button>
@@ -456,25 +467,22 @@ export default function CreatePost() {
                             <button
                                 onClick={() => handleSubmit(false)}
                                 disabled={submitting}
-                                className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-700 text-stone-600 dark:text-stone-400 rounded-xl font-medium hover:bg-stone-50 dark:hover:bg-zinc-700 transition-all duration-200 disabled:opacity-50"
+                                className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 bg-white dark:bg-zinc-800/80 border border-amber-300 dark:border-amber-600/30 text-amber-700 dark:text-amber-500 rounded-xl font-medium hover:bg-amber-50 dark:hover:bg-zinc-800 transition-all duration-200 disabled:opacity-50"
                             >
                                 Save as Draft
                             </button>
                             <button
                                 onClick={() => setShowPublishModal(true)}
                                 disabled={submitting || !formData.title || !formData.content}
-                                className={`flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium transition-all duration-200 disabled:cursor-not-allowed ${formData.content.length > 50
-                                    ? 'bg-amber-600 text-white hover:bg-amber-700'
-                                    : 'bg-stone-200 dark:bg-zinc-700 text-stone-400 dark:text-stone-500'
-                                    }`}
+                                className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold btn-premium transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed shadow-sm shadow-amber-500/20"
                             >
-                                {formData.content.length > 50 ? 'Publish when ready' : 'Publish (keep writing...)'}
+                                Share My Story
                             </button>
                         </div>
                     </div>
 
                     {/* Sidebar */}
-                    <div className="space-y-6 animate-slide-up stagger-2">
+                    <div className={`space-y-6 transition-all duration-500 ${isFocusMode ? 'hidden opacity-0' : 'animate-slide-up stagger-2 opacity-100 block'}`}>
                         {/* Privacy - Warmer framing */}
                         <div className="bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm rounded-xl p-5 border border-stone-200/50 dark:border-zinc-700/50">
                             <h3 className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-3">
@@ -489,9 +497,9 @@ export default function CreatePost() {
                             </p>
                         </div>
 
-                        {/* Writing Tips - Softer, less prominent */}
-                        <div className="bg-stone-50 dark:bg-zinc-800/50 rounded-xl p-5 border border-stone-100 dark:border-zinc-700/50">
-                            <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed italic">
+                        {/* Writing Tips - Upgraded to a Companion Note Card */}
+                        <div className="bg-amber-50/40 dark:bg-zinc-800/50 rounded-xl p-5 border border-amber-100 dark:border-zinc-700/50 border-l-[4px] border-l-amber-500">
+                            <p className="text-sm text-stone-700 dark:text-stone-300 leading-relaxed italic">
                                 "{writingTips[formData.story_type] || writingTips.other}"
                             </p>
                         </div>
