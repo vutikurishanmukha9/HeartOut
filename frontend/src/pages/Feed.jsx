@@ -55,7 +55,7 @@ export default function Feed() {
                 {/* Subtle intentional background wash */}
                 <div className="absolute top-20 right-20 w-[30rem] h-[30rem] bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-6 md:pt-2 md:pb-10 lg:pt-4 lg:pb-12">
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-16 md:pt-2 md:pb-24 lg:pt-4 lg:pb-32">
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
                         {/* Left Content - Premium Hero */}
                         <div className="flex-1 text-center lg:text-left animate-slide-up relative">
