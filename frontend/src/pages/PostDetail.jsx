@@ -321,12 +321,15 @@ export default function PostDetail() {
                 </div>
 
                 {/* Story Content */}
-                <article className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-24 md:pb-12">
-                    {/* Category - Subtle, above title */}
-                    <div className="mb-6">
-                        <span className="text-xs font-medium text-stone-400 dark:text-stone-500 uppercase tracking-widest">
-                            {storyType.label}
-                        </span>
+                <article className="max-w-[680px] mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-24 md:pb-12">
+                    {/* Category - Dynamic Pill */}
+                    <div className="mb-8">
+                        <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-opacity-20 dark:bg-opacity-20 ${storyType.borderColor} ${storyType.canonicalBg} bg-opacity-5`}>
+                            <Icon className={`w-3.5 h-3.5 ${storyType.textColor}`} strokeWidth={1.5} />
+                            <span className={`text-xs font-bold tracking-wider uppercase ${storyType.textColor}`}>
+                                {storyType.label}
+                            </span>
+                        </div>
                     </div>
 
                     {/* Title - With breathing room */}
@@ -356,89 +359,97 @@ export default function PostDetail() {
                     )}
 
                     {/* Story Content - Maximum breathing room */}
-                    <div className="w-full mb-16">
+                    <div className="w-full mb-12">
                         <p className="text-stone-800 dark:text-stone-300 text-lg leading-[1.75] whitespace-pre-wrap font-medium">
                             {sanitizeText(story.content)}
                         </p>
                     </div>
 
+                    {/* Visual Breath / Pause */}
+                    <div className="w-full h-px bg-amber-100 dark:bg-zinc-800/80 my-10"></div>
+
                     {/* Actions - Unified Row */}
                     <div className="flex flex-col mb-12">
-                        <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-stone-200/80 dark:border-zinc-700/60">
+                        <div className="flex flex-wrap items-start justify-between gap-4 py-2 border-b border-stone-200/80 dark:border-zinc-700/60 pb-6">
                             {/* Left side actions */}
-                            <div className="flex items-center gap-3">
-                                <ReactionButton
-                                    storyId={story.id}
-                                    currentReaction={userReaction}
-                                    onReact={handleReact}
-                                    supportCount={supportCount}
-                                />
+                            <div className="flex items-start gap-3">
+                                {/* React Button with bound microcopy */}
+                                <div className="flex flex-col gap-1.5">
+                                    <ReactionButton
+                                        storyId={story.id}
+                                        currentReaction={userReaction}
+                                        onReact={handleReact}
+                                        supportCount={supportCount}
+                                    />
+                                    <span className="text-[11px] text-stone-400 dark:text-stone-500 italic pl-1 leading-none">
+                                        A quiet way to say "I read this."
+                                    </span>
+                                </div>
+                                
+                                {/* Save Button */}
                                 {user && (
                                     <button
                                         onClick={handleToggleBookmark}
                                         aria-label={isBookmarked ? 'Remove from saved' : 'Save this story'}
-                                        className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border transition-all ${isBookmarked
-                                            ? 'border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 font-medium shadow-sm shadow-amber-500/10'
-                                            : 'border-amber-200 bg-white dark:border-zinc-600 dark:bg-zinc-800 text-stone-600 dark:text-stone-400 hover:border-amber-400 hover:shadow-sm'
+                                        className={`group flex items-center h-[42px] px-5 gap-2 rounded-xl font-semibold text-[15px] transition-all duration-200 ${isBookmarked
+                                            ? 'border-amber-400 border-[1.5px] bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 shadow-sm shadow-amber-500/10'
+                                            : 'border border-amber-200 bg-white dark:border-zinc-700 dark:bg-zinc-800 text-stone-600 dark:text-stone-400 hover:border-amber-400 hover:shadow-sm'
                                             }`}
                                     >
-                                        <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} aria-hidden="true" />
-                                        <span className="text-sm font-medium">{isBookmarked ? 'Saved' : 'Save'}</span>
+                                        <Bookmark className={`w-5 h-5 transition-colors duration-200 ${isBookmarked ? 'fill-current' : 'fill-transparent stroke-current group-hover:stroke-amber-500 group-hover:fill-amber-100'}`} aria-hidden="true" />
+                                        <span>{isBookmarked ? 'Saved' : 'Save'}</span>
                                     </button>
                                 )}
                             </div>
 
-                            {/* Right side actions */}
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm text-stone-500 dark:text-stone-400 mr-2 hidden sm:inline-block">
+                            {/* Right side actions - Grouped closely */}
+                            <div className="flex items-center gap-1.5 text-stone-500 dark:text-stone-400 text-sm mt-1">
+                                <span className="font-medium mr-1.5 hidden sm:inline-block">
                                     {story.comment_count} responses
                                 </span>
+                                <span className="hidden sm:inline-block text-stone-300 dark:text-zinc-700 mx-0.5">·</span>
                                 <button
                                     onClick={handleShare}
                                     aria-label="Share this story"
-                                    className="flex items-center justify-center w-10 h-10 rounded-full text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-zinc-800 hover:text-stone-800 dark:hover:text-stone-200 transition-colors"
+                                    className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-stone-100 dark:hover:bg-zinc-800 hover:text-stone-800 dark:hover:text-stone-200 transition-colors"
                                 >
                                     <Share2 className="w-4 h-4" aria-hidden="true" />
                                 </button>
 
                                 {/* Author Actions Menu */}
                                 {isAuthor && (
-                                    <div className="relative">
-                                        <button
-                                            onClick={() => setShowAuthorMenu(!showAuthorMenu)}
-                                            className="flex items-center justify-center w-10 h-10 rounded-full text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-zinc-800 hover:text-stone-800 dark:hover:text-stone-200 transition-colors"
-                                        >
-                                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                                            </svg>
-                                        </button>
-                                        {showAuthorMenu && (
-                                            <>
-                                                <div className="fixed inset-0 z-10" onClick={() => setShowAuthorMenu(false)}></div>
-                                                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-zinc-800 rounded-xl shadow-xl border border-stone-200 dark:border-zinc-700 py-1 z-20 animate-scale-in origin-top-right">
-                                                    <button
-                                                        onClick={() => {
-                                                            setShowAuthorMenu(false);
-                                                            setShowDeleteModal(true);
-                                                        }}
-                                                        className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors font-medium"
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                        Delete Story
-                                                    </button>
-                                                </div>
-                                            </>
-                                        )}
-                                    </div>
+                                    <>
+                                        <span className="text-stone-300 dark:text-zinc-700 mx-0.5">·</span>
+                                        <div className="relative">
+                                            <button
+                                                onClick={() => setShowAuthorMenu(!showAuthorMenu)}
+                                                className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-stone-100 dark:hover:bg-zinc-800 hover:text-stone-800 dark:hover:text-stone-200 transition-colors"
+                                            >
+                                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                                </svg>
+                                            </button>
+                                            {showAuthorMenu && (
+                                                <>
+                                                    <div className="fixed inset-0 z-10" onClick={() => setShowAuthorMenu(false)}></div>
+                                                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-zinc-800 rounded-xl shadow-xl border border-stone-200 dark:border-zinc-700 py-1 z-20 animate-scale-in origin-top-right">
+                                                        <button
+                                                            onClick={() => {
+                                                                setShowAuthorMenu(false);
+                                                                setShowDeleteModal(true);
+                                                            }}
+                                                            className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors font-medium"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                            Delete Story
+                                                        </button>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    </>
                                 )}
                             </div>
-                        </div>
-
-                        {/* Quiet microcopy below */}
-                        <div className="mt-2 pl-3">
-                            <span className="text-xs text-stone-400 dark:text-stone-500 italic">
-                                A quiet way to say "I read this."
-                            </span>
                         </div>
                     </div>
 
@@ -475,7 +486,7 @@ export default function PostDetail() {
                                 <button
                                     onClick={handleComment}
                                     disabled={!commentText.trim()}
-                                    className="btn-premium px-6 py-2.5 text-sm font-semibold rounded-lg shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                                    className="btn-premium px-6 py-2.5 text-sm font-semibold rounded-lg shadow-sm disabled:opacity-75 disabled:cursor-not-allowed"
                                 >
                                     Respond
                                 </button>
