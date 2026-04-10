@@ -7,10 +7,10 @@ export default function SupportFloatingButton() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="fixed bottom-24 md:bottom-6 left-6 z-50">
+        <div className="fixed bottom-24 md:bottom-6 right-6 z-50">
             {/* Expanded Panel */}
             {isOpen && (
-                <div className="absolute bottom-16 left-0 w-80 sm:w-96 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-slide-up">
+                <div className="absolute bottom-16 right-0 w-80 sm:w-96 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-slide-up">
                     {/* Header */}
                     <div className="bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 p-4 text-white">
                         <div className="flex items-center justify-between">
@@ -61,16 +61,17 @@ export default function SupportFloatingButton() {
                 </div>
             )}
 
-            {/* Floating Button - calm amber/rose, slow breathing pulse */}
+            {/* Floating Button - calm amber outline, slow breathing pulse */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label={isOpen ? 'Close support resources' : 'Open support resources'}
                 aria-expanded={isOpen}
                 className={`
                     group flex items-center gap-1.5 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-full
-                    bg-gradient-to-r from-amber-500 via-amber-600 to-rose-500
-                    text-white text-sm font-medium shadow-lg shadow-amber-500/20
-                    hover:shadow-xl hover:shadow-amber-500/30 hover:scale-105
+                    border-2 border-amber-500/50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md
+                    text-amber-600 dark:text-amber-500 text-sm font-medium shadow-md shadow-amber-500/10
+                    hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:scale-105
+                    hover:shadow-lg hover:shadow-amber-500/20
                     transition-all duration-300
                     focus:outline-none focus:ring-4 focus:ring-amber-300 dark:focus:ring-amber-700
                     ${isOpen ? 'ring-4 ring-amber-300 dark:ring-amber-700' : 'animate-breathe'}

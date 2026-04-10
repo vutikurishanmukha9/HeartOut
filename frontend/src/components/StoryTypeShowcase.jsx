@@ -19,13 +19,12 @@ const storyCategories = [
         label: 'Success Stories',
         subtitle: '"I survived. Here\'s how."',
         icon: Trophy,
-        // Muted sage green - quiet accomplishment
-        bgColor: 'bg-stone-500',
-        lightBg: 'bg-stone-50 dark:bg-stone-900/20',
-        shadowColor: 'shadow-stone-500/25',
-        hoverShadow: 'hover:shadow-stone-500/40',
-        glowColor: 'rgba(120, 113, 108, 0.5)',
-        ringColor: 'ring-stone-500',
+        bgColor: 'bg-orange-600',
+        lightBg: 'bg-orange-50/40 dark:bg-orange-950/20',
+        shadowColor: 'shadow-orange-600/25',
+        hoverShadow: 'hover:shadow-orange-600/40',
+        glowColor: 'rgba(234, 88, 12, 0.5)',
+        ringColor: 'ring-orange-600',
         description: 'Celebrate victories & milestones',
         featured: false
     },
@@ -34,13 +33,12 @@ const storyCategories = [
         label: 'Life Lessons',
         subtitle: '"I learned this the hard way."',
         icon: Lightbulb,
-        // Muted amber - wisdom, warmth
-        bgColor: 'bg-amber-600',
-        lightBg: 'bg-amber-50 dark:bg-amber-900/20',
-        shadowColor: 'shadow-amber-600/25',
-        hoverShadow: 'hover:shadow-amber-600/40',
-        glowColor: 'rgba(217, 119, 6, 0.5)',
-        ringColor: 'ring-amber-600',
+        bgColor: 'bg-teal-700',
+        lightBg: 'bg-teal-50/40 dark:bg-teal-950/20',
+        shadowColor: 'shadow-teal-700/25',
+        hoverShadow: 'hover:shadow-teal-700/40',
+        glowColor: 'rgba(15, 118, 110, 0.5)',
+        ringColor: 'ring-teal-700',
         description: 'Wisdom from experience',
         featured: false
     },
@@ -49,9 +47,8 @@ const storyCategories = [
         label: 'Unsent Letters',
         subtitle: '"Things I never said."',
         icon: Mail,
-        // Deep slate - unspoken weight
         bgColor: 'bg-slate-600',
-        lightBg: 'bg-slate-100 dark:bg-slate-800/40',
+        lightBg: 'bg-slate-50/40 dark:bg-slate-900/20',
         shadowColor: 'shadow-slate-600/30',
         hoverShadow: 'hover:shadow-slate-600/50',
         glowColor: 'rgba(71, 85, 105, 0.6)',
@@ -64,13 +61,12 @@ const storyCategories = [
         label: 'Sacrifices',
         subtitle: '"What it cost me."',
         icon: Heart,
-        // Dusty rose - tender pain
-        bgColor: 'bg-rose-700',
-        lightBg: 'bg-rose-50 dark:bg-rose-900/25',
-        shadowColor: 'shadow-rose-700/30',
-        hoverShadow: 'hover:shadow-rose-700/50',
-        glowColor: 'rgba(159, 77, 91, 0.6)',
-        ringColor: 'ring-rose-700',
+        bgColor: 'bg-rose-800',
+        lightBg: 'bg-rose-50/40 dark:bg-rose-950/20',
+        shadowColor: 'shadow-rose-800/30',
+        hoverShadow: 'hover:shadow-rose-800/50',
+        glowColor: 'rgba(159, 18, 57, 0.6)',
+        ringColor: 'ring-rose-800',
         description: 'Given from the heart',
         featured: true
     },
@@ -79,13 +75,12 @@ const storyCategories = [
         label: 'Dreams',
         subtitle: '"What I still hope for."',
         icon: Sparkles,
-        // Warm amber - hope, not celebration
-        bgColor: 'bg-amber-700',
-        lightBg: 'bg-amber-50 dark:bg-amber-900/20',
-        shadowColor: 'shadow-amber-700/25',
-        hoverShadow: 'hover:shadow-amber-700/40',
-        glowColor: 'rgba(180, 83, 9, 0.5)',
-        ringColor: 'ring-amber-700',
+        bgColor: 'bg-amber-600',
+        lightBg: 'bg-amber-50/40 dark:bg-amber-950/20',
+        shadowColor: 'shadow-amber-600/25',
+        hoverShadow: 'hover:shadow-amber-600/40',
+        glowColor: 'rgba(217, 119, 6, 0.5)',
+        ringColor: 'ring-amber-600',
         description: 'Hopes & aspirations',
         featured: false
     },
@@ -94,13 +89,12 @@ const storyCategories = [
         label: 'Quiet Confessions',
         subtitle: '"In between the lines."',
         icon: BookOpen,
-        // Neutral warm gray
-        bgColor: 'bg-stone-600',
-        lightBg: 'bg-stone-50 dark:bg-stone-800/40',
-        shadowColor: 'shadow-stone-600/25',
-        hoverShadow: 'hover:shadow-stone-600/40',
-        glowColor: 'rgba(87, 83, 78, 0.4)',
-        ringColor: 'ring-stone-600',
+        bgColor: 'bg-stone-700',
+        lightBg: 'bg-stone-50/40 dark:bg-stone-900/20',
+        shadowColor: 'shadow-stone-700/25',
+        hoverShadow: 'hover:shadow-stone-700/40',
+        glowColor: 'rgba(68, 64, 60, 0.5)',
+        ringColor: 'ring-stone-700',
         description: 'Untitled narratives',
         featured: false
     },
@@ -133,10 +127,10 @@ export default function StoryTypeShowcase({ selectedCategory, onSelectCategory }
                             onMouseLeave={() => setHoveredCard(null)}
                             className={`
                                 story-card-modern group relative
-                                flex flex-col items-center
+                                h-full w-full flex flex-col justify-start items-center
                                 p-4 sm:p-5
                                 rounded-2xl sm:rounded-3xl
-                                bg-white/80 dark:bg-gray-800/80
+                                ${category.lightBg}
                                 backdrop-blur-sm
                                 border border-white/60 dark:border-gray-700/60
                                 transition-all duration-300 ease-out
@@ -227,23 +221,14 @@ export default function StoryTypeShowcase({ selectedCategory, onSelectCategory }
             </div>
 
             {/* "All Stories" link */}
-            <div className="text-center mt-4 sm:mt-6">
+            <div className="flex justify-center mt-6 sm:mt-8 w-full">
                 <button
                     onClick={() => onSelectCategory('all')}
-                    className={`
-                        inline-flex items-center gap-2
-                        px-4 py-2 rounded-full
-                        text-sm font-medium
-                        transition-all duration-300
-                        ${selectedCategory === 'all'
-                            ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg'
-                            : 'bg-white/60 dark:bg-gray-800/60 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700'
-                        }
-                    `}
+                    className="btn-premium flex items-center justify-center gap-2 px-8 py-3.5"
                     aria-pressed={selectedCategory === 'all'}
                 >
-                    <Sparkles className="w-4 h-4" />
-                    View All Stories
+                    <Sparkles className="w-5 h-5" />
+                    <span>View All Stories</span>
                 </button>
             </div>
 

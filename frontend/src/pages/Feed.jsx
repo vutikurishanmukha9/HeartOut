@@ -52,8 +52,8 @@ export default function Feed() {
 
             {/* Hero Section - quieter, more grounded */}
             <div className="relative overflow-hidden bg-gradient-to-br from-amber-100/40 via-stone-100/20 to-transparent dark:from-amber-950/20 dark:via-zinc-900 dark:to-zinc-900 border-b border-stone-200/50 dark:border-zinc-800 -mt-16 pt-16">
-                {/* Single subtle floating orb - morning fog feel */}
-                <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/20 rounded-full blur-3xl" />
+                {/* Subtle intentional background wash */}
+                <div className="absolute top-20 right-20 w-[30rem] h-[30rem] bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-6 md:pt-2 md:pb-10 lg:pt-4 lg:pb-12">
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
@@ -93,7 +93,7 @@ export default function Feed() {
                             </h1>
 
                             {/* Grounding subline - emotional anchor */}
-                            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 italic mb-3 sm:mb-4">
+                            <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300 italic mb-3 sm:mb-4">
                                 Written by real people. Read by those who understand.
                             </p>
 
@@ -104,25 +104,19 @@ export default function Feed() {
                             </p>
 
                             {/* CTA Section */}
-                            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 justify-center lg:justify-start w-full sm:w-auto">
-                                <Link to="/feed/create" className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 text-white font-bold shadow-lg shadow-amber-600/20 hover:shadow-xl hover:shadow-amber-600/25 hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto text-sm sm:text-base">
-                                    <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
+                            <div className="flex flex-col sm:flex-row items-center gap-4 mt-8 justify-center lg:justify-start w-full sm:w-auto">
+                                <Link to="/feed/create" className="btn-premium flex items-center justify-center gap-2 px-8 py-3.5 w-full sm:w-auto text-sm sm:text-base">
+                                    <BookOpen className="w-5 h-5" />
                                     <span>Write Something You've Been Holding In</span>
-                                    {/* Shine effect */}
-                                    <div className="absolute inset-0 rounded-xl sm:rounded-2xl overflow-hidden">
-                                        <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                                    </div>
                                 </Link>
 
                                 {/* Simple authentic tagline */}
-                                <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50">
+                                <div className="auth-pill">
                                     <div className="flex items-center gap-1">
-                                        <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500 fill-rose-500" />
-                                        <Heart className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-rose-400 fill-rose-400 -ml-1.5 mt-1.5" />
+                                        <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
+                                        <Heart className="w-2.5 h-2.5 text-rose-400 fill-rose-400 -ml-1.5 mt-1.5" />
                                     </div>
-                                    <span className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">
-                                        Community-powered
-                                    </span>
+                                    <span>Community-powered</span>
                                 </div>
                             </div>
                         </div>

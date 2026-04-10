@@ -16,7 +16,7 @@ import {
   Sun,
   Shield,
   Heart,
-  HeartHandshake,
+  LifeBuoy,
   FileText,
   Sparkles,
   Flame,
@@ -114,7 +114,7 @@ const Navbar = () => {
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white dark:border-gray-900 animate-pulse" />
               </div>
               <span className="text-xl font-bold text-gray-900 dark:text-white">
-                Heart<span className="text-gradient">Out</span>
+                Heart<span className="text-primary-600">Out</span>
               </span>
             </Link>
 
@@ -131,8 +131,8 @@ const Navbar = () => {
                       : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                       }`}
                   >
-                    {/* Icon with subtle scale on hover */}
-                    <Icon className={`w-4 h-4 transition-all duration-300 ${item.active
+                    {/* Icon with subtle scale on hover and uniform stroke */}
+                    <Icon strokeWidth={1.5} className={`w-4 h-4 transition-all duration-300 ${item.active
                       ? 'text-primary-500'
                       : 'group-hover:scale-110 group-hover:text-primary-500'
                       }`} />
@@ -144,9 +144,6 @@ const Navbar = () => {
                         : 'w-0 group-hover:w-full'
                         }`} />
                     </span>
-                    {item.name === 'Create' && !item.active && (
-                      <Sparkles className="w-3.5 h-3.5 text-secondary-500 opacity-70 group-hover:opacity-100 group-hover:rotate-12 transition-all duration-300" />
-                    )}
                     {/* Subtle background on hover */}
                     <span className="absolute inset-0 rounded-lg bg-gray-100 dark:bg-gray-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
                   </Link>
@@ -166,9 +163,9 @@ const Navbar = () => {
                     onFocus={() => setIsSearchFocused(true)}
                     onBlur={() => setIsSearchFocused(false)}
                     placeholder="Try: loneliness, guilt, hope..."
-                    className={`w-full pl-11 pr-4 py-2.5 bg-gray-100/80 dark:bg-gray-800/80 backdrop-blur-sm border-2 rounded-xl text-sm focus:outline-none transition-all duration-300 ${isSearchFocused
-                      ? 'border-primary-500 shadow-lg shadow-primary-500/20'
-                      : 'border-transparent hover:border-gray-200 dark:hover:border-gray-700'
+                    className={`w-full pl-11 pr-4 py-2 bg-amber-50/50 dark:bg-gray-800/80 backdrop-blur-sm border-2 rounded-xl text-sm placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none transition-all duration-300 ${isSearchFocused
+                      ? 'border-amber-500 shadow-lg shadow-amber-500/20'
+                      : 'border-amber-200/60 dark:border-gray-700 hover:border-amber-300 dark:hover:border-gray-600'
                       }`}
                   />
                 </div>
@@ -183,7 +180,7 @@ const Navbar = () => {
                 className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all duration-300 group"
                 title="Need Support?"
               >
-                <HeartHandshake className="w-5 h-5 group-hover:text-rose-500 transition-colors" />
+                <LifeBuoy className="w-5 h-5 group-hover:text-amber-600 transition-colors" />
               </Link>
 
               {/* Notifications */}
@@ -259,9 +256,9 @@ const Navbar = () => {
                   className="flex items-center space-x-2 p-1 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-300"
                 >
                   <div className="relative">
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-400 via-secondary-500 to-accent-500 p-0.5">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 p-0.5 shadow-sm">
                       <div className="w-full h-full rounded-[10px] bg-white dark:bg-gray-800 flex items-center justify-center">
-                        <span className="text-sm font-bold text-gradient">
+                        <span className="text-sm font-bold text-amber-600 dark:text-amber-400">
                           {user?.username?.charAt(0).toUpperCase() || 'U'}
                         </span>
                       </div>
