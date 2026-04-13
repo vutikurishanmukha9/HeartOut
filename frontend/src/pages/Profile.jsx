@@ -4,7 +4,7 @@ import { Globe, Mail, BookOpen, Edit, Award, X } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import StoryCard from '../components/PostCard';
 import { storyTypes } from '../components/StoryTypeSelector';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import StoryConstellation from '../components/StoryConstellation';
 import { getApiUrl } from '../config/api';
 import { getAvatarColor } from '../utils/avatarColors';
 
@@ -113,8 +113,8 @@ export default function Profile() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+            <div className="min-h-screen bg-stone-50 dark:bg-zinc-950 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
             </div>
         );
     }
@@ -125,13 +125,10 @@ export default function Profile() {
     }, {});
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+        <div className="min-h-screen bg-stone-50 dark:bg-zinc-950">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 pb-24 md:pb-12">
                 {/* Profile Header - Premium Glassmorphism */}
-                <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-gray-200/50 dark:border-gray-700/50 p-6 sm:p-8 mb-8 shadow-xl shadow-gray-200/50 dark:shadow-gray-900/50 overflow-hidden">
-                    {/* Decorative gradient orb */}
-                    <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-violet-400 via-purple-500 to-fuchsia-500 rounded-full blur-3xl opacity-20 dark:opacity-30" />
-                    <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-gradient-to-br from-blue-400 via-cyan-500 to-teal-500 rounded-full blur-3xl opacity-20 dark:opacity-30" />
+                <div className="relative bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-amber-100/50 dark:border-zinc-700/50 p-6 sm:p-8 mb-8 shadow-xl shadow-amber-100/30 dark:shadow-zinc-900/50 overflow-hidden">
 
                     <div className="relative">
                         {/* Mobile Layout: Avatar row with Edit button */}
@@ -147,7 +144,7 @@ export default function Profile() {
                             {isOwnProfile && !editing && (
                                 <button
                                     onClick={() => setEditing(true)}
-                                    className="group relative flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-500 to-purple-600 text-white text-sm font-medium rounded-full shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 hover:scale-105 active:scale-95 transition-all duration-300"
+                                    className="group relative flex items-center gap-2 px-4 py-2 btn-premium text-white text-sm font-medium rounded-full shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:scale-105 active:scale-95 transition-all duration-300"
                                 >
                                     <Edit className="w-4 h-4 transition-transform duration-300 group-hover:rotate-12" />
                                     Edit Profile
@@ -349,7 +346,7 @@ export default function Profile() {
                                             {isOwnProfile && (
                                                 <button
                                                     onClick={() => setEditing(true)}
-                                                    className="group relative flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-medium rounded-full shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 hover:scale-105 active:scale-95 transition-all duration-300"
+                                                    className="group relative flex items-center gap-2 px-5 py-2.5 btn-premium text-white font-medium rounded-full shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:scale-105 active:scale-95 transition-all duration-300"
                                                 >
                                                     <Edit className="w-4 h-4 transition-transform duration-300 group-hover:rotate-12" />
                                                     Edit Profile
@@ -400,7 +397,7 @@ export default function Profile() {
                         {/* Header */}
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
                             <div className="flex items-center gap-3">
-                                <div className="p-2.5 rounded-xl bg-gradient-to-br from-stone-500 to-stone-600 shadow-lg shadow-stone-500/25">
+                                <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 shadow-lg shadow-amber-500/25">
                                     <BookOpen className="w-5 h-5 text-white" />
                                 </div>
                                 <div>
@@ -435,10 +432,10 @@ export default function Profile() {
                                         className={`
                                             group relative p-3 sm:p-4 rounded-xl sm:rounded-2xl text-center transition-all duration-300 overflow-hidden
                                             ${isSelected
-                                                ? 'bg-gradient-to-br from-violet-500/10 to-purple-500/10 border-2 border-violet-400 dark:border-violet-500 shadow-lg shadow-violet-500/20 scale-[1.02]'
+                                                ? 'bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-2 border-amber-400 dark:border-amber-500 shadow-lg shadow-amber-500/20 scale-[1.02]'
                                                 : count > 0
-                                                    ? 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 hover:border-violet-300 dark:hover:border-violet-600 hover:shadow-lg hover:scale-[1.02]'
-                                                    : 'bg-gray-50/50 dark:bg-gray-900/30 border border-gray-100 dark:border-gray-800 opacity-40 cursor-default'
+                                                    ? 'bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm border border-amber-100/50 dark:border-zinc-700/50 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-lg hover:scale-[1.02]'
+                                                    : 'bg-white/40 dark:bg-zinc-900/30 border border-stone-100 dark:border-zinc-800 opacity-40 cursor-default'
                                             }
                                         `}
                                         disabled={count === 0}
@@ -457,7 +454,7 @@ export default function Profile() {
                                             </p>
                                         </div>
                                         {isSelected && (
-                                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
                                                 <div className="w-1.5 h-1.5 bg-white rounded-full" />
                                             </div>
                                         )}
@@ -471,166 +468,13 @@ export default function Profile() {
                             There's no right balance. This is just a snapshot.
                         </p>
 
-                        {/* Pie Chart Card - Premium Design */}
+                        {/* Story Constellation */}
                         {stories.length > 0 && (
-                            <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-gray-200/50 dark:border-gray-700/50 p-4 sm:p-6 lg:p-8 shadow-xl overflow-hidden">
-                                {/* Decorative gradient */}
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-violet-400/20 to-fuchsia-400/20 rounded-full blur-3xl" />
-                                <div className="relative flex flex-col lg:flex-row items-center gap-6 lg:gap-10">
-                                    {/* Chart - NOW SECOND (supporting) */}
-                                    <div className="w-full lg:w-1/2 flex justify-center order-last lg:order-last opacity-80">
-                                        <div className="relative w-[220px] h-[220px] sm:w-[280px] sm:h-[280px]">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <PieChart>
-                                                    <defs>
-                                                        {/* Desaturated gradient definitions - muted tones */}
-                                                        <linearGradient id="greenGrad" x1="0" y1="0" x2="1" y2="1">
-                                                            <stop offset="0%" stopColor="#a8b5a0" />
-                                                            <stop offset="100%" stopColor="#8a9a82" />
-                                                        </linearGradient>
-                                                        <linearGradient id="blueGrad" x1="0" y1="0" x2="1" y2="1">
-                                                            <stop offset="0%" stopColor="#a0b4c8" />
-                                                            <stop offset="100%" stopColor="#7a98b8" />
-                                                        </linearGradient>
-                                                        <linearGradient id="grayGrad" x1="0" y1="0" x2="1" y2="1">
-                                                            <stop offset="0%" stopColor="#b8b8b8" />
-                                                            <stop offset="100%" stopColor="#9a9a9a" />
-                                                        </linearGradient>
-                                                        <linearGradient id="redGrad" x1="0" y1="0" x2="1" y2="1">
-                                                            <stop offset="0%" stopColor="#d4a8a8" />
-                                                            <stop offset="100%" stopColor="#b88a8a" />
-                                                        </linearGradient>
-                                                        <linearGradient id="yellowGrad" x1="0" y1="0" x2="1" y2="1">
-                                                            <stop offset="0%" stopColor="#d4c8a0" />
-                                                            <stop offset="100%" stopColor="#c4b080" />
-                                                        </linearGradient>
-                                                        <linearGradient id="lightGrayGrad" x1="0" y1="0" x2="1" y2="1">
-                                                            <stop offset="0%" stopColor="#d8d8d8" />
-                                                            <stop offset="100%" stopColor="#c4c4c4" />
-                                                        </linearGradient>
-                                                        {/* Shadow filter - softer */}
-                                                        <filter id="chartShadow" x="-20%" y="-20%" width="140%" height="140%">
-                                                            <feDropShadow dx="0" dy="2" stdDeviation="4" floodOpacity="0.1" />
-                                                        </filter>
-                                                    </defs>
-                                                    <Pie
-                                                        data={storyTypes.map(type => ({
-                                                            name: type.label,
-                                                            value: storiesByType[type.value] || 0,
-                                                            type: type.value,
-                                                            chartColor: type.chartColor
-                                                        })).filter(d => d.value > 0)}
-                                                        cx="50%"
-                                                        cy="50%"
-                                                        innerRadius={50}
-                                                        outerRadius={85}
-                                                        paddingAngle={3}
-                                                        dataKey="value"
-                                                        onClick={(data) => setSelectedCategory(data.type)}
-                                                        style={{ cursor: 'pointer', filter: 'url(#chartShadow)' }}
-                                                        stroke="none"
-                                                        label={({ cx, cy, midAngle, innerRadius, outerRadius, value, index }) => {
-                                                            const RADIAN = Math.PI / 180;
-                                                            const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                                                            const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                                                            const y = cy + radius * Math.sin(-midAngle * RADIAN);
-                                                            const percentage = ((value / stories.length) * 100).toFixed(1);
-
-                                                            return (
-                                                                <g>
-                                                                    <rect
-                                                                        x={x - 22}
-                                                                        y={y - 10}
-                                                                        width={44}
-                                                                        height={20}
-                                                                        rx={4}
-                                                                        fill="rgba(17, 24, 39, 0.85)"
-                                                                    />
-                                                                    <text
-                                                                        x={x}
-                                                                        y={y}
-                                                                        fill="white"
-                                                                        textAnchor="middle"
-                                                                        dominantBaseline="central"
-                                                                        className="text-xs font-bold"
-                                                                        style={{ fontSize: '11px', fontWeight: 'bold' }}
-                                                                    >
-                                                                        {percentage}
-                                                                    </text>
-                                                                </g>
-                                                            );
-                                                        }}
-                                                        labelLine={false}
-                                                    >
-                                                        {storyTypes.map((type, index) => (
-                                                            <Cell
-                                                                key={`cell-${index}`}
-                                                                fill={
-                                                                    type.value === 'achievement' ? 'url(#greenGrad)' :
-                                                                        type.value === 'regret' ? 'url(#blueGrad)' :
-                                                                            type.value === 'unsent_letter' ? 'url(#grayGrad)' :
-                                                                                type.value === 'sacrifice' ? 'url(#redGrad)' :
-                                                                                    type.value === 'life_story' ? 'url(#yellowGrad)' : 'url(#lightGrayGrad)'
-                                                                }
-                                                            />
-                                                        ))}
-                                                    </Pie>
-                                                    <Tooltip
-                                                        content={({ active, payload }) => {
-                                                            if (active && payload && payload.length) {
-                                                                const percentage = ((payload[0].value / stories.length) * 100).toFixed(1);
-                                                                return (
-                                                                    <div className="bg-gray-900 text-white px-5 py-4 rounded-2xl shadow-2xl border border-gray-700">
-                                                                        <p className="font-bold text-lg">{payload[0].name}</p>
-                                                                        <p className="text-gray-300 text-sm mt-1">{payload[0].value} {payload[0].value === 1 ? 'story' : 'stories'} ({percentage}%)</p>
-                                                                    </div>
-                                                                );
-                                                            }
-                                                            return null;
-                                                        }}
-                                                    />
-                                                </PieChart>
-                                            </ResponsiveContainer>
-                                        </div>
-                                    </div>
-
-                                    {/* Legend and Stats - NOW FIRST (primary) */}
-                                    <div className="w-full lg:w-1/2 space-y-4 sm:space-y-5 order-first lg:order-first">
-                                        <div className="text-center lg:text-left">
-                                            <p className="text-3xl sm:text-4xl font-medium text-stone-700 dark:text-stone-300">{stories.length}</p>
-                                            <p className="text-sm sm:text-base text-stone-500 dark:text-stone-400 mt-1">Moments Shared</p>
-                                        </div>
-
-                                        <div className="space-y-2 sm:space-y-3">
-                                            {storyTypes.filter(type => (storiesByType[type.value] || 0) > 0).map((type) => {
-                                                const count = storiesByType[type.value] || 0;
-                                                const percentage = ((count / stories.length) * 100).toFixed(1);
-                                                return (
-                                                    <button
-                                                        key={type.value}
-                                                        onClick={() => setSelectedCategory(selectedCategory === type.value ? null : type.value)}
-                                                        className={`w-full flex items-center gap-3 p-2.5 sm:p-3 rounded-xl transition-all duration-200 ${selectedCategory === type.value
-                                                            ? 'bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-700 shadow-sm'
-                                                            : 'hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-transparent'
-                                                            }`}
-                                                    >
-                                                        <div
-                                                            className="w-3 h-3 sm:w-4 sm:h-4 rounded-md flex-shrink-0 opacity-70"
-                                                            style={{ backgroundColor: type.chartColor }}
-                                                        />
-                                                        <span className="flex-1 text-left text-sm font-medium text-stone-600 dark:text-stone-400">{type.label}</span>
-                                                        <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{count}</span>
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-
-                                        <p className="text-center lg:text-left text-xs sm:text-sm text-stone-400 dark:text-stone-500 italic pt-2">
-                                            Explore moments from different parts of your journey
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                            <StoryConstellation
+                                stories={stories}
+                                storiesByType={storiesByType}
+                                onCategoryClick={(value) => setSelectedCategory(selectedCategory === value ? null : value)}
+                            />
                         )}
 
                         {/* Grounding sentence */}
@@ -674,8 +518,8 @@ export default function Profile() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <BookOpen className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" />
+                            <div className="text-center py-16 bg-amber-50/20 dark:bg-zinc-800/50 rounded-xl border border-amber-100 dark:border-zinc-700">
+                                <BookOpen className="w-16 h-16 mx-auto text-stone-300 dark:text-stone-600 mb-4" />
                                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                                     {selectedCategory
                                         ? `No ${storyTypes.find(t => t.value === selectedCategory)?.label || ''} stories yet`
@@ -703,11 +547,11 @@ export default function Profile() {
                                 ) : isOwnProfile && (
                                     <Link
                                         to="/feed/create"
-                                        className="group relative inline-flex items-center gap-2 px-4 py-2 text-violet-600 dark:text-violet-400 font-medium transition-all duration-300 hover:text-violet-700 dark:hover:text-violet-300"
+                                        className="group relative inline-flex items-center gap-2 px-4 py-2 text-amber-600 dark:text-amber-400 font-medium transition-all duration-300 hover:text-amber-700 dark:hover:text-amber-300"
                                     >
                                         <span className="relative">
                                             Write Your First Story
-                                            <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gradient-to-r from-violet-500 to-purple-500 transition-all duration-300 group-hover:w-full" />
+                                            <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-300 group-hover:w-full" />
                                         </span>
                                     </Link>
                                 )}
