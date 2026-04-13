@@ -41,13 +41,13 @@ export default function Support() {
                     </p>
 
                     {/* Immediate CTA - Warm, Urgent but Safe */}
-                    <div className="bg-white dark:bg-zinc-900 rounded-3xl border-2 border-rose-100 dark:border-rose-900/30 p-6 sm:p-8 shadow-xl shadow-rose-100/50 dark:shadow-none text-center">
-                        <h2 className="text-xl font-bold text-rose-700 dark:text-rose-400 mb-6">
+                    <div className="bg-white dark:bg-zinc-900 rounded-3xl border-2 border-amber-100 dark:border-amber-900/30 p-6 sm:p-8 shadow-xl shadow-amber-100/30 dark:shadow-none text-center">
+                        <h2 className="text-xl font-bold text-amber-800 dark:text-amber-400 mb-6">
                             Need help right now?
                         </h2>
                         <a
                             href="tel:14416"
-                            className="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-rose-600 text-white text-lg font-bold rounded-xl hover:bg-rose-700 hover:-translate-y-0.5 transition-all shadow-lg shadow-rose-600/20"
+                            className="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-rose-500 to-amber-500 text-white text-lg font-bold rounded-xl hover:from-rose-600 hover:to-amber-600 hover:-translate-y-0.5 transition-all shadow-lg shadow-rose-500/20"
                         >
                             <Phone className="w-6 h-6" />
                             Call 14416
@@ -61,22 +61,22 @@ export default function Support() {
                 {/* Quick Stats - Reassurance */}
                 <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto mb-16 animate-slide-up stagger-2">
                     <div className="text-center">
-                        <div className="w-10 h-10 mx-auto rounded-full bg-stone-100 dark:bg-zinc-800 flex items-center justify-center mb-2">
-                            <Phone className="w-5 h-5 text-stone-600 dark:text-stone-400" />
+                        <div className="w-10 h-10 mx-auto rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mb-2">
+                            <Phone className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                         </div>
                         <p className="text-sm font-semibold text-stone-700 dark:text-stone-300">24/7</p>
                         <p className="text-[10px] text-stone-400">Available</p>
                     </div>
                     <div className="text-center">
-                        <div className="w-10 h-10 mx-auto rounded-full bg-stone-100 dark:bg-zinc-800 flex items-center justify-center mb-2">
-                            <Shield className="w-5 h-5 text-stone-600 dark:text-stone-400" />
+                        <div className="w-10 h-10 mx-auto rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mb-2">
+                            <Shield className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                         </div>
                         <p className="text-sm font-semibold text-stone-700 dark:text-stone-300">100%</p>
                         <p className="text-[10px] text-stone-400">Confidential</p>
                     </div>
                     <div className="text-center">
-                        <div className="w-10 h-10 mx-auto rounded-full bg-stone-100 dark:bg-zinc-800 flex items-center justify-center mb-2">
-                            <MessageCircle className="w-5 h-5 text-stone-600 dark:text-stone-400" />
+                        <div className="w-10 h-10 mx-auto rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mb-2">
+                            <MessageCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                         </div>
                         <p className="text-sm font-semibold text-stone-700 dark:text-stone-300">Free</p>
                         <p className="text-[10px] text-stone-400">No Cost</p>
@@ -106,28 +106,28 @@ export default function Support() {
                             href="https://www.nimhans.ac.in"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-3 p-4 rounded-xl border border-stone-200 dark:border-zinc-700 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors group"
+                            className="flex items-center gap-3 p-5 rounded-xl bg-amber-50/30 dark:bg-zinc-800/60 border border-amber-100 dark:border-zinc-700 hover:bg-amber-50/60 dark:hover:bg-zinc-800 transition-colors group"
                         >
-                            <div className="p-2 rounded-lg bg-stone-100 dark:bg-zinc-800 group-hover:bg-white dark:group-hover:bg-zinc-700 transition-colors">
-                                <ExternalLink className="w-4 h-4 text-stone-500 dark:text-stone-400" />
+                            <div className="p-2 rounded-lg bg-amber-100/50 dark:bg-amber-900/20 group-hover:bg-amber-100 dark:group-hover:bg-amber-900/30 transition-colors">
+                                <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                             </div>
                             <div>
-                                <p className="font-medium text-stone-700 dark:text-stone-200 text-sm">NIMHANS</p>
-                                <p className="text-xs text-stone-400 dark:text-stone-500">National Institute of Mental Health</p>
+                                <p className="font-semibold text-stone-800 dark:text-stone-200 text-sm">NIMHANS</p>
+                                <p className="text-xs text-stone-500 dark:text-stone-400">National Institute of Mental Health</p>
                             </div>
                         </a>
                         <a
                             href="https://www.vandrevalafoundation.com"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-3 p-4 rounded-xl border border-stone-200 dark:border-zinc-700 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors group"
+                            className="flex items-center gap-3 p-5 rounded-xl bg-amber-50/30 dark:bg-zinc-800/60 border border-amber-100 dark:border-zinc-700 hover:bg-amber-50/60 dark:hover:bg-zinc-800 transition-colors group"
                         >
-                            <div className="p-2 rounded-lg bg-stone-100 dark:bg-zinc-800 group-hover:bg-white dark:group-hover:bg-zinc-700 transition-colors">
-                                <ExternalLink className="w-4 h-4 text-stone-500 dark:text-stone-400" />
+                            <div className="p-2 rounded-lg bg-amber-100/50 dark:bg-amber-900/20 group-hover:bg-amber-100 dark:group-hover:bg-amber-900/30 transition-colors">
+                                <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                             </div>
                             <div>
-                                <p className="font-medium text-stone-700 dark:text-stone-200 text-sm">Vandrevala Foundation</p>
-                                <p className="text-xs text-stone-400 dark:text-stone-500">Mental Health Support</p>
+                                <p className="font-semibold text-stone-800 dark:text-stone-200 text-sm">Vandrevala Foundation</p>
+                                <p className="text-xs text-stone-500 dark:text-stone-400">Mental Health Support</p>
                             </div>
                         </a>
                     </div>
@@ -141,6 +141,11 @@ export default function Support() {
                         or go to your nearest hospital emergency room immediately.
                     </p>
                 </div>
+
+                {/* Final Grounding Sentence */}
+                <p className="mt-16 mb-8 text-center text-sm text-stone-400 dark:text-stone-500 italic leading-relaxed max-w-md mx-auto">
+                    Whatever you are feeling right now — it is okay to feel it. You reached out. That took courage.
+                </p>
             </div>
         </div>
     );
