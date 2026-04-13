@@ -140,28 +140,28 @@ export default function Settings() {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+        <div className="min-h-screen bg-stone-50 dark:bg-zinc-950 py-8 px-4">
             <div className="max-w-2xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
                     <button
                         onClick={() => navigate(-1)}
-                        className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-4 transition-colors"
+                        className="flex items-center gap-2 text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-white mb-4 transition-colors"
                     >
                         <ChevronLeft className="w-5 h-5" />
                         <span>Back</span>
                     </button>
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Settings</h1>
-                    <p className="text-gray-600 dark:text-gray-400 mt-1">Manage your account preferences</p>
+                    <p className="text-stone-400 dark:text-stone-500 mt-1 italic">Your space, your rules.</p>
                 </div>
 
                 {/* Theme Section */}
-                <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+                <section className="bg-amber-50/20 dark:bg-zinc-800/50 rounded-2xl shadow-sm border border-amber-100 dark:border-zinc-700 p-6 mb-6">
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Appearance</h2>
 
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                            <label className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-3">
                                 Theme
                             </label>
                             <div className="flex gap-3">
@@ -170,17 +170,17 @@ export default function Settings() {
                                         key={option.value}
                                         onClick={() => setTheme(option.value)}
                                         className={`flex-1 flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${theme === option.value
-                                                ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                                                : 'border-gray-200 dark:border-gray-600 hover:border-gray-300'
+                                                ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20'
+                                                : 'border-stone-200 dark:border-zinc-600 bg-white/50 dark:bg-zinc-800/50 hover:border-stone-300 dark:hover:border-zinc-500'
                                             }`}
                                     >
                                         <option.icon className={`w-6 h-6 ${theme === option.value
-                                                ? 'text-primary-600 dark:text-primary-400'
-                                                : 'text-gray-500'
+                                                ? 'text-amber-600 dark:text-amber-400'
+                                                : 'text-stone-400 dark:text-stone-500'
                                             }`} />
                                         <span className={`text-sm font-medium ${theme === option.value
-                                                ? 'text-primary-600 dark:text-primary-400'
-                                                : 'text-gray-600 dark:text-gray-400'
+                                                ? 'text-amber-600 dark:text-amber-400'
+                                                : 'text-stone-500 dark:text-stone-400'
                                             }`}>
                                             {option.label}
                                         </span>
@@ -192,16 +192,16 @@ export default function Settings() {
                 </section>
 
                 {/* Password Change Section */}
-                <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+                <section className="bg-amber-50/20 dark:bg-zinc-800/50 rounded-2xl shadow-sm border border-amber-100 dark:border-zinc-700 p-6 mb-6">
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                        <Lock className="w-5 h-5" />
+                        <Lock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                         Change Password
                     </h2>
 
                     <form onSubmit={handlePasswordChange} className="space-y-4">
                         {/* Current Password */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <label className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1">
                                 Current Password
                             </label>
                             <div className="relative">
@@ -209,7 +209,7 @@ export default function Settings() {
                                     type={showPasswords.current ? 'text' : 'password'}
                                     value={passwordData.currentPassword}
                                     onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                                    className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                    className="w-full px-4 py-3 pr-12 rounded-xl border border-amber-100 dark:border-zinc-700 bg-amber-50/20 dark:bg-zinc-800/50 text-gray-900 dark:text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
                                     required
                                 />
                                 <button
@@ -224,7 +224,7 @@ export default function Settings() {
 
                         {/* New Password */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <label className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1">
                                 New Password
                             </label>
                             <div className="relative">
@@ -232,7 +232,7 @@ export default function Settings() {
                                     type={showPasswords.new ? 'text' : 'password'}
                                     value={passwordData.newPassword}
                                     onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                                    className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                    className="w-full px-4 py-3 pr-12 rounded-xl border border-amber-100 dark:border-zinc-700 bg-amber-50/20 dark:bg-zinc-800/50 text-gray-900 dark:text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
                                     required
                                 />
                                 <button
@@ -265,7 +265,7 @@ export default function Settings() {
 
                         {/* Confirm Password */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <label className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1">
                                 Confirm New Password
                             </label>
                             <div className="relative">
@@ -273,7 +273,7 @@ export default function Settings() {
                                     type={showPasswords.confirm ? 'text' : 'password'}
                                     value={passwordData.confirmPassword}
                                     onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                                    className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                    className="w-full px-4 py-3 pr-12 rounded-xl border border-amber-100 dark:border-zinc-700 bg-amber-50/20 dark:bg-zinc-800/50 text-gray-900 dark:text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
                                     required
                                 />
                                 <button
@@ -304,7 +304,7 @@ export default function Settings() {
                         <button
                             type="submit"
                             disabled={passwordLoading}
-                            className="w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            className="w-full py-3 px-4 btn-premium text-white font-medium rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20"
                         >
                             {passwordLoading ? (
                                 <>
@@ -319,7 +319,7 @@ export default function Settings() {
                 </section>
 
                 {/* Danger Zone */}
-                <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-red-200 dark:border-red-900/50 p-6">
+                <section className="bg-red-50/30 dark:bg-red-950/10 rounded-2xl shadow-sm border border-red-200 dark:border-red-900/50 p-6">
                     <h2 className="text-lg font-semibold text-red-600 dark:text-red-400 mb-2 flex items-center gap-2">
                         <AlertTriangle className="w-5 h-5" />
                         Danger Zone
