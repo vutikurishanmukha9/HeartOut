@@ -45,7 +45,7 @@ export default function StoryConstellation({ stories = [], storiesByType = {}, o
                     cx: zone.x,
                     cy: zone.y,
                     color: type.chartColor,
-                    opacity: 0.15,
+                    opacity: 0.25,
                     glow: false,
                     title: null,
                     category: type.label,
@@ -148,7 +148,7 @@ export default function StoryConstellation({ stories = [], storiesByType = {}, o
                 <div className="w-full lg:w-3/5 flex items-center justify-center">
                     <div
                         className="w-full rounded-2xl overflow-hidden relative"
-                        style={{ backgroundColor: '#1a1210', height: '320px', maxWidth: '460px' }}
+        style={{ backgroundColor: '#231815', height: '320px', maxWidth: '460px', borderRadius: '12px' }}
                     >
                         <svg
                             viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
@@ -190,7 +190,7 @@ export default function StoryConstellation({ stories = [], storiesByType = {}, o
                                         <circle
                                             cx={cx}
                                             cy={cy}
-                                            r={isHovered ? 5 : 3}
+                                            r={isHovered ? 7 : (dot.isEmpty ? 4 : (totalStories <= 3 ? 5 : 3))}
                                             fill={dot.color}
                                             opacity={dot.opacity}
                                             filter={dot.glow ? `url(#${filterId})` : undefined}
