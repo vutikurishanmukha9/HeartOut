@@ -161,47 +161,34 @@ export default function Profile() {
                                         value={formData.display_name}
                                         onChange={(e) => setFormData({ ...formData, display_name: e.target.value })}
                                         placeholder="Display Name"
-                                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                                        className="w-full px-4 py-2.5 border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/20 dark:bg-zinc-800/50 text-gray-900 dark:text-white placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
                                     />
                                     <textarea
                                         value={formData.bio}
                                         onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                                         placeholder="Short bio..."
                                         rows={2}
-                                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                                        className="w-full px-4 py-2.5 border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/20 dark:bg-zinc-800/50 text-gray-900 dark:text-white placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
                                     />
                                     <textarea
                                         value={formData.author_bio}
                                         onChange={(e) => setFormData({ ...formData, author_bio: e.target.value })}
-                                        placeholder="Detailed author biography..."
+                                        placeholder="Something about you, in your own words."
                                         rows={3}
-                                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                                        className="w-full px-4 py-2.5 border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/20 dark:bg-zinc-800/50 text-gray-900 dark:text-white placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
                                     />
-                                    <input
-                                        type="url"
-                                        value={formData.website_url}
-                                        onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
-                                        placeholder="Website URL"
-                                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
-                                    />
-                                    <div className="flex gap-4">
+                                    <div className="flex gap-3 pt-1">
                                         <button
                                             onClick={handleUpdateProfile}
-                                            className="group relative flex items-center gap-2 px-4 py-2 text-emerald-600 dark:text-emerald-400 font-medium transition-all duration-300"
+                                            className="px-5 py-2 btn-premium text-white text-sm font-medium rounded-full shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:scale-105 active:scale-95 transition-all duration-300"
                                         >
-                                            <span className="relative">
-                                                Save
-                                                <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300 group-hover:w-full" />
-                                            </span>
+                                            Save
                                         </button>
                                         <button
                                             onClick={() => setEditing(false)}
-                                            className="group relative flex items-center gap-2 px-4 py-2 text-gray-500 dark:text-gray-400 font-medium transition-all duration-300"
+                                            className="px-4 py-2 text-stone-500 dark:text-stone-400 text-sm font-medium hover:text-stone-700 dark:hover:text-stone-300 transition-colors"
                                         >
-                                            <span className="relative">
-                                                Cancel
-                                                <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gray-400 transition-all duration-300 group-hover:w-full" />
-                                            </span>
+                                            Cancel
                                         </button>
                                     </div>
                                 </div>
@@ -283,47 +270,34 @@ export default function Profile() {
                                             value={formData.display_name}
                                             onChange={(e) => setFormData({ ...formData, display_name: e.target.value })}
                                             placeholder="Display Name"
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                                            className="w-full px-4 py-2.5 border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/20 dark:bg-zinc-800/50 text-gray-900 dark:text-white placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
                                         />
                                         <textarea
                                             value={formData.bio}
                                             onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                                             placeholder="Short bio..."
                                             rows={2}
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                                            className="w-full px-4 py-2.5 border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/20 dark:bg-zinc-800/50 text-gray-900 dark:text-white placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
                                         />
                                         <textarea
                                             value={formData.author_bio}
                                             onChange={(e) => setFormData({ ...formData, author_bio: e.target.value })}
-                                            placeholder="Detailed author biography..."
+                                            placeholder="Something about you, in your own words."
                                             rows={4}
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                                            className="w-full px-4 py-2.5 border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/20 dark:bg-zinc-800/50 text-gray-900 dark:text-white placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
                                         />
-                                        <input
-                                            type="url"
-                                            value={formData.website_url}
-                                            onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
-                                            placeholder="Website URL"
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
-                                        />
-                                        <div className="flex gap-4">
+                                        <div className="flex gap-3 pt-1">
                                             <button
                                                 onClick={handleUpdateProfile}
-                                                className="group relative flex items-center gap-2 px-4 py-2 text-emerald-600 dark:text-emerald-400 font-medium transition-all duration-300 hover:text-emerald-700 dark:hover:text-emerald-300"
+                                                className="px-6 py-2.5 btn-premium text-white font-medium rounded-full shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:scale-105 active:scale-95 transition-all duration-300"
                                             >
-                                                <span className="relative">
-                                                    Save Changes
-                                                    <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300 group-hover:w-full" />
-                                                </span>
+                                                Save Changes
                                             </button>
                                             <button
                                                 onClick={() => setEditing(false)}
-                                                className="group relative flex items-center gap-2 px-4 py-2 text-gray-500 dark:text-gray-400 font-medium transition-all duration-300 hover:text-gray-700 dark:hover:text-gray-200"
+                                                className="px-4 py-2.5 text-stone-500 dark:text-stone-400 font-medium hover:text-stone-700 dark:hover:text-stone-300 transition-colors"
                                             >
-                                                <span className="relative">
-                                                    Cancel
-                                                    <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gray-400 transition-all duration-300 group-hover:w-full" />
-                                                </span>
+                                                Cancel
                                             </button>
                                         </div>
                                     </div>
