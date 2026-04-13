@@ -276,16 +276,15 @@ const Navbar = () => {
                     />
 
                     {/* Premium dropdown - auto-width to fit content */}
-                    <div className="absolute right-0 mt-3 min-w-[200px] z-50 rounded-2xl shadow-2xl shadow-gray-900/20 dark:shadow-black/40 animate-scale-in origin-top-right overflow-hidden border border-gray-200 dark:border-gray-700/50 bg-white dark:bg-gray-800">
+                    <div className="absolute right-0 mt-3 min-w-[200px] z-50 rounded-2xl shadow-2xl shadow-gray-900/20 dark:shadow-black/40 animate-scale-in origin-top-right overflow-hidden border border-amber-100 dark:border-zinc-700/50 bg-amber-50/30 dark:bg-zinc-900">
                       {/* User Header with Gradient Background */}
                       <div className="relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 via-secondary-500/10 to-accent-500/10 dark:from-primary-500/20 dark:via-secondary-500/20 dark:to-accent-500/20" />
-                        <div className="absolute -top-12 -right-12 w-32 h-32 bg-gradient-to-br from-primary-400 to-secondary-500 rounded-full blur-3xl opacity-20" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-amber-400/5 to-amber-300/5 dark:from-amber-500/10 dark:via-amber-400/10 dark:to-amber-300/10" />
 
                         <div className="relative px-4 py-3 flex items-center gap-3">
                           {/* Avatar */}
                           <div className="relative flex-shrink-0">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-400 via-secondary-500 to-accent-500 p-0.5 shadow-lg shadow-primary-500/25">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 p-0.5 shadow-lg shadow-amber-500/25">
                               <div className="w-full h-full rounded-[9px] bg-white dark:bg-gray-800 flex items-center justify-center">
                                 <span className="text-base font-bold text-gradient">
                                   {user?.username?.charAt(0).toUpperCase() || 'U'}
@@ -307,7 +306,7 @@ const Navbar = () => {
                       </div>
 
                       {/* Divider */}
-                      <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-600 to-transparent" />
+                      <div className="h-px bg-gradient-to-r from-transparent via-amber-200/50 dark:via-zinc-600 to-transparent" />
 
                       {/* Menu Items */}
                       <div className="p-1.5">
@@ -316,7 +315,7 @@ const Navbar = () => {
                           className="group flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                           onClick={() => setIsProfileMenuOpen(false)}
                         >
-                          <div className="flex items-center justify-center w-7 h-7 rounded-md bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                          <div className="flex items-center justify-center w-7 h-7 rounded-md bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
                             <User className="w-3.5 h-3.5" />
                           </div>
                           <span>Profile</span>
@@ -338,7 +337,7 @@ const Navbar = () => {
                           className="group flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                           onClick={() => setIsProfileMenuOpen(false)}
                         >
-                          <div className="flex items-center justify-center w-7 h-7 rounded-md bg-gray-100 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400">
+                          <div className="flex items-center justify-center w-7 h-7 rounded-md bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
                             <Settings className="w-3.5 h-3.5" />
                           </div>
                           <span>Settings</span>
@@ -346,7 +345,7 @@ const Navbar = () => {
                       </div>
 
                       {/* Divider */}
-                      <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-600 to-transparent mx-2" />
+                      <div className="h-px bg-gradient-to-r from-transparent via-amber-200/50 dark:via-zinc-600 to-transparent mx-2" />
 
                       {/* Sign Out */}
                       <div className="p-1.5">
