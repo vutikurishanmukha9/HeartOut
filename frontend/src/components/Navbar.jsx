@@ -16,7 +16,7 @@ import {
   Sun,
   Shield,
   Heart,
-  LifeBuoy,
+
   FileText,
   Sparkles,
   Flame,
@@ -132,15 +132,15 @@ const Navbar = () => {
                       : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                       }`}
                   >
-                    {/* Icon with subtle scale on hover and uniform stroke */}
-                    <Icon strokeWidth={1.5} className={`w-4 h-4 transition-all duration-300 ${item.active
+                    {/* Icon: filled when active, outlined when inactive */}
+                    <Icon strokeWidth={item.active ? 2 : 1.5} fill={item.active ? 'currentColor' : 'none'} className={`w-4 h-4 transition-all duration-300 ${item.active
                       ? 'text-primary-500'
                       : 'group-hover:scale-110 group-hover:text-primary-500'
                       }`} />
                     <span className="relative">
                       {item.name}
                       {/* Animated underline */}
-                      <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 transition-all duration-300 ${item.active
+                      <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-300 ${item.active
                         ? 'w-full'
                         : 'w-0 group-hover:w-full'
                         }`} />
@@ -181,7 +181,7 @@ const Navbar = () => {
                 className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all duration-300 group"
                 title="Need Support?"
               >
-                <LifeBuoy className="w-5 h-5 group-hover:text-amber-600 transition-colors" />
+                <Heart strokeWidth={1.5} className="w-5 h-5 group-hover:text-rose-500 transition-colors" />
               </Link>
 
               {/* Notifications */}
@@ -190,9 +190,9 @@ const Navbar = () => {
                   onClick={() => setIsNotificationOpen(!isNotificationOpen)}
                   className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-300 group"
                 >
-                  <Bell className="w-5 h-5 group-hover:text-primary-500 transition-colors" />
+                  <Bell strokeWidth={1.5} className="w-5 h-5 group-hover:text-amber-500 transition-colors" />
                   {ws?.notifications?.length > 0 && (
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
+                    <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-amber-500 rounded-full animate-pulse border-2 border-white dark:border-gray-900" />
                   )}
                 </button>
 
@@ -244,9 +244,9 @@ const Navbar = () => {
                 className="p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-300 group"
               >
                 {isDark ? (
-                  <Sun className="w-5 h-5 group-hover:text-amber-500 transition-colors" />
+                  <Sun strokeWidth={1.5} className="w-5 h-5 group-hover:text-amber-500 transition-colors" />
                 ) : (
-                  <Moon className="w-5 h-5 group-hover:text-indigo-500 transition-colors" />
+                  <Moon strokeWidth={1.5} className="w-5 h-5 group-hover:text-indigo-500 transition-colors" />
                 )}
               </button>
 
