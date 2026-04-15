@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, PlusSquare, User, HeartHandshake, FileText } from 'lucide-react';
+import { Home, PlusSquare, User, HeartHandshake, BookMarked } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 
 /**
@@ -28,7 +28,7 @@ export default function MobileBottomNav() {
 
     const navItems = [
         { path: '/feed', icon: Home, label: 'Home' },
-        { path: '/feed/drafts', icon: FileText, label: 'Drafts' },
+        { path: '/feed/drafts', icon: BookMarked, label: 'Drafts' },
         { path: '/feed/create', icon: PlusSquare, label: 'Create', isCreate: true },
         { path: '/support', icon: HeartHandshake, label: 'Support' },
         { path: '/profile', icon: User, label: 'Profile' },
@@ -77,31 +77,25 @@ export default function MobileBottomNav() {
                                 className={({ isActive }) => `
                                     relative flex flex-col items-center justify-center min-w-[60px] py-2 px-3
                                     transition-all duration-200 group
-                                    ${isActive ? 'text-rose-500' : 'text-gray-500 dark:text-gray-400'}
+                                    ${isActive ? 'text-amber-600' : 'text-gray-400 dark:text-gray-500'}
                                 `}
                             >
-                                {/* Active indicator dot */}
-                                <span className={`
-                                    absolute -top-1 w-1 h-1 rounded-full bg-rose-500
-                                    transition-all duration-300
-                                    ${isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}
-                                `} />
-
-                                {/* Icon with bounce on tap */}
+                                {/* Icon: filled when active, outlined when inactive */}
                                 <Icon
                                     className={`
                                         w-6 h-6 transition-transform duration-200
                                         group-active:scale-90
                                         ${isActive ? 'scale-110' : ''}
                                     `}
-                                    strokeWidth={isActive ? 2.5 : 2}
+                                    strokeWidth={isActive ? 2 : 1.5}
+                                    fill={isActive ? 'currentColor' : 'none'}
                                 />
 
                                 {/* Label */}
                                 <span className={`
                                     text-[10px] mt-1 font-medium
                                     transition-all duration-200
-                                    ${isActive ? 'opacity-100' : 'opacity-70'}
+                                    ${isActive ? 'opacity-100 font-semibold' : 'opacity-60'}
                                 `}>
                                     {item.label}
                                 </span>
