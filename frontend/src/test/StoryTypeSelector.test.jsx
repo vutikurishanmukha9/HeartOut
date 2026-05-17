@@ -9,12 +9,12 @@ import StoryTypeSelector from '../components/StoryTypeSelector';
 
 // Define expected story types based on actual implementation
 const expectedStoryTypes = [
-    { value: 'achievement', label: 'Achievement' },
-    { value: 'regret', label: 'Regret' },
-    { value: 'unsent_letter', label: 'Unsent Letter' },
-    { value: 'sacrifice', label: 'Sacrifice' },
-    { value: 'life_story', label: 'Life Story' },
-    { value: 'other', label: 'Not Sure Yet' }
+    { value: 'achievement', label: 'Success Stories' },
+    { value: 'confession', label: 'Dreams' },
+    { value: 'regret', label: 'Life Lessons' },
+    { value: 'unsent_letter', label: 'Unsent Letters' },
+    { value: 'sacrifice', label: 'Sacrifices' },
+    { value: 'other', label: 'Quiet Confessions' }
 ];
 
 describe('StoryTypeSelector', () => {
@@ -37,19 +37,19 @@ describe('StoryTypeSelector', () => {
             render(<StoryTypeSelector selected={null} onChange={mockOnChange} />);
 
             // Check that all 6 labels are present
-            expect(screen.getByText('Achievement')).toBeInTheDocument();
-            expect(screen.getByText('Regret')).toBeInTheDocument();
-            expect(screen.getByText('Unsent Letter')).toBeInTheDocument();
-            expect(screen.getByText('Sacrifice')).toBeInTheDocument();
-            expect(screen.getByText('Life Story')).toBeInTheDocument();
-            expect(screen.getByText('Not Sure Yet')).toBeInTheDocument();
+            expect(screen.getByText('Success Stories')).toBeInTheDocument();
+            expect(screen.getByText('Dreams')).toBeInTheDocument();
+            expect(screen.getByText('Life Lessons')).toBeInTheDocument();
+            expect(screen.getByText('Unsent Letters')).toBeInTheDocument();
+            expect(screen.getByText('Sacrifices')).toBeInTheDocument();
+            expect(screen.getByText('Quiet Confessions')).toBeInTheDocument();
         });
 
         it('renders story type descriptions', () => {
             render(<StoryTypeSelector selected={null} onChange={mockOnChange} />);
 
-            expect(screen.getByText(/Something you're proud you survived or achieved/i)).toBeInTheDocument();
-            expect(screen.getByText(/Something you still think about/i)).toBeInTheDocument();
+            expect(screen.getByText(/Something you survived, earned, or finally became/i)).toBeInTheDocument();
+            expect(screen.getByText(/The hard ones. The ones that changed you/i)).toBeInTheDocument();
         });
     });
 
@@ -57,7 +57,7 @@ describe('StoryTypeSelector', () => {
         it('calls onChange when a type is clicked', () => {
             render(<StoryTypeSelector selected={null} onChange={mockOnChange} />);
 
-            fireEvent.click(screen.getByText('Achievement'));
+            fireEvent.click(screen.getByText('Success Stories'));
 
             expect(mockOnChange).toHaveBeenCalledWith('achievement');
         });
@@ -66,28 +66,28 @@ describe('StoryTypeSelector', () => {
             render(<StoryTypeSelector selected="achievement" onChange={mockOnChange} />);
 
             // The selected item should have a different style
-            const achievementElement = screen.getByText('Achievement');
+            const achievementElement = screen.getByText('Success Stories');
             expect(achievementElement).toBeInTheDocument();
         });
 
-        it('can select Regret type', () => {
+        it('can select Life Lessons type', () => {
             render(<StoryTypeSelector selected={null} onChange={mockOnChange} />);
 
-            fireEvent.click(screen.getByText('Regret'));
+            fireEvent.click(screen.getByText('Life Lessons'));
             expect(mockOnChange).toHaveBeenCalledWith('regret');
         });
 
-        it('can select Unsent Letter type', () => {
+        it('can select Unsent Letters type', () => {
             render(<StoryTypeSelector selected={null} onChange={mockOnChange} />);
 
-            fireEvent.click(screen.getByText('Unsent Letter'));
+            fireEvent.click(screen.getByText('Unsent Letters'));
             expect(mockOnChange).toHaveBeenCalledWith('unsent_letter');
         });
 
-        it('can select Sacrifice type', () => {
+        it('can select Sacrifices type', () => {
             render(<StoryTypeSelector selected={null} onChange={mockOnChange} />);
 
-            fireEvent.click(screen.getByText('Sacrifice'));
+            fireEvent.click(screen.getByText('Sacrifices'));
             expect(mockOnChange).toHaveBeenCalledWith('sacrifice');
         });
     });
@@ -95,7 +95,7 @@ describe('StoryTypeSelector', () => {
 
 describe('Story Type Data Validation', () => {
     it('has all expected story type values', () => {
-        const expectedValues = ['achievement', 'regret', 'unsent_letter', 'sacrifice', 'life_story', 'other'];
+        const expectedValues = ['achievement', 'confession', 'regret', 'unsent_letter', 'sacrifice', 'other'];
 
         expectedValues.forEach(value => {
             const type = expectedStoryTypes.find(t => t.value === value);

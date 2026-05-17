@@ -15,11 +15,12 @@ jobs:
     
     steps:
       - name: Trigger Render Deploy
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
         run: |
           echo "Triggering Render deployment..."
-          # Add your Render deploy hook URL as a secret: RENDER_DEPLOY_HOOK
-          if [ -n "${{ secrets.RENDER_DEPLOY_HOOK }}" ]; then
-            curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+          if [ -n "$RENDER_DEPLOY_HOOK" ]; then
+            curl -X POST "$RENDER_DEPLOY_HOOK"
             echo "Backend deploy triggered!"
           else
             echo "RENDER_DEPLOY_HOOK not configured. Skipping backend deploy."
@@ -32,14 +33,16 @@ jobs:
   deploy-frontend:
     name: Deploy Frontend
     runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Deploy to Vercel
+        if: env.VERCEL_TOKEN != ''
         uses: amondnet/vercel-action@v25
-        if: ${{ secrets.VERCEL_TOKEN != '' }}
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
@@ -49,5 +52,5 @@ jobs:
         continue-on-error: true
 
       - name: Skip if not configured
-        if: ${{ secrets.VERCEL_TOKEN == '' }}
+        if: env.VERCEL_TOKEN == ''
         run: echo "Vercel secrets not configured. Skipping frontend deploy."

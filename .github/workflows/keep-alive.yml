@@ -1,0 +1,37 @@
+name: Keep Backend Alive
+
+on:
+  schedule:
+    # Ping once every 24 hours at 6:00 AM UTC (11:30 AM IST)
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Manual trigger from GitHub UI
+
+concurrency:
+  group: keep-alive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Ping Health Endpoint
+        run: |
+          echo "=== HeartOut Daily Keep-Alive ==="
+          echo "Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            --max-time 60 \
+            --retry 3 \
+            --retry-delay 10 \
+            -H "User-Agent: HeartOut-KeepAlive/1.0" \
+            https://heartout-kx89.onrender.com/api/health)
+
+          echo "Response: $HTTP_CODE"
+
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "Server is alive!"
+          else
+            echo "Server returned $HTTP_CODE (it may need a cold start)"
+          fi

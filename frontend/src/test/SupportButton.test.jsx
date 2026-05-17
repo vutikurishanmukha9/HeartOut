@@ -119,12 +119,12 @@ describe('ReactionButton', () => {
             const mainButton = screen.getAllByRole('button')[0];
             fireEvent.click(mainButton);
 
-            // Wait for dropdown and click a reaction
+            // Wait for dropdown and click a reaction via its aria-label
             await waitFor(() => {
-                expect(screen.getByText('Felt This')).toBeInTheDocument();
+                expect(screen.getByLabelText('Felt This')).toBeInTheDocument();
             });
 
-            fireEvent.click(screen.getByText('Felt This'));
+            fireEvent.click(screen.getByLabelText('Felt This'));
 
             expect(mockOnReact).toHaveBeenCalledWith('felt_this');
         });
