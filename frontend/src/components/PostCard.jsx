@@ -14,8 +14,8 @@ export default function StoryCard({ story, index = 0 }) {
     // Find first sentence or limit to ~100 chars
     const firstSentence = safeContent.split(/[.!?]/)[0];
     const excerpt = firstSentence.length > 100
-        ? firstSentence.substring(0, 100) + '...'
-        : firstSentence + (firstSentence.length < safeContent.length ? '...' : '');
+        ? firstSentence.substring(0, 100) + '…'
+        : firstSentence + (firstSentence.length < safeContent.length ? '…' : '');
 
     return (
         <Link
@@ -23,7 +23,7 @@ export default function StoryCard({ story, index = 0 }) {
             className="block group touch-manipulation h-full"
             style={{ animationDelay: `${index * 0.08}s` }}
         >
-            <article className="relative bg-amber-50/40 dark:bg-zinc-800/80 backdrop-blur-sm rounded-xl border border-amber-100 dark:border-zinc-700/60 hover:border-amber-200 dark:hover:border-zinc-500 transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.99] flex flex-col h-full overflow-hidden max-h-72 group-hover:shadow-md animate-slide-up">
+            <article className="relative bg-amber-50/40 dark:bg-zinc-800/80 backdrop-blur-sm rounded-xl border border-amber-100 dark:border-zinc-700/60 hover:border-amber-200 dark:hover:border-zinc-500 transition-[border-color,transform,box-shadow] duration-300 hover:-translate-y-0.5 active:scale-[0.99] flex flex-col h-full overflow-hidden max-h-72 group-hover:shadow-md animate-slide-up">
 
                 {/* Content Section - Title & Excerpt Primary */}
                 <div className="px-4 pt-4 pb-1.5 flex-1 overflow-hidden relative">
@@ -34,7 +34,7 @@ export default function StoryCard({ story, index = 0 }) {
 
                     {/* Excerpt - One emotional sentence allowed to wrap slightly */}
                     <p className="text-sm text-stone-600 dark:text-stone-400 line-clamp-3 leading-relaxed italic pr-2">
-                        "{excerpt}"
+                        “{excerpt}”
                     </p>
 
                     {/* Gradient Fade for text overflow handling matching masonry constraint */}

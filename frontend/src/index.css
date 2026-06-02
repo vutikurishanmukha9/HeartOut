@@ -156,7 +156,7 @@ code {
 
 /* Frosted glass form card — clean white for crisp contrast */
 .auth-glass-card {
-  background: #ffffff;
+  background: #fdfcfb;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.6);
@@ -251,7 +251,7 @@ code {
   border-radius: 6px;
   cursor: pointer;
   position: relative;
-  transition: all 200ms ease;
+  transition: border-color 200ms ease, background-color 200ms ease;
   flex-shrink: 0;
   background: #f5f2ef;
   display: inline-block;
@@ -305,7 +305,7 @@ code {
   background: rgba(212, 131, 45, 0.08);
   color: #8b6914;
   border: 1px solid rgba(212, 131, 45, 0.15);
-  transition: all 300ms ease;
+  transition: background-color 300ms ease, transform 300ms ease;
 }
 
 .auth-pill:hover {
@@ -820,19 +820,13 @@ code {
   background: linear-gradient(145deg, #18181b 0%, #1c1c20 100%);
 }
 
-/* Gradient Text - warm amber tones */
+/* Gradient Text - replaced with solid ink warm tones */
 .text-gradient {
-  background: linear-gradient(135deg, #d4832d 0%, #b86b22 50%, #9c8e83 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--primary-700);
 }
 
 .text-gradient-warm {
-  background: linear-gradient(135deg, #e69a45 0%, #d4832d 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--primary-600);
 }
 
 /* ===== PREMIUM SHADOWS ===== */
@@ -856,7 +850,7 @@ code {
   box-shadow:
     0 10px 40px rgba(0, 0, 0, 0.08),
     0 2px 10px rgba(0, 0, 0, 0.04);
-  transition: all 0.3s ease;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .shadow-card:hover {
@@ -878,7 +872,7 @@ code {
   border-radius: 12px;
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
 }
 
 .btn-premium::before {
@@ -1012,15 +1006,15 @@ code {
 /* ===== TRANSITIONS ===== */
 
 .transition-premium {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .transition-fast {
-  transition: all 0.15s ease;
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .transition-slow {
-  transition: all 0.5s ease;
+  transition: transform 0.5s ease, opacity 0.5s ease, background-color 0.5s ease, border-color 0.5s ease;
 }
 
 /* ===== MOBILE UTILITIES ===== */

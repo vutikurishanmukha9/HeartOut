@@ -4,9 +4,11 @@ export const reactions = [
   {
     key: "felt_this",
     label: "Felt This",
-    color: "#ef4444",
-    bg: "#fef2f2",
-    activeBg: "#fee2e2",
+    textColor: "text-red-600 dark:text-red-400",
+    borderColor: "border-red-200 dark:border-red-800/50",
+    activeBorderColor: "border-red-400 dark:border-red-600",
+    bgClass: "bg-red-50/50 dark:bg-red-950/20",
+    activeBgClass: "bg-red-100 dark:bg-red-900/30",
     icon: (
       <svg width="26" height="26" viewBox="0 0 34 34" fill="none">
         {/* Cracked heart — a heart that has actually felt something */}
@@ -29,9 +31,11 @@ export const reactions = [
   {
     key: "holding_space",
     label: "Holding Space",
-    color: "#ea580c",
-    bg: "#fff7ed",
-    activeBg: "#ffedd5",
+    textColor: "text-orange-600 dark:text-orange-400",
+    borderColor: "border-orange-200 dark:border-orange-800/50",
+    activeBorderColor: "border-orange-400 dark:border-orange-600",
+    bgClass: "bg-orange-50/50 dark:bg-orange-950/20",
+    activeBgClass: "bg-orange-100 dark:bg-orange-900/30",
     icon: (
       <svg width="26" height="26" viewBox="0 0 34 34" fill="none">
         {/* Two open upward palms — an offering */}
@@ -50,9 +54,11 @@ export const reactions = [
   {
     key: "moved",
     label: "Moved",
-    color: "#3b82f6",
-    bg: "#eff6ff",
-    activeBg: "#dbeafe",
+    textColor: "text-blue-600 dark:text-blue-400",
+    borderColor: "border-blue-200 dark:border-blue-800/50",
+    activeBorderColor: "border-blue-400 dark:border-blue-600",
+    bgClass: "bg-blue-50/50 dark:bg-blue-950/20",
+    activeBgClass: "bg-blue-100 dark:bg-blue-900/30",
     icon: (
       <svg width="26" height="26" viewBox="0 0 34 34" fill="none">
         {/* Face with one perfect teardrop falling as ripple */}
@@ -72,9 +78,11 @@ export const reactions = [
   {
     key: "brave",
     label: "Brave",
-    color: "#7c3aed",
-    bg: "#f5f3ff",
-    activeBg: "#ede9fe",
+    textColor: "text-purple-600 dark:text-purple-400",
+    borderColor: "border-purple-200 dark:border-purple-800/50",
+    activeBorderColor: "border-purple-400 dark:border-purple-600",
+    bgClass: "bg-purple-50/50 dark:bg-purple-950/20",
+    activeBgClass: "bg-purple-100 dark:bg-purple-900/30",
     icon: (
       <svg width="26" height="26" viewBox="0 0 34 34" fill="none">
         {/* Star with a glowing inner star — a lighthouse, not a reward */}
@@ -96,9 +104,11 @@ export const reactions = [
   {
     key: "grateful",
     label: "Grateful",
-    color: "#16a34a",
-    bg: "#f0fdf4",
-    activeBg: "#dcfce7",
+    textColor: "text-green-600 dark:text-green-400",
+    borderColor: "border-green-200 dark:border-green-800/50",
+    activeBorderColor: "border-green-400 dark:border-green-600",
+    bgClass: "bg-green-50/50 dark:bg-green-950/20",
+    activeBgClass: "bg-green-100 dark:bg-green-900/30",
     icon: (
       <svg width="26" height="26" viewBox="0 0 34 34" fill="none">
         {/* Seed cracking open with light bursting out — gratitude grows from inside */}
@@ -148,67 +158,37 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
   return (
     <div 
       ref={dropdownRef} 
-      style={{ position: "relative", display: "inline-flex", userSelect: "none", zIndex: 10 }}
+      className="relative inline-flex select-none z-10"
       onMouseLeave={() => setOpen(false)}
     >
-
+ 
       {/* Popup reaction picker wrapper to bridge the hover gap */}
       {open && (
-        <div style={{ position: "absolute", bottom: "100%", paddingBottom: "10px", left: 0, zIndex: 100 }}>
+        <div className="absolute bottom-full pb-2.5 left-0 z-50">
           {/* Actual popup box */}
-          <div
-            style={{
-              background: "white",
-              border: "0.5px solid #e5e7eb",
-              borderRadius: "20px",
-              padding: "10px 14px",
-              display: "flex",
-              gap: "6px",
-              alignItems: "center",
-              boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
-              whiteSpace: "nowrap",
-            }}
-          >
+          <div className="bg-stone-50 dark:bg-zinc-800 border border-stone-200/60 dark:border-zinc-700 rounded-[20px] px-3.5 py-2.5 flex gap-1.5 items-center shadow-lg shadow-stone-200/50 dark:shadow-none whitespace-nowrap">
             {reactions.map((r) => (
               <div key={r.key} className="relative group flex justify-center">
                 <button
                   aria-label={r.label}
                   onClick={() => handleReact(r.key)}
+                  className={`
+                    w-11 h-11 rounded-full flex items-center justify-center p-0 border-2 cursor-pointer
+                    transition-transform duration-200 hover:scale-110 hover:-translate-y-0.5
+                    ${currentReaction === r.key 
+                      ? `${r.activeBgClass} ${r.activeBorderColor}` 
+                      : `${r.bgClass} border-transparent hover:${r.borderColor}`
+                    }
+                  `}
                   style={{
-                    width: "44px",
-                    height: "44px",
-                    borderRadius: "50%",
-                    border: currentReaction === r.key ? `2px solid ${r.color}` : "2px solid transparent",
-                    background: currentReaction === r.key ? r.activeBg : r.bg,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transition: "transform 0.15s, background 0.15s",
                     transform: animating === r.key ? "scale(1.35)" : "scale(1)",
-                    padding: 0,
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "scale(1.2) translateY(-3px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "scale(1)";
                   }}
                 >
                   {r.icon}
                 </button>
                 
                 {/* Individual floating tooltip - visible only on hover of this specific icon */}
-                <span
-                  className="absolute -bottom-6 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-                  style={{
-                    fontSize: "10px",
-                    color: r.color,
-                    fontWeight: 600,
-                    whiteSpace: "nowrap",
-                    letterSpacing: "0.3px",
-                  }}
-                >
+                <span className={`absolute -bottom-6 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none text-[10px] font-semibold tracking-wider whitespace-nowrap ${r.textColor}`}>
                   {r.label}
                 </span>
               </div>
@@ -216,26 +196,21 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
           </div>
         </div>
       )}
-
+ 
       {/* Main React button */}
       <button
         onClick={() => setOpen((o) => !o)}
         onMouseEnter={() => setOpen(true)}
-        className={`group flex items-center h-[42px] px-5 gap-2 rounded-xl font-semibold text-[15px] transition-all duration-200
+        className={`group flex items-center h-[42px] px-5 gap-2 rounded-xl font-semibold text-[15px] transition-colors duration-200
           ${currentReaction 
-            ? '' 
+            ? `${current?.textColor} ${current?.activeBgClass} border ${current?.borderColor}` 
             : 'border border-amber-200 bg-white dark:border-zinc-700 dark:bg-zinc-800 text-stone-600 dark:text-stone-400 hover:border-amber-400 hover:shadow-sm'
           }
         `}
-        style={currentReaction ? {
-          border: `1.5px solid ${current?.color}40`,
-          background: current?.activeBg,
-          color: current?.color,
-        } : {}}
       >
         {currentReaction ? (
           <>
-            <div style={{ display: "flex", alignItems: "center", transform: "scale(0.85)", transformOrigin: "center", marginRight: "-4px" }}>
+            <div className="flex items-center scale-[0.85] origin-center mr-[-4px]">
               {current?.icon}
             </div>
             {current?.label}
@@ -256,22 +231,12 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
         
         {/* Support Count Integration */}
         {supportCount > 0 && (
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "12px",
-              fontWeight: 700,
-              height: "24px",
-              minWidth: "24px",
-              padding: "0 6px",
-              borderRadius: "12px",
-              background: currentReaction ? "rgba(255,255,255,0.7)" : "#f3f4f6",
-              marginLeft: "4px",
-              color: currentReaction ? current?.color : "#6b7280",
-            }}
-          >
+          <span className={`inline-flex items-center justify-center text-xs font-bold h-6 min-w-[24px] px-1.5 rounded-full ml-1
+            ${currentReaction 
+              ? 'bg-white/80 dark:bg-black/30' 
+              : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
+            }
+          `}>
             {supportCount}
           </span>
         )}

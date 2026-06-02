@@ -99,7 +99,7 @@ export function ServerWarmupToast() {
                 <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-orange-500/90 shadow-lg backdrop-blur-xl">
                     <Coffee className="w-4 h-4 text-white" />
                     <span className="text-sm font-medium text-white">
-                        {serverStatus === 'warming' ? 'Waking up...' : 'Connecting...'}
+                        {serverStatus === 'warming' ? 'Waking up…' : 'Connecting…'}
                     </span>
                     <Loader2 className="w-4 h-4 animate-spin text-white" />
                 </div>

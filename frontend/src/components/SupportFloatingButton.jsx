@@ -12,7 +12,7 @@ export default function SupportFloatingButton() {
             {isOpen && (
                 <div className="absolute bottom-16 right-0 w-80 sm:w-96 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-slide-up">
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 p-4 text-white">
+                    <div className="bg-rose-600 dark:bg-rose-800 p-4 text-white">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-white/20 rounded-lg">
@@ -20,7 +20,7 @@ export default function SupportFloatingButton() {
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-lg">Need Support?</h3>
-                                    <p className="text-sm text-white">We're here for you</p>
+                                    <p className="text-sm text-white/90">We’re here for you</p>
                                 </div>
                             </div>
                             <button
@@ -36,7 +36,7 @@ export default function SupportFloatingButton() {
                     {/* Content */}
                     <div className="p-4 space-y-3 max-h-80 overflow-y-auto">
                         <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                            If you're going through a difficult time, please reach out to these free, confidential helplines:
+                            If you’re going through a difficult time, please reach out to these free, confidential helplines:
                         </p>
 
                         {helplines.map((helpline) => (
@@ -70,9 +70,9 @@ export default function SupportFloatingButton() {
                     group flex items-center gap-1.5 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-full
                     border-2 border-amber-500/50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md
                     text-amber-600 dark:text-amber-500 text-sm font-medium shadow-md shadow-amber-500/10
-                    hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:scale-105
+                    hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20
                     hover:shadow-lg hover:shadow-amber-500/20
-                    transition-all duration-300
+                    transition-[background-color,border-color,box-shadow,color] duration-300
                     focus:outline-none focus:ring-4 focus:ring-amber-300 dark:focus:ring-amber-700
                     ${isOpen ? 'ring-4 ring-amber-300 dark:ring-amber-700' : 'animate-breathe'}
                 `}

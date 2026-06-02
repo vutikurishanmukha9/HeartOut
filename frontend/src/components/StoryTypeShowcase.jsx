@@ -17,7 +17,7 @@ const storyCategories = [
     {
         id: 'achievement',
         label: 'Success Stories',
-        subtitle: '"I survived. Here\'s how."',
+        subtitle: '“I survived. Here’s how.”',
         icon: Trophy,
         bgColor: 'bg-orange-600',
         lightBg: 'bg-orange-50/40 dark:bg-orange-950/20',
@@ -31,7 +31,7 @@ const storyCategories = [
     {
         id: 'regret',
         label: 'Life Lessons',
-        subtitle: '"I learned this the hard way."',
+        subtitle: '“I learned this the hard way.”',
         icon: Lightbulb,
         bgColor: 'bg-[#c1714a]',
         lightBg: 'bg-[#c1714a]/10 dark:bg-[#c1714a]/20',
@@ -45,7 +45,7 @@ const storyCategories = [
     {
         id: 'unsent_letter',
         label: 'Unsent Letters',
-        subtitle: '"Things I never said."',
+        subtitle: '“Things I never said.”',
         icon: Mail,
         bgColor: 'bg-[#9e5a5a]',
         lightBg: 'bg-[#9e5a5a]/10 dark:bg-[#9e5a5a]/20',
@@ -59,7 +59,7 @@ const storyCategories = [
     {
         id: 'sacrifice',
         label: 'Sacrifices',
-        subtitle: '"What it cost me."',
+        subtitle: '“What it cost me.”',
         icon: Heart,
         bgColor: 'bg-red-800',
         lightBg: 'bg-red-50/40 dark:bg-red-950/20',
@@ -73,7 +73,7 @@ const storyCategories = [
     {
         id: 'confession',
         label: 'Dreams',
-        subtitle: '"What I still hope for."',
+        subtitle: '“What I still hope for.”',
         icon: Sparkles,
         bgColor: 'bg-amber-600',
         lightBg: 'bg-amber-50/40 dark:bg-amber-950/20',
@@ -87,7 +87,7 @@ const storyCategories = [
     {
         id: 'other',
         label: 'Quiet Confessions',
-        subtitle: '"In between the lines."',
+        subtitle: '“In between the lines.”',
         icon: BookOpen,
         bgColor: 'bg-amber-900',
         lightBg: 'bg-amber-100/40 dark:bg-amber-950/40',
@@ -126,12 +126,12 @@ export default function StoryTypeShowcase({ selectedCategory, onSelectCategory }
                                 ${category.lightBg}
                                 backdrop-blur-sm
                                 border border-white/60 dark:border-gray-700/60
-                                transition-all duration-300 ease-out
+                                transition-[box-shadow,border-color,background-color,transform] duration-300 ease-out
                                 ${isSelected
                                     ? `ring-2 ${category.ringColor} ring-offset-2 dark:ring-offset-gray-900 shadow-xl ${category.shadowColor}`
                                     : 'shadow-lg hover:shadow-xl'
                                 }
-                                ${isHovered && !isSelected ? 'scale-[1.03] -translate-y-1' : ''}
+                                ${isHovered && !isSelected ? '-translate-y-1' : ''}
                                 focus:outline-none focus:ring-2 focus:${category.ringColor} focus:ring-offset-2
                             `}
                             style={{
@@ -159,9 +159,8 @@ export default function StoryTypeShowcase({ selectedCategory, onSelectCategory }
                                 ${category.bgColor}
                                 flex items-center justify-center
                                 shadow-lg ${category.shadowColor}
-                                transform transition-all duration-300 ease-out
-                                ${isHovered ? 'scale-110 shadow-xl' : ''}
-                                ${isSelected ? 'scale-110' : ''}
+                                transform transition-[transform] duration-300 ease-out
+                                ${isHovered ? 'shadow-xl' : ''}
                             `}>
                                 <Icon className={`${category.featured ? 'w-7 h-7 sm:w-8 sm:h-8' : 'w-6 h-6 sm:w-7 sm:h-7'} text-white`} strokeWidth={2} />
 
@@ -182,8 +181,7 @@ export default function StoryTypeShowcase({ selectedCategory, onSelectCategory }
                                 mt-3 sm:mt-4
                                 text-xs sm:text-sm font-semibold text-center
                                 text-gray-800 dark:text-white
-                                transition-all duration-300
-                                ${isHovered ? 'scale-105' : ''}
+                                transition-colors duration-300
                             `}>
                                 {category.label}
                             </h3>

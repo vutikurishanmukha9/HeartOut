@@ -67,13 +67,15 @@ const testimonials = [
 export default function FeatureHighlights() {
     const [activeTestimonial, setActiveTestimonial] = useState(0);
     const [hoveredFeature, setHoveredFeature] = useState(null);
+    const [isPaused, setIsPaused] = useState(false);
 
     useEffect(() => {
+        if (isPaused) return;
         const timer = setInterval(() => {
             setActiveTestimonial(prev => (prev + 1) % testimonials.length);
         }, 4000);
         return () => clearInterval(timer);
-    }, []);
+    }, [isPaused]);
 
     return (
         <div className="feature-highlights-v2">
@@ -97,8 +99,8 @@ export default function FeatureHighlights() {
                                 rounded-full
                                 border border-white/30
                                 cursor-pointer
-                                transform transition-all duration-500
-                                ${isHovered ? 'scale-105 sm:scale-110 bg-white/25 shadow-2xl ' + feature.shadow : 'hover:bg-white/20 active:bg-white/25'}
+                                transform transition-[background-color,box-shadow] duration-500
+                                ${isHovered ? 'bg-white/25 shadow-2xl ' + feature.shadow : 'hover:bg-white/20 active:bg-white/25'}
                             `}
                             style={{ animationDelay: `${index * 0.1}s` }}
                         >
@@ -117,8 +119,8 @@ export default function FeatureHighlights() {
                                 bg-gradient-to-br ${feature.gradient}
                                 flex items-center justify-center
                                 shadow-lg ${feature.shadow}
-                                transform transition-all duration-300
-                                ${isHovered ? 'scale-110 rotate-6' : ''}
+                                transform transition-[transform] duration-300
+                                ${isHovered ? 'rotate-6' : ''}
                             `}>
                                 <Icon className="w-4 h-4 text-white" strokeWidth={2.5} />
 
@@ -132,7 +134,7 @@ export default function FeatureHighlights() {
                             <span className={`
                                 relative z-10
                                 text-sm font-semibold text-white
-                                transition-all duration-300
+                                transition-[letter-spacing] duration-300
                                 ${isHovered ? 'tracking-wide' : ''}
                             `}>
                                 {feature.title}
@@ -155,7 +157,15 @@ export default function FeatureHighlights() {
             </div>
 
             {/* Testimonial Carousel */}
-            <div className="relative h-24 overflow-hidden">
+            <div 
+                className="relative h-24 overflow-hidden focus:outline-none focus:ring-2 focus:ring-white/20 rounded-xl"
+                tabIndex={0}
+                aria-label="Testimonial carousel. Hover or focus to pause rotation."
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+                onFocus={() => setIsPaused(true)}
+                onBlur={() => setIsPaused(false)}
+            >
                 {testimonials.map((testimonial, index) => (
                     <div
                         key={index}
@@ -163,14 +173,14 @@ export default function FeatureHighlights() {
                             absolute inset-0
                             flex flex-col items-center justify-center
                             text-center px-6
-                            transition-all duration-700 ease-out
+                            transition-[opacity,transform] duration-700 ease-out
                             ${activeTestimonial === index
                                 ? 'opacity-100 translate-y-0'
                                 : 'opacity-0 translate-y-8 pointer-events-none'}
                         `}
                     >
                         <p className="text-white text-base italic font-light leading-relaxed mb-2">
-                            "{testimonial.quote}"
+                            “{testimonial.quote}”
                         </p>
                         <p className="text-white/90 text-sm font-medium flex items-center gap-2">
                             <Heart className="w-3 h-3 text-rose-400" fill="currentColor" aria-hidden="true" />
@@ -180,14 +190,13 @@ export default function FeatureHighlights() {
                 ))}
             </div>
 
-            {/* Dots Navigation */}
             <div className="flex justify-center gap-2 mt-4">
                 {testimonials.map((_, index) => (
                     <button
                         key={index}
                         onClick={() => setActiveTestimonial(index)}
                         className={`
-                            h-1.5 rounded-full transition-all duration-300
+                            h-1.5 rounded-full transition-[width,background-color] duration-300
                             ${activeTestimonial === index
                                 ? 'w-8 bg-white'
                                 : 'w-1.5 bg-white/40 hover:bg-white/60'}

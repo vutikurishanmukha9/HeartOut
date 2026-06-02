@@ -71,7 +71,7 @@ export default function Feed() {
                                     <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
                                 </span>
                                 <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-500 fill-primary-500/30" />
-                                <span className="text-xs sm:text-sm font-semibold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+                                <span className="text-xs sm:text-sm font-semibold text-primary-600 dark:text-primary-400">
                                     Stories that touch hearts
                                 </span>
                             </div>
@@ -82,7 +82,7 @@ export default function Feed() {
                                     Discover
                                 </span>
                                 <span className="relative inline-block">
-                                    <span className="bg-gradient-to-r from-amber-600 via-amber-500 to-stone-500 bg-clip-text text-transparent">
+                                    <span className="text-amber-600 dark:text-amber-500">
                                         Real Stories
                                     </span>
                                     {/* Underline decoration - single muted amber for sincerity */}
@@ -229,7 +229,7 @@ export default function Feed() {
                                 <div className="py-8 text-center relative max-w-2xl mx-auto mb-6">
                                     <div className="absolute top-0 left-1/4 right-1/4 border-t border-amber-200/60 dark:border-amber-900/40" />
                                     <p className="text-lg text-stone-600 dark:text-stone-400 italic font-serif">
-                                        "These are voices from people who chose to share something real."
+                                        “These are voices from people who chose to share something real.”
                                     </p>
                                 </div>
                                 <div className="flex flex-col gap-6">
@@ -340,7 +340,7 @@ export default function Feed() {
                                                 {voice.name}
                                             </div>
                                             <p className="text-xs text-stone-500 dark:text-stone-400 mt-1.5 italic leading-relaxed line-clamp-2">
-                                                "{voice.quote}"
+                                                “{voice.quote}”
                                             </p>
                                         </div>
                                     </div>

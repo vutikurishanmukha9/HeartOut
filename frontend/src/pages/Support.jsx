@@ -16,7 +16,7 @@ export default function Support() {
                     Back to Home
                 </Link>
                 <p className="hidden sm:block text-xs font-medium text-stone-400 dark:text-stone-500 italic">
-                    "Your feelings are valid. You deserve support."
+                    “Your feelings are valid. You deserve support.”
                 </p>
             </div>
 
@@ -27,7 +27,7 @@ export default function Support() {
                         <Heart className="w-8 h-8 text-rose-500 fill-rose-500/20" />
                     </div>
                     <h1 className="text-3xl md:text-4xl font-heading font-bold text-stone-800 dark:text-stone-100 mb-3">
-                        You're Not Alone
+                        You’re Not Alone
                     </h1>
                     <p className="text-base text-stone-500 dark:text-stone-400 max-w-lg mx-auto leading-relaxed">
                         All helplines listed here are free, confidential, and anonymous.
@@ -37,7 +37,7 @@ export default function Support() {
                 {/* Grounding & Immediate Action */}
                 <div className="animate-slide-up stagger-1 mb-12">
                     <p className="text-center text-stone-400 dark:text-stone-500 italic mb-6">
-                        Take a breath. You don't have to decide everything right now.
+                        You don’t have to decide everything right now.
                     </p>
 
                     {/* Immediate CTA - Warm, Urgent but Safe */}
@@ -47,7 +47,7 @@ export default function Support() {
                         </h2>
                         <a
                             href="tel:14416"
-                            className="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-rose-500 to-amber-500 text-white text-lg font-bold rounded-xl hover:from-rose-600 hover:to-amber-600 hover:-translate-y-0.5 transition-all shadow-lg shadow-rose-500/20"
+                            className="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-rose-500 to-amber-500 text-white text-lg font-bold rounded-xl hover:from-rose-600 hover:to-amber-600 hover:-translate-y-0.5 transition-[transform,box-shadow] duration-200 shadow-lg shadow-rose-500/20"
                         >
                             <Phone className="w-6 h-6" />
                             Call 14416

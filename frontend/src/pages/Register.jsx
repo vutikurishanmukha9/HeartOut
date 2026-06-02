@@ -118,7 +118,7 @@ export default function Register() {
 
                 {/* Tagline */}
                 <h2 className="font-editorial text-2xl text-white/95 mb-3 leading-snug">
-                    Don't Hold It In.<br />Heart It Out.
+                    Don’t Hold It In.<br />Heart It Out.
                 </h2>
                 <p className="text-white/60 text-sm font-light">Share your authentic stories</p>
 
@@ -135,18 +135,15 @@ export default function Register() {
                     })}
                 </div>
 
-                {/* Social proof — fills the gap between pills and card */}
-                <p className="text-white/50 text-xs mt-4 font-medium">
-                    Joined by 10,000+ storytellers
-                </p>
+                    {/* Mobile dedicated space text */}
+                    <p className="lg:hidden text-center text-xs text-white/60 mt-6">
+                        A dedicated space for authentic expression
+                    </p>
             </div>
 
             {/* ===== MAIN CONTENT ===== */}
             <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-6 lg:py-12">
-                {/* Animated floating orbs (desktop) */}
                 <div className="hidden lg:block">
-                    <div className="fixed top-16 left-[12%] w-72 h-72 bg-white/8 rounded-full blur-3xl animate-float pointer-events-none" />
-                    <div className="fixed bottom-24 right-[15%] w-96 h-96 bg-white/6 rounded-full blur-3xl animate-float-slow pointer-events-none" />
                 </div>
 
                 <div className="w-full max-w-lg">
@@ -164,7 +161,7 @@ export default function Register() {
                                 </span>
                             </div>
                             <p className="text-[15px] text-stone-400 dark:text-stone-500 font-light italic">
-                                Don't Hold It In. Heart It Out.
+                                Don’t Hold It In. Heart It Out.
                             </p>
                         </div>
 

@@ -208,7 +208,7 @@ export function StorySEO({ story }) {
 
     // Create compelling preview description
     const preview = story.content
-        ? story.content.substring(0, 150).trim() + (story.content.length > 150 ? '...' : '')
+        ? story.content.substring(0, 150).trim() + (story.content.length > 150 ? '…' : '')
         : categoryMeta.description;
 
     return (

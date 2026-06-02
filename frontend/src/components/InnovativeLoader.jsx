@@ -6,11 +6,11 @@ import React, { useState, useEffect } from 'react';
  */
 
 const inspirationalQuotes = [
-    "Every story matters...",
-    "Your voice deserves to be heard...",
-    "Connecting hearts worldwide...",
-    "Where stories come alive...",
-    "Share your truth...",
+    "Every story matters…",
+    "Your voice deserves to be heard…",
+    "Connecting hearts worldwide…",
+    "Where stories come alive…",
+    "Share your truth…",
 ];
 
 const FloatingCard = ({ delay, position }) => (
@@ -131,9 +131,9 @@ export default function InnovativeLoader() {
                 {/* Logo with heartbeat */}
                 <PulsingHeart />
 
-                {/* Brand name with gradient */}
+                {/* Brand name with solid color */}
                 <h1
-                    className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 bg-clip-text text-transparent"
+                    className="text-4xl md:text-5xl font-bold text-amber-600 dark:text-amber-500"
                     style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                     HeartOut
@@ -228,7 +228,7 @@ export function RouteLoader() {
                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                     </svg>
                 </div>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">Loading...</p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">Loading…</p>
                 <style>{`
                     @keyframes heartbeat {
                         0%, 100% { transform: scale(1); }

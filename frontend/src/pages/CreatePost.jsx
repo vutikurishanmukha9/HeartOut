@@ -260,7 +260,7 @@ export default function CreatePost() {
             <div className="min-h-screen bg-gradient-to-br from-rose-50/50 via-orange-50/30 to-purple-50/50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 flex items-center justify-center">
                 <div className="text-center">
                     <div className="w-12 h-12 border-4 border-primary-200 rounded-full animate-spin border-t-primary-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600 dark:text-gray-400">Loading your draft...</p>
+                    <p className="mt-4 text-gray-600 dark:text-gray-400">Loading your draft…</p>
                 </div>
             </div>
         );
@@ -421,7 +421,7 @@ export default function CreatePost() {
                                             value={tagInput}
                                             onChange={(e) => setTagInput(e.target.value)}
                                             onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                                            placeholder="Add a feeling, a theme..."
+                                            placeholder="Add a feeling, a theme…"
                                             className="w-full px-4 py-2 text-sm border border-amber-100 dark:border-zinc-700 rounded-lg bg-amber-50/20 dark:bg-zinc-800/50 text-stone-700 dark:text-stone-300 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 transition-all"
                                             disabled={formData.tags.length >= 5}
                                         />

@@ -48,7 +48,7 @@ function Toast({ toast, onRemove }) {
             className={`
                 flex items-start gap-3 p-4 rounded-lg shadow-lg border-l-4
                 ${bgColor} ${borderColor} ${textColor}
-                animate-slide-in-right transform transition-all duration-300
+                animate-slide-in-right transform transition-[opacity,transform] duration-300
                 min-w-[300px] max-w-[450px]
             `}
             role="alert"
@@ -76,7 +76,7 @@ function ToastContainer({ toasts, removeToast }) {
     if (toasts.length === 0) return null;
 
     return (
-        <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-2">
+        <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
             {toasts.map(toast => (
                 <Toast key={toast.id} toast={toast} onRemove={removeToast} />
             ))}

@@ -101,7 +101,7 @@ export default function Login() {
 
                 {/* Tagline */}
                 <h2 className="font-editorial text-2xl text-white/95 mb-3 leading-snug">
-                    Don't Hold It In.<br />Heart It Out.
+                    Don’t Hold It In.<br />Heart It Out.
                 </h2>
 
                 {/* Feature pills */}
@@ -117,18 +117,15 @@ export default function Login() {
                     })}
                 </div>
 
-                {/* Social proof — fills the gap between pills and card */}
+                {/* Dedicated space text */}
                 <p className="text-white/50 text-xs mt-4 font-medium">
-                    Joined by 10,000+ storytellers
+                    A dedicated space for authentic expression
                 </p>
             </div>
 
             {/* ===== MAIN CONTENT ===== */}
             <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-6 lg:py-12">
-                {/* Animated floating orbs (desktop) */}
                 <div className="hidden lg:block">
-                    <div className="fixed top-20 right-[15%] w-72 h-72 bg-white/8 rounded-full blur-3xl animate-float pointer-events-none" />
-                    <div className="fixed bottom-20 left-[10%] w-96 h-96 bg-white/6 rounded-full blur-3xl animate-float-slow pointer-events-none" />
                 </div>
 
                 <div className="w-full max-w-md">
@@ -257,7 +254,7 @@ export default function Login() {
 
                             {/* Sign Up Link */}
                             <p className="text-center text-sm text-stone-500 dark:text-stone-400">
-                                Don't have an account?{' '}
+                                Don’t have an account?{' '}
                                 <Link
                                     to="/auth/register"
                                     className="font-medium text-amber-700 dark:text-amber-400 hover:text-amber-600 hover:underline transition-all"
@@ -284,9 +281,9 @@ export default function Login() {
                         </div>
                     </div>
 
-                    {/* Mobile social proof */}
+                    {/* Mobile dedicated space text */}
                     <p className="lg:hidden text-center text-xs text-white/60 mt-6">
-                        Trusted by thousands of storytellers worldwide
+                        A dedicated space for authentic expression
                     </p>
                 </div>
             </div>

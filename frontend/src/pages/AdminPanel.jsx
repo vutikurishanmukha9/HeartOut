@@ -37,7 +37,7 @@ export default function AdminPanel() {
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
                     <div className="w-12 h-12 border-4 border-primary-200 rounded-full animate-spin border-t-primary-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600 dark:text-gray-400">Loading admin panel...</p>
+                    <p className="mt-4 text-gray-600 dark:text-gray-400">Loading admin panel…</p>
                 </div>
             </div>
         );

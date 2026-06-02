@@ -77,7 +77,7 @@ export function HelplineCard({ helpline, compact = false }) {
     }
 
     return (
-        <div className={`p-6 rounded-2xl ${helpline.bgColor} ${helpline.borderColor} border-2 transition-all duration-300 hover:shadow-lg`}>
+        <div className={`p-6 rounded-2xl ${helpline.bgColor} ${helpline.borderColor} border-2 transition-[box-shadow] duration-300 hover:shadow-lg`}>
             {/* Header */}
             <div className="flex items-start justify-between mb-4">
                 <div>
@@ -106,7 +106,7 @@ export function HelplineCard({ helpline, compact = false }) {
                 <div className="flex items-center gap-3">
                     <a
                         href={`tel:${helpline.phone}`}
-                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r ${helpline.color} text-white font-semibold hover:opacity-90 transition-all duration-200 hover:scale-[1.02] shadow-md`}
+                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r ${helpline.color} text-white font-semibold hover:opacity-90 transition-[opacity,box-shadow] duration-200 shadow-md`}
                     >
                         <Phone className="w-5 h-5" />
                         Call {helpline.phone}

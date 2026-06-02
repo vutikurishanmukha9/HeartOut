@@ -93,7 +93,7 @@ export default function Drafts() {
             <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 flex items-center justify-center">
                 <div className="text-center">
                     <div className="w-12 h-12 border-4 border-amber-200 rounded-full animate-spin border-t-amber-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600 dark:text-gray-400">Loading drafts...</p>
+                    <p className="mt-4 text-gray-600 dark:text-gray-400">Loading drafts…</p>
                 </div>
             </div>
         );
@@ -179,7 +179,7 @@ export default function Drafts() {
 
                                             {/* Excerpt */}
                                             <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
-                                                {draft.content?.substring(0, 150) || 'No content yet...'}
+                                                {draft.content?.substring(0, 150) || 'No content yet…'}
                                             </p>
 
                                             {/* Last Edited */}
@@ -232,7 +232,7 @@ export default function Drafts() {
                             </div>
 
                             <p className="text-gray-600 dark:text-gray-300 mb-6">
-                                Are you sure you want to delete "<span className="font-semibold">{deleteModal.title}</span>"?
+                                Are you sure you want to delete “<span className="font-semibold">{deleteModal.title}</span>”?
                             </p>
 
                             <div className="flex gap-3 justify-end">

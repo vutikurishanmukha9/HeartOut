@@ -99,13 +99,13 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b transition-all duration-300 ${isScrolled ? 'border-gray-200/50 dark:border-gray-700/50 shadow-sm' : 'border-white/30 dark:border-gray-700/30'}`}>
+      <nav className={`fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b transition-colors duration-300 ${isScrolled ? 'border-gray-200/50 dark:border-gray-700/50 shadow-sm' : 'border-white/30 dark:border-gray-700/30'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link to="/feed" className="flex items-center space-x-2 group">
               <div className="relative">
-                <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500 rounded-xl shadow-lg shadow-primary-500/30 group-hover:shadow-primary-500/50 group-hover:scale-110 transition-all duration-300">
+                <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500 rounded-xl shadow-lg shadow-primary-500/30 group-hover:shadow-primary-500/50 group-hover:scale-110 transition-[background-color,transform,box-shadow] duration-300">
                   <Heart className="w-5 h-5 text-white" />
                 </div>
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white dark:border-gray-900 animate-pulse" />
@@ -124,20 +124,20 @@ const Navbar = () => {
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`group relative flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${item.active
+                    className={`group relative flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-300 ${item.active
                       ? 'text-primary-600 dark:text-primary-400'
                       : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                       }`}
                   >
                     {/* Icon: filled when active, outlined when inactive */}
-                    <Icon strokeWidth={item.active ? 2 : 1.5} fill={item.active ? 'currentColor' : 'none'} className={`w-4 h-4 transition-all duration-300 ${item.active
+                    <Icon strokeWidth={item.active ? 2 : 1.5} fill={item.active ? 'currentColor' : 'none'} className={`w-4 h-4 transition-[transform,color] duration-300 ${item.active
                       ? 'text-primary-500'
                       : 'group-hover:scale-110 group-hover:text-primary-500'
                       }`} />
                     <span className="relative">
                       {item.name}
                       {/* Animated underline */}
-                      <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-300 ${item.active
+                      <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-amber-500 to-orange-500 transition-[width] duration-300 ${item.active
                         ? 'w-full'
                         : 'w-0 group-hover:w-full'
                         }`} />
@@ -152,7 +152,7 @@ const Navbar = () => {
             {/* Search Bar */}
             <div className="hidden md:flex flex-1 max-w-md mx-8">
               <form onSubmit={handleSearch} className="w-full relative">
-                <div className={`relative transition-all duration-300 ${isSearchFocused ? 'scale-105' : ''}`}>
+                <div className={`relative transition-[transform] duration-300 ${isSearchFocused ? 'scale-105' : ''}`}>
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="text"
@@ -160,8 +160,8 @@ const Navbar = () => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onFocus={() => setIsSearchFocused(true)}
                     onBlur={() => setIsSearchFocused(false)}
-                    placeholder="Try: loneliness, guilt, hope..."
-                    className={`w-full pl-11 pr-4 py-2 bg-amber-50/50 dark:bg-gray-800/80 backdrop-blur-sm border-2 rounded-xl text-sm placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none transition-all duration-300 ${isSearchFocused
+                    placeholder="Try: loneliness, guilt, hope…"
+                    className={`w-full pl-11 pr-4 py-2 bg-amber-50/50 dark:bg-gray-800/80 backdrop-blur-sm border-2 rounded-xl text-sm placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none transition-[border-color,box-shadow] duration-300 ${isSearchFocused
                       ? 'border-amber-500 shadow-lg shadow-amber-500/20'
                       : 'border-amber-200/60 dark:border-gray-700 hover:border-amber-300 dark:hover:border-gray-600'
                       }`}
@@ -175,7 +175,7 @@ const Navbar = () => {
               {/* Support */}
               <Link
                 to="/support"
-                className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all duration-300 group"
+                className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors duration-300 group"
                 title="Need Support?"
               >
                 <Heart strokeWidth={1.5} className="w-5 h-5 group-hover:text-rose-500 transition-colors" />
@@ -185,7 +185,7 @@ const Navbar = () => {
               <div className="relative" ref={notificationRef}>
                 <button
                   onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-                  className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-300 group"
+                  className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-colors duration-300 group"
                 >
                   <Bell strokeWidth={1.5} className="w-5 h-5 group-hover:text-amber-500 transition-colors" />
                   {ws?.notifications?.length > 0 && (
@@ -238,7 +238,7 @@ const Navbar = () => {
               {/* Theme Toggle */}
               <button
                 onClick={() => setTheme(isDark ? THEMES.LIGHT : THEMES.DARK)}
-                className="p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-300 group"
+                className="p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-colors duration-300 group"
               >
                 {isDark ? (
                   <Sun strokeWidth={1.5} className="w-5 h-5 group-hover:text-amber-500 transition-colors" />
@@ -251,7 +251,7 @@ const Navbar = () => {
               <div className="relative" ref={profileMenuRef}>
                 <button
                   onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                  className="flex items-center space-x-2 p-1 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-300"
+                  className="flex items-center space-x-2 p-1 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-colors duration-300"
                 >
                   <div className="relative">
                     <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 p-0.5 shadow-sm">

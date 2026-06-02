@@ -15,13 +15,13 @@ export default function SkipToContent({ targetId = 'main-content' }) {
             to={`#${targetId}`}
             className="
                 sr-only focus:not-sr-only
-                focus:absolute focus:top-4 focus:left-4 focus:z-[9999]
+                focus:absolute focus:top-4 focus:left-4 focus:z-50
                 focus:px-6 focus:py-3 focus:rounded-xl
                 focus:bg-primary-600 focus:text-white
                 focus:font-semibold focus:shadow-lg
                 focus:outline-none focus:ring-4 focus:ring-primary-400
                 focus:animate-fade-in
-                transition-all
+                transition-[background-color,box-shadow] duration-200
             "
             onClick={(e) => {
                 e.preventDefault();
