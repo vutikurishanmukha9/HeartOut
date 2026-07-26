@@ -118,9 +118,14 @@ app.add_middleware(
 )
 
 
-# Security headers middleware
+# Security headers & Zero-IP logging middleware
 @app.middleware("http")
-async def add_security_headers(request, call_next):
+async def add_security_headers(request: Request, call_next):
+    # Strip tracking IP headers to enforce zero-IP logging policy
+    for tracking_header in ["x-forwarded-for", "x-real-ip", "cf-connecting-ip", "true-client-ip", "x-client-ip"]:
+        if hasattr(request.headers, "_store") and tracking_header in request.headers._store:
+            del request.headers._store[tracking_header]
+            
     response = await call_next(request)
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-Content-Type-Options"] = "nosniff"

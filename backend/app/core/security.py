@@ -4,6 +4,9 @@ Security utilities for JWT authentication and password hashing
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Any
 import uuid
+import hmac
+import hashlib
+import os
 from jose import jwt, JWTError
 import bcrypt
 from fastapi import Depends, HTTPException, Request, status
@@ -182,3 +185,21 @@ def validate_password(password: str) -> tuple[bool, str]:
             return False, "Password must contain at least one special character"
     
     return True, ""
+
+
+def generate_blind_author_token(user_public_id: str, post_public_id: str) -> str:
+    """
+    Generate an un-linkable HMAC-SHA256 blind author token.
+    Allows author ownership verification without exposing user_id in DB tables.
+    """
+    secret = settings.JWT_SECRET_KEY.encode('utf-8')
+    message = f"{user_public_id}:{post_public_id}".encode('utf-8')
+    return hmac.new(secret, message, hashlib.sha256).hexdigest()
+
+
+def shred_key_buffer(buffer_length: int = 32) -> bytes:
+    """
+    Generate cryptographically secure random noise for overwriting sensitive buffers during deletion (Crypto-Shredding).
+    """
+    return os.urandom(buffer_length)
+

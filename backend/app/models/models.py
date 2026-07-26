@@ -192,11 +192,12 @@ class Post(Base):
     support_count: Mapped[int] = mapped_column(Integer, default=0)
     comment_count: Mapped[int] = mapped_column(Integer, default=0)
     
-    # Foreign key
-    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
+    # Foreign key & Cryptographic Blind Anonymity
+    user_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey('users.id'), nullable=True)
+    author_token: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
     
     # Relationships
-    author: Mapped["User"] = relationship("User", back_populates="posts")
+    author: Mapped[Optional["User"]] = relationship("User", back_populates="posts")
     comments: Mapped[List["Comment"]] = relationship("Comment", back_populates="post", cascade="all, delete-orphan")
     supports: Mapped[List["Support"]] = relationship("Support", back_populates="post", cascade="all, delete-orphan")
     bookmarks: Mapped[List["Bookmark"]] = relationship("Bookmark", back_populates="post", cascade="all, delete-orphan")
@@ -204,6 +205,7 @@ class Post(Base):
     
     __table_args__ = (
         Index('idx_post_public_id', 'public_id'),
+        Index('idx_post_author_token', 'author_token'),
         Index('idx_post_status', 'status'),
         Index('idx_post_story_type', 'story_type'),
         Index('idx_post_user_id', 'user_id'),
@@ -318,12 +320,12 @@ class Support(Base):
     
     # Foreign keys
     giver_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
-    receiver_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
+    receiver_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey('users.id'), nullable=True)
     post_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey('posts.id'), nullable=True)
     
     # Relationships
     giver: Mapped["User"] = relationship("User", foreign_keys=[giver_id])
-    receiver: Mapped["User"] = relationship("User", foreign_keys=[receiver_id])
+    receiver: Mapped[Optional["User"]] = relationship("User", foreign_keys=[receiver_id])
     post: Mapped[Optional["Post"]] = relationship("Post", back_populates="supports")
     
     __table_args__ = (

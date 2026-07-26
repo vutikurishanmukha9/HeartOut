@@ -147,6 +147,8 @@ async def register(
     return {
         "message": "Registration successful",
         "token_type": "cookie",
+        "access_token": access_token,
+        "refresh_token": refresh_token,
         "user": user.to_dict()
     }
 
@@ -189,6 +191,8 @@ async def login(
     return {
         "message": "Login successful",
         "token_type": "cookie",
+        "access_token": access_token,
+        "refresh_token": refresh_token,
         "user": user.to_dict(include_sensitive=True)
     }
 
@@ -238,7 +242,7 @@ async def refresh_access_token(
     # Set new access_token cookie
     set_auth_cookies(response, new_access_token)
     
-    return {"message": "Token refreshed", "token_type": "cookie"}
+    return {"message": "Token refreshed", "token_type": "cookie", "access_token": new_access_token}
 
 
 # Logout

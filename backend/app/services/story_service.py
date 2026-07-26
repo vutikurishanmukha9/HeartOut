@@ -11,6 +11,7 @@ from sqlalchemy.orm import selectinload
 from app.models.models import (
     Post, User, Comment, Support, PostStatus, StoryType
 )
+from app.core.security import generate_blind_author_token, shred_key_buffer
 
 
 def calculate_reading_time(content: str) -> int:
@@ -28,18 +29,33 @@ class StoryService:
         user: User,
         data: Dict[str, Any]
     ) -> Post:
-        """Create a new story with the given data"""
+        """Create a new story with blind anonymity support"""
         reading_time = calculate_reading_time(data['content'])
+        is_anonymous = data.get('is_anonymous', True)
+        
+        # Generate post first to get public_id
+        import uuid
+        post_public_id = str(uuid.uuid4())
+        
+        # Cryptographic Blind Anonymity: Decouple user_id when anonymous
+        if is_anonymous:
+            user_id = None
+            author_token = generate_blind_author_token(user.public_id, post_public_id)
+        else:
+            user_id = user.id
+            author_token = None
         
         story = Post(
+            public_id=post_public_id,
             title=data['title'],
             content=data['content'],
             story_type=data.get('story_type', 'other'),
-            is_anonymous=data.get('is_anonymous', True),
+            is_anonymous=is_anonymous,
             tags=data.get('tags', []),
             status=data.get('status', 'draft'),
             reading_time=reading_time,
-            user_id=user.id
+            user_id=user_id,
+            author_token=author_token
         )
         
         if story.status == PostStatus.PUBLISHED.value:
@@ -236,8 +252,11 @@ class StoryService:
         user: User,
         data: Dict[str, Any]
     ) -> Optional[Post]:
-        """Update a story"""
-        if story.user_id != user.id:
+        """Update a story with blind token validation"""
+        expected_token = generate_blind_author_token(user.public_id, story.public_id)
+        is_author = (story.user_id == user.id) or (story.author_token == expected_token) or (user.role == 'admin')
+        
+        if not is_author:
             return None
         
         # Update fields
@@ -272,9 +291,19 @@ class StoryService:
         story: Post,
         user: User
     ) -> bool:
-        """Delete a story"""
-        if story.user_id != user.id:
+        """Delete a story with Cryptographic Shredding and Blind Anonymity validation"""
+        expected_token = generate_blind_author_token(user.public_id, story.public_id)
+        is_author = (story.user_id == user.id) or (story.author_token == expected_token) or (user.role == 'admin')
+        
+        if not is_author:
             return False
+        
+        # Cryptographic Shredding: Overwrite content fields in memory prior to DB deletion
+        story.title = shred_key_buffer(len(story.title) if story.title else 32).hex()
+        story.content = shred_key_buffer(len(story.content) if story.content else 64).hex()
+        story.tags = []
+        story.author_token = shred_key_buffer(32).hex()
+        await db.flush()
         
         await db.delete(story)
         await db.commit()

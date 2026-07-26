@@ -26,6 +26,7 @@ export default function CreatePost() {
     const [submitting, setSubmitting] = useState(false);
     const [showPublishModal, setShowPublishModal] = useState(false);
     const [showDiscardModal, setShowDiscardModal] = useState(false);
+    const [showCrisisModal, setShowCrisisModal] = useState(false);
     const [autoSaved, setAutoSaved] = useState(false);
     const [lastSaved, setLastSaved] = useState(null);
 
@@ -151,11 +152,26 @@ export default function CreatePost() {
         }
     }, [formData.content]);
 
-    const handleSubmit = async (publishNow = false) => {
+    const detectCrisisSignals = (text) => {
+        const distressPatterns = [
+            /suicide/i, /end my life/i, /want to die/i, /kill myself/i, 
+            /no reason to live/i, /giving up on life/i, /self-harm/i
+        ];
+        return distressPatterns.some(pattern => pattern.test(text));
+    };
+
+    const handleSubmit = async (publishNow = false, bypassCrisisCheck = false) => {
         if (!formData.title || !formData.content || !formData.story_type) {
             toast.error('Please fill in all required fields', {
                 duration: 4000
             });
+            return;
+        }
+
+        // Crisis Detection Guardrail
+        if (publishNow && !bypassCrisisCheck && detectCrisisSignals(`${formData.title} ${formData.content}`)) {
+            setShowPublishModal(false);
+            setShowCrisisModal(true);
             return;
         }
 
@@ -613,6 +629,61 @@ export default function CreatePost() {
                                         Publish Now
                                     </>
                                 )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Crisis Support Safeguard Modal */}
+            {showCrisisModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white dark:bg-zinc-900 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-rose-200/50 dark:border-rose-900/30 text-center animate-scale-up">
+                        <div className="w-16 h-16 bg-rose-100 dark:bg-rose-950/50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-rose-600 dark:text-rose-400">
+                            <Heart className="w-8 h-8 fill-rose-500/20" />
+                        </div>
+
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                            You don't have to carry this alone
+                        </h3>
+
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                            It looks like you're going through an incredibly painful moment. Please know that your life matters, and support is available right now.
+                        </p>
+
+                        <div className="space-y-3 mb-6 text-left bg-stone-50 dark:bg-zinc-800/60 p-4 rounded-2xl border border-stone-200/50 dark:border-zinc-700/50">
+                            <a href="tel:14416" className="flex items-center justify-between p-2.5 rounded-xl hover:bg-white dark:hover:bg-zinc-700 transition-colors">
+                                <div>
+                                    <p className="text-xs font-semibold uppercase text-rose-600 dark:text-rose-400">Tele MANAS Helpline</p>
+                                    <p className="text-sm font-bold text-gray-800 dark:text-gray-200">14416 or 1800 891 4416</p>
+                                </div>
+                                <span className="text-xs px-2.5 py-1 bg-rose-100 text-rose-700 rounded-full font-medium">Free 24/7</span>
+                            </a>
+                            <a href="tel:9152987821" className="flex items-center justify-between p-2.5 rounded-xl hover:bg-white dark:hover:bg-zinc-700 transition-colors">
+                                <div>
+                                    <p className="text-xs font-semibold uppercase text-stone-500">iCall Helpline</p>
+                                    <p className="text-sm font-bold text-gray-800 dark:text-gray-200">9152987821</p>
+                                </div>
+                                <span className="text-xs px-2.5 py-1 bg-stone-200 text-stone-700 rounded-full font-medium">Mon-Sat</span>
+                            </a>
+                        </div>
+
+                        <div className="flex flex-col gap-3">
+                            <a
+                                href="tel:14416"
+                                className="btn-premium flex items-center justify-center gap-2 py-3 bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-500/20"
+                            >
+                                <Heart className="w-4 h-4 fill-white" />
+                                Call Helpline Now (Free)
+                            </a>
+                            <button
+                                onClick={() => {
+                                    setShowCrisisModal(false);
+                                    handleSubmit(true, true); // bypass check
+                                }}
+                                className="text-xs text-stone-500 dark:text-stone-400 hover:underline pt-2"
+                            >
+                                I understand, publish my story anyway
                             </button>
                         </div>
                     </div>

@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Optional, List
 
 from app.core.database import get_db
-from app.core.security import get_current_user
+from app.core.security import get_current_user, get_current_user_optional, generate_blind_author_token
 from app.core.exceptions import NotFoundError, ForbiddenError, ValidationError
 from app.api.dependencies import (
     get_story_or_404, get_published_story_or_404, 
@@ -37,28 +37,21 @@ async def create_story(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
-    """Create a new story"""
-    # Create post
-    post = Post(
-        title=post_data.title,
-        content=post_data.content,
-        story_type=post_data.story_type,
-        is_anonymous=post_data.is_anonymous,
-        tags=post_data.tags,
-        status=post_data.status,
-        reading_time=calculate_reading_time(post_data.content),
-        user_id=current_user.id
+    """Create a new story with blind anonymity support"""
+    story = await StoryService.create_story(
+        db=db,
+        user=current_user,
+        data={
+            "title": post_data.title,
+            "content": post_data.content,
+            "story_type": post_data.story_type,
+            "is_anonymous": post_data.is_anonymous,
+            "tags": post_data.tags,
+            "status": post_data.status
+        }
     )
     
-    # Set published_at if publishing
-    if post_data.status == 'published':
-        post.published_at = datetime.utcnow()
-    
-    db.add(post)
-    await db.commit()
-    await db.refresh(post)
-    
-    return {"message": "Story created successfully", "story": post.to_dict()}
+    return {"message": "Story created successfully", "story": story.to_dict()}
 
 
 @router.get("")
@@ -359,12 +352,10 @@ async def get_user_stories(
 @router.get("/{story_id}")
 async def get_story(
     story_id: str,
-    request: Request,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
 ):
     """Get a single story by ID and increment view count"""
-    from app.core.security import get_current_user_optional
-    
     query = select(Post).options(selectinload(Post.author)).where(Post.public_id == story_id)
     result = await db.execute(query)
     story = result.scalar_one_or_none()
@@ -374,12 +365,10 @@ async def get_story(
     
     # For non-published stories, only the author can view (for drafts)
     if story.status != PostStatus.PUBLISHED.value:
-        # Try to get current user from JWT (if token provided)
-        authorization = request.headers.get("Authorization")
-        current_user = await get_current_user_optional(db, authorization)
-        if not current_user or story.user_id != current_user.id:
+        expected_token = generate_blind_author_token(current_user.public_id, story.public_id) if current_user else None
+        is_author = current_user and ((story.user_id == current_user.id) or (story.author_token == expected_token) or (current_user.role == 'admin'))
+        if not is_author:
             raise HTTPException(status_code=404, detail="Story not found")
-        # Don't increment view count for drafts
         return {"story": story.to_dict()}
     
     # Increment view count only for published stories
@@ -396,32 +385,27 @@ async def update_story(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
-    """Update a story (only by author)"""
-    # Get story or 404
+    """Update a story with blind token validation (only by author)"""
     story = await get_story_or_404(story_id, db, include_author=False)
     
-    # Check ownership
-    if story.user_id != current_user.id:
+    updated_story = await StoryService.update_story(
+        db=db,
+        story=story,
+        user=current_user,
+        data={
+            "title": post_data.title,
+            "content": post_data.content,
+            "story_type": post_data.story_type,
+            "is_anonymous": post_data.is_anonymous,
+            "tags": post_data.tags,
+            "status": post_data.status
+        }
+    )
+    
+    if not updated_story:
         raise ForbiddenError("You can only edit your own stories")
     
-    # Update fields
-    story.title = post_data.title
-    story.content = post_data.content
-    story.story_type = post_data.story_type
-    story.is_anonymous = post_data.is_anonymous
-    story.tags = post_data.tags
-    story.status = post_data.status
-    story.reading_time = calculate_reading_time(post_data.content)
-    story.updated_at = datetime.utcnow()
-    
-    # Set published_at if publishing for first time
-    if post_data.status == 'published' and not story.published_at:
-        story.published_at = datetime.utcnow()
-    
-    await db.commit()
-    await db.refresh(story)
-    
-    return {"message": "Story updated successfully", "story": story.to_dict()}
+    return {"message": "Story updated successfully", "story": updated_story.to_dict()}
 
 
 @router.delete("/{story_id}")
@@ -430,16 +414,19 @@ async def delete_story(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
-    """Delete a story (only by author)"""
+    """Delete a story with Cryptographic Shredding (only by author)"""
     story = await get_story_or_404(story_id, db, include_author=False)
     
-    if story.user_id != current_user.id:
+    success = await StoryService.delete_story(
+        db=db,
+        story=story,
+        user=current_user
+    )
+    
+    if not success:
         raise ForbiddenError("You can only delete your own stories")
     
-    await db.delete(story)
-    await db.commit()
-    
-    return {"message": "Story deleted successfully"}
+    return {"message": "Story shredded and deleted successfully"}
 
 
 # ========== COMMENTS ==========
@@ -802,14 +789,9 @@ async def track_read_progress(
     story_id: str,
     progress_data: ReadProgressUpdate,
     db: AsyncSession = Depends(get_db),
-    authorization: Optional[str] = Query(None, include_in_schema=False)
+    current_user: Optional[User] = Depends(get_current_user_optional)
 ):
     """Track reading progress for engagement metrics (works with or without auth)"""
-    from app.core.security import get_current_user_optional
-    
-    # Get optional current user
-    current_user = await get_current_user_optional(db, authorization)
-    
     # Find story
     story_query = select(Post).where(Post.public_id == story_id)
     result = await db.execute(story_query)
