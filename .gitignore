@@ -73,3 +73,11 @@ FRONTEND_VERIFICATION_REPORT.md
 URGENT_FRONTEND_FIXES.md
 SUCCESS.md
 RUNNING.md
+
+# Agent & System artifacts
+.agents/
+skills-lock.json
+.system_generated/
+.gemini/
+*.tmp
+*.bak

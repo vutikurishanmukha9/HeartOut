@@ -306,42 +306,50 @@ export default function PostDetail() {
             {/* Dynamic SEO for social sharing */}
             <StorySEO story={story} />
 
-            <div className="min-h-screen bg-[#faf7f4] dark:bg-zinc-900 pb-24 md:pb-0 font-sans">
-                {/* Header */}
-                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-b border-stone-200 dark:border-gray-700 sticky top-0 z-10 w-full transition-all">
-                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="min-h-screen bg-[#faf7f4] dark:bg-[#121214] pb-24 md:pb-16 font-body">
+                {/* Minimal Top Navigation with Reading Telemetry */}
+                <div className="bg-[#faf7f4]/90 dark:bg-[#121214]/90 backdrop-blur-md border-b border-stone-200/80 dark:border-zinc-800 sticky top-0 z-20 w-full transition-all">
+                    <div className="max-w-[720px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
                         <button
                             onClick={() => navigate('/feed')}
-                            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors"
                         >
-                            <ArrowLeft className="w-5 h-5" />
-                            Back to Stories
+                            <ArrowLeft className="w-4 h-4" />
+                            <span>Return to Feed</span>
                         </button>
+
+                        {/* Telemetry Strip: Readers & Read Time */}
+                        <div className="flex items-center gap-3 font-mono text-[11px] uppercase text-stone-500 dark:text-stone-400">
+                            <span className="inline-flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                <data value={liveReaders}>{liveReaders || 1} reading now</data>
+                            </span>
+                            <span>·</span>
+                            <span>{story.reading_time || 1} min read</span>
+                        </div>
                     </div>
                 </div>
 
-                {/* Story Content */}
-                <article className="max-w-[680px] mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-24 md:pb-12">
-                    {/* Category - Dynamic Pill */}
-                    <div className="mb-8">
-                        <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-opacity-20 dark:bg-opacity-20 ${storyType.borderColor} ${storyType.canonicalBg} bg-opacity-5`}>
-                            <Icon className={`w-3.5 h-3.5 ${storyType.textColor}`} strokeWidth={1.5} />
-                            <span className={`text-xs font-bold tracking-wider uppercase ${storyType.textColor}`}>
-                                {storyType.label}
-                            </span>
+                {/* Story Content Column (Swiss Editorial Discipline) */}
+                <article className="max-w-[680px] mx-auto px-4 sm:px-6 py-12 pb-24 md:pb-16">
+                    {/* Category Eyebrow Pill */}
+                    <div className="mb-6">
+                        <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] font-semibold tracking-[0.16em] uppercase ${storyType.borderColor} ${storyType.canonicalBg} ${storyType.textColor}`}>
+                            <Icon className="w-3 h-3" strokeWidth={1.5} />
+                            <span>{storyType.label}</span>
                         </div>
                     </div>
 
-                    {/* Title - With breathing room */}
-                    <h1 className="text-3xl sm:text-4xl md:text-[2.5rem] font-serif font-medium text-stone-800 dark:text-stone-100 mb-8 leading-tight tracking-tight">
+                    {/* Title - Editorial Serif Focus */}
+                    <h1 className="font-editorial text-3xl sm:text-4xl md:text-5xl font-normal text-stone-900 dark:text-stone-100 mb-6 leading-[1.14] tracking-tight">
                         {story.title}
                     </h1>
 
-                    {/* Meta Info - Very light, minimal visual weight */}
-                    <div className="flex flex-wrap items-center gap-3 text-sm text-stone-400 dark:text-stone-500 mb-12">
-                        <span>{story.author?.display_name || story.author?.username || 'Anonymous'}</span>
+                    {/* Metadata Telemetry */}
+                    <div className="flex flex-wrap items-center gap-2 text-xs font-mono uppercase text-stone-500 dark:text-stone-400 mb-10 pb-4 border-b border-stone-200/80 dark:border-zinc-800">
+                        <span className="font-semibold text-stone-800 dark:text-stone-200">{story.author?.display_name || story.author?.username || 'Anonymous Author'}</span>
                         <span>·</span>
-                        <span>{formatFullDate(story.created_at)}</span>
+                        <time dateTime={story.created_at}>{formatFullDate(story.created_at)}</time>
                     </div>
 
                     {/* Tags */}
