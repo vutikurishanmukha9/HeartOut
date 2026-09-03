@@ -22,6 +22,9 @@ from app.schemas.posts import (
     CommentCreate, CommentResponse, SupportCreate, SupportResponse,
     BookmarkResponse, ReadProgressUpdate
 )
+from app.core.config import settings
+from app.core.limiter import limiter
+from app.core.sanitizer import sanitize_content, sanitize_text
 from app.services.story_service import StoryService, calculate_reading_time
 from app.api.v1.websockets import notify_reaction, notify_comment
 
@@ -32,7 +35,9 @@ router = APIRouter()
 # ========== STORY CRUD ==========
 
 @router.post("", status_code=status.HTTP_201_CREATED)
+@limiter.limit(settings.RATE_LIMIT_POSTS)
 async def create_story(
+    request: Request,
     post_data: PostCreate,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
@@ -432,13 +437,15 @@ async def delete_story(
 # ========== COMMENTS ==========
 
 @router.post("/{story_id}/comments", status_code=status.HTTP_201_CREATED)
+@limiter.limit(settings.RATE_LIMIT_POSTS)
 async def add_comment(
+    request: Request,
     story_id: str,
     comment_data: CommentCreate,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
-    """Add a comment to a story"""
+    """Add a comment to a story with sanitization and rate limiting"""
     # Find story
     story_query = select(Post).where(
         Post.public_id == story_id,
@@ -459,9 +466,12 @@ async def add_comment(
         if parent and parent.post_id == story.id:
             parent_id = parent.id
     
+    # Sanitize comment content
+    clean_comment = sanitize_content(comment_data.content)
+    
     # Create comment
     comment = Comment(
-        content=comment_data.content,
+        content=clean_comment,
         is_anonymous=comment_data.is_anonymous,
         user_id=current_user.id,
         post_id=story.id,

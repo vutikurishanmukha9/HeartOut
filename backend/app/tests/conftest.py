@@ -11,7 +11,11 @@ from sqlalchemy.pool import StaticPool
 
 from app.main import app
 from app.core.database import Base, get_db
+from app.core.limiter import limiter
 from app.models.models import User, Post, PostStatus, StoryType
+
+# Disable rate limiter for functional test suite
+limiter.enabled = False
 
 
 # Test database URL (in-memory SQLite)

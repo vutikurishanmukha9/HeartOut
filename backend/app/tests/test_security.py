@@ -295,3 +295,145 @@ class TestUsernameValidation:
         })
         
         assert response.status_code == 422
+
+
+class TestZeroLeakageAndHardening:
+    """Exhaustive tests for zero-leakage, CSRF, anonymity, and revocation"""
+    
+    @pytest.mark.asyncio
+    async def test_anonymous_story_never_leaks_author_id(self, client, auth_headers):
+        """Verify anonymous stories never expose author id or personal username"""
+        res = await client.post(
+            "/api/posts",
+            headers=auth_headers,
+            json={
+                "title": "A Secret Anonymous Confession",
+                "content": valid_content(),
+                "story_type": "regret",
+                "is_anonymous": True,
+                "status": "published"
+            }
+        )
+        assert res.status_code == 201
+        story = res.json()["story"]
+        assert story["is_anonymous"] is True
+        assert "author" in story
+        assert "id" not in story["author"]
+        assert story["author"]["username"] == "Anonymous"
+        
+        # Also verify when fetched via GET /api/posts/{id}
+        story_id = story["id"]
+        get_res = await client.get(f"/api/posts/{story_id}")
+        assert get_res.status_code == 200
+        fetched_story = get_res.json()["story"]
+        assert "id" not in fetched_story["author"]
+        assert fetched_story["author"]["username"] == "Anonymous"
+
+    @pytest.mark.asyncio
+    async def test_csrf_origin_blocking(self, client):
+        """Verify untrusted cross-origin requests are rejected with 403"""
+        res = await client.post(
+            "/api/auth/login",
+            headers={"Origin": "https://malicious-evil-site.com"},
+            json={
+                "email": "test@gmail.com",
+                "password": VALID_PASSWORD
+            }
+        )
+        assert res.status_code == 403
+        assert "Cross-origin request blocked" in res.json().get("error", "")
+
+    @pytest.mark.asyncio
+    async def test_logout_revokes_both_tokens(self, client):
+        """Verify logging out revokes both access and refresh tokens"""
+        # Register and login
+        await client.post("/api/auth/register", json={
+            "username": "logoutuser",
+            "email": "logout@gmail.com",
+            "password": VALID_PASSWORD
+        })
+        login_res = await client.post("/api/auth/login", json={
+            "email": "logout@gmail.com",
+            "password": VALID_PASSWORD
+        })
+        tokens = login_res.json()
+        access_tok = tokens["access_token"]
+        refresh_tok = tokens["refresh_token"]
+        
+        # Logout
+        logout_res = await client.post(
+            "/api/auth/logout",
+            headers={"Authorization": f"Bearer {access_tok}"},
+            cookies={"access_token": access_tok, "refresh_token": refresh_tok}
+        )
+        assert logout_res.status_code == 200
+        
+        # Attempt to use access token -> 401
+        prof_res = await client.get(
+            "/api/auth/profile",
+            headers={"Authorization": f"Bearer {access_tok}"}
+        )
+        assert prof_res.status_code == 401
+        
+        # Attempt to refresh -> 401
+        ref_res = await client.post(
+            "/api/auth/refresh",
+            cookies={"refresh_token": refresh_tok}
+        )
+        assert ref_res.status_code == 401
+
+    @pytest.mark.asyncio
+    async def test_delete_account_complete_cleanup(self, client):
+        """Verify delete account successfully cascades without schema column errors"""
+        await client.post("/api/auth/register", json={
+            "username": "deleteuser",
+            "email": "delete@gmail.com",
+            "password": VALID_PASSWORD
+        })
+        login_res = await client.post("/api/auth/login", json={
+            "email": "delete@gmail.com",
+            "password": VALID_PASSWORD
+        })
+        headers = {"Authorization": f"Bearer {login_res.json()['access_token']}"}
+        
+        # Create a post
+        await client.post(
+            "/api/posts",
+            headers=headers,
+            json={
+                "title": "Post To Be Deleted",
+                "content": valid_content(),
+                "story_type": "life_story",
+                "is_anonymous": False,
+                "status": "published"
+            }
+        )
+        
+        # Now delete account
+        del_res = await client.request(
+            "DELETE",
+            "/api/auth/account",
+            headers=headers,
+            json={"password": VALID_PASSWORD}
+        )
+        assert del_res.status_code == 200
+        assert del_res.json()["message"] == "Account deleted successfully"
+
+    @pytest.mark.asyncio
+    async def test_stored_xss_stripped_on_creation(self, client, auth_headers):
+        """Verify script tags are completely stripped from title and content"""
+        res = await client.post(
+            "/api/posts",
+            headers=auth_headers,
+            json={
+                "title": "<script>alert('pwn')</script>Safe Clean Title",
+                "content": "<script>evil()</script>" + valid_content(),
+                "story_type": "other",
+                "status": "published"
+            }
+        )
+        assert res.status_code == 201
+        story = res.json()["story"]
+        assert "<script>" not in story["title"]
+        assert "<script>" not in story["content"]
+

@@ -88,12 +88,16 @@ async def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
     
-    # Try cookie first, then Authorization header
-    token = request.cookies.get("access_token")
-    if not token:
-        auth_header = request.headers.get("Authorization", "")
+    # Try explicit Authorization header first, then fallback to HttpOnly cookie
+    token = None
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header:
         if auth_header.startswith("Bearer "):
-            token = auth_header[7:]
+            token = auth_header[7:].strip()
+        else:
+            raise credentials_exception
+    elif "access_token" in request.cookies:
+        token = request.cookies.get("access_token")
     
     if not token:
         raise credentials_exception
@@ -134,16 +138,20 @@ async def get_current_user_optional(
     """
     Dependency to get current user if authenticated, None otherwise.
     Does not require authentication - returns None for unauthenticated requests.
-    Reads JWT from HttpOnly cookie first, falls back to Authorization header.
+    Prioritizes explicit Authorization header, falls back to HttpOnly cookie.
     """
     from app.models.models import User
     
-    # Try cookie first, then Authorization header
-    token = request.cookies.get("access_token")
-    if not token:
-        auth_header = request.headers.get("Authorization", "")
+    # Try explicit Authorization header first, then fallback to HttpOnly cookie
+    token = None
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header:
         if auth_header.startswith("Bearer "):
-            token = auth_header[7:]
+            token = auth_header[7:].strip()
+        else:
+            return None
+    elif "access_token" in request.cookies:
+        token = request.cookies.get("access_token")
     
     if not token:
         return None

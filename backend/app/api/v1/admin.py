@@ -206,6 +206,14 @@ async def suspend_user(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
+    # Security: Prevent self-suspension
+    if user.public_id == admin_user.public_id:
+        raise HTTPException(status_code=400, detail="Cannot suspend your own account")
+    
+    # Security: Moderators cannot suspend administrators
+    if user.role == UserRole.ADMIN.value and admin_user.role != UserRole.ADMIN.value:
+        raise HTTPException(status_code=403, detail="Moderators cannot suspend administrators")
+    
     user.is_active = not user.is_active
     await db.commit()
     

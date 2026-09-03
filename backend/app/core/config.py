@@ -54,13 +54,13 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60  # 1 hour
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
     
-    # CORS
     CORS_ORIGINS: List[str] = [
         "http://localhost:5173",
         "http://localhost:3000",
         "https://heartout.vercel.app",
         "https://heart-out.vercel.app",
-        "https://heartout.onrender.com"
+        "https://heartout.onrender.com",
+        "https://heartout-kx89.onrender.com"
     ]
 
     @field_validator("CORS_ORIGINS", mode="before")
@@ -79,12 +79,34 @@ class Settings(BaseSettings):
     # Redis (optional)
     REDIS_URL: str = os.getenv("REDIS_URL", "")
     
+    # Rate Limiting
+    TESTING: bool = os.getenv("TESTING", "false").lower() in ("true", "1")
+    RATE_LIMIT_DEFAULT: str = "100/minute"
+    RATE_LIMIT_LOGIN: str = "5/minute"
+    RATE_LIMIT_REGISTER: str = "10/minute"
+    RATE_LIMIT_PASSWORD_CHANGE: str = "10/minute"
+    RATE_LIMIT_POSTS: str = "30/minute"
+    
     # Password Requirements
     PASSWORD_MIN_LENGTH: int = 8
     PASSWORD_REQUIRE_UPPERCASE: bool = True
     PASSWORD_REQUIRE_LOWERCASE: bool = True
     PASSWORD_REQUIRE_DIGIT: bool = True
     PASSWORD_REQUIRE_SPECIAL: bool = True
+
+    @field_validator("SECRET_KEY")
+    @classmethod
+    def validate_secret_key(cls, v: str) -> str:
+        if os.getenv("FLASK_ENV") == "production" and v == "dev-secret-key-change-in-production":
+            raise ValueError("SECRET_KEY must be set to a strong secret in production!")
+        return v
+
+    @field_validator("JWT_SECRET_KEY")
+    @classmethod
+    def validate_jwt_secret_key(cls, v: str) -> str:
+        if os.getenv("FLASK_ENV") == "production" and v == "jwt-secret-key-change-in-production":
+            raise ValueError("JWT_SECRET_KEY must be set to a strong secret in production!")
+        return v
     
     class Config:
         env_file = ".env"

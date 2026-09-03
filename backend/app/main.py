@@ -6,18 +6,14 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from contextlib import asynccontextmanager
 
 from app.core.config import settings
+from app.core.limiter import limiter
 from app.core.database import engine, Base
 from app.api.v1 import auth, posts, admin
-
-
-# Rate limiter
-limiter = Limiter(key_func=get_remote_address)
 
 
 @asynccontextmanager
@@ -100,17 +96,10 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         status_code=422,
         content={"detail": errors}
     )
-# CORS middleware
+# CORS middleware - strictly allowed trusted origins only
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "https://heartout.vercel.app",
-        "https://heart-out.vercel.app",
-        "https://heartout-kx89.onrender.com",
-    ],
-    allow_origin_regex=r"https://.*\.onrender\.com|https://.*\.vercel\.app",
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
@@ -118,9 +107,20 @@ app.add_middleware(
 )
 
 
-# Security headers & Zero-IP logging middleware
+# Security headers, Zero-IP logging & Anti-CSRF Origin verification middleware
 @app.middleware("http")
 async def add_security_headers(request: Request, call_next):
+    # Origin verification for state-changing methods (CSRF defense)
+    if request.method in ("POST", "PUT", "DELETE", "PATCH"):
+        origin = request.headers.get("origin")
+        if origin:
+            allowed_origins = set(settings.CORS_ORIGINS) | {"http://test"}
+            if origin not in allowed_origins:
+                return JSONResponse(
+                    status_code=403,
+                    content={"error": "Cross-origin request blocked by security policy"}
+                )
+
     # Strip tracking IP headers to enforce zero-IP logging policy
     for tracking_header in ["x-forwarded-for", "x-real-ip", "cf-connecting-ip", "true-client-ip", "x-client-ip"]:
         if hasattr(request.headers, "_store") and tracking_header in request.headers._store:
@@ -132,6 +132,7 @@ async def add_security_headers(request: Request, call_next):
     response.headers["X-XSS-Protection"] = "1; mode=block"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+    response.headers["Content-Security-Policy"] = "default-src 'self'; frame-ancestors 'none';"
     if not settings.DEBUG:
         response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     return response

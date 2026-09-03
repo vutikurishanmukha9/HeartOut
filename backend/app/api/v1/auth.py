@@ -5,11 +5,11 @@ Complete migration from Flask auth blueprint
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 from datetime import datetime, timezone
 from typing import Optional
 
+from app.core.config import settings
+from app.core.limiter import limiter
 from app.core.database import get_db
 from app.core.security import (
     get_password_hash, verify_password, create_access_token, 
@@ -23,7 +23,6 @@ from app.schemas.auth import (
 
 
 router = APIRouter()
-limiter = Limiter(key_func=get_remote_address)
 
 
 # JWT blocklist (in-memory for quick checks)
@@ -31,9 +30,9 @@ jwt_blocklist = set()
 
 
 # Cookie configuration constants
-COOKIE_SECURE = True  # Always True for HTTPS (Vercel/Render)
+COOKIE_SECURE = not settings.DEBUG
 COOKIE_HTTPONLY = True
-COOKIE_SAMESITE = "none"  # Required for cross-origin (Vercel <-> Render)
+COOKIE_SAMESITE = "none" if COOKIE_SECURE else "lax"
 COOKIE_PATH = "/"
 ACCESS_TOKEN_MAX_AGE = 60 * 60  # 1 hour in seconds
 REFRESH_TOKEN_MAX_AGE = 30 * 24 * 60 * 60  # 30 days in seconds
@@ -94,7 +93,9 @@ async def health_check():
 
 # Register
 @router.post("/register", status_code=status.HTTP_201_CREATED)
+@limiter.limit(settings.RATE_LIMIT_REGISTER)
 async def register(
+    request: Request,
     user_data: UserRegistration,
     response: Response,
     db: AsyncSession = Depends(get_db)
@@ -155,7 +156,9 @@ async def register(
 
 # Login
 @router.post("/login")
+@limiter.limit(settings.RATE_LIMIT_LOGIN)
 async def login(
+    request: Request,
     credentials: UserLogin,
     response: Response,
     db: AsyncSession = Depends(get_db)
@@ -227,6 +230,18 @@ async def refresh_access_token(
             detail="Invalid refresh token"
         )
     
+    # Check if refresh token has been revoked
+    jti = payload.get("jti")
+    if jti:
+        blocklist_result = await db.execute(
+            select(TokenBlocklist).where(TokenBlocklist.jti == jti)
+        )
+        if blocklist_result.scalar_one_or_none():
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token has been revoked"
+            )
+    
     user_id = payload.get("sub")
     result = await db.execute(select(User).where(User.public_id == user_id))
     user = result.scalar_one_or_none()
@@ -253,10 +268,10 @@ async def logout(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
-    """Logout user (invalidate token in database and clear cookies)"""
+    """Logout user (invalidate both access and refresh tokens in database and clear cookies)"""
     from app.core.security import decode_token
     
-    # Get the token from cookie or Authorization header
+    # Revoke access token from cookie or Authorization header
     token = request.cookies.get("access_token")
     if not token:
         auth_header = request.headers.get("Authorization", "")
@@ -275,9 +290,25 @@ async def logout(
                 user_id=current_user.id,
                 expires_at=datetime.fromtimestamp(exp) if exp else datetime.utcnow()
             )
-            
             db.add(blocklist_entry)
-            await db.commit()
+
+    # Also revoke refresh token from cookie or body
+    refresh_token = request.cookies.get("refresh_token")
+    if refresh_token:
+        ref_payload = decode_token(refresh_token)
+        if ref_payload:
+            ref_jti = ref_payload.get("jti") or str(hash(refresh_token))[:36]
+            ref_exp = ref_payload.get("exp")
+            
+            ref_blocklist_entry = TokenBlocklist(
+                jti=ref_jti,
+                token_type="refresh",
+                user_id=current_user.id,
+                expires_at=datetime.fromtimestamp(ref_exp) if ref_exp else datetime.utcnow()
+            )
+            db.add(ref_blocklist_entry)
+            
+    await db.commit()
     
     # Clear HttpOnly cookies
     clear_auth_cookies(response)
@@ -320,7 +351,9 @@ async def update_profile(
 
 # Change password
 @router.post("/change-password")
+@limiter.limit(settings.RATE_LIMIT_PASSWORD_CHANGE)
 async def change_password(
+    request: Request,
     password_data: PasswordChange,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
@@ -407,9 +440,12 @@ async def delete_account(
         ReadProgress.__table__.delete().where(ReadProgress.user_id == user_id)
     )
     
-    # Delete user's supports
+    # Delete user's supports (both given and received)
+    from sqlalchemy import or_
     await db.execute(
-        Support.__table__.delete().where(Support.user_id == user_id)
+        Support.__table__.delete().where(
+            or_(Support.giver_id == user_id, Support.receiver_id == user_id)
+        )
     )
     
     # Delete comments on user's posts and by user
@@ -419,7 +455,7 @@ async def delete_account(
     
     # Delete user's posts (this will cascade delete related comments/supports)
     await db.execute(
-        Post.__table__.delete().where(Post.author_id == user_id)
+        Post.__table__.delete().where(Post.user_id == user_id)
     )
     
     # Finally delete the user

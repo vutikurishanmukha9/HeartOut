@@ -24,13 +24,18 @@ export function getApiUrl(endpoint) {
 export async function apiFetch(endpoint, options = {}) {
     const url = getApiUrl(endpoint);
 
-    // Add default headers
+    // Add default headers including anti-CSRF identifier
     const headers = {
         'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
         ...options.headers,
     };
 
-    return fetch(url, { ...options, headers });
+    return fetch(url, {
+        credentials: options.credentials || 'include',
+        ...options,
+        headers
+    });
 }
 
 export default API_BASE_URL;

@@ -12,6 +12,7 @@ from app.models.models import (
     Post, User, Comment, Support, PostStatus, StoryType
 )
 from app.core.security import generate_blind_author_token, shred_key_buffer
+from app.core.sanitizer import sanitize_content, sanitize_text
 
 
 def calculate_reading_time(content: str) -> int:
@@ -30,29 +31,34 @@ class StoryService:
         data: Dict[str, Any]
     ) -> Post:
         """Create a new story with blind anonymity support"""
-        reading_time = calculate_reading_time(data['content'])
+        clean_title = sanitize_text(data['title'])
+        clean_content = sanitize_content(data['content'])
+        reading_time = calculate_reading_time(clean_content)
         is_anonymous = data.get('is_anonymous', True)
+        status_val = data.get('status', 'draft')
+        is_published = status_val == PostStatus.PUBLISHED.value
         
         # Generate post first to get public_id
         import uuid
         post_public_id = str(uuid.uuid4())
         
-        # Cryptographic Blind Anonymity: Decouple user_id when anonymous
+        # Cryptographic Blind Anonymity: Decouple user_id when anonymous and published
+        # While in draft state, retain user_id so author can view their drafts in /drafts
         if is_anonymous:
-            user_id = None
             author_token = generate_blind_author_token(user.public_id, post_public_id)
+            user_id = None if is_published else user.id
         else:
             user_id = user.id
             author_token = None
         
         story = Post(
             public_id=post_public_id,
-            title=data['title'],
-            content=data['content'],
+            title=clean_title,
+            content=clean_content,
             story_type=data.get('story_type', 'other'),
             is_anonymous=is_anonymous,
             tags=data.get('tags', []),
-            status=data.get('status', 'draft'),
+            status=status_val,
             reading_time=reading_time,
             user_id=user_id,
             author_token=author_token
@@ -261,10 +267,10 @@ class StoryService:
         
         # Update fields
         if 'title' in data:
-            story.title = data['title']
+            story.title = sanitize_text(data['title'])
         if 'content' in data:
-            story.content = data['content']
-            story.reading_time = calculate_reading_time(data['content'])
+            story.content = sanitize_content(data['content'])
+            story.reading_time = calculate_reading_time(story.content)
         if 'story_type' in data:
             story.story_type = data['story_type']
         if 'is_anonymous' in data:
@@ -278,6 +284,12 @@ class StoryService:
             if new_status == PostStatus.PUBLISHED.value and story.status != PostStatus.PUBLISHED.value:
                 story.published_at = datetime.utcnow()
             story.status = new_status
+        
+        # If transitioning to published while anonymous, decouple user_id
+        if story.is_anonymous and story.status == PostStatus.PUBLISHED.value:
+            story.user_id = None
+            if not story.author_token:
+                story.author_token = expected_token
         
         story.updated_at = datetime.utcnow()
         await db.commit()

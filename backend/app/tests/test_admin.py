@@ -88,3 +88,50 @@ class TestAdminComments:
         response = await client.delete("/api/admin/comments/some-id")
         
         assert response.status_code == 401
+
+
+class TestAdminPrivilegeHardening:
+    """Test role hierarchy and self-action protections"""
+
+    @pytest.mark.asyncio
+    async def test_admin_cannot_suspend_self(self, client, db_session):
+        """Verify an admin cannot deactivate their own account"""
+        from app.models.models import User, UserRole
+        from app.core.security import create_access_token
+        
+        admin = User(username="superadmin", email="super@gmail.com", role=UserRole.ADMIN.value)
+        admin.set_password(VALID_PASSWORD)
+        db_session.add(admin)
+        await db_session.commit()
+        await db_session.refresh(admin)
+        
+        token = create_access_token(data={"sub": admin.public_id})
+        headers = {"Authorization": f"Bearer {token}"}
+        
+        res = await client.put(f"/api/admin/users/{admin.public_id}/suspend", headers=headers)
+        assert res.status_code == 400
+        assert "Cannot suspend your own account" in res.json().get("error", "")
+
+    @pytest.mark.asyncio
+    async def test_moderator_cannot_suspend_admin(self, client, db_session):
+        """Verify a moderator cannot suspend an administrator"""
+        from app.models.models import User, UserRole
+        from app.core.security import create_access_token
+        
+        admin = User(username="targetadmin", email="target@gmail.com", role=UserRole.ADMIN.value)
+        admin.set_password(VALID_PASSWORD)
+        
+        mod = User(username="moderator1", email="mod@gmail.com", role=UserRole.MODERATOR.value)
+        mod.set_password(VALID_PASSWORD)
+        
+        db_session.add_all([admin, mod])
+        await db_session.commit()
+        await db_session.refresh(admin)
+        await db_session.refresh(mod)
+        
+        mod_token = create_access_token(data={"sub": mod.public_id})
+        headers = {"Authorization": f"Bearer {mod_token}"}
+        
+        res = await client.put(f"/api/admin/users/{admin.public_id}/suspend", headers=headers)
+        assert res.status_code == 403
+        assert "Moderators cannot suspend administrators" in res.json().get("error", "")
