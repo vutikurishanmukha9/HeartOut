@@ -8,9 +8,13 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // No token check — cookies are sent automatically.
-    // Just attempt to fetch the profile. If there's a valid cookie, it works.
-    fetchProfile();
+    // Only attempt profile restoration if an active session flag exists
+    const hasSession = localStorage.getItem('has_session') === 'true';
+    if (hasSession) {
+      fetchProfile();
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   const fetchProfile = async () => {
@@ -22,17 +26,22 @@ export function AuthProvider({ children }) {
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
+        localStorage.setItem('has_session', 'true');
       } else if (response.status === 401) {
-        // Token expired — try to refresh via cookie
+        // Token expired: attempt refresh via cookie
         const refreshed = await refreshAccessToken();
         if (!refreshed) {
+          localStorage.removeItem('has_session');
           setUser(null);
         }
       } else {
+        localStorage.removeItem('has_session');
         setUser(null);
       }
     } catch (error) {
-      console.error('Failed to fetch profile:', error);
+      // Network or connection failure
+      localStorage.removeItem('has_session');
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -48,11 +57,18 @@ export function AuthProvider({ children }) {
 
       if (response.ok) {
         // New access_token cookie is set by the server automatically
-        await fetchProfile();
-        return true;
+        const profileRes = await fetch(getApiUrl('/api/auth/profile'), {
+          credentials: 'include',
+        });
+        if (profileRes.ok) {
+          const data = await profileRes.json();
+          setUser(data.user);
+          localStorage.setItem('has_session', 'true');
+          return true;
+        }
       }
     } catch (error) {
-      console.error('Failed to refresh token:', error);
+      // Refresh failed
     }
     return false;
   }, []);
@@ -67,7 +83,7 @@ export function AuthProvider({ children }) {
 
     if (response.ok) {
       const data = await response.json();
-      // Cookies are set by the server — just store user in React state
+      localStorage.setItem('has_session', 'true');
       setUser(data.user);
       return { success: true };
     } else {
@@ -90,7 +106,7 @@ export function AuthProvider({ children }) {
 
     if (response.ok) {
       const data = await response.json();
-      // Cookies are set by the server — just store user in React state
+      localStorage.setItem('has_session', 'true');
       setUser(data.user);
       return { success: true };
     } else {
@@ -111,9 +127,10 @@ export function AuthProvider({ children }) {
         headers: { 'Content-Type': 'application/json' }
       });
     } catch (error) {
-      // Silently fail — cookies will be cleared by the server
+      // Cookies will still be cleared locally
     }
 
+    localStorage.removeItem('has_session');
     setUser(null);
   };
 
