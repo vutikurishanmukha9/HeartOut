@@ -80,8 +80,6 @@ const LoadingDots = () => (
     </div>
 );
 
-import { ServerWarmupToast } from './ServerWarmup';
-
 export default function InnovativeLoader() {
     const [quoteIndex, setQuoteIndex] = useState(0);
     const [fadeIn, setFadeIn] = useState(true);
@@ -131,13 +129,12 @@ export default function InnovativeLoader() {
                 {/* Logo with heartbeat */}
                 <PulsingHeart />
 
-                {/* Brand name with solid color */}
-                <h1
-                    className="text-4xl md:text-5xl font-bold text-amber-600 dark:text-amber-500"
-                    style={{ fontFamily: "'Poppins', sans-serif" }}
-                >
-                    HeartOut
-                </h1>
+                {/* Brand name */}
+                <img
+                    src="/text-logo.png"
+                    alt="HeartOut"
+                    className="h-10 sm:h-12 w-auto object-contain select-none drop-shadow-sm"
+                />
 
                 {/* Rotating inspirational quote */}
                 <div className="h-8 flex items-center">
@@ -158,8 +155,6 @@ export default function InnovativeLoader() {
                 </p>
             </div>
 
-            {/* Server connection indicator shows on this loading screen */}
-            <ServerWarmupToast />
 
             {/* CSS Animations */}
             <style>{`

@@ -103,17 +103,20 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <Link to="/feed" className="flex items-center space-x-2 group">
-              <div className="relative">
-                <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500 rounded-xl shadow-lg shadow-primary-500/30 group-hover:shadow-primary-500/50 group-hover:scale-110 transition-[background-color,transform,box-shadow] duration-300">
-                  <Heart className="w-5 h-5 text-white" />
-                </div>
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white dark:border-gray-900 animate-pulse" />
+            <Link to="/feed" className="flex items-center gap-2 sm:gap-2.5 group shrink-0" aria-label="HeartOut Feed">
+              <div className="relative shrink-0">
+                <img
+                  src="/logo.png"
+                  alt="HeartOut Logo"
+                  className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-200 select-none shrink-0"
+                />
+                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-400 rounded-full border-2 border-white dark:border-gray-900 animate-pulse" />
               </div>
-              <span className="text-xl tracking-tight flex items-center">
-                <span className="font-extrabold text-gray-900 dark:text-white">Heart</span>
-                <span className="font-semibold text-primary-600">Out</span>
-              </span>
+              <img
+                src="/text-logo.png"
+                alt="HeartOut"
+                className="h-5 sm:h-6 w-auto max-w-[105px] sm:max-w-[130px] md:max-w-[145px] object-contain drop-shadow-xs group-hover:opacity-95 transition-opacity select-none shrink-0"
+              />
             </Link>
 
             {/* Desktop Navigation - Minimalist + Micro-animations */}

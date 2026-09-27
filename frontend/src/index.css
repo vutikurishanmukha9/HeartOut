@@ -1128,3 +1128,28 @@ code {
     padding-right: 1rem;
   }
 }
+
+/* Cross-browser Scrollbar Suppression Utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* Eliminate browser page scrollbars on Sign In and Register */
+body:has([data-testid="login-page"]),
+body:has([data-testid="register-page"]) {
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+body:has([data-testid="login-page"])::-webkit-scrollbar,
+body:has([data-testid="register-page"])::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}

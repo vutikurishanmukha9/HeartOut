@@ -7,7 +7,6 @@ import SupportFloatingButton from './components/SupportFloatingButton';
 import MobileBottomNav from './components/MobileBottomNav';
 import ErrorBoundary, { RouteErrorBoundary } from './components/ErrorBoundary';
 import InnovativeLoader, { RouteLoader } from './components/InnovativeLoader';
-import { ServerWarmupToast } from './components/ServerWarmup';
 import SkipToContent from './components/Accessibility';
 import { WebSocketProvider } from './hooks/useWebSocket.jsx';
 import NotificationToast from './components/NotificationToast';
@@ -19,8 +18,6 @@ const FeedRoutes = lazy(() => import('./routes/FeedRoutes'));
 const AdminRoutes = lazy(() => import('./routes/AdminRoutes'));
 const ProfileRoutes = lazy(() => import('./routes/ProfileRoutes'));
 const Support = lazy(() => import('./pages/Support'));
-
-// RouteLoader is now imported from InnovativeLoader
 
 function App() {
   const auth = useContext(AuthContext);
@@ -49,7 +46,7 @@ function App() {
     }
   }, [theme.theme, theme.effectiveTheme]);
 
-  // Show innovative loading screen during initial load
+  // Show loading screen during initial load
   if (loading) {
     return <InnovativeLoader />;
   }
@@ -133,9 +130,6 @@ function App() {
 
             {/* Mobile Bottom Navigation */}
             <MobileBottomNav />
-
-            {/* Server Cold Start Toast */}
-            <ServerWarmupToast />
 
             {/* Real-time Notification Toast */}
             <NotificationToast />
