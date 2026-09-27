@@ -1,84 +1,73 @@
 import React, { useState, useEffect } from 'react';
 
 /**
- * Innovative Loading Screen with animated storytelling elements
- * Features: Pulsing heart, floating story cards, rotating quotes, gradient animations
+ * InnovativeLoader
+ * Bespoke sanctuary loading experience for HeartOut.
+ * Replaces the generic heart clip-art with the authentic HeartOut brand flame emblem,
+ * ethereal ambient aura, floating story cards, rotating literary reflections, and warm glowing progress.
  */
 
 const inspirationalQuotes = [
     "Every story matters…",
     "Your voice deserves to be heard…",
-    "Connecting hearts worldwide…",
-    "Where stories come alive…",
-    "Share your truth…",
+    "Connecting hearts in a safe space…",
+    "Where reflections become healing…",
+    "Share what you could never say out loud…",
 ];
 
 const FloatingCard = ({ delay, position }) => (
     <div
-        className="absolute opacity-20"
+        className="absolute opacity-25 pointer-events-none select-none"
         style={{
             left: position.left,
             top: position.top,
-            animation: `float ${4 + delay}s ease-in-out infinite`,
+            animation: `floatStory ${4.5 + delay}s ease-in-out infinite`,
             animationDelay: `${delay}s`,
         }}
     >
-        <div className="w-16 h-20 md:w-20 md:h-24 bg-gradient-to-br from-white/30 to-white/10 rounded-lg backdrop-blur-sm border border-white/20 shadow-lg transform rotate-3">
-            <div className="p-2">
-                <div className="w-full h-2 bg-white/30 rounded mb-1"></div>
-                <div className="w-3/4 h-2 bg-white/20 rounded mb-2"></div>
-                <div className="w-full h-1 bg-white/10 rounded mb-1"></div>
-                <div className="w-full h-1 bg-white/10 rounded mb-1"></div>
-                <div className="w-2/3 h-1 bg-white/10 rounded"></div>
+        <div className="w-16 h-20 sm:w-20 sm:h-24 bg-white/70 dark:bg-stone-900/60 rounded-xl backdrop-blur-md border border-[#EADDCF]/80 dark:border-stone-800 shadow-[0_8px_20px_-4px_rgba(200,88,40,0.12)] p-2 transform rotate-3">
+            <div className="w-full h-1.5 bg-[#C85828]/25 rounded-full mb-1.5" />
+            <div className="w-3/4 h-1.5 bg-stone-300/60 dark:bg-stone-700/60 rounded-full mb-2" />
+            <div className="w-full h-1 bg-stone-200/70 dark:bg-stone-800/70 rounded-full mb-1" />
+            <div className="w-5/6 h-1 bg-stone-200/70 dark:bg-stone-800/70 rounded-full mb-1" />
+            <div className="w-2/3 h-1 bg-stone-200/70 dark:bg-stone-800/70 rounded-full" />
+        </div>
+    </div>
+);
+
+const BrandEmblemLoader = ({ size = 'lg' }) => {
+    const isLg = size === 'lg';
+    return (
+        <div className="relative flex items-center justify-center">
+            {/* Ethereal expanding ambient glow rings */}
+            <div
+                className={`absolute rounded-full bg-gradient-to-tr from-[#C85828]/25 via-[#EA580C]/20 to-[#F59E0B]/20 blur-xl ${
+                    isLg ? 'w-36 h-36' : 'w-20 h-20'
+                }`}
+                style={{ animation: 'auraPulse 3s ease-in-out infinite' }}
+            />
+            <div
+                className={`absolute rounded-full bg-[#FFD8B0]/50 dark:bg-orange-950/40 blur-md ${
+                    isLg ? 'w-24 h-24' : 'w-14 h-14'
+                }`}
+                style={{ animation: 'auraPulse 2.4s ease-in-out infinite 0.4s' }}
+            />
+
+            {/* Official HeartOut Sculpted Flame Emblem */}
+            <div className="relative z-10 flex items-center justify-center">
+                <img
+                    src="/logo.png"
+                    alt="HeartOut Emblem"
+                    className={`object-contain select-none drop-shadow-[0_10px_28px_rgba(200,88,40,0.32)] ${
+                        isLg
+                            ? 'w-16 h-16 sm:w-20 sm:h-20 animate-gentle-breathe'
+                            : 'w-10 h-10 animate-gentle-breathe'
+                    }`}
+                />
             </div>
         </div>
-    </div>
-);
-
-const PulsingHeart = () => (
-    <div className="relative">
-        {/* Outer glow rings */}
-        <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-32 h-32 rounded-full bg-gradient-to-r from-rose-500/20 to-orange-500/20 animate-ping"></div>
-        </div>
-        <div className="absolute inset-0 flex items-center justify-center" style={{ animationDelay: '0.5s' }}>
-            <div className="w-24 h-24 rounded-full bg-gradient-to-r from-rose-500/30 to-orange-500/30 animate-pulse"></div>
-        </div>
-
-        {/* Main heart container */}
-        <div className="relative z-10 w-20 h-20 flex items-center justify-center">
-            <svg
-                viewBox="0 0 24 24"
-                className="w-16 h-16 animate-heartbeat"
-                fill="url(#heartGradient)"
-            >
-                <defs>
-                    <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#f43f5e" />
-                        <stop offset="50%" stopColor="#f97316" />
-                        <stop offset="100%" stopColor="#eab308" />
-                    </linearGradient>
-                </defs>
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-            </svg>
-        </div>
-    </div>
-);
-
-const LoadingDots = () => (
-    <div className="flex space-x-2 justify-center">
-        {[0, 1, 2].map((i) => (
-            <div
-                key={i}
-                className="w-2 h-2 rounded-full bg-gradient-to-r from-rose-500 to-orange-500"
-                style={{
-                    animation: 'bounce 1.4s ease-in-out infinite',
-                    animationDelay: `${i * 0.16}s`,
-                }}
-            />
-        ))}
-    </div>
-);
+    );
+};
 
 export default function InnovativeLoader() {
     const [quoteIndex, setQuoteIndex] = useState(0);
@@ -91,149 +80,180 @@ export default function InnovativeLoader() {
                 setQuoteIndex((prev) => (prev + 1) % inspirationalQuotes.length);
                 setFadeIn(true);
             }, 300);
-        }, 3000);
+        }, 3200);
 
         return () => clearInterval(interval);
     }, []);
 
     const floatingCardPositions = [
-        { left: '5%', top: '15%' },
-        { left: '85%', top: '20%' },
-        { left: '10%', top: '70%' },
-        { left: '80%', top: '75%' },
-        { left: '45%', top: '5%' },
-        { left: '50%', top: '85%' },
+        { left: '8%', top: '16%' },
+        { left: '84%', top: '18%' },
+        { left: '10%', top: '72%' },
+        { left: '82%', top: '74%' },
+        { left: '46%', top: '6%' },
+        { left: '48%', top: '86%' },
     ];
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
-            {/* Animated gradient background */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden select-none">
+            {/* Warm Sanctuary Ambient Canvas */}
             <div
                 className="absolute inset-0"
                 style={{
-                    background: 'linear-gradient(-45deg, #fdf2f8, #fef7ee, #fefce8, #fff7ed, #fce7f3)',
-                    backgroundSize: '400% 400%',
-                    animation: 'gradientShift 8s ease infinite',
+                    background:
+                        'radial-gradient(circle at 100% 0%, rgba(254, 211, 162, 0.85) 0%, transparent 35%), radial-gradient(circle at 0% 100%, rgba(255, 216, 176, 0.85) 0%, transparent 35%), #FBEFE5',
                 }}
             />
 
-            {/* Floating decorative elements */}
+            {/* Floating Story Card Silhouettes */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 {floatingCardPositions.map((pos, i) => (
                     <FloatingCard key={i} delay={i * 0.5} position={pos} />
                 ))}
             </div>
 
-            {/* Main content */}
-            <div className="relative z-10 flex flex-col items-center space-y-8">
-                {/* Logo with heartbeat */}
-                <PulsingHeart />
+            {/* Main Stage Content */}
+            <div className="relative z-10 flex flex-col items-center space-y-6 sm:space-y-7 px-4 max-w-md text-center">
+                {/* Official Brand Emblem with Organic Pulse */}
+                <BrandEmblemLoader size="lg" />
 
-                {/* Brand name */}
-                <img
-                    src="/text-logo.png"
-                    alt="HeartOut"
-                    className="h-10 sm:h-12 w-auto object-contain select-none drop-shadow-sm"
-                />
+                {/* Brand Typography */}
+                <div className="flex flex-col items-center">
+                    <img
+                        src="/text-logo.png"
+                        alt="HeartOut"
+                        className="h-9 sm:h-11 w-auto object-contain select-none drop-shadow-[0_2px_8px_rgba(200,88,40,0.18)]"
+                    />
+                    <p className="text-[10px] tracking-[0.24em] font-semibold text-stone-500 uppercase mt-1 select-none">
+                        A safer space within
+                    </p>
+                </div>
 
-                {/* Rotating inspirational quote */}
-                <div className="h-8 flex items-center">
+                {/* Rotating Inspirational Reflection Quote */}
+                <div className="h-9 flex items-center justify-center px-4">
                     <p
-                        className={`text-gray-600 dark:text-gray-400 text-lg italic transition-opacity duration-300 ${fadeIn ? 'opacity-100' : 'opacity-0'
-                            }`}
+                        className={`font-stories text-lg sm:text-xl font-normal text-stone-800 transition-opacity duration-300 leading-snug select-none ${
+                            fadeIn ? 'opacity-100' : 'opacity-0'
+                        }`}
                     >
                         {inspirationalQuotes[quoteIndex]}
                     </p>
                 </div>
 
-                {/* Animated loading dots */}
-                <LoadingDots />
+                {/* Shimmering Warm Progress Bar */}
+                <div className="w-36 h-1.5 rounded-full bg-[#EADDCF] overflow-hidden relative shadow-inner">
+                    <div
+                        className="absolute top-0 bottom-0 rounded-full bg-gradient-to-r from-[#9B2F0B] via-[#C85828] to-[#EA580C]"
+                        style={{
+                            animation: 'shimmerSweep 1.8s ease-in-out infinite',
+                        }}
+                    />
+                </div>
 
-                {/* Progress hint */}
-                <p className="text-sm text-gray-400 mt-4">
-                    Preparing your storytelling experience
+                {/* Subtitle Telemetry */}
+                <p className="text-xs text-stone-400 font-medium tracking-wide">
+                    Preparing your storytelling experience…
                 </p>
             </div>
 
-
-            {/* CSS Animations */}
+            {/* Fluid Keyframe Animations */}
             <style>{`
-                @keyframes heartbeat {
-                    0%, 100% { transform: scale(1); }
-                    10% { transform: scale(1.15); }
-                    20% { transform: scale(1); }
-                    30% { transform: scale(1.1); }
-                    40% { transform: scale(1); }
+                @keyframes gentleBreathe {
+                    0%, 100% {
+                        transform: scale(1) translateY(0);
+                    }
+                    50% {
+                        transform: scale(1.07) translateY(-2px);
+                    }
                 }
 
-                @keyframes float {
+                @keyframes auraPulse {
+                    0%, 100% {
+                        transform: scale(0.92);
+                        opacity: 0.35;
+                    }
+                    50% {
+                        transform: scale(1.14);
+                        opacity: 0.75;
+                    }
+                }
+
+                @keyframes floatStory {
                     0%, 100% { 
                         transform: translateY(0px) rotate(3deg); 
                     }
                     50% { 
-                        transform: translateY(-20px) rotate(-3deg); 
+                        transform: translateY(-18px) rotate(-2deg); 
                     }
                 }
 
-                @keyframes gradientShift {
-                    0% { background-position: 0% 50%; }
-                    50% { background-position: 100% 50%; }
-                    100% { background-position: 0% 50%; }
-                }
-
-                @keyframes bounce {
-                    0%, 80%, 100% { 
-                        transform: scale(0);
-                        opacity: 0.5;
+                @keyframes shimmerSweep {
+                    0% {
+                        left: -35%;
+                        width: 35%;
                     }
-                    40% { 
-                        transform: scale(1);
-                        opacity: 1;
+                    50% {
+                        left: 28%;
+                        width: 48%;
+                    }
+                    100% {
+                        left: 100%;
+                        width: 35%;
                     }
                 }
 
-                .animate-heartbeat {
-                    animation: heartbeat 1.5s ease-in-out infinite;
+                .animate-gentle-breathe {
+                    animation: gentleBreathe 2.4s ease-in-out infinite;
                 }
             `}</style>
         </div>
     );
 }
 
-// Simplified version for route transitions
+/**
+ * RouteLoader
+ * Lightweight transition loader for lazy-loaded route boundaries.
+ */
 export function RouteLoader() {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-            <div className="flex flex-col items-center space-y-4">
-                {/* Mini pulsing heart */}
-                <div className="relative">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-rose-500/20 to-orange-500/20 animate-pulse absolute inset-0"></div>
-                    <svg
-                        viewBox="0 0 24 24"
-                        className="w-8 h-8 relative z-10"
-                        fill="url(#miniHeartGradient)"
-                        style={{ animation: 'heartbeat 1.5s ease-in-out infinite' }}
-                    >
-                        <defs>
-                            <linearGradient id="miniHeartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="#f43f5e" />
-                                <stop offset="100%" stopColor="#f97316" />
-                            </linearGradient>
-                        </defs>
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                    </svg>
-                </div>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">Loading…</p>
-                <style>{`
-                    @keyframes heartbeat {
-                        0%, 100% { transform: scale(1); }
-                        10% { transform: scale(1.15); }
-                        20% { transform: scale(1); }
-                        30% { transform: scale(1.1); }
-                        40% { transform: scale(1); }
-                    }
-                `}</style>
+        <div
+            className="min-h-screen flex items-center justify-center select-none"
+            style={{
+                background:
+                    'radial-gradient(circle at 100% 0%, rgba(254, 211, 162, 0.6) 0%, transparent 35%), radial-gradient(circle at 0% 100%, rgba(255, 216, 176, 0.6) 0%, transparent 35%), #FBEFE5',
+            }}
+        >
+            <div className="flex flex-col items-center space-y-3.5">
+                <BrandEmblemLoader size="sm" />
+                <p className="text-stone-600 dark:text-stone-300 text-xs font-medium tracking-wide">
+                    Loading sanctuary…
+                </p>
             </div>
+            <style>{`
+                @keyframes gentleBreathe {
+                    0%, 100% {
+                        transform: scale(1);
+                    }
+                    50% {
+                        transform: scale(1.08);
+                    }
+                }
+
+                @keyframes auraPulse {
+                    0%, 100% {
+                        transform: scale(0.92);
+                        opacity: 0.3;
+                    }
+                    50% {
+                        transform: scale(1.15);
+                        opacity: 0.7;
+                    }
+                }
+
+                .animate-gentle-breathe {
+                    animation: gentleBreathe 2.2s ease-in-out infinite;
+                }
+            `}</style>
         </div>
     );
 }

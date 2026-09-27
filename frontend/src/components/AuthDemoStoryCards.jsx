@@ -123,7 +123,7 @@ const SLOT_Y = {
 const SETTLE_DURATION = 360;
 const REST_DURATION = 1100;
 
-export default function AuthDemoStoryCards({ showHeader = true }) {
+export default function AuthDemoStoryCards({ showHeader = true, showFooter = false }) {
     // Initial seated stack of 3 cards:
     // Slot 0: Story 0 (Top)
     // Slot 1: Story 1 (Mid)
@@ -236,7 +236,7 @@ export default function AuthDemoStoryCards({ showHeader = true }) {
             {showHeader && (
                 <div className="w-full mb-2.5 flex items-center justify-between px-1">
                     <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-stone-800 dark:text-stone-200">
+                        <span className="font-stories text-[17px] sm:text-[18px] font-semibold text-stone-900 dark:text-stone-100 tracking-[-0.015em] select-none">
                             Stories on HeartOut
                         </span>
                     </div>
@@ -308,7 +308,7 @@ export default function AuthDemoStoryCards({ showHeader = true }) {
                             className="group cursor-pointer"
                         >
                             {/* Tactile Card Architecture with Multi-Layered Drop Shadow */}
-                            <div className="w-full h-full rounded-[16px] bg-gradient-to-b from-[#FFFFFF] to-[#FAF6F1] dark:from-[#201D1A] dark:to-[#191715] p-2.5 sm:p-3 border border-[#E5DACB] dark:border-[#38332D] ring-1 ring-stone-900/[0.03] dark:ring-white/[0.05] shadow-[0_2px_10px_-2px_rgba(28,25,23,0.05),0_1px_3px_rgba(28,25,23,0.03),inset_0_1px_0_rgba(255,255,255,0.95)] dark:shadow-[0_3px_12px_-2px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)] group-hover:shadow-[0_6px_18px_-3px_rgba(28,25,23,0.09),0_2px_6px_-1px_rgba(200,88,40,0.06),inset_0_1px_0_rgba(255,255,255,1)] group-hover:border-orange-300/80 dark:group-hover:border-orange-800/60 group-hover:-translate-y-0.5 transition-all duration-200 flex items-start gap-2.5 sm:gap-3">
+                            <div className="w-full h-full rounded-[16px] bg-gradient-to-b from-[#FAF7F2] to-[#F5EFE6] dark:from-[#201D1A] dark:to-[#191715] p-2.5 sm:p-3 border border-[#EADDCF] dark:border-[#38332D] ring-1 ring-stone-900/[0.03] dark:ring-white/[0.05] shadow-[0_2px_10px_-2px_rgba(28,25,23,0.05),0_1px_3px_rgba(28,25,23,0.03),inset_0_1px_0_rgba(255,255,255,0.7)] dark:shadow-[0_3px_12px_-2px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)] group-hover:shadow-[0_6px_18px_-3px_rgba(28,25,23,0.09),0_2px_6px_-1px_rgba(200,88,40,0.06),inset_0_1px_0_rgba(255,255,255,0.9)] group-hover:border-orange-300/80 dark:group-hover:border-orange-800/60 group-hover:-translate-y-0.5 transition-all duration-200 flex items-start gap-2.5 sm:gap-3">
                                 
                                 {/* In-App Profile Picture: First letter of author's name with avatarColors */}
                                 {(() => {
@@ -384,6 +384,32 @@ export default function AuthDemoStoryCards({ showHeader = true }) {
                     );
                 })}
             </div>
+
+            {/* Optional Standalone Telemetry Footer */}
+            {showFooter && (
+                <div className="mt-2 pt-2 border-t border-[#E6D9CA]/80 dark:border-stone-800/80 flex items-center justify-between text-[10.5px] text-stone-500 dark:text-stone-400">
+                    <div className="flex items-center gap-2">
+                        {/* Overlapping Alphabet User Profiles Avatar Stack */}
+                        <div className="flex items-center -space-x-1.5 shrink-0" aria-label="Community members">
+                            <div className="relative z-30 w-5 h-5 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 text-white font-heading font-extrabold text-[9px] flex items-center justify-center ring-2 ring-[#FAF7F2] dark:ring-[#171513] shadow-xs select-none">
+                                <span className="leading-none drop-shadow-[0_0.5px_1px_rgba(0,0,0,0.3)]">S</span>
+                            </div>
+                            <div className="relative z-20 w-5 h-5 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-heading font-extrabold text-[9px] flex items-center justify-center ring-2 ring-[#FAF7F2] dark:ring-[#171513] shadow-xs select-none">
+                                <span className="leading-none drop-shadow-[0_0.5px_1px_rgba(0,0,0,0.3)]">G</span>
+                            </div>
+                            <div className="relative z-10 w-5 h-5 rounded-full bg-gradient-to-br from-rose-500 to-pink-600 text-white font-heading font-extrabold text-[9px] flex items-center justify-center ring-2 ring-[#FAF7F2] dark:ring-[#171513] shadow-xs select-none">
+                                <span className="leading-none drop-shadow-[0_0.5px_1px_rgba(0,0,0,0.3)]">K</span>
+                            </div>
+                        </div>
+                        <span className="text-[10.5px] sm:text-[11px] font-medium text-stone-600 dark:text-stone-300">
+                            14,000+ reflections shared
+                        </span>
+                    </div>
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#FCEEE8] dark:bg-orange-950/40 text-[9.5px] font-bold uppercase tracking-wider text-[#C85828] dark:text-[#E06E3E] border border-orange-200/80 dark:border-orange-900/60 shadow-xs">
+                        Safe Sanctuary
+                    </span>
+                </div>
+            )}
         </div>
     );
 }

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=DM+Serif+Display&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&family=Satisfy&family=Syne:wght@700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -15,6 +15,35 @@
 
 .font-editorial {
   font-family: 'DM Serif Display', serif;
+}
+
+/* Unique Brand Display Fonts (Distinct from the rest of the application) */
+.font-signature {
+  font-family: 'Satisfy', cursive;
+}
+
+.font-instrument {
+  font-family: 'Instrument Serif', serif;
+}
+
+.font-syne {
+  font-family: 'Syne', sans-serif;
+}
+
+.font-cinzel {
+  font-family: 'Cinzel Decorative', serif;
+}
+
+.font-stories {
+  font-family: 'Fraunces', 'DM Serif Display', Georgia, serif;
+  font-variation-settings: 'opsz' 36, 'SOFT' 80;
+}
+
+.heartout-auth-bg {
+  background:
+    radial-gradient(circle at 100% 0%, #FED3A2 0%, transparent 28%),
+    radial-gradient(circle at 0% 100%, #FFD8B0 0%, transparent 30%),
+    #FBEFE5;
 }
 
 :root {
