@@ -35,8 +35,14 @@ export function WebSocketProvider({ children, userId }) {
         if (!userId || wsRef.current?.readyState === WebSocket.OPEN) return;
 
         try {
-            // Connect without token — server can use session cookies or userId
-            const wsUrl = `${getWsUrl()}/ws?user_id=${encodeURIComponent(userId)}`;
+            // Connect with userId and auth token if available
+            const token = typeof localStorage !== 'undefined'
+                ? (localStorage.getItem('access_token') || localStorage.getItem('token'))
+                : null;
+            const params = new URLSearchParams();
+            if (userId) params.append('user_id', userId);
+            if (token) params.append('token', token);
+            const wsUrl = `${getWsUrl()}/ws?${params.toString()}`;
             wsRef.current = new WebSocket(wsUrl);
 
             wsRef.current.onopen = () => {

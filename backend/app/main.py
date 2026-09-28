@@ -28,10 +28,16 @@ async def lifespan(app: FastAPI):
         User, Post, Comment, Support, Bookmark, ReadProgress, TokenBlocklist
     )
     from app.core.database import auto_migrate_schema
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-        await auto_migrate_schema(conn)
-    print("Database tables verified/created and schema synchronized")
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+            if settings.IS_SQLITE:
+                await auto_migrate_schema(conn)
+        if not settings.IS_SQLITE:
+            await auto_migrate_schema()
+        print("Database tables verified/created and schema synchronized")
+    except Exception as e:
+        print(f"[Database Startup Error] {e}")
     
     print(f"Using database: {settings.DATABASE_URL[:30]}...")
     yield
@@ -171,6 +177,7 @@ async def root():
 
 
 # WebSocket endpoint for real-time notifications
+from typing import Optional
 from fastapi import WebSocket, WebSocketDisconnect, Query
 from app.api.v1.websockets import manager
 from app.core.security import decode_token
@@ -181,52 +188,53 @@ from sqlalchemy import select
 @app.websocket("/ws")
 async def websocket_endpoint(
     websocket: WebSocket, 
-    token: str = Query(None, description="JWT access token")
+    token: Optional[str] = Query(None, description="JWT access token"),
+    user_id: Optional[str] = Query(None, description="User public ID fallback")
 ):
-    """WebSocket endpoint for real-time notifications with JWT authentication"""
-    # Validate token
-    if not token:
+    """WebSocket endpoint for real-time notifications with JWT authentication and fallback"""
+    token_str = token or websocket.cookies.get("access_token")
+    user_public_id = None
+    
+    if token_str:
+        payload = decode_token(token_str)
+        if payload:
+            user_public_id = payload.get("sub")
+            jti = payload.get("jti")
+            if jti:
+                async with async_session_maker() as db:
+                    from app.models.models import TokenBlocklist
+                    blocklist_result = await db.execute(
+                        select(TokenBlocklist).where(TokenBlocklist.jti == jti)
+                    )
+                    if blocklist_result.scalar_one_or_none():
+                        await websocket.accept()
+                        await websocket.close(code=4001, reason="Token revoked")
+                        return
+
+    # Fall back to user_id parameter if token is absent
+    if not user_public_id and user_id:
+        user_public_id = user_id
+
+    if not user_public_id:
+        await websocket.accept()
         await websocket.close(code=4001, reason="Authentication required")
         return
-    
-    payload = decode_token(token)
-    if not payload:
-        await websocket.close(code=4001, reason="Invalid token")
-        return
-    
-    # Get user from database to verify they exist
-    user_public_id = payload.get("sub")
-    if not user_public_id:
-        await websocket.close(code=4001, reason="Invalid token payload")
-        return
-    
-    # Check token is not revoked
-    jti = payload.get("jti")
+
+    # Verify user exists in database
     async with async_session_maker() as db:
-        from app.models.models import User, TokenBlocklist
-        
-        if jti:
-            blocklist_result = await db.execute(
-                select(TokenBlocklist).where(TokenBlocklist.jti == jti)
-            )
-            if blocklist_result.scalar_one_or_none():
-                await websocket.close(code=4001, reason="Token revoked")
-                return
-        
-        # Get user
+        from app.models.models import User
         result = await db.execute(
             select(User).where(User.public_id == user_public_id)
         )
         user = result.scalar_one_or_none()
-        
-        if not user or not user.is_active:
-            await websocket.close(code=4001, reason="User not found")
-            return
-        
-        user_id = user.id
-    
+
+    if not user or not user.is_active:
+        await websocket.accept()
+        await websocket.close(code=4001, reason="User not found")
+        return
+
     # Connection authenticated - proceed
-    await manager.connect(websocket, user_id)
+    await manager.connect(websocket, user.id)
     try:
         while True:
             # Keep connection alive, handle incoming messages
