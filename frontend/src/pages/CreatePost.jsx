@@ -19,7 +19,7 @@ import {
     Feather
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { getApiUrl } from '../config/api';
+import { getApiUrl, apiFetch } from '../config/api';
 import { AuthContext } from '../context/AuthContext';
 import StoryTypeSelector, { storyTypes } from '../components/StoryTypeSelector';
 import AnonymousToggle from '../components/AnonymousToggle';
@@ -115,9 +115,7 @@ export default function CreatePost() {
 
     const loadRemoteDraft = async (id) => {
         try {
-            const response = await fetch(getApiUrl(`/api/posts/${id}`), {
-                credentials: 'include',
-            });
+            const response = await apiFetch(`/api/posts/${id}`);
             if (response.ok) {
                 const data = await response.json();
                 const story = data.story;
@@ -232,17 +230,11 @@ export default function CreatePost() {
 
         setSubmitting(true);
         try {
-            const url = draftId
-                ? getApiUrl(`/api/posts/${draftId}`)
-                : getApiUrl('/api/posts');
+            const endpoint = draftId ? `/api/posts/${draftId}` : '/api/posts';
             const method = draftId ? 'PUT' : 'POST';
 
-            const response = await fetch(url, {
+            const response = await apiFetch(endpoint, {
                 method,
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 body: JSON.stringify({
                     title: formData.title.trim(),
                     content: formData.content.trim(),

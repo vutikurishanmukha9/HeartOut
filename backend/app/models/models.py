@@ -134,7 +134,10 @@ class User(Base):
             'bio': self.bio,
             'age_range': self.age_range,
             'preferred_anonymity': self.preferred_anonymity,
-            'is_featured_author': self.is_featured_author
+            'is_featured_author': self.is_featured_author,
+            'author_bio': self.author_bio,
+            'website_url': self.website_url,
+            'social_links': self.social_links or {},
         }
         
         if include_sensitive:
@@ -142,9 +145,6 @@ class User(Base):
                 'email': self.email,
                 'is_verified': self.is_verified,
                 'last_login': self.last_login.isoformat() if self.last_login else None,
-                'author_bio': self.author_bio,
-                'website_url': self.website_url,
-                'social_links': self.social_links or {},
             })
         
         return data
@@ -245,7 +245,12 @@ class Post(Base):
             data['author'] = {
                 'id': self.author.public_id,
                 'username': self.author.username,
-                'display_name': self.author.display_name
+                'display_name': self.author.display_name,
+                'bio': self.author.bio,
+                'author_bio': self.author.author_bio,
+                'website_url': self.author.website_url,
+                'social_links': self.author.social_links or {},
+                'is_featured_author': self.author.is_featured_author,
             }
         
         return data

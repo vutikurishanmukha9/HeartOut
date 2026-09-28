@@ -35,6 +35,7 @@ router = APIRouter()
 # ========== STORY CRUD ==========
 
 @router.post("", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED, include_in_schema=False)
 @limiter.limit(settings.RATE_LIMIT_POSTS)
 async def create_story(
     request: Request,
@@ -60,6 +61,7 @@ async def create_story(
 
 
 @router.get("")
+@router.get("/", include_in_schema=False)
 async def get_stories(
     story_type: Optional[str] = None,
     page: int = Query(1, ge=1),
@@ -340,13 +342,7 @@ async def get_user_stories(
     
     return {
         "stories": [s.to_dict() for s in stories],
-        "author": {
-            "id": user.public_id,
-            "username": user.username,
-            "display_name": user.display_name,
-            "author_bio": user.author_bio,
-            "is_featured_author": user.is_featured_author
-        },
+        "author": user.to_dict(),
         "total": total,
         "page": page,
         "per_page": per_page,
@@ -386,25 +382,19 @@ async def get_story(
 @router.put("/{story_id}")
 async def update_story(
     story_id: str,
-    post_data: PostCreate,
+    post_data: PostUpdate,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """Update a story with blind token validation (only by author)"""
     story = await get_story_or_404(story_id, db, include_author=False)
     
+    update_data = post_data.model_dump(exclude_unset=True)
     updated_story = await StoryService.update_story(
         db=db,
         story=story,
         user=current_user,
-        data={
-            "title": post_data.title,
-            "content": post_data.content,
-            "story_type": post_data.story_type,
-            "is_anonymous": post_data.is_anonymous,
-            "tags": post_data.tags,
-            "status": post_data.status
-        }
+        data=update_data
     )
     
     if not updated_story:

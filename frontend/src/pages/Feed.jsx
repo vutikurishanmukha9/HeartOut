@@ -14,7 +14,7 @@ import {
 import StoryCard from '../components/PostCard';
 import { storyTypes } from '../components/StoryTypeSelector';
 import { FeedSEO } from '../components/SEO';
-import { getApiUrl } from '../config/api';
+import { getApiUrl, apiFetch } from '../config/api';
 import haptic from '../utils/haptics';
 
 export default function Feed() {
@@ -45,7 +45,7 @@ export default function Feed() {
                 params.append('story_type', selectedCategory);
             }
 
-            const response = await fetch(getApiUrl(`/api/posts?${params}`));
+            const response = await apiFetch(`/api/posts?${params}`);
             const data = await response.json();
 
             if (response.ok && data.stories) {

@@ -20,12 +20,12 @@ import StoryCard from '../components/PostCard';
 import { storyTypes } from '../components/StoryTypeSelector';
 import StoryConstellation from '../components/StoryConstellation';
 import { ProfileSEO } from '../components/SEO';
-import { getApiUrl } from '../config/api';
+import { getApiUrl, apiFetch } from '../config/api';
 
 export default function Profile() {
     const { userId } = useParams();
     const navigate = useNavigate();
-    const { user: currentUser } = useContext(AuthContext);
+    const { user: currentUser, updateProfile: authUpdateProfile, setUser: setAuthUser } = useContext(AuthContext);
 
     // Profile & Story states
     const [profile, setProfile] = useState(null);
@@ -51,12 +51,13 @@ export default function Profile() {
 
     const fetchOwnProfile = useCallback(async () => {
         try {
-            const response = await fetch(getApiUrl('/api/auth/profile'), {
-                credentials: 'include',
-            });
+            const response = await apiFetch('/api/auth/profile');
             if (response.ok) {
                 const data = await response.json();
                 setProfile(data.user);
+                if (setAuthUser) {
+                    setAuthUser(data.user);
+                }
                 setFormData({
                     display_name: data.user?.display_name || '',
                     bio: data.user?.bio || '',
@@ -70,11 +71,11 @@ export default function Profile() {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [setAuthUser]);
 
     const fetchUserProfile = useCallback(async () => {
         try {
-            const response = await fetch(getApiUrl(`/api/posts/user/${userId}/stories`));
+            const response = await apiFetch(`/api/posts/user/${userId}/stories`);
             if (response.ok) {
                 const data = await response.json();
                 setProfile(data.author);
@@ -97,9 +98,7 @@ export default function Profile() {
                 return;
             }
 
-            const response = await fetch(getApiUrl(`/api/posts/user/${targetUserId}/stories`), {
-                credentials: 'include',
-            });
+            const response = await apiFetch(`/api/posts/user/${targetUserId}/stories`);
             if (response.ok) {
                 const data = await response.json();
                 setStories(data.stories || []);
@@ -126,22 +125,46 @@ export default function Profile() {
         setSaving(true);
 
         try {
-            const response = await fetch(getApiUrl('/api/auth/profile'), {
-                method: 'PUT',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            });
+            // Trim inputs and convert empty strings to null for clean database persistence
+            const sanitizedData = {
+                display_name: formData.display_name?.trim() || null,
+                bio: formData.bio?.trim() || null,
+                author_bio: formData.author_bio?.trim() || null,
+                website_url: formData.website_url?.trim() || null,
+                social_links: formData.social_links || {}
+            };
 
-            if (response.ok) {
-                const data = await response.json();
-                setProfile(data.user);
+            const result = authUpdateProfile 
+                ? await authUpdateProfile(sanitizedData)
+                : await (async () => {
+                    const response = await apiFetch('/api/auth/profile', {
+                        method: 'PUT',
+                        body: JSON.stringify(sanitizedData)
+                    });
+                    const data = await response.json().catch(() => ({}));
+                    if (response.ok) {
+                        return { success: true, user: data.user };
+                    }
+                    const errorMsg = data.error || data.detail || 'Failed to update profile';
+                    return { success: false, error: typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg) };
+                })();
+
+            if (result.success && result.user) {
+                setProfile(result.user);
+                if (setAuthUser) {
+                    setAuthUser(result.user);
+                }
+                setFormData({
+                    display_name: result.user?.display_name || '',
+                    bio: result.user?.bio || '',
+                    author_bio: result.user?.author_bio || '',
+                    website_url: result.user?.website_url || '',
+                    social_links: result.user?.social_links || {}
+                });
                 setEditing(false);
                 toast.success('Sanctuary presence updated');
             } else {
-                toast.error('Failed to update profile');
+                toast.error(result.error || 'Failed to update profile');
             }
         } catch (error) {
             console.error('Failed to update profile:', error);
@@ -254,11 +277,17 @@ export default function Profile() {
                                     /* Inline Edit Form */
                                     <form onSubmit={handleUpdateProfile} className="space-y-4">
                                         <div>
-                                            <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
-                                                Display Name
-                                            </label>
+                                            <div className="flex items-center justify-between mb-1">
+                                                <label className="block text-xs font-medium text-stone-700 dark:text-stone-300">
+                                                    Display Name
+                                                </label>
+                                                <span className="text-[10px] text-stone-400 font-mono">
+                                                    {(formData.display_name || '').length}/100
+                                                </span>
+                                            </div>
                                             <input
                                                 type="text"
+                                                maxLength={100}
                                                 value={formData.display_name}
                                                 onChange={(e) => setFormData({ ...formData, display_name: e.target.value })}
                                                 placeholder="Your public pen name"
@@ -267,10 +296,16 @@ export default function Profile() {
                                         </div>
 
                                         <div>
-                                            <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
-                                                Short Reflection Bio
-                                            </label>
+                                            <div className="flex items-center justify-between mb-1">
+                                                <label className="block text-xs font-medium text-stone-700 dark:text-stone-300">
+                                                    Short Reflection Bio
+                                                </label>
+                                                <span className="text-[10px] text-stone-400 font-mono">
+                                                    {(formData.bio || '').length}/1000
+                                                </span>
+                                            </div>
                                             <textarea
+                                                maxLength={1000}
                                                 value={formData.bio}
                                                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                                                 placeholder="A gentle sentence on who you are..."
@@ -280,10 +315,16 @@ export default function Profile() {
                                         </div>
 
                                         <div>
-                                            <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
-                                                About the Author
-                                            </label>
+                                            <div className="flex items-center justify-between mb-1">
+                                                <label className="block text-xs font-medium text-stone-700 dark:text-stone-300">
+                                                    About the Author
+                                                </label>
+                                                <span className="text-[10px] text-stone-400 font-mono">
+                                                    {(formData.author_bio || '').length}/5000
+                                                </span>
+                                            </div>
                                             <textarea
+                                                maxLength={5000}
                                                 value={formData.author_bio}
                                                 onChange={(e) => setFormData({ ...formData, author_bio: e.target.value })}
                                                 placeholder="Write something extended about your reflections, background, or spirit."
@@ -293,14 +334,20 @@ export default function Profile() {
                                         </div>
 
                                         <div>
-                                            <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
-                                                Personal Website
-                                            </label>
+                                            <div className="flex items-center justify-between mb-1">
+                                                <label className="block text-xs font-medium text-stone-700 dark:text-stone-300">
+                                                    Personal Website
+                                                </label>
+                                                <span className="text-[10px] text-stone-400 font-mono">
+                                                    {(formData.website_url || '').length}/200
+                                                </span>
+                                            </div>
                                             <input
-                                                type="url"
+                                                type="text"
+                                                maxLength={200}
                                                 value={formData.website_url}
                                                 onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
-                                                placeholder="https://yoursite.com"
+                                                placeholder="https://yoursite.com or yoursite.com"
                                                 className="w-full px-4 py-2 text-sm rounded-xl border border-[#EADDCF] dark:border-[#2C2723] bg-stone-50/70 dark:bg-[#121110] text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-[#C85828] focus:ring-1 focus:ring-[#C85828]/30"
                                             />
                                         </div>
@@ -371,7 +418,9 @@ export default function Profile() {
 
                                             {profile?.website_url && (
                                                 <a
-                                                    href={profile.website_url}
+                                                    href={profile.website_url.startsWith('http://') || profile.website_url.startsWith('https://') 
+                                                        ? profile.website_url 
+                                                        : `https://${profile.website_url}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="inline-flex items-center gap-1.5 hover:text-[#C85828] transition-colors"

@@ -2,7 +2,7 @@
 Pydantic v2 Schemas for Posts/Stories
 Converted from Marshmallow schemas
 """
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 import re
@@ -22,6 +22,14 @@ class PostCreate(BaseModel):
     story_type: str = Field(default='other')
     tags: List[str] = Field(default_factory=list, max_length=10)
     status: str = Field(default='draft')
+    
+    @field_validator('title')
+    @classmethod
+    def validate_title(cls, v: str) -> str:
+        v = v.strip()
+        if len(v) < 5:
+            raise ValueError('Title must be at least 5 characters')
+        return v
     
     @field_validator('story_type')
     @classmethod
@@ -62,6 +70,25 @@ class PostUpdate(BaseModel):
     def validate_story_type(cls, v: Optional[str]) -> Optional[str]:
         if v is not None and v not in VALID_STORY_TYPES:
             raise ValueError(f'Invalid story type. Must be one of: {VALID_STORY_TYPES}')
+        return v
+    
+    @field_validator('status')
+    @classmethod
+    def validate_status(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None and v not in VALID_STATUSES:
+            raise ValueError(f'Invalid status. Must be one of: {VALID_STATUSES}')
+        return v
+
+    @field_validator('tags')
+    @classmethod
+    def validate_tags(cls, v: Optional[List[str]]) -> Optional[List[str]]:
+        if v is None:
+            return v
+        for tag in v:
+            if len(tag) < 1 or len(tag) > 30:
+                raise ValueError('Each tag must be between 1 and 30 characters')
+            if not re.match(r'^[a-zA-Z0-9_-]+$', tag):
+                raise ValueError(f'Tag "{tag}" contains invalid characters. Use only letters, numbers, underscores, and hyphens.')
         return v
 
 

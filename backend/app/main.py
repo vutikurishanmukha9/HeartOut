@@ -27,9 +27,11 @@ async def lifespan(app: FastAPI):
     from app.models.models import (
         User, Post, Comment, Support, Bookmark, ReadProgress, TokenBlocklist
     )
+    from app.core.database import auto_migrate_schema
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    print(f"Database tables verified/created")
+        await auto_migrate_schema(conn)
+    print("Database tables verified/created and schema synchronized")
     
     print(f"Using database: {settings.DATABASE_URL[:30]}...")
     yield
@@ -115,7 +117,12 @@ async def add_security_headers(request: Request, call_next):
         origin = request.headers.get("origin")
         if origin:
             allowed_origins = set(settings.CORS_ORIGINS) | {"http://test"}
-            if origin not in allowed_origins:
+            is_local_dev = settings.DEBUG and (
+                origin.startswith("http://localhost:") or
+                origin.startswith("http://127.0.0.1:") or
+                origin in ("http://localhost", "http://127.0.0.1")
+            )
+            if origin not in allowed_origins and not is_local_dev:
                 return JSONResponse(
                     status_code=403,
                     content={"error": "Cross-origin request blocked by security policy"}

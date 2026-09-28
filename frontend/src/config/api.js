@@ -7,27 +7,35 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 /**
- * Get full API URL for a given endpoint
- * @param {string} endpoint - API endpoint starting with /api
+ * Get full API URL for a given endpoint, ensuring standard /api prefix
+ * @param {string} endpoint - API endpoint
  * @returns {string} Full URL
  */
 export function getApiUrl(endpoint) {
-    return `${API_BASE_URL}${endpoint}`;
+    if (!endpoint) return API_BASE_URL;
+    const cleanEndpoint = endpoint.startsWith('/api') 
+        ? endpoint 
+        : `/api${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+    return `${API_BASE_URL}${cleanEndpoint}`;
 }
 
 /**
- * Wrapper for fetch with API base URL
- * @param {string} endpoint - API endpoint starting with /api
+ * Wrapper for fetch with API base URL and automatic auth token attachment
+ * @param {string} endpoint - API endpoint
  * @param {RequestInit} options - Fetch options
  * @returns {Promise<Response>}
  */
 export async function apiFetch(endpoint, options = {}) {
     const url = getApiUrl(endpoint);
+    const token = typeof localStorage !== 'undefined' 
+        ? (localStorage.getItem('access_token') || localStorage.getItem('token')) 
+        : null;
 
-    // Add default headers including anti-CSRF identifier
+    // Add default headers including anti-CSRF identifier and Bearer token if available
     const headers = {
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
         ...options.headers,
     };
 

@@ -73,6 +73,53 @@ class ProfileUpdate(BaseModel):
     website_url: Optional[str] = Field(None, max_length=200)
     social_links: Optional[Dict[str, str]] = None
     
+    @field_validator('display_name')
+    @classmethod
+    def validate_display_name(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            v = v.strip()
+            if not v:
+                return None
+            if len(v) > 100:
+                raise ValueError('Display name must be 100 characters or fewer')
+        return v
+
+    @field_validator('bio')
+    @classmethod
+    def validate_bio(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            v = v.strip()
+            if not v:
+                return None
+            if len(v) > 1000:
+                raise ValueError('Bio must be 1000 characters or fewer')
+        return v
+
+    @field_validator('author_bio')
+    @classmethod
+    def validate_author_bio(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            v = v.strip()
+            if not v:
+                return None
+            if len(v) > 5000:
+                raise ValueError('Author bio must be 5000 characters or fewer')
+        return v
+
+    @field_validator('website_url')
+    @classmethod
+    def validate_website_url(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return None
+        v = v.strip()
+        if not v:
+            return None
+        if not (v.startswith('http://') or v.startswith('https://')):
+            v = 'https://' + v
+        if len(v) > 200:
+            raise ValueError('Website URL must be 200 characters or fewer')
+        return v
+
     @field_validator('age_range')
     @classmethod
     def validate_age_range(cls, v: Optional[str]) -> Optional[str]:

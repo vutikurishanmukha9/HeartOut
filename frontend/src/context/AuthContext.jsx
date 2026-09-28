@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
-import { getApiUrl } from '../config/api';
+import { apiFetch } from '../config/api';
 
 export const AuthContext = createContext(null);
 
@@ -19,23 +19,23 @@ export function AuthProvider({ children }) {
 
   const fetchProfile = async () => {
     try {
-      const response = await fetch(getApiUrl('/api/auth/profile'), {
-        credentials: 'include',
-      });
+      const response = await apiFetch('/api/auth/profile');
 
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
         localStorage.setItem('has_session', 'true');
       } else if (response.status === 401) {
-        // Token expired: attempt refresh via cookie
+        // Token expired: attempt refresh
         const refreshed = await refreshAccessToken();
         if (!refreshed) {
           localStorage.removeItem('has_session');
+          localStorage.removeItem('access_token');
           setUser(null);
         }
       } else {
         localStorage.removeItem('has_session');
+        localStorage.removeItem('access_token');
         setUser(null);
       }
     } catch (error) {
@@ -49,20 +49,21 @@ export function AuthProvider({ children }) {
 
   const refreshAccessToken = useCallback(async () => {
     try {
-      const response = await fetch(getApiUrl('/api/auth/refresh'), {
+      const token = localStorage.getItem('access_token');
+      const response = await apiFetch('/api/auth/refresh', {
         method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh_token: token || undefined })
       });
 
       if (response.ok) {
-        // New access_token cookie is set by the server automatically
-        const profileRes = await fetch(getApiUrl('/api/auth/profile'), {
-          credentials: 'include',
-        });
+        const data = await response.json().catch(() => ({}));
+        if (data.access_token) {
+          localStorage.setItem('access_token', data.access_token);
+        }
+        const profileRes = await apiFetch('/api/auth/profile');
         if (profileRes.ok) {
-          const data = await profileRes.json();
-          setUser(data.user);
+          const profileData = await profileRes.json();
+          setUser(profileData.user);
           localStorage.setItem('has_session', 'true');
           return true;
         }
@@ -74,46 +75,48 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    const response = await fetch(getApiUrl('/api/auth/login'), {
+    const response = await apiFetch('/api/auth/login', {
       method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
 
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem('has_session', 'true');
+      if (data.access_token) {
+        localStorage.setItem('access_token', data.access_token);
+      }
       setUser(data.user);
       return { success: true };
     } else {
-      const errorData = await response.json();
+      const errorData = await response.json().catch(() => ({}));
       let errorMessage = errorData.error || errorData.detail;
       if (Array.isArray(errorMessage)) {
-        errorMessage = errorMessage.map(e => e.msg).join(', ');
+        errorMessage = errorMessage.map(e => e.msg || e.detail || JSON.stringify(e)).join(', ');
       }
       return { success: false, error: errorMessage || 'Login failed' };
     }
   };
 
   const register = async (userData) => {
-    const response = await fetch(getApiUrl('/api/auth/register'), {
+    const response = await apiFetch('/api/auth/register', {
       method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
     });
 
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem('has_session', 'true');
+      if (data.access_token) {
+        localStorage.setItem('access_token', data.access_token);
+      }
       setUser(data.user);
       return { success: true };
     } else {
-      const errorData = await response.json();
+      const errorData = await response.json().catch(() => ({}));
       let errorMessage = errorData.error || errorData.detail;
       if (Array.isArray(errorMessage)) {
-        errorMessage = errorMessage.map(e => e.msg).join(', ');
+        errorMessage = errorMessage.map(e => e.msg || e.detail || JSON.stringify(e)).join(', ');
       }
       return { success: false, error: errorMessage || 'Registration failed' };
     }
@@ -121,16 +124,15 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await fetch(getApiUrl('/api/auth/logout'), {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' }
+      await apiFetch('/api/auth/logout', {
+        method: 'POST'
       });
     } catch (error) {
       // Cookies will still be cleared locally
     }
 
     localStorage.removeItem('has_session');
+    localStorage.removeItem('access_token');
     setUser(null);
   };
 
@@ -143,26 +145,35 @@ export function AuthProvider({ children }) {
   };
 
   const updateProfile = async (profileData) => {
-    const response = await fetch(getApiUrl('/api/auth/profile'), {
-      method: 'PUT',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(profileData)
-    });
+    try {
+      const response = await apiFetch('/api/auth/profile', {
+        method: 'PUT',
+        body: JSON.stringify(profileData)
+      });
 
-    if (response.ok) {
-      const data = await response.json();
-      setUser(data.user);
-      return { success: true };
-    } else {
-      const errorData = await response.json();
-      return { success: false, error: errorData.error || 'Update failed' };
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok) {
+        setUser(data.user);
+        return { success: true, user: data.user, message: data.message };
+      } else {
+        let errorMsg = data.error || data.detail;
+        if (Array.isArray(errorMsg)) {
+          errorMsg = errorMsg.map(e => e.msg || e.detail || JSON.stringify(e)).join(', ');
+        } else if (typeof errorMsg === 'object' && errorMsg !== null) {
+          errorMsg = errorMsg.error || errorMsg.message || JSON.stringify(errorMsg);
+        }
+        return { success: false, error: errorMsg || 'Failed to update profile' };
+      }
+    } catch (error) {
+      return { success: false, error: 'Network error. Could not update profile.' };
     }
   };
 
   return (
     <AuthContext.Provider value={{
       user,
+      setUser,
       loading,
       login,
       register,

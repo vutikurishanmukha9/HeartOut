@@ -19,7 +19,7 @@ import { storyTypes } from '../components/StoryTypeSelector';
 import ReactionButton from '../components/SupportButton';
 import { AuthContext } from '../context/AuthContext';
 import { sanitizeText } from '../utils/sanitize';
-import { getApiUrl } from '../config/api';
+import { getApiUrl, apiFetch } from '../config/api';
 import { formatFullDate, formatCommentDate } from '../utils/dateFormat';
 import { StorySEO } from '../components/SEO';
 import haptic from '../utils/haptics';
@@ -60,10 +60,8 @@ export default function PostDetail() {
         if (timeSpent < 3) return;
 
         try {
-            await fetch(getApiUrl(`/api/posts/${id}/read-progress`), {
+            await apiFetch(`/api/posts/${id}/read-progress`, {
                 method: 'POST',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     scroll_depth: maxScrollDepthRef.current,
                     time_spent: timeSpent
@@ -126,7 +124,7 @@ export default function PostDetail() {
 
     const fetchStory = async () => {
         try {
-            const response = await fetch(getApiUrl(`/api/posts/${id}`));
+            const response = await apiFetch(`/api/posts/${id}`);
             const data = await response.json();
             if (response.ok && data.story) {
                 setStory(data.story);
@@ -144,7 +142,7 @@ export default function PostDetail() {
 
     const fetchComments = async () => {
         try {
-            const response = await fetch(getApiUrl(`/api/posts/${id}/comments`));
+            const response = await apiFetch(`/api/posts/${id}/comments`);
             const data = await response.json();
             setComments(data.comments || []);
         } catch (error) {
@@ -154,9 +152,7 @@ export default function PostDetail() {
 
     const fetchUserReaction = async () => {
         try {
-            const response = await fetch(getApiUrl(`/api/posts/${id}/my-reaction`), {
-                credentials: 'include',
-            });
+            const response = await apiFetch(`/api/posts/${id}/my-reaction`);
             if (response.ok) {
                 const data = await response.json();
                 setUserReaction(data.reaction_type);
@@ -168,9 +164,7 @@ export default function PostDetail() {
 
     const fetchBookmarkStatus = async () => {
         try {
-            const response = await fetch(getApiUrl(`/api/posts/${id}/bookmark`), {
-                credentials: 'include',
-            });
+            const response = await apiFetch(`/api/posts/${id}/bookmark`);
             if (response.ok) {
                 const data = await response.json();
                 setIsBookmarked(data.is_bookmarked);
@@ -194,9 +188,8 @@ export default function PostDetail() {
         setBookmarkLoading(true);
 
         try {
-            const response = await fetch(getApiUrl(`/api/posts/${id}/bookmark`), {
+            const response = await apiFetch(`/api/posts/${id}/bookmark`, {
                 method: 'POST',
-                credentials: 'include',
             });
             if (response.ok) {
                 const data = await response.json();
@@ -243,12 +236,8 @@ export default function PostDetail() {
         setSupportCount(Math.max(0, prevCount + countDiff));
 
         try {
-            const response = await fetch(getApiUrl(`/api/posts/${id}/toggle-react`), {
+            const response = await apiFetch(`/api/posts/${id}/toggle-react`, {
                 method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 body: JSON.stringify({ support_type: type })
             });
 
@@ -278,12 +267,8 @@ export default function PostDetail() {
 
         setSubmittingComment(true);
         try {
-            const response = await fetch(getApiUrl(`/api/posts/${id}/comments`), {
+            const response = await apiFetch(`/api/posts/${id}/comments`, {
                 method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 body: JSON.stringify({
                     content: commentText.trim(),
                     is_anonymous: isAnonymousComment
@@ -344,9 +329,8 @@ export default function PostDetail() {
         haptic.heavy();
         setIsDeleting(true);
         try {
-            const response = await fetch(getApiUrl(`/api/posts/${id}`), {
+            const response = await apiFetch(`/api/posts/${id}`, {
                 method: 'DELETE',
-                credentials: 'include',
             });
 
             if (response.ok) {

@@ -12,7 +12,7 @@ import {
     PenSquare
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { getApiUrl } from '../config/api';
+import { getApiUrl, apiFetch } from '../config/api';
 import { formatRelativeDate } from '../utils/dateFormat';
 import { storyTypes } from '../components/StoryTypeSelector';
 
@@ -29,9 +29,7 @@ export default function Drafts() {
 
     const fetchDrafts = async () => {
         try {
-            const response = await fetch(getApiUrl('/api/posts/drafts'), {
-                credentials: 'include',
-            });
+            const response = await apiFetch('/api/posts/drafts');
 
             let serverDrafts = [];
             if (response.ok) {
@@ -84,9 +82,8 @@ export default function Drafts() {
                 setDrafts(prev => prev.filter(d => d.id !== id));
                 toast.success('Local draft discarded');
             } else {
-                const response = await fetch(getApiUrl(`/api/posts/${id}`), {
+                const response = await apiFetch(`/api/posts/${id}`, {
                     method: 'DELETE',
-                    credentials: 'include',
                 });
 
                 if (response.ok) {
