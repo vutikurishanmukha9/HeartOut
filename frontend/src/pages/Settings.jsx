@@ -20,11 +20,12 @@ import toast from 'react-hot-toast';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { getApiUrl } from '../config/api';
+import haptic from '../utils/haptics';
 
 export default function Settings() {
     const navigate = useNavigate();
     const { user, logout } = useContext(AuthContext);
-    const { theme, setTheme, THEMES } = useContext(ThemeContext);
+    const { theme, setTheme, THEMES, hapticFeedback, toggleHapticFeedback } = useContext(ThemeContext);
 
     // Password change state
     const [passwordData, setPasswordData] = useState({
@@ -263,6 +264,45 @@ export default function Settings() {
                                 </button>
                             );
                         })}
+                    </div>
+                </section>
+
+                {/* Section: Tactile Touch Feedback & Vibrations */}
+                <section className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-3xl p-6 sm:p-8 shadow-[0_4px_30px_rgba(200,140,90,0.06)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="text-left">
+                            <span className="text-[10px] font-semibold tracking-wider text-[#C85828] dark:text-amber-400 uppercase font-body block mb-1">
+                                Sensation
+                            </span>
+                            <h2 className="font-stories text-xl sm:text-2xl text-stone-900 dark:text-stone-100 font-normal">
+                                Touch Feedback & Vibrations
+                            </h2>
+                            <p className="font-body text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1 max-w-xl leading-relaxed">
+                                Experience physical micro-vibrations across every tap, toggle, bookmark, and reflection. Works natively on phones, trackpads, and touch devices.
+                            </p>
+                        </div>
+
+                        <div className="flex items-center gap-3 shrink-0">
+                            <button
+                                type="button"
+                                role="switch"
+                                aria-checked={hapticFeedback !== false}
+                                onClick={() => {
+                                    toggleHapticFeedback();
+                                    haptic.medium();
+                                    toast.success(hapticFeedback !== false ? 'Haptic vibrations paused' : 'Haptic touch vibrations activated');
+                                }}
+                                className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#C85828]/20 ${
+                                    hapticFeedback !== false ? 'bg-[#C85828]' : 'bg-stone-300 dark:bg-stone-700'
+                                }`}
+                            >
+                                <span
+                                    className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out ${
+                                        hapticFeedback !== false ? 'translate-x-6' : 'translate-x-1'
+                                    }`}
+                                />
+                            </button>
+                        </div>
                     </div>
                 </section>
 

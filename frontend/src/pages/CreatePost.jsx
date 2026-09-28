@@ -23,6 +23,7 @@ import { getApiUrl } from '../config/api';
 import { AuthContext } from '../context/AuthContext';
 import StoryTypeSelector, { storyTypes } from '../components/StoryTypeSelector';
 import AnonymousToggle from '../components/AnonymousToggle';
+import haptic from '../utils/haptics';
 
 const WRITING_GUIDANCE = {
     unsent_letter: {
@@ -145,6 +146,7 @@ export default function CreatePost() {
     };
 
     const handleDiscard = () => {
+        haptic.heavy();
         clearLocalDraft();
         setFormData({
             title: '',
@@ -252,11 +254,13 @@ export default function CreatePost() {
             });
 
             if (response.ok) {
+                haptic.success();
                 const data = await response.json();
                 clearLocalDraft();
                 toast.success(publishNow ? 'Your story is out in the sanctuary' : 'Draft safely saved');
                 navigate(publishNow ? `/feed/story/${data.story.id}` : '/feed/drafts');
             } else {
+                haptic.warning();
                 const errorData = await response.json().catch(() => ({}));
                 let errorMsg = 'Failed to submit story';
                 if (errorData.detail) {
@@ -279,6 +283,7 @@ export default function CreatePost() {
                 });
             }
         } catch (error) {
+            haptic.error();
             console.error('Error submitting story:', error);
             toast.error('Network connection error. Please try again.');
         } finally {
@@ -295,9 +300,11 @@ export default function CreatePost() {
             return;
         }
         if (formData.tags.length >= 5) {
+            haptic.warning();
             toast.error('You can add up to 5 tags');
             return;
         }
+        haptic.selection();
         setFormData(prev => ({
             ...prev,
             tags: [...prev.tags, clean]
@@ -306,6 +313,7 @@ export default function CreatePost() {
     };
 
     const removeTag = (tagToRemove) => {
+        haptic.light();
         setFormData(prev => ({
             ...prev,
             tags: prev.tags.filter(t => t !== tagToRemove)

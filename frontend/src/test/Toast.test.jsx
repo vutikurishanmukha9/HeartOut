@@ -1,12 +1,26 @@
 /**
  * Toast Component Tests
- * Comprehensive tests for toast notification component
+ * Comprehensive tests for toast notification component and Sanctuary Toast System
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import React from 'react';
+import { Toast, ToastProvider, useToast } from '../components/Toast.jsx';
+import haptic from '../utils/haptics.js';
 
-// Mock Toast component
+// Mock haptics
+vi.mock('../utils/haptics.js', () => ({
+  default: {
+    selection: vi.fn(),
+    light: vi.fn(),
+    medium: vi.fn(),
+    heavy: vi.fn(),
+    success: vi.fn(),
+    warning: vi.fn(),
+  },
+}));
+
+// Mock Toast component for legacy test compatibility
 const MockToast = ({
     message = 'Test message',
     type = 'info',
@@ -159,6 +173,74 @@ describe('Toast Component', () => {
             const longMessage = 'This is a very long message that contains important information about the operation that was performed';
             render(<MockToast message={longMessage} />);
             expect(screen.getByText(longMessage)).toBeInTheDocument();
+        });
+    });
+
+    describe('Sanctuary Real Toast System & Provider', () => {
+        beforeEach(() => {
+            vi.clearAllMocks();
+        });
+
+        it('renders real sanctuary Toast component with title and message', () => {
+            render(
+                <Toast
+                    message="Reflection safely preserved in sanctuary"
+                    title="Reflection Saved"
+                    type="success"
+                />
+            );
+
+            expect(screen.getByText('Reflection Saved')).toBeInTheDocument();
+            expect(screen.getByText('Reflection safely preserved in sanctuary')).toBeInTheDocument();
+            expect(screen.getByText('Confirmed')).toBeInTheDocument();
+            expect(screen.getByTestId('toast')).toHaveAttribute('data-type', 'success');
+        });
+
+        it('triggers haptic.light and calls onClose on real Toast dismiss button', () => {
+            const onClose = vi.fn();
+            render(
+                <Toast
+                    message="Temporary sanctuary note"
+                    type="info"
+                    onClose={onClose}
+                />
+            );
+
+            const closeButton = screen.getByTestId('toast-close');
+            fireEvent.click(closeButton);
+
+            expect(haptic.light).toHaveBeenCalledTimes(1);
+            expect(onClose).toHaveBeenCalledTimes(1);
+        });
+
+        it('dispatches notifications through useToast and ToastProvider with tactile haptics', () => {
+            function TestToastTrigger() {
+                const toast = useToast();
+                return (
+                    <div>
+                        <button type="button" onClick={() => toast.success('Published story!')}>
+                            Trigger Success
+                        </button>
+                        <button type="button" onClick={() => toast.error('Connection pause')}>
+                            Trigger Error
+                        </button>
+                    </div>
+                );
+            }
+
+            render(
+                <ToastProvider>
+                    <TestToastTrigger />
+                </ToastProvider>
+            );
+
+            fireEvent.click(screen.getByRole('button', { name: /Trigger Success/i }));
+            expect(haptic.success).toHaveBeenCalledTimes(1);
+            expect(screen.getByText('Published story!')).toBeInTheDocument();
+
+            fireEvent.click(screen.getByRole('button', { name: /Trigger Error/i }));
+            expect(haptic.warning).toHaveBeenCalledTimes(1);
+            expect(screen.getByText('Connection pause')).toBeInTheDocument();
         });
     });
 });

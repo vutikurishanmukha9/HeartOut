@@ -11,6 +11,7 @@ import SkipToContent from './components/Accessibility';
 import { WebSocketProvider } from './hooks/useWebSocket.jsx';
 import NotificationToast from './components/NotificationToast';
 import ScrollToTop from './components/ScrollToTop';
+import { initGlobalHaptics } from './utils/haptics';
 
 // Lazy load routes for better performance
 const AuthRoutes = lazy(() => import('./routes/AuthRoutes'));
@@ -45,6 +46,12 @@ function App() {
       document.documentElement.classList.remove('dark');
     }
   }, [theme.theme, theme.effectiveTheme]);
+
+  // Initialize global sensory haptic touch listener across all interactive elements
+  useEffect(() => {
+    const cleanup = initGlobalHaptics();
+    return cleanup;
+  }, []);
 
   // Show loading screen during initial load
   if (loading) {

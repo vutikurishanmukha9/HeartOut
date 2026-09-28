@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Home, PlusSquare, User, HeartHandshake, BookMarked } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
+import haptic from '../utils/haptics';
 
 /**
  * Mobile Bottom Navigation Bar
@@ -57,6 +58,7 @@ export default function MobileBottomNav() {
                                 <NavLink
                                     key={item.path}
                                     to={item.path}
+                                    onClick={() => haptic.medium()}
                                     className="relative -mt-6 group"
                                 >
                                     {/* Glow effect */}
@@ -74,6 +76,7 @@ export default function MobileBottomNav() {
                             <NavLink
                                 key={item.path}
                                 to={item.path}
+                                onClick={() => haptic.selection()}
                                 className={({ isActive }) => `
                                     relative flex flex-col items-center justify-center min-w-[60px] py-2 px-3
                                     transition-all duration-200 group

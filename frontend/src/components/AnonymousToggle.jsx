@@ -1,9 +1,17 @@
 import React from 'react';
 import { EyeOff, Eye, Shield, Users } from 'lucide-react';
+import haptic from '../utils/haptics';
 
 export default function AnonymousToggle({ isAnonymous, onChange, disabled = false }) {
     // Handle both prop names for compatibility
     const checked = isAnonymous;
+
+    const handleToggle = () => {
+        if (!disabled) {
+            haptic.medium();
+            onChange(!checked);
+        }
+    };
 
     return (
         <div
@@ -14,7 +22,7 @@ export default function AnonymousToggle({ isAnonymous, onChange, disabled = fals
                     : 'bg-[#FFFDF9] dark:bg-[#181614] border-[#EADDCF] dark:border-[#2C2723] hover:border-[#D4832D]/60'
                 }
             `}
-            onClick={() => !disabled && onChange(!checked)}
+            onClick={handleToggle}
         >
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">

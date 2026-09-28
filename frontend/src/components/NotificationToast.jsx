@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, MessageCircle, X, Sparkles, ThumbsUp, Lightbulb, HeartHandshake, Zap } from 'lucide-react';
 import { useWebSocket } from '../hooks/useWebSocket.jsx';
+import haptic from '../utils/haptics';
 
 // Reaction type icons
 const reactionIcons = {
@@ -33,6 +34,7 @@ function NotificationItem({ notification, onDismiss }) {
 
     // Auto-dismiss after 6 seconds
     useEffect(() => {
+        haptic.light();
         const timer = setTimeout(() => {
             handleDismiss();
         }, 6000);

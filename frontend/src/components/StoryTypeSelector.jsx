@@ -1,5 +1,6 @@
 import React from 'react';
 import { Trophy, Lightbulb, Mail, Heart, Sparkles, BookOpen, Check } from 'lucide-react';
+import haptic from '../utils/haptics';
 
 const storyTypes = [
     {
@@ -155,7 +156,10 @@ export default function StoryTypeSelector({ selected, onChange, variant = 'cards
                     <button
                         key={type.value}
                         type="button"
-                        onClick={() => onChange(type.value)}
+                        onClick={() => {
+                            haptic.selection();
+                            onChange(type.value);
+                        }}
                         className={`
                             group relative p-5 sm:p-6 rounded-2xl text-left flex flex-col justify-between h-full transition-all duration-300
                             ${isSelected

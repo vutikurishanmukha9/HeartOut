@@ -15,6 +15,7 @@ import StoryCard from '../components/PostCard';
 import { storyTypes } from '../components/StoryTypeSelector';
 import { FeedSEO } from '../components/SEO';
 import { getApiUrl } from '../config/api';
+import haptic from '../utils/haptics';
 
 export default function Feed() {
     const navigate = useNavigate();
@@ -158,7 +159,10 @@ export default function Feed() {
                                     <button
                                         key={option.value}
                                         type="button"
-                                        onClick={() => setSortBy(option.value)}
+                                        onClick={() => {
+                                            haptic.selection();
+                                            setSortBy(option.value);
+                                        }}
                                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${isActive
                                             ? 'bg-[#C85828] text-white shadow-sm'
                                             : 'bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:border-amber-400/50'
@@ -179,7 +183,10 @@ export default function Feed() {
 
                             <button
                                 type="button"
-                                onClick={() => setSelectedCategory('all')}
+                                onClick={() => {
+                                    haptic.selection();
+                                    setSelectedCategory('all');
+                                }}
                                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${selectedCategory === 'all'
                                     ? 'border-[#C85828] bg-amber-50/80 dark:bg-amber-950/30 text-[#C85828] dark:text-amber-400 border font-semibold'
                                     : 'bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-600 dark:text-stone-400 hover:border-amber-400/50'
@@ -196,7 +203,10 @@ export default function Feed() {
                                     <button
                                         key={type.value}
                                         type="button"
-                                        onClick={() => setSelectedCategory(type.value)}
+                                        onClick={() => {
+                                            haptic.selection();
+                                            setSelectedCategory(type.value);
+                                        }}
                                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${isSelected
                                             ? 'border-[#C85828] bg-amber-50/80 dark:bg-amber-950/30 text-[#C85828] dark:text-amber-400 border font-semibold'
                                             : 'bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-600 dark:text-stone-400 hover:border-amber-400/50'

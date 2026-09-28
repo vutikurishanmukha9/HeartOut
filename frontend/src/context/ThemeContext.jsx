@@ -36,6 +36,7 @@ const initialState = {
   reducedMotion: false,
   highContrast: false,
   colorBlindFriendly: false,
+  hapticFeedback: true,
   preferences: {
     accentColor: 'primary',
     borderRadius: 'medium',
@@ -51,6 +52,7 @@ const THEME_ACTIONS = {
   TOGGLE_REDUCED_MOTION: 'TOGGLE_REDUCED_MOTION',
   TOGGLE_HIGH_CONTRAST: 'TOGGLE_HIGH_CONTRAST',
   TOGGLE_COLOR_BLIND_FRIENDLY: 'TOGGLE_COLOR_BLIND_FRIENDLY',
+  TOGGLE_HAPTIC_FEEDBACK: 'TOGGLE_HAPTIC_FEEDBACK',
   UPDATE_PREFERENCES: 'UPDATE_PREFERENCES',
   RESET_PREFERENCES: 'RESET_PREFERENCES'
 }
@@ -102,6 +104,12 @@ const themeReducer = (state, action) => {
       return {
         ...state,
         colorBlindFriendly: !state.colorBlindFriendly
+      }
+
+    case THEME_ACTIONS.TOGGLE_HAPTIC_FEEDBACK:
+      return {
+        ...state,
+        hapticFeedback: !state.hapticFeedback
       }
 
     case THEME_ACTIONS.UPDATE_PREFERENCES:
@@ -163,6 +171,10 @@ export const ThemeProvider = ({ children }) => {
             dispatch({ type: THEME_ACTIONS.TOGGLE_COLOR_BLIND_FRIENDLY })
           }
 
+          if (typeof preferences.hapticFeedback === 'boolean' && !preferences.hapticFeedback) {
+            dispatch({ type: THEME_ACTIONS.TOGGLE_HAPTIC_FEEDBACK })
+          }
+
           // Set other preferences
           if (preferences.preferences) {
             dispatch({
@@ -220,6 +232,7 @@ export const ThemeProvider = ({ children }) => {
         reducedMotion: state.reducedMotion,
         highContrast: state.highContrast,
         colorBlindFriendly: state.colorBlindFriendly,
+        hapticFeedback: state.hapticFeedback,
         preferences: state.preferences
       }
 
@@ -303,6 +316,10 @@ export const ThemeProvider = ({ children }) => {
     dispatch({ type: THEME_ACTIONS.TOGGLE_COLOR_BLIND_FRIENDLY })
   }
 
+  const toggleHapticFeedback = () => {
+    dispatch({ type: THEME_ACTIONS.TOGGLE_HAPTIC_FEEDBACK })
+  }
+
   const updatePreferences = (preferences) => {
     dispatch({ type: THEME_ACTIONS.UPDATE_PREFERENCES, payload: preferences })
   }
@@ -340,6 +357,7 @@ export const ThemeProvider = ({ children }) => {
     toggleReducedMotion,
     toggleHighContrast,
     toggleColorBlindFriendly,
+    toggleHapticFeedback,
     updatePreferences,
     resetPreferences,
     isDark,

@@ -19,6 +19,7 @@ import {
   X
 } from 'lucide-react';
 import { useWebSocket } from '../hooks/useWebSocket.jsx';
+import haptic from '../utils/haptics';
 
 const Navbar = () => {
   const { user, logout, hasPermission } = useContext(AuthContext);
@@ -115,6 +116,7 @@ const Navbar = () => {
   }
 
   const handleLogout = async () => {
+    haptic.heavy();
     await logout();
     navigate('/auth/login');
   };
@@ -269,7 +271,10 @@ const Navbar = () => {
               {/* Sanctuary Notifications */}
               <div className="relative" ref={notificationRef}>
                 <button
-                  onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                  onClick={() => {
+                    haptic.selection();
+                    setIsNotificationOpen(!isNotificationOpen);
+                  }}
                   className="relative p-2 rounded-lg text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-100/70 dark:hover:bg-stone-800/50 transition-colors"
                   aria-label="Notifications"
                 >
@@ -325,7 +330,10 @@ const Navbar = () => {
 
               {/* Atmosphere Switcher (Theme Toggle) */}
               <button
-                onClick={() => setTheme(isDark ? THEMES.LIGHT : THEMES.DARK)}
+                onClick={() => {
+                  haptic.medium();
+                  setTheme(isDark ? THEMES.LIGHT : THEMES.DARK);
+                }}
                 className="p-2 rounded-lg text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-100/70 dark:hover:bg-stone-800/50 transition-colors"
                 aria-label="Toggle theme atmosphere"
                 title={isDark ? 'Switch to daylight atmosphere' : 'Switch to evening atmosphere'}
@@ -340,7 +348,10 @@ const Navbar = () => {
               {/* Author Sanctuary Disc & Dropdown Trigger */}
               <div className="relative" ref={profileMenuRef}>
                 <button
-                  onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                  onClick={() => {
+                    haptic.selection();
+                    setIsProfileMenuOpen(!isProfileMenuOpen);
+                  }}
                   className="flex items-center gap-1.5 p-0.5 rounded-full hover:ring-2 hover:ring-[#E0D3C3] dark:hover:ring-[#352D26] transition-all focus:outline-none"
                   aria-expanded={isProfileMenuOpen}
                   aria-haspopup="true"

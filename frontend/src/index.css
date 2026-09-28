@@ -1212,4 +1212,64 @@ body:has([data-testid="register-page"])::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
-}
+}
+
+/* ===== SANCTUARY ACCESSIBILITY SUPPORT STYLES ===== */
+
+/* Typography Scaling */
+html.font-size-small {
+  font-size: 14px;
+}
+html.font-size-medium {
+  font-size: 16px;
+}
+html.font-size-large {
+  font-size: 18px;
+}
+html.font-size-extra-large {
+  font-size: 20px;
+}
+
+/* High Contrast Mode (WCAG AAA) */
+html.high-contrast {
+  --tw-border-opacity: 1 !important;
+}
+html.high-contrast button,
+html.high-contrast a,
+html.high-contrast input,
+html.high-contrast textarea,
+html.high-contrast select {
+  outline: 2px solid currentColor !important;
+  outline-offset: 2px !important;
+}
+html.high-contrast .border,
+html.high-contrast .border-t,
+html.high-contrast .border-b,
+html.high-contrast .border-l,
+html.high-contrast .border-r {
+  border-width: 2px !important;
+  border-color: currentColor !important;
+}
+
+/* Reduced Motion Mode */
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Color Blind Vision Optimization */
+html.color-blind-friendly {
+  filter: contrast(108%) saturate(110%);
+}
+
+/* Dyslexia and Reading Clarity Guide */
+html.dyslexia-mode {
+  letter-spacing: 0.035em !important;
+  word-spacing: 0.08em !important;
+  line-height: 1.75 !important;
+}
+

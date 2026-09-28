@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import haptic from "../utils/haptics";
 
 export const reactions = [
   {
@@ -147,6 +148,7 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
 
   // Handle reaction submission seamlessly with PostDetail.jsx
   const handleReact = (key) => {
+    haptic.medium();
     setAnimating(key);
     setTimeout(() => setAnimating(null), 400);
     setOpen(false);

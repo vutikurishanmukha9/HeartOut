@@ -22,6 +22,7 @@ import { sanitizeText } from '../utils/sanitize';
 import { getApiUrl } from '../config/api';
 import { formatFullDate, formatCommentDate } from '../utils/dateFormat';
 import { StorySEO } from '../components/SEO';
+import haptic from '../utils/haptics';
 
 export default function PostDetail() {
     const { id } = useParams();
@@ -181,11 +182,13 @@ export default function PostDetail() {
 
     const handleToggleBookmark = async () => {
         if (!user) {
+            haptic.warning();
             toast.error('Please sign in to save stories');
             navigate('/auth/login');
             return;
         }
 
+        haptic.medium();
         const prevBookmarked = isBookmarked;
         setIsBookmarked(!prevBookmarked);
         setBookmarkLoading(true);
@@ -198,6 +201,9 @@ export default function PostDetail() {
             if (response.ok) {
                 const data = await response.json();
                 setIsBookmarked(data.is_bookmarked);
+                if (data.is_bookmarked) {
+                    haptic.success();
+                }
                 toast.success(data.is_bookmarked ? 'Saved to your sanctuary' : 'Removed from saved stories');
             } else {
                 setIsBookmarked(prevBookmarked);
@@ -285,15 +291,18 @@ export default function PostDetail() {
             });
 
             if (response.ok) {
+                haptic.success();
                 setCommentText('');
                 toast.success('Your response has been shared');
                 fetchComments();
                 fetchStory();
             } else {
+                haptic.warning();
                 const data = await response.json();
                 toast.error(data.error || 'Failed to submit response');
             }
         } catch (error) {
+            haptic.error();
             console.error('Failed to comment:', error);
             toast.error('Network error. Could not post response.');
         } finally {
@@ -302,6 +311,7 @@ export default function PostDetail() {
     };
 
     const handleShare = async () => {
+        haptic.selection();
         const shareData = {
             title: story?.title || 'HeartOut Story',
             text: `Read this reflection on HeartOut: ${story?.title || ''}`,
@@ -323,6 +333,7 @@ export default function PostDetail() {
     };
 
     const fallbackCopy = () => {
+        haptic.success();
         navigator.clipboard.writeText(window.location.href);
         setCopied(true);
         toast.success('Story link copied to clipboard');
@@ -330,6 +341,7 @@ export default function PostDetail() {
     };
 
     const handleDelete = async () => {
+        haptic.heavy();
         setIsDeleting(true);
         try {
             const response = await fetch(getApiUrl(`/api/posts/${id}`), {

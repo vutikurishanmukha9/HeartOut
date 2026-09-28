@@ -1,118 +1,214 @@
 import React from 'react';
 
 /**
- * HeartOutBackground
- * Organic decorative ambient background for HeartOut authentication pages.
- * Features:
- * - Base warm peach-cream canvas with soft corner radial gradients:
- *   radial-gradient(circle at 100% 0%, #FED3A2 0%, transparent 28%),
- *   radial-gradient(circle at 0% 100%, #FFD8B0 0%, transparent 30%),
- *   #FBEFE5
- * - Hand-crafted organic flower/blob petals with multi-layer radial & linear paint gradients
- * - Soft atmospheric ambient glow halos
- * - Decorative hand-drawn curved accent line
- * - Floating brand heart outline
+ * Sanctuary Architectural Background
+ * Designed from scratch in accordance with design-highlights-50 principles.
+ * Replaces generic gradient blobs with architectural precision:
+ * - Mathematical topographic resonance contours representing emotional landscapes
+ * - Sub-hairline structural coordinate grid with intersection registration crosshairs
+ * - Dual-layer radial ambient warmth tuned for literary focus
+ * - Handcrafted sanctuary compass rose and coordinate markers
  */
 export default function HeartOutBackground() {
-    return (
-        <div
-            className="pointer-events-none absolute inset-0 overflow-hidden select-none -z-10"
-            aria-hidden="true"
-        >
-            {/* Soft Ambient Glow Halos */}
-            <div className="absolute -left-16 -bottom-16 w-[360px] h-[360px] rounded-full bg-[#FF9A52] blur-[90px] opacity-25" />
-            <div className="absolute -right-16 -top-16 w-[340px] h-[340px] rounded-full bg-[#FF9A52] blur-[90px] opacity-25" />
+  return (
+    <div
+      className="pointer-events-none fixed inset-0 overflow-hidden select-none -z-10"
+      aria-hidden="true"
+    >
+      {/* Layer 1: Ambient Sanctuary Vignette Halos */}
+      <div className="absolute inset-0 bg-[#FBF6EF]/80 dark:bg-[#12100E]/80 transition-colors duration-300" />
 
-            {/* Bottom-Left Organic Flower / Blob */}
-            <div
-                className="absolute -left-28 -bottom-32 sm:-left-24 sm:-bottom-28 w-[370px] h-[370px] sm:w-[420px] sm:h-[420px] -rotate-[20deg] opacity-85 blur-[0.5px] transition-transform duration-700"
-                style={{
-                    borderRadius: '45% 55% 65% 35% / 55% 40% 60% 45%',
-                    background:
-                        'radial-gradient(circle at 30% 25%, rgba(255, 239, 207, 0.95), transparent 22%), radial-gradient(circle at 65% 70%, rgba(255, 96, 39, 0.85), transparent 55%), linear-gradient(135deg, #FFD7A8 0%, #FF9A52 52%, #ED4C24 100%)',
-                    boxShadow: '0 30px 80px rgba(241, 111, 47, 0.22)'
-                }}
-            >
-                {/* Left Petal */}
-                <div
-                    className="absolute -left-12 top-6 w-[200px] h-[260px] -rotate-[35deg] opacity-80"
-                    style={{
-                        borderRadius: '60% 40% 65% 35%',
-                        background:
-                            'radial-gradient(circle at 35% 25%, #FFDCAE 0%, #FF9A52 55%, #ED4C24 100%)'
-                    }}
-                />
-                {/* Right Petal */}
-                <div
-                    className="absolute -right-10 top-4 w-[180px] h-[250px] rotate-[35deg] opacity-80"
-                    style={{
-                        borderRadius: '40% 60% 35% 65%',
-                        background:
-                            'radial-gradient(circle at 35% 25%, #FFDCAE 0%, #FF9A52 55%, #ED4C24 100%)'
-                    }}
-                />
-            </div>
+      {/* Subtle Top-Right Ambient Warmth */}
+      <div
+        className="absolute -top-32 -right-32 w-[580px] h-[580px] rounded-full opacity-60 dark:opacity-35 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(245, 185, 120, 0.35) 0%, rgba(200, 88, 40, 0.12) 40%, transparent 70%)',
+          filter: 'blur(50px)',
+        }}
+      />
 
-            {/* Top-Right Organic Flower / Blob */}
-            <div
-                className="absolute -right-28 -top-28 sm:-right-24 sm:-top-24 w-[350px] h-[350px] sm:w-[400px] sm:h-[400px] rotate-[25deg] opacity-80 blur-[0.5px] transition-transform duration-700"
-                style={{
-                    borderRadius: '55% 45% 35% 65% / 45% 60% 40% 55%',
-                    background:
-                        'radial-gradient(circle at 30% 25%, rgba(255, 239, 207, 0.95), transparent 20%), radial-gradient(circle at 65% 70%, rgba(255, 96, 39, 0.85), transparent 55%), linear-gradient(135deg, #FFD7A8 0%, #FF9A52 52%, #ED4C24 100%)',
-                    boxShadow: '0 30px 80px rgba(241, 111, 47, 0.2)'
-                }}
-            >
-                {/* Left Petal */}
-                <div
-                    className="absolute -left-10 top-6 w-[180px] h-[240px] -rotate-[28deg] opacity-75"
-                    style={{
-                        borderRadius: '55% 45% 60% 40%',
-                        background:
-                            'radial-gradient(circle at 35% 25%, #FFDCAE 0%, #FF9A52 55%, #ED4C24 100%)'
-                    }}
-                />
-                {/* Right Petal */}
-                <div
-                    className="absolute -right-8 top-8 w-[170px] h-[230px] rotate-[32deg] opacity-75"
-                    style={{
-                        borderRadius: '45% 55% 40% 60%',
-                        background:
-                            'radial-gradient(circle at 35% 25%, #FFDCAE 0%, #FF9A52 55%, #ED4C24 100%)'
-                    }}
-                />
-            </div>
+      {/* Subtle Bottom-Left Ambient Warmth */}
+      <div
+        className="absolute -bottom-36 -left-36 w-[620px] h-[620px] rounded-full opacity-55 dark:opacity-30 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(232, 168, 124, 0.3) 0%, rgba(180, 70, 30, 0.1) 45%, transparent 70%)',
+          filter: 'blur(60px)',
+        }}
+      />
 
-            {/* Organic Hand-Drawn Curved Line Accent */}
-            <svg
-                className="absolute -left-12 sm:-left-16 -bottom-12 sm:-bottom-16 w-[380px] h-[380px] sm:w-[420px] sm:h-[420px]"
-                viewBox="0 0 400 400"
-                fill="none"
-            >
-                <path
-                    d="M40 320 C130 280 70 190 180 150 C260 120 220 60 340 40"
-                    stroke="#F27A42"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    opacity="0.45"
-                />
-            </svg>
+      {/* Center Subtle Spotlight */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-4xl h-[70vh] rounded-full opacity-40 dark:opacity-20 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse at center, rgba(255, 235, 210, 0.4) 0%, rgba(200, 88, 40, 0.04) 50%, transparent 75%)',
+          filter: 'blur(40px)',
+        }}
+      />
 
-            {/* Floating Brand Hand-Drawn Heart Outline */}
-            <svg
-                className="absolute left-3 sm:left-7 top-[36%] sm:top-[38%] w-9 h-9 sm:w-11 sm:h-11 -rotate-12 drop-shadow-xs"
-                viewBox="0 0 100 100"
-                fill="none"
-            >
-                <path
-                    d="M50 82 C45 76 15 58 15 35 C15 15 38 10 50 27 C62 10 85 15 85 35 C85 58 55 76 50 82Z"
-                    stroke="#F06B3B"
-                    strokeWidth="2.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    opacity="0.72"
-                />
-            </svg>
-        </div>
-    );
+      {/* Layer 2: Precision Architectural Grid & Registration Crosshairs */}
+      <svg
+        className="absolute inset-0 w-full h-full opacity-[0.035] dark:opacity-[0.05]"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <pattern
+            id="sanctuary-grid"
+            width="64"
+            height="64"
+            patternUnits="userSpaceOnUse"
+          >
+            <path
+              d="M 64 0 L 0 0 0 64"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1"
+              className="text-[#C85828] dark:text-[#E8A87C]"
+            />
+            {/* Registration Crosshair at Corner */}
+            <path
+              d="M -3 0 L 3 0 M 0 -3 L 0 3"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.2"
+              className="text-[#C85828] dark:text-[#E8A87C]"
+            />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#sanctuary-grid)" />
+      </svg>
+
+      {/* Layer 3: Topographic Resonance Contours (Top-Right) */}
+      <svg
+        className="absolute -top-12 -right-12 sm:top-0 sm:right-0 w-[420px] sm:w-[620px] h-[420px] sm:h-[620px] opacity-70 dark:opacity-40"
+        viewBox="0 0 600 600"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id="contour-grad-tr" x1="100%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#C85828" stopOpacity="0.45" />
+            <stop offset="60%" stopColor="#E8A87C" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="#C85828" stopOpacity="0.0" />
+          </linearGradient>
+        </defs>
+
+        {/* Nested Topographic Curves */}
+        <path
+          d="M 600 120 C 460 140 380 220 340 320 C 300 420 220 480 60 520"
+          stroke="url(#contour-grad-tr)"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+        <path
+          d="M 600 180 C 490 200 430 270 390 360 C 350 450 280 500 140 550"
+          stroke="url(#contour-grad-tr)"
+          strokeWidth="1.2"
+          strokeDasharray="4 4"
+        />
+        <path
+          d="M 600 240 C 510 260 470 320 430 400 C 390 480 340 520 210 570"
+          stroke="url(#contour-grad-tr)"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+        />
+        <path
+          d="M 600 300 C 530 320 500 370 470 440 C 430 510 390 550 290 590"
+          stroke="url(#contour-grad-tr)"
+          strokeWidth="1"
+        />
+        <path
+          d="M 600 360 C 550 380 530 420 500 480 C 470 540 440 570 370 600"
+          stroke="url(#contour-grad-tr)"
+          strokeWidth="0.8"
+        />
+      </svg>
+
+      {/* Layer 4: Topographic Resonance Contours (Bottom-Left) */}
+      <svg
+        className="absolute -bottom-16 -left-16 sm:bottom-0 sm:left-0 w-[420px] sm:w-[600px] h-[420px] sm:h-[600px] opacity-65 dark:opacity-35"
+        viewBox="0 0 600 600"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id="contour-grad-bl" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#C85828" stopOpacity="0.4" />
+            <stop offset="50%" stopColor="#E8A87C" stopOpacity="0.15" />
+            <stop offset="100%" stopColor="#C85828" stopOpacity="0.0" />
+          </linearGradient>
+        </defs>
+
+        <path
+          d="M 0 460 C 130 440 210 370 250 270 C 290 170 380 110 540 70"
+          stroke="url(#contour-grad-bl)"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+        <path
+          d="M 0 400 C 100 380 170 310 210 220 C 250 130 320 80 460 30"
+          stroke="url(#contour-grad-bl)"
+          strokeWidth="1.2"
+          strokeDasharray="5 4"
+        />
+        <path
+          d="M 0 340 C 80 320 130 260 170 180 C 210 100 270 50 390 10"
+          stroke="url(#contour-grad-bl)"
+          strokeWidth="1"
+          strokeLinecap="round"
+        />
+        <path
+          d="M 0 280 C 60 260 100 200 130 140 C 160 80 210 30 310 0"
+          stroke="url(#contour-grad-bl)"
+          strokeWidth="0.8"
+        />
+      </svg>
+
+      {/* Layer 5: Sanctuary Horizon Compass Emblem (Top Left Margin) */}
+      <div className="hidden lg:block absolute top-8 left-8 w-24 h-24 opacity-30 dark:opacity-20 pointer-events-none">
+        <svg viewBox="0 0 100 100" fill="none" className="w-full h-full">
+          {/* Concentric Calibration Ring */}
+          <circle
+            cx="50"
+            cy="50"
+            r="44"
+            stroke="#C85828"
+            strokeWidth="0.8"
+            strokeDasharray="2 3"
+          />
+          <circle
+            cx="50"
+            cy="50"
+            r="38"
+            stroke="#C85828"
+            strokeWidth="0.5"
+          />
+          {/* Cardinal Coordinate Ticks */}
+          <line x1="50" y1="2" x2="50" y2="10" stroke="#C85828" strokeWidth="1.2" />
+          <line x1="50" y1="90" x2="50" y2="98" stroke="#C85828" strokeWidth="1.2" />
+          <line x1="2" y1="50" x2="10" y2="50" stroke="#C85828" strokeWidth="1.2" />
+          <line x1="90" y1="50" x2="98" y2="50" stroke="#C85828" strokeWidth="1.2" />
+          {/* Central Sanctuary Point */}
+          <circle cx="50" cy="50" r="2" fill="#C85828" />
+        </svg>
+      </div>
+
+      {/* Layer 6: Architectural Coordinate Labels (Subtle Editorial Notes) */}
+      <div className="hidden xl:flex absolute bottom-8 left-12 items-center gap-3 font-mono text-[9px] uppercase tracking-widest text-stone-500/35 dark:text-stone-400/25 pointer-events-none select-none">
+        <span>Sanctuary Spatial Grid</span>
+        <span>•</span>
+        <span>Ref 42.08°N</span>
+        <span>•</span>
+        <span>Anonymous Haven</span>
+      </div>
+
+      <div className="hidden xl:flex absolute top-8 right-12 items-center gap-3 font-mono text-[9px] uppercase tracking-widest text-stone-500/35 dark:text-stone-400/25 pointer-events-none select-none">
+        <span>HeartOut Identity Matrix</span>
+        <span>•</span>
+        <span>v2.4</span>
+      </div>
+    </div>
+  );
 }
