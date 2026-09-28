@@ -1,14 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { FileText, Trash2, Edit, Clock, AlertTriangle, PenLine, Sparkles } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { 
+    Trash2, 
+    Clock, 
+    Sparkles, 
+    ArrowLeft, 
+    Plus, 
+    Feather, 
+    FileText, 
+    AlertTriangle,
+    PenSquare
+} from 'lucide-react';
+import toast from 'react-hot-toast';
 import { getApiUrl } from '../config/api';
 import { formatRelativeDate } from '../utils/dateFormat';
 import { storyTypes } from '../components/StoryTypeSelector';
 
 export default function Drafts() {
+    const navigate = useNavigate();
     const [drafts, setDrafts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [deleteModal, setDeleteModal] = useState({ show: false, draftId: null, title: '' });
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
         fetchDrafts();
@@ -36,7 +49,7 @@ export default function Drafts() {
                             id: 'local',
                             title: parsed.title || '(Unsaved local draft)',
                             content: parsed.content || '',
-                            story_type: parsed.story_type || 'other',
+                            story_type: parsed.story_type || 'unsent_letter',
                             updated_at: parsed.savedAt || new Date().toISOString(),
                             isLocal: true
                         };
@@ -50,6 +63,7 @@ export default function Drafts() {
             setDrafts(serverDrafts);
         } catch (error) {
             console.error('Failed to fetch drafts:', error);
+            toast.error('Unable to load drafts');
         } finally {
             setLoading(false);
         }
@@ -63,10 +77,12 @@ export default function Drafts() {
         const id = deleteModal.draftId;
         if (!id) return;
 
+        setDeleting(true);
         try {
             if (id === 'local') {
                 localStorage.removeItem('heartout_draft');
-                setDrafts(drafts.filter(d => d.id !== id));
+                setDrafts(prev => prev.filter(d => d.id !== id));
+                toast.success('Local draft discarded');
             } else {
                 const response = await fetch(getApiUrl(`/api/posts/${id}`), {
                     method: 'DELETE',
@@ -74,12 +90,17 @@ export default function Drafts() {
                 });
 
                 if (response.ok) {
-                    setDrafts(drafts.filter(d => d.id !== id));
+                    setDrafts(prev => prev.filter(d => d.id !== id));
+                    toast.success('Draft removed from sanctuary');
+                } else {
+                    toast.error('Failed to delete draft');
                 }
             }
         } catch (error) {
             console.error('Failed to delete draft:', error);
+            toast.error('Network error. Could not delete draft.');
         } finally {
+            setDeleting(false);
             setDeleteModal({ show: false, draftId: null, title: '' });
         }
     };
@@ -90,169 +111,227 @@ export default function Drafts() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 flex items-center justify-center">
-                <div className="text-center">
-                    <div className="w-12 h-12 border-4 border-amber-200 rounded-full animate-spin border-t-amber-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600 dark:text-gray-400">Loading drafts…</p>
+            <div className="min-h-screen heartout-auth-bg dark:bg-[#121110] flex items-center justify-center p-6">
+                <div className="flex flex-col items-center gap-3 text-center">
+                    <div className="w-10 h-10 rounded-full border-2 border-amber-600/30 border-t-amber-600 animate-spin" />
+                    <p className="font-body text-sm text-stone-600 dark:text-stone-400">Loading your drafts...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 pb-24 md:pb-8">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-                {/* Header */}
-                <div className="mb-6 sm:mb-8">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 shadow-lg shadow-amber-500/25">
-                            <FileText className="w-5 h-5 text-white" />
-                        </div>
-                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-                            My Drafts
-                        </h1>
+        <div className="min-h-screen heartout-auth-bg dark:bg-[#121110] pb-24 sm:pb-16 transition-colors duration-300">
+            
+            {/* Top Sanctuary Control Console */}
+            <header className="sticky top-0 z-40 py-3.5 px-4 sm:px-8 bg-[#FBEFE5]/90 dark:bg-[#121110]/90 backdrop-blur-md border-b border-[#EADDCF]/80 dark:border-[#26221E]">
+                <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
+                    
+                    {/* Left: Navigation & Context */}
+                    <div className="flex items-center gap-3">
+                        <Link
+                            to="/feed"
+                            className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors px-2.5 py-1.5 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            <span className="hidden sm:inline">Back to Sanctuary</span>
+                        </Link>
+
+                        {/* Hairline Divider */}
+                        <div className="hidden sm:block w-[1px] h-4 bg-[#EADDCF] dark:bg-[#2C2723]" />
+
+                        {/* Draft count badge */}
+                        <span className="text-xs text-stone-500 dark:text-stone-400 font-body">
+                            {drafts.length} {drafts.length === 1 ? 'saved reflection' : 'saved reflections'}
+                        </span>
                     </div>
-                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 ml-12">
-                        Things you started and can return to anytime.
+
+                    {/* Right: New Story Action */}
+                    <div className="flex items-center gap-3">
+                        <Link
+                            to="/feed/create"
+                            className="inline-flex items-center gap-2 h-10 px-4 sm:px-5 text-xs sm:text-sm font-semibold text-white bg-[#C85828] hover:bg-[#B54D20] active:scale-[0.98] rounded-xl shadow-sm transition-all"
+                        >
+                            <Plus className="w-4 h-4" />
+                            <span>New Reflection</span>
+                        </Link>
+                    </div>
+
+                </div>
+            </header>
+
+            {/* Main Content Area */}
+            <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10">
+                
+                {/* Page Intro */}
+                <div className="mb-8 text-left">
+                    <h1 className="font-stories text-3xl sm:text-4xl text-stone-900 dark:text-stone-100 font-normal">
+                        My Saved Drafts
+                    </h1>
+                    <p className="font-body text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1.5">
+                        Reflections you began in quiet. Return to them whenever you are ready to speak.
                     </p>
                 </div>
 
                 {drafts.length === 0 ? (
-                    /* Empty State - Premium Design */
-                    <div className="relative overflow-hidden bg-amber-50/30 dark:bg-zinc-800/80 rounded-2xl border border-amber-100 dark:border-zinc-700 shadow-sm p-8 sm:p-12 text-center">
-                        {/* Decorative gradient orbs */}
-                        <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full blur-3xl opacity-10" />
-                        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-gradient-to-br from-orange-300 to-rose-400 rounded-full blur-3xl opacity-10" />
+                    /* Empty State Card */
+                    <article className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-3xl p-10 sm:p-14 text-center shadow-[0_4px_30px_rgba(200,140,90,0.06)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.4)] max-w-2xl mx-auto space-y-5">
+                        <div className="w-14 h-14 rounded-2xl bg-amber-100/70 dark:bg-amber-950/40 text-[#C85828] dark:text-amber-400 flex items-center justify-center mx-auto border border-amber-200/60 dark:border-amber-900/40">
+                            <Feather className="w-6 h-6 stroke-[1.75]" />
+                        </div>
 
-                        <div className="relative">
-                            <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-6 rounded-2xl bg-amber-100/50 dark:bg-amber-900/20 flex items-center justify-center border border-amber-200/50 dark:border-amber-700/30">
-                                <PenLine className="w-10 h-10 sm:w-12 sm:h-12 text-amber-600 dark:text-amber-500" />
-                            </div>
-                            <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white mb-3">
-                                Nothing saved yet
-                            </h3>
-                            <p className="text-gray-600 dark:text-gray-400 mb-3 max-w-sm mx-auto">
-                                It's okay to start before you're ready. Drafts are just for you.
+                        <div>
+                            <h2 className="font-stories text-2xl sm:text-3xl text-stone-900 dark:text-stone-100 mb-2">
+                                Your desk is clear
+                            </h2>
+                            <p className="font-body text-xs sm:text-sm text-stone-600 dark:text-stone-400 max-w-sm mx-auto leading-relaxed">
+                                You don't have any saved drafts right now. When you start an unsent reflection, your words will be safely kept here.
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-500 mb-8 max-w-sm mx-auto">
-                                Drafts are private and visible only to you.
-                            </p>
+                        </div>
+
+                        <p className="font-body text-xs text-stone-400 dark:text-stone-500 italic">
+                            Drafts are strictly private and visible only to you on this account.
+                        </p>
+
+                        <div className="pt-2">
                             <Link
                                 to="/feed/create"
-                                className="btn-premium inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-white font-medium shadow-sm active:scale-95 transition-all duration-300"
+                                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#C85828] hover:bg-[#B54D20] text-white rounded-xl text-sm font-semibold shadow-sm transition-all active:scale-[0.98]"
                             >
                                 <Sparkles className="w-4 h-4" />
-                                Start Writing
+                                <span>Begin Writing</span>
                             </Link>
                         </div>
-                    </div>
+                    </article>
                 ) : (
-                    /* Drafts List */
+                    /* Draft Cards Grid */
                     <div className="space-y-4">
                         {drafts.map((draft, index) => {
                             const storyType = getStoryType(draft.story_type);
                             const Icon = storyType.icon;
+                            const words = draft.content?.trim().split(/\s+/).filter(Boolean).length || 0;
+                            const readTime = Math.max(1, Math.ceil(words / 210));
 
                             return (
-                                <div
+                                <article
                                     key={draft.id}
-                                    className="group bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-gray-700 p-4 sm:p-6 hover:shadow-lg hover:shadow-gray-200/50 dark:hover:shadow-gray-900/50 hover:-translate-y-0.5 transition-all duration-300 animate-slide-up"
+                                    className="group bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-2xl p-5 sm:p-7 shadow-[0_2px_14px_rgba(200,140,90,0.04)] dark:shadow-[0_2px_14px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 hover:border-[#D4832D]/70 dark:hover:border-[#D4832D]/50 hover:shadow-[0_10px_28px_rgba(200,120,60,0.08)] transition-all duration-300"
                                     style={{ animationDelay: `${index * 0.05}s` }}
                                 >
-                                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                                        {/* Content */}
-                                        <div className="flex-1 min-w-0">
-                                            {/* Story Type Badge */}
-                                            <div className="flex items-center gap-2 mb-3">
-                                                <div className={`p-1.5 rounded-lg bg-gradient-to-br ${storyType.color}`}>
-                                                    <Icon className="w-3 h-3 text-white" />
-                                                </div>
-                                                <span className={`text-xs font-medium ${storyType.textColor}`}>
-                                                    {storyType.label}
+                                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-5">
+                                        
+                                        {/* Main Content Area */}
+                                        <div className="flex-1 min-w-0 space-y-2.5">
+                                            
+                                            {/* Category & Status Bar */}
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${storyType.accentBg} ${storyType.accentText}`}>
+                                                    <Icon className="w-3.5 h-3.5 stroke-[1.75]" />
+                                                    <span>{storyType.label}</span>
                                                 </span>
+
+                                                {draft.isLocal && (
+                                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-300/50 dark:border-amber-800/40">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                                                        Local Unsaved Draft
+                                                    </span>
+                                                )}
+
+                                                <div className="flex items-center gap-1 text-xs text-stone-400 dark:text-stone-500 ml-auto sm:ml-2">
+                                                    <Clock className="w-3.5 h-3.5" />
+                                                    <span>Last edited {formatRelativeDate(draft.updated_at)}</span>
+                                                </div>
                                             </div>
 
-                                            {/* Title */}
-                                            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2 truncate">
-                                                {draft.title || 'Untitled Draft'}
-                                            </h3>
+                                            {/* Headline */}
+                                            <h2 className="font-stories text-xl sm:text-2xl font-normal text-stone-900 dark:text-stone-100 group-hover:text-[#C85828] transition-colors leading-snug">
+                                                {draft.title || '(Untitled Reflection)'}
+                                            </h2>
 
-                                            {/* Excerpt */}
-                                            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
-                                                {draft.content?.substring(0, 150) || 'No content yet…'}
+                                            {/* Reflection Excerpt */}
+                                            <p className="font-body text-xs sm:text-sm text-stone-600 dark:text-stone-400 line-clamp-2 leading-relaxed">
+                                                {draft.content?.substring(0, 180) || 'No words written yet. Ready for your thoughts...'}
                                             </p>
 
-                                            {/* Last Edited */}
-                                            <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
-                                                <Clock className="w-3.5 h-3.5" />
-                                                Last edited {formatRelativeDate(draft.updated_at)}
+                                            {/* Telemetry snippet */}
+                                            <div className="pt-1 text-[11px] text-stone-400 dark:text-stone-500 font-body">
+                                                {words} words • ~{readTime} min read
                                             </div>
+
                                         </div>
 
-                                        {/* Actions */}
-                                        <div className="flex items-center gap-2 sm:gap-3 sm:ml-4">
+                                        {/* Action Buttons */}
+                                        <div className="flex items-center gap-2 sm:gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#EADDCF]/60 dark:border-[#2C2723]">
                                             <Link
                                                 to={draft.id === 'local' ? `/feed/create` : `/feed/create?draft=${draft.id}`}
-                                                className="flex-1 sm:flex-none btn-premium inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm font-medium shadow-md shadow-orange-500/10 active:scale-95 transition-all duration-200"
+                                                className="inline-flex items-center justify-center gap-1.5 h-10 px-4 sm:px-5 bg-[#C85828] hover:bg-[#B54D20] text-white rounded-xl text-xs sm:text-sm font-semibold shadow-sm transition-all active:scale-[0.98]"
                                             >
-                                                <Edit className="w-4 h-4" />
+                                                <PenSquare className="w-3.5 h-3.5" />
                                                 <span>Continue</span>
                                             </Link>
+
                                             <button
+                                                type="button"
                                                 onClick={() => confirmDelete(draft.id, draft.title)}
-                                                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 text-red-600 dark:text-red-400 text-sm font-medium rounded-xl border border-red-200 dark:border-red-800/50 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-300 dark:hover:border-red-700 active:scale-95 transition-all duration-200"
+                                                className="inline-flex items-center justify-center h-10 w-10 text-stone-400 hover:text-red-600 dark:hover:text-red-400 rounded-xl hover:bg-red-50/70 dark:hover:bg-red-950/20 border border-transparent hover:border-red-200 dark:hover:border-red-900/40 transition-colors"
+                                                title="Delete draft"
+                                                aria-label={`Delete ${draft.title || 'draft'}`}
                                             >
                                                 <Trash2 className="w-4 h-4" />
-                                                <span>Delete</span>
                                             </button>
                                         </div>
+
                                     </div>
-                                </div>
+                                </article>
                             );
                         })}
                     </div>
                 )}
 
-                {/* Delete Confirmation Modal */}
-                {deleteModal.show && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-6 animate-scale-in border border-gray-100 dark:border-gray-700">
-                            <div className="flex items-center gap-4 mb-4">
-                                <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                                    <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400" />
-                                </div>
-                                <div>
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                                        Delete Draft?
-                                    </h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                        This action cannot be undone.
-                                    </p>
-                                </div>
-                            </div>
+            </main>
 
-                            <p className="text-gray-600 dark:text-gray-300 mb-6">
-                                Are you sure you want to delete “<span className="font-semibold">{deleteModal.title}</span>”?
+            {/* Delete Confirmation Modal */}
+            {deleteModal.show && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+                    <div className="w-full max-w-md bg-[#FFFDF9] dark:bg-[#181614] rounded-3xl p-6 sm:p-8 border border-[#EADDCF] dark:border-[#2C2723] shadow-2xl space-y-6">
+                        <div className="text-center space-y-2">
+                            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 mb-2">
+                                <Trash2 className="w-6 h-6 stroke-[1.75]" />
+                            </div>
+                            <h3 className="font-stories text-2xl text-stone-900 dark:text-stone-100">
+                                Discard this draft?
+                            </h3>
+                            <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 leading-relaxed">
+                                Are you sure you want to permanently erase “<span className="font-semibold text-stone-800 dark:text-stone-200">{deleteModal.title}</span>”? This cannot be undone.
                             </p>
+                        </div>
 
-                            <div className="flex gap-3 justify-end">
-                                <button
-                                    onClick={() => setDeleteModal({ show: false, draftId: null, title: '' })}
-                                    className="px-5 py-2.5 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={deleteDraft}
-                                    className="px-5 py-2.5 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 shadow-lg shadow-red-500/25 hover:shadow-red-500/40 transition-all"
-                                >
-                                    Delete
-                                </button>
-                            </div>
+                        <div className="flex gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setDeleteModal({ show: false, draftId: null, title: '' })}
+                                disabled={deleting}
+                                className="flex-1 px-4 py-2.5 border border-stone-300 dark:border-stone-700 rounded-xl text-stone-700 dark:text-stone-300 text-sm font-medium hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+                            >
+                                Keep Draft
+                            </button>
+                            <button
+                                type="button"
+                                onClick={deleteDraft}
+                                disabled={deleting}
+                                className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-semibold shadow-sm transition-all flex items-center justify-center gap-2"
+                            >
+                                {deleting ? (
+                                    <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                                ) : (
+                                    <span>Discard Permanently</span>
+                                )}
+                            </button>
                         </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
+
         </div>
     );
 }

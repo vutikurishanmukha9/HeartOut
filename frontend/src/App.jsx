@@ -60,7 +60,7 @@ function App() {
         {/* Skip to main content link for keyboard/screen reader users */}
         <SkipToContent targetId="main-content" />
 
-        <div className="min-h-screen bg-transparent transition-colors duration-200">
+        <div className="min-h-screen w-full bg-[#FAF5EF] dark:bg-[#0F0E0C] text-stone-900 dark:text-stone-100 transition-colors duration-200">
           {/* WebSocket Provider for real-time features */}
           <ScrollToTop />
           <WebSocketProvider userId={user?.id}>
@@ -69,7 +69,7 @@ function App() {
             <main
               id="main-content"
               tabIndex={-1}
-              className={`${showNavbar ? 'pt-16' : ''} transition-all duration-200 focus:outline-none`}
+              className="w-full min-h-[calc(100vh-4rem)] bg-[#FAF5EF] dark:bg-[#0F0E0C] transition-all duration-200 focus:outline-none"
             >
               <Suspense fallback={<RouteLoader />}>
                 <Routes>

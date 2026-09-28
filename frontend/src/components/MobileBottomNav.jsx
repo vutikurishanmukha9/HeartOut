@@ -41,8 +41,8 @@ export default function MobileBottomNav() {
 
             {/* Bottom Navigation */}
             <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
-                {/* Glassmorphism background */}
-                <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-t border-gray-200/50 dark:border-gray-700/50" />
+                {/* Sanctuary glassmorphism background */}
+                <div className="absolute inset-0 bg-[#FFFDF9]/95 dark:bg-[#161412]/95 backdrop-blur-xl border-t border-[#EADDCF]/80 dark:border-[#28221D]" />
 
                 {/* Safe area padding for notched devices */}
                 <div className="relative flex items-center justify-around px-2 h-16 pb-safe">

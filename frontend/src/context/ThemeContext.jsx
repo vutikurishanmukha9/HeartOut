@@ -234,8 +234,19 @@ export const ThemeProvider = ({ children }) => {
     const root = document.documentElement
 
     // Theme class
-    root.className = root.className.replace(/\b(light|dark)\b/g, '')
-    root.classList.add(state.effectiveTheme)
+    const isDarkTheme = state.effectiveTheme === THEMES.DARK;
+    const bgColor = isDarkTheme ? '#0F0E0C' : '#FAF5EF';
+    root.className = root.className.replace(/\b(light|dark)\b/g, '');
+    root.classList.add(state.effectiveTheme);
+    root.style.colorScheme = isDarkTheme ? 'dark' : 'light';
+    root.style.backgroundColor = bgColor;
+
+    if (document.body) {
+      document.body.style.backgroundColor = bgColor;
+    }
+
+    const themeColorMetas = document.querySelectorAll('meta[name="theme-color"]');
+    themeColorMetas.forEach(meta => meta.setAttribute('content', bgColor));
 
     // Font size class
     root.className = root.className.replace(/\bfont-size-(small|medium|large|xl)\b/g, '')

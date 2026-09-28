@@ -8,10 +8,10 @@ export default function AnonymousToggle({ isAnonymous, onChange, disabled = fals
     return (
         <div
             className={`
-                relative p-4 rounded-2xl border-[1.5px] transition-all duration-300 cursor-pointer
+                relative p-4 rounded-2xl border transition-all duration-300 cursor-pointer
                 ${checked
-                    ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700'
-                    : 'bg-stone-50 dark:bg-stone-800/50 border-stone-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-600'
+                    ? 'bg-[#FFF9F3] dark:bg-[#201B17] border-[#C85828]/60 dark:border-[#E07A48]/50 shadow-sm'
+                    : 'bg-[#FFFDF9] dark:bg-[#181614] border-[#EADDCF] dark:border-[#2C2723] hover:border-[#D4832D]/60'
                 }
             `}
             onClick={() => !disabled && onChange(!checked)}
@@ -21,24 +21,24 @@ export default function AnonymousToggle({ isAnonymous, onChange, disabled = fals
                     <div className={`
                         p-2.5 rounded-xl transition-all duration-300
                         ${checked
-                            ? 'bg-amber-500 dark:bg-amber-600 shadow-lg shadow-amber-500/25'
-                            : 'bg-stone-200 dark:bg-stone-700'
+                            ? 'bg-[#C85828] text-white shadow-sm'
+                            : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400'
                         }
                     `}>
                         {checked ? (
-                            <Shield className="w-5 h-5 text-white" />
+                            <Shield className="w-5 h-5 text-white stroke-[2]" />
                         ) : (
-                            <Users className="w-5 h-5 text-stone-500 dark:text-stone-400" />
+                            <Users className="w-5 h-5 stroke-[2]" />
                         )}
                     </div>
                     <div>
-                        <label className="text-sm font-semibold text-stone-900 dark:text-white cursor-pointer block">
+                        <label className="text-sm font-heading font-semibold text-stone-900 dark:text-stone-100 cursor-pointer block">
                             {checked ? 'Post Anonymously' : 'Post Publicly'}
                         </label>
-                        <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+                        <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5 font-body">
                             {checked
-                                ? 'Your identity will be hidden from other users'
-                                : 'Your name will be visible to readers'
+                                ? 'Your identity is completely hidden from readers'
+                                : 'Your name will be visible alongside your story'
                             }
                         </p>
                     </div>
@@ -54,18 +54,18 @@ export default function AnonymousToggle({ isAnonymous, onChange, disabled = fals
                         onChange(!checked);
                     }}
                     className={`
-                        relative inline-flex h-7 w-12 items-center rounded-full transition-all duration-300
-                        focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2
+                        relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300
+                        focus:outline-none focus:ring-2 focus:ring-[#C85828] focus:ring-offset-2
                         disabled:opacity-50 disabled:cursor-not-allowed
                         ${checked
-                            ? 'bg-amber-500 dark:bg-amber-600'
-                            : 'bg-stone-300 dark:bg-stone-600'
+                            ? 'bg-[#C85828]'
+                            : 'bg-stone-300 dark:bg-stone-700'
                         }
                     `}
                 >
                     <span
                         className={`
-                            inline-block h-5 w-5 transform rounded-full bg-white shadow-md 
+                            inline-block h-4 w-4 transform rounded-full bg-white shadow-sm 
                             transition-transform duration-300 ease-out
                             ${checked ? 'translate-x-6' : 'translate-x-1'}
                         `}
@@ -75,14 +75,13 @@ export default function AnonymousToggle({ isAnonymous, onChange, disabled = fals
 
             {/* Privacy indicator */}
             {checked && (
-                <div className="mt-3 pt-3 border-t border-amber-200 dark:border-amber-800/50">
-                    <div className="flex items-center gap-2 text-xs text-amber-700 dark:text-amber-400">
+                <div className="mt-3 pt-3 border-t border-amber-200/60 dark:border-amber-900/40">
+                    <div className="flex items-center gap-2 text-xs text-amber-800 dark:text-amber-400 font-medium">
                         <EyeOff className="w-3.5 h-3.5" />
-                        <span>Only you can see your identity on this story</span>
+                        <span>Blind anonymity enabled • No author profile linked</span>
                     </div>
                 </div>
             )}
         </div>
     );
 }
-

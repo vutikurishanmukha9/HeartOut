@@ -1,21 +1,41 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Globe, Mail, BookOpen, Edit, Award, X } from 'lucide-react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { 
+    Globe, 
+    BookOpen, 
+    Edit3, 
+    Award, 
+    X, 
+    ArrowLeft, 
+    Settings, 
+    Bookmark, 
+    Plus, 
+    Feather, 
+    Check, 
+    Compass 
+} from 'lucide-react';
+import toast from 'react-hot-toast';
 import { AuthContext } from '../context/AuthContext';
 import StoryCard from '../components/PostCard';
 import { storyTypes } from '../components/StoryTypeSelector';
 import StoryConstellation from '../components/StoryConstellation';
+import { ProfileSEO } from '../components/SEO';
 import { getApiUrl } from '../config/api';
-import { getAvatarColor } from '../utils/avatarColors';
 
 export default function Profile() {
     const { userId } = useParams();
+    const navigate = useNavigate();
     const { user: currentUser } = useContext(AuthContext);
+
+    // Profile & Story states
     const [profile, setProfile] = useState(null);
     const [stories, setStories] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
     const [editing, setEditing] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
+
+    // Edit form state
     const [formData, setFormData] = useState({
         display_name: '',
         bio: '',
@@ -24,7 +44,73 @@ export default function Profile() {
         social_links: {}
     });
 
-    const isOwnProfile = !userId || userId === currentUser?.id;
+    const isOwnProfile = !userId || 
+        userId === currentUser?.id || 
+        userId === currentUser?.public_id || 
+        userId === currentUser?.username;
+
+    const fetchOwnProfile = useCallback(async () => {
+        try {
+            const response = await fetch(getApiUrl('/api/auth/profile'), {
+                credentials: 'include',
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setProfile(data.user);
+                setFormData({
+                    display_name: data.user?.display_name || '',
+                    bio: data.user?.bio || '',
+                    author_bio: data.user?.author_bio || '',
+                    website_url: data.user?.website_url || '',
+                    social_links: data.user?.social_links || {}
+                });
+            }
+        } catch (error) {
+            console.error('Failed to fetch own profile:', error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const fetchUserProfile = useCallback(async () => {
+        try {
+            const response = await fetch(getApiUrl(`/api/posts/user/${userId}/stories`));
+            if (response.ok) {
+                const data = await response.json();
+                setProfile(data.author);
+            }
+        } catch (error) {
+            console.error('Failed to fetch user profile:', error);
+        } finally {
+            setLoading(false);
+        }
+    }, [userId]);
+
+    const fetchUserStories = useCallback(async () => {
+        try {
+            const targetUserId = isOwnProfile 
+                ? (currentUser?.id || currentUser?.public_id) 
+                : userId;
+
+            if (!targetUserId) {
+                setStories([]);
+                return;
+            }
+
+            const response = await fetch(getApiUrl(`/api/posts/user/${targetUserId}/stories`), {
+                credentials: 'include',
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setStories(data.stories || []);
+            } else {
+                setStories([]);
+            }
+        } catch (error) {
+            console.error('Failed to fetch stories:', error);
+            setStories([]);
+        }
+    }, [isOwnProfile, currentUser, userId]);
 
     useEffect(() => {
         if (isOwnProfile) {
@@ -33,64 +119,12 @@ export default function Profile() {
             fetchUserProfile();
         }
         fetchUserStories();
-    }, [userId]);
+    }, [userId, isOwnProfile, fetchOwnProfile, fetchUserProfile, fetchUserStories]);
 
-    const fetchOwnProfile = async () => {
-        try {
-            const response = await fetch(getApiUrl('/api/auth/profile'), {
-                credentials: 'include',
-            });
-            const data = await response.json();
-            setProfile(data.user);
-            setFormData({
-                display_name: data.user.display_name || '',
-                bio: data.user.bio || '',
-                author_bio: data.user.author_bio || '',
-                website_url: data.user.website_url || '',
-                social_links: data.user.social_links || {}
-            });
-        } catch (error) {
-            console.error('Failed to fetch profile:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const handleUpdateProfile = async (e) => {
+        if (e) e.preventDefault();
+        setSaving(true);
 
-    const fetchUserProfile = async () => {
-        try {
-            const response = await fetch(getApiUrl(`/api/posts/user/${userId}/stories`));
-            const data = await response.json();
-            setProfile(data.author);
-        } catch (error) {
-            console.error('Failed to fetch user profile:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const fetchUserStories = async () => {
-        try {
-            // For own profile, use current user's ID to fetch only THEIR stories
-            const targetUserId = isOwnProfile ? currentUser?.id : userId;
-
-            if (!targetUserId) {
-                console.error('No user ID available to fetch stories');
-                setStories([]);
-                return;
-            }
-
-            const endpoint = getApiUrl(`/api/posts/user/${targetUserId}/stories`);
-
-            const response = await fetch(endpoint, { credentials: 'include' });
-            const data = await response.json();
-            setStories(data.stories || []);
-        } catch (error) {
-            console.error('Failed to fetch stories:', error);
-            setStories([]);
-        }
-    };
-
-    const handleUpdateProfile = async () => {
         try {
             const response = await fetch(getApiUrl('/api/auth/profile'), {
                 method: 'PUT',
@@ -105,435 +139,404 @@ export default function Profile() {
                 const data = await response.json();
                 setProfile(data.user);
                 setEditing(false);
+                toast.success('Sanctuary presence updated');
+            } else {
+                toast.error('Failed to update profile');
             }
         } catch (error) {
             console.error('Failed to update profile:', error);
+            toast.error('Network error. Could not update profile.');
+        } finally {
+            setSaving(false);
         }
     };
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-stone-50 dark:bg-zinc-950 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
+            <div className="min-h-screen heartout-auth-bg dark:bg-[#121110] flex items-center justify-center p-6">
+                <div className="flex flex-col items-center gap-3 text-center">
+                    <div className="w-10 h-10 rounded-full border-2 border-amber-600/30 border-t-amber-600 animate-spin" />
+                    <p className="font-body text-sm text-stone-600 dark:text-stone-400">
+                        Opening sanctuary archive...
+                    </p>
+                </div>
             </div>
         );
     }
 
+    const authorDisplayName = profile?.display_name || profile?.username || 'Sanctuary Author';
     const storiesByType = storyTypes.reduce((acc, type) => {
         acc[type.value] = stories.filter(s => s.story_type === type.value).length;
         return acc;
     }, {});
 
+    const filteredStories = selectedCategory
+        ? stories.filter(s => s.story_type === selectedCategory)
+        : stories;
+
     return (
-        <div className="min-h-screen bg-stone-50 dark:bg-zinc-950">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 pb-24 md:pb-12">
-                {/* Profile Header - Premium Glassmorphism */}
-                <div className="relative bg-white/80 dark:bg-zinc-800/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-amber-100/50 dark:border-zinc-700/50 p-6 sm:p-8 mb-8 shadow-xl shadow-amber-100/30 dark:shadow-zinc-900/50 overflow-hidden">
+        <>
+            <ProfileSEO username={authorDisplayName} storyCount={stories.length} />
 
-                    <div className="relative">
-                        {/* Mobile Layout: Avatar row with Edit button */}
-                        <div className="flex md:hidden items-center justify-between mb-4">
-                            {/* Avatar */}
-                            <div className="relative group">
-                                <div className={`absolute -inset-1 bg-gradient-to-br ${getAvatarColor(profile?.username?.[0])} rounded-full blur-sm opacity-75 group-hover:opacity-100 transition-opacity animate-pulse`} />
-                                <div className={`relative w-20 h-20 rounded-full bg-gradient-to-br ${getAvatarColor(profile?.username?.[0])} flex items-center justify-center text-white text-3xl font-bold shadow-2xl ring-4 ring-white dark:ring-gray-800`}>
-                                    {profile?.username?.[0]?.toUpperCase() || 'U'}
-                                </div>
-                            </div>
-                            {/* Edit button on mobile */}
-                            {isOwnProfile && !editing && (
-                                <button
-                                    onClick={() => setEditing(true)}
-                                    className="group relative flex items-center gap-2 px-4 py-2 btn-premium text-white text-sm font-medium rounded-full shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:scale-105 active:scale-95 transition-all duration-300"
-                                >
-                                    <Edit className="w-4 h-4 transition-transform duration-300 group-hover:rotate-12" />
-                                    Edit Profile
-                                </button>
-                            )}
-                        </div>
+            <div className="min-h-screen heartout-auth-bg dark:bg-[#121110] pb-24 sm:pb-20 transition-colors duration-300">
+                {/* Top Sanctuary Navigation Bar */}
+                <header className="sticky top-0 z-40 py-3.5 px-4 sm:px-8 bg-[#FBEFE5]/90 dark:bg-[#121110]/90 backdrop-blur-md border-b border-[#EADDCF]/80 dark:border-[#26221E]">
+                    <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+                        {/* Left: Return to Feed */}
+                        <button
+                            onClick={() => navigate('/feed')}
+                            className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors px-2.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                            aria-label="Return to feed"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            <span>Return to Sanctuary</span>
+                        </button>
 
-                        {/* Mobile Profile Info - Below avatar row */}
-                        <div className="md:hidden">
-                            {editing ? (
-                                <div className="space-y-4">
-                                    <input
-                                        type="text"
-                                        value={formData.display_name}
-                                        onChange={(e) => setFormData({ ...formData, display_name: e.target.value })}
-                                        placeholder="Display Name"
-                                        className="w-full px-4 py-2.5 border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/20 dark:bg-zinc-800/50 text-gray-900 dark:text-white placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
-                                    />
-                                    <textarea
-                                        value={formData.bio}
-                                        onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                                        placeholder="Short bio..."
-                                        rows={2}
-                                        className="w-full px-4 py-2.5 border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/20 dark:bg-zinc-800/50 text-gray-900 dark:text-white placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
-                                    />
-                                    <textarea
-                                        value={formData.author_bio}
-                                        onChange={(e) => setFormData({ ...formData, author_bio: e.target.value })}
-                                        placeholder="Something about you, in your own words."
-                                        rows={3}
-                                        className="w-full px-4 py-2.5 border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/20 dark:bg-zinc-800/50 text-gray-900 dark:text-white placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
-                                    />
-                                    <div className="flex gap-3 pt-1">
-                                        <button
-                                            onClick={handleUpdateProfile}
-                                            className="px-5 py-2 btn-premium text-white text-sm font-medium rounded-full shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:scale-105 active:scale-95 transition-all duration-300"
-                                        >
-                                            Save
-                                        </button>
-                                        <button
-                                            onClick={() => setEditing(false)}
-                                            className="px-4 py-2 text-stone-500 dark:text-stone-400 text-sm font-medium hover:text-stone-700 dark:hover:text-stone-300 transition-colors"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </div>
-                            ) : (
+                        {/* Right: Quick Actions */}
+                        <div className="flex items-center gap-2.5 sm:gap-3">
+                            {isOwnProfile && (
                                 <>
-                                    <h1 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
-                                        {profile?.display_name || profile?.username}
-                                    </h1>
-                                    <p className="text-gray-500 dark:text-gray-400 font-medium text-sm mb-1">
-                                        @{profile?.username}
-                                    </p>
-                                    {isOwnProfile && (
-                                        <p className="text-xs text-stone-400 dark:text-stone-500 italic mb-3">
-                                            Your stories, at your pace
-                                        </p>
-                                    )}
-                                    {profile?.bio && (
-                                        <p className="text-gray-700 dark:text-gray-300 text-sm mb-3">
-                                            {profile.bio}
-                                        </p>
-                                    )}
-                                    {profile?.author_bio && (
-                                        <div className="mb-3">
-                                            <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">About the Author</h3>
-                                            <p className="text-gray-700 dark:text-gray-300 text-sm">
-                                                {profile.author_bio}
-                                            </p>
-                                        </div>
-                                    )}
-                                    <div className="flex flex-wrap gap-3 text-xs text-gray-600 dark:text-gray-400">
-                                        {profile?.website_url && (
-                                            <a
-                                                href={profile.website_url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex items-center gap-1 hover:text-primary-600"
-                                            >
-                                                <Globe className="w-3 h-3" />
-                                                Website
-                                            </a>
-                                        )}
-                                        <div className="flex items-center gap-1">
-                                            <BookOpen className="w-3 h-3" />
-                                            {profile?.total_stories || stories.length} stories
-                                        </div>
-                                    </div>
-                                    {profile?.is_featured_author && (
-                                        <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full text-white text-xs font-semibold">
-                                            <Award className="w-3 h-3" />
-                                            Featured Author
-                                        </div>
-                                    )}
+                                    <Link
+                                        to="/feed/saved"
+                                        aria-label="Saved reflections"
+                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+                                    >
+                                        <Bookmark className="w-3.5 h-3.5" />
+                                        <span className="hidden sm:inline">Saved</span>
+                                    </Link>
+
+                                    <Link
+                                        to="/profile/settings"
+                                        aria-label="Sanctuary settings"
+                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+                                    >
+                                        <Settings className="w-3.5 h-3.5" />
+                                        <span className="hidden sm:inline">Settings</span>
+                                    </Link>
+
+                                    <Link
+                                        to="/feed/create"
+                                        className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-semibold text-white bg-[#C85828] hover:bg-[#B54D20] active:scale-[0.98] shadow-sm transition-all"
+                                    >
+                                        <Plus className="w-3.5 h-3.5" />
+                                        <span>New Story</span>
+                                    </Link>
                                 </>
                             )}
                         </div>
-                        <div className="hidden md:flex flex-row gap-8">
-                            {/* Avatar - Animated Gradient Ring */}
-                            <div className="flex-shrink-0 flex flex-col items-start">
-                                <div className="relative group">
-                                    <div className={`absolute -inset-1 bg-gradient-to-br ${getAvatarColor(profile?.username?.[0])} rounded-full blur-sm opacity-75 group-hover:opacity-100 transition-opacity animate-pulse`} />
-                                    <div className={`relative w-32 h-32 rounded-full bg-gradient-to-br ${getAvatarColor(profile?.username?.[0])} flex items-center justify-center text-white text-5xl font-bold shadow-2xl ring-4 ring-white dark:ring-gray-800`}>
-                                        {profile?.username?.[0]?.toUpperCase() || 'U'}
-                                    </div>
+                    </div>
+                </header>
+
+                {/* Main Content Area */}
+                <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 space-y-8">
+                    
+                    {/* Author Sanctuary Profile Card */}
+                    <div className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-3xl p-6 sm:p-10 shadow-[0_4px_30px_rgba(200,140,90,0.06)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
+                        <div className="flex flex-col md:flex-row items-start gap-6 sm:gap-8">
+                            
+                            {/* Author Ceramic Disc */}
+                            <div className="flex-shrink-0 flex flex-col items-center md:items-start">
+                                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-amber-100/70 dark:bg-amber-950/40 text-[#C85828] dark:text-amber-400 border border-amber-200/70 dark:border-amber-900/50 flex items-center justify-center font-stories text-3xl sm:text-4xl font-normal shadow-sm">
+                                    {(profile?.username || 'U').charAt(0).toUpperCase()}
                                 </div>
+
                                 {profile?.is_featured_author && (
-                                    <div className="mt-4 flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full text-white text-sm font-semibold shadow-lg shadow-amber-500/30">
-                                        <Award className="w-4 h-4" />
-                                        Featured Author
+                                    <div className="mt-3.5 inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/40 rounded-full text-amber-700 dark:text-amber-400 text-xs font-medium">
+                                        <Award className="w-3.5 h-3.5" />
+                                        <span>Featured Guide</span>
                                     </div>
                                 )}
                             </div>
 
-                            {/* Profile Info - Desktop */}
-                            <div className="flex-1">
+                            {/* Author Information or Edit Mode */}
+                            <div className="flex-1 w-full text-left">
                                 {editing ? (
-                                    <div className="space-y-4">
-                                        <input
-                                            type="text"
-                                            value={formData.display_name}
-                                            onChange={(e) => setFormData({ ...formData, display_name: e.target.value })}
-                                            placeholder="Display Name"
-                                            className="w-full px-4 py-2.5 border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/20 dark:bg-zinc-800/50 text-gray-900 dark:text-white placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
-                                        />
-                                        <textarea
-                                            value={formData.bio}
-                                            onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                                            placeholder="Short bio..."
-                                            rows={2}
-                                            className="w-full px-4 py-2.5 border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/20 dark:bg-zinc-800/50 text-gray-900 dark:text-white placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
-                                        />
-                                        <textarea
-                                            value={formData.author_bio}
-                                            onChange={(e) => setFormData({ ...formData, author_bio: e.target.value })}
-                                            placeholder="Something about you, in your own words."
-                                            rows={4}
-                                            className="w-full px-4 py-2.5 border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/20 dark:bg-zinc-800/50 text-gray-900 dark:text-white placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
-                                        />
-                                        <div className="flex gap-3 pt-1">
+                                    /* Inline Edit Form */
+                                    <form onSubmit={handleUpdateProfile} className="space-y-4">
+                                        <div>
+                                            <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
+                                                Display Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={formData.display_name}
+                                                onChange={(e) => setFormData({ ...formData, display_name: e.target.value })}
+                                                placeholder="Your public pen name"
+                                                className="w-full px-4 py-2 text-sm rounded-xl border border-[#EADDCF] dark:border-[#2C2723] bg-stone-50/70 dark:bg-[#121110] text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-[#C85828] focus:ring-1 focus:ring-[#C85828]/30"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
+                                                Short Reflection Bio
+                                            </label>
+                                            <textarea
+                                                value={formData.bio}
+                                                onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                                                placeholder="A gentle sentence on who you are..."
+                                                rows={2}
+                                                className="w-full px-4 py-2 text-sm rounded-xl border border-[#EADDCF] dark:border-[#2C2723] bg-stone-50/70 dark:bg-[#121110] text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-[#C85828] focus:ring-1 focus:ring-[#C85828]/30 resize-none"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
+                                                About the Author
+                                            </label>
+                                            <textarea
+                                                value={formData.author_bio}
+                                                onChange={(e) => setFormData({ ...formData, author_bio: e.target.value })}
+                                                placeholder="Write something extended about your reflections, background, or spirit."
+                                                rows={3}
+                                                className="w-full px-4 py-2 text-sm rounded-xl border border-[#EADDCF] dark:border-[#2C2723] bg-stone-50/70 dark:bg-[#121110] text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-[#C85828] focus:ring-1 focus:ring-[#C85828]/30 resize-none"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
+                                                Personal Website
+                                            </label>
+                                            <input
+                                                type="url"
+                                                value={formData.website_url}
+                                                onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
+                                                placeholder="https://yoursite.com"
+                                                className="w-full px-4 py-2 text-sm rounded-xl border border-[#EADDCF] dark:border-[#2C2723] bg-stone-50/70 dark:bg-[#121110] text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-[#C85828] focus:ring-1 focus:ring-[#C85828]/30"
+                                            />
+                                        </div>
+
+                                        <div className="flex items-center gap-3 pt-2">
                                             <button
-                                                onClick={handleUpdateProfile}
-                                                className="px-6 py-2.5 btn-premium text-white font-medium rounded-full shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:scale-105 active:scale-95 transition-all duration-300"
+                                                type="submit"
+                                                disabled={saving}
+                                                className="inline-flex items-center gap-2 px-5 py-2 text-xs sm:text-sm font-semibold rounded-xl text-white bg-[#C85828] hover:bg-[#B54D20] active:scale-[0.98] transition-all disabled:opacity-50"
                                             >
-                                                Save Changes
+                                                {saving ? 'Saving...' : 'Save Presence'}
                                             </button>
                                             <button
+                                                type="button"
                                                 onClick={() => setEditing(false)}
-                                                className="px-4 py-2.5 text-stone-500 dark:text-stone-400 font-medium hover:text-stone-700 dark:hover:text-stone-300 transition-colors"
+                                                className="px-4 py-2 text-xs sm:text-sm font-medium rounded-xl text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors"
                                             >
                                                 Cancel
                                             </button>
                                         </div>
-                                    </div>
+                                    </form>
                                 ) : (
+                                    /* Read Mode */
                                     <>
-                                        <div className="flex items-center justify-between gap-4 mb-4">
-                                            <div className="text-left">
-                                                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
-                                                    {profile?.display_name || profile?.username}
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+                                            <div>
+                                                <h1 className="font-stories text-2xl sm:text-3xl lg:text-4xl text-stone-900 dark:text-stone-100 font-normal">
+                                                    {authorDisplayName}
                                                 </h1>
-                                                <p className="text-gray-500 dark:text-gray-400 font-medium">
+                                                <p className="font-body text-xs sm:text-sm text-stone-500 dark:text-stone-400 font-medium">
                                                     @{profile?.username}
                                                 </p>
-                                                {isOwnProfile && (
-                                                    <p className="text-sm text-stone-400 dark:text-stone-500 italic mt-1">
-                                                        Your stories, at your pace
-                                                    </p>
-                                                )}
                                             </div>
+
                                             {isOwnProfile && (
                                                 <button
                                                     onClick={() => setEditing(true)}
-                                                    className="group relative flex items-center gap-2 px-5 py-2.5 btn-premium text-white font-medium rounded-full shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:scale-105 active:scale-95 transition-all duration-300"
+                                                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-[#EADDCF] dark:border-[#2C2723] bg-stone-50/70 dark:bg-[#121110] hover:border-amber-400/50 text-stone-700 dark:text-stone-300 text-xs font-medium transition-all self-start sm:self-auto"
                                                 >
-                                                    <Edit className="w-4 h-4 transition-transform duration-300 group-hover:rotate-12" />
-                                                    Edit Profile
+                                                    <Edit3 className="w-3.5 h-3.5" />
+                                                    <span>Edit Profile</span>
                                                 </button>
                                             )}
                                         </div>
 
                                         {profile?.bio && (
-                                            <p className="text-gray-700 dark:text-gray-300 mb-4 text-left">
+                                            <p className="font-body text-sm sm:text-base text-stone-700 dark:text-stone-300 mt-2 leading-relaxed">
                                                 {profile.bio}
                                             </p>
                                         )}
 
                                         {profile?.author_bio && (
-                                            <div className="mb-4 mt-2 text-left">
-                                                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">About the Author</h3>
-                                                <p className="text-gray-700 dark:text-gray-300">
+                                            <div className="mt-4 pt-4 border-t border-[#EADDCF]/60 dark:border-[#2C2723]">
+                                                <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400 mb-1 font-body">
+                                                    About the Author
+                                                </h2>
+                                                <p className="font-body text-xs sm:text-sm text-stone-600 dark:text-stone-300 leading-relaxed">
                                                     {profile.author_bio}
                                                 </p>
                                             </div>
                                         )}
 
-                                        <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400">
+                                        <div className="flex flex-wrap items-center gap-4 text-xs font-body text-stone-500 dark:text-stone-400 mt-4 pt-3 border-t border-[#EADDCF]/60 dark:border-[#2C2723]">
+                                            <div className="inline-flex items-center gap-1.5">
+                                                <BookOpen className="w-3.5 h-3.5 text-[#C85828] dark:text-amber-400" />
+                                                <span>{profile?.total_stories || stories.length} published {stories.length === 1 ? 'reflection' : 'reflections'}</span>
+                                            </div>
+
                                             {profile?.website_url && (
                                                 <a
                                                     href={profile.website_url}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="flex items-center gap-1 hover:text-primary-600 dark:hover:text-primary-400"
+                                                    className="inline-flex items-center gap-1.5 hover:text-[#C85828] transition-colors"
                                                 >
-                                                    <Globe className="w-4 h-4" />
-                                                    Website
+                                                    <Globe className="w-3.5 h-3.5" />
+                                                    <span>{profile.website_url.replace(/^https?:\/\//, '')}</span>
                                                 </a>
                                             )}
-                                            <div className="flex items-center gap-1">
-                                                <BookOpen className="w-4 h-4" />
-                                                {profile?.total_stories || stories.length} stories
-                                            </div>
+
+                                            <span className="italic text-stone-400 dark:text-stone-500">
+                                                Sharing in quiet, without judgment
+                                            </span>
                                         </div>
                                     </>
                                 )}
                             </div>
+
                         </div>
                     </div>
 
-                    {/* Story Analytics Section - Premium Design */}
-                    <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-gray-200/50 dark:border-gray-700/50">
-                        {/* Header */}
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 shadow-lg shadow-amber-500/25">
-                                    <BookOpen className="w-5 h-5 text-white" />
-                                </div>
-                                <div>
-                                    <h3 className="text-xl sm:text-2xl font-medium text-gray-900 dark:text-white">Your Writing Journey</h3>
-                                    <p className="text-xs sm:text-sm text-stone-400 dark:text-stone-500">A reflection, not a scorecard</p>
-                                </div>
+                    {/* Writing Constellation & Journey Section */}
+                    <section className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-3xl p-6 sm:p-8 shadow-[0_4px_30px_rgba(200,140,90,0.06)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                            <div>
+                                <span className="text-[10px] font-semibold tracking-wider text-[#C85828] dark:text-amber-400 uppercase font-body block mb-1">
+                                    Contemplative Map
+                                </span>
+                                <h2 className="font-stories text-xl sm:text-2xl text-stone-900 dark:text-stone-100 font-normal">
+                                    Writing Constellation
+                                </h2>
+                                <p className="font-body text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1">
+                                    A visual landscape of shared moments: not a scorecard, but a quiet map of reflections.
+                                </p>
                             </div>
+
                             {selectedCategory && (
                                 <button
                                     onClick={() => setSelectedCategory(null)}
-                                    className="group relative flex items-center gap-2 px-4 py-2 text-red-500 dark:text-red-400 font-medium transition-all duration-300 hover:text-red-600 dark:hover:text-red-300"
+                                    className="inline-flex items-center gap-1.5 text-xs text-[#C85828] hover:underline font-medium self-start sm:self-auto"
                                 >
-                                    <X className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-90" />
-                                    <span className="relative text-sm">
-                                        Clear Filter
-                                        <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gradient-to-r from-red-500 to-rose-500 transition-all duration-300 group-hover:w-full" />
-                                    </span>
+                                    <X className="w-3.5 h-3.5" />
+                                    <span>Clear Filter</span>
                                 </button>
                             )}
                         </div>
 
-                        {/* Stats Cards Row - Premium Design */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-6 sm:mb-8">
+                        {/* Category Filter Cards */}
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
                             {storyTypes.map((type) => {
-                                const Icon = type.icon;
+                                const TypeIcon = type.icon;
                                 const count = storiesByType[type.value] || 0;
                                 const isSelected = selectedCategory === type.value;
+
                                 return (
                                     <button
                                         key={type.value}
+                                        type="button"
                                         onClick={() => setSelectedCategory(isSelected ? null : type.value)}
-                                        className={`
-                                            group relative p-3 sm:p-4 rounded-xl sm:rounded-2xl text-center transition-all duration-300 overflow-hidden
-                                            ${isSelected
-                                                ? 'bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-2 border-amber-400 dark:border-amber-500 shadow-lg shadow-amber-500/20 scale-[1.02]'
-                                                : count > 0
-                                                    ? 'bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm border border-amber-100/50 dark:border-zinc-700/50 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-lg hover:scale-[1.02]'
-                                                    : 'bg-white/40 dark:bg-zinc-900/30 border border-stone-100 dark:border-zinc-800 opacity-40 cursor-default'
-                                            }
-                                        `}
                                         disabled={count === 0}
+                                        className={`flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl border text-center transition-all ${isSelected
+                                            ? 'border-[#C85828] bg-amber-50/70 dark:bg-amber-950/30 shadow-sm'
+                                            : count > 0
+                                                ? 'border-[#EADDCF] dark:border-[#2C2723] bg-stone-50/50 dark:bg-[#121110] hover:border-amber-400/50 cursor-pointer'
+                                                : 'border-[#EADDCF]/40 dark:border-[#2C2723]/40 bg-stone-50/20 dark:bg-[#121110]/20 opacity-40 cursor-default'
+                                        }`}
                                     >
-                                        {/* Subtle gradient glow on hover */}
-                                        {count > 0 && (
-                                            <div className={`absolute inset-0 bg-gradient-to-br ${type.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
-                                        )}
-                                        <div className="relative">
-                                            <div className={`inline-flex p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-gradient-to-br ${type.color} mb-2 shadow-md group-hover:shadow-lg transition-shadow opacity-80`}>
-                                                <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                                            </div>
-                                            <p className="text-xs sm:text-sm font-medium text-stone-600 dark:text-stone-400 mb-1">{type.label}</p>
-                                            <p className={`text-base sm:text-lg font-medium transition-colors ${isSelected ? 'text-stone-800 dark:text-stone-200' : 'text-stone-500 dark:text-stone-400'}`}>
-                                                {count}
-                                            </p>
-                                        </div>
-                                        {isSelected && (
-                                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
-                                                <div className="w-1.5 h-1.5 bg-white rounded-full" />
-                                            </div>
-                                        )}
+                                        <TypeIcon className="w-4 h-4 text-[#C85828] dark:text-amber-400 mb-1.5" />
+                                        <span className="text-xs font-medium text-stone-800 dark:text-stone-200">
+                                            {type.label}
+                                        </span>
+                                        <span className="text-xs text-stone-400 dark:text-stone-500 font-mono mt-0.5">
+                                            {count}
+                                        </span>
                                     </button>
                                 );
                             })}
                         </div>
 
-                        {/* Helper text - reduces self-judgment */}
-                        <p className="text-xs text-stone-400 dark:text-stone-500 italic text-center mb-6">
-                            There's no right balance. This is just a snapshot.
-                        </p>
-
-                        {/* Story Constellation */}
+                        {/* Constellation Canvas View */}
                         {stories.length > 0 && (
-                            <StoryConstellation
-                                stories={stories}
-                                storiesByType={storiesByType}
-                                onCategoryClick={(value) => setSelectedCategory(selectedCategory === value ? null : value)}
-                            />
-                        )}
-
-                        {/* Grounding sentence */}
-                        {isOwnProfile && (
-                            <p className="text-center text-xs text-stone-400 dark:text-stone-500 italic mt-4">
-                                There's no finish line here.
-                            </p>
-                        )}
-                    </div>
-                </div>
-
-                {/* Stories Grid - Archive, not feed */}
-                <div className="mt-8">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-medium text-stone-800 dark:text-stone-200">
-                            {selectedCategory
-                                ? `${storyTypes.find(t => t.value === selectedCategory)?.label || 'Filtered'} Stories`
-                                : isOwnProfile ? 'Your Stories' : 'Stories'
-                            }
-                        </h2>
-                        {selectedCategory && (
-                            <span className="px-3 py-1 text-xs bg-stone-100 dark:bg-zinc-800 text-stone-500 dark:text-stone-400 rounded-full">
-                                {stories.filter(s => s.story_type === selectedCategory).length}
-                            </span>
-                        )}
-                    </div>
-                    {isOwnProfile && !selectedCategory && stories.length > 0 && (
-                        <p className="text-xs text-stone-400 dark:text-stone-500 italic mb-6">
-                            You can return to these anytime.
-                        </p>
-                    )}
-                    {(() => {
-                        const filteredStories = selectedCategory
-                            ? stories.filter(s => s.story_type === selectedCategory)
-                            : stories;
-
-                        return filteredStories.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {filteredStories.map((story) => (
-                                    <StoryCard key={story.id} story={story} />
-                                ))}
+                            <div className="pt-2">
+                                <StoryConstellation
+                                    stories={stories}
+                                    storiesByType={storiesByType}
+                                    onCategoryClick={(value) => setSelectedCategory(selectedCategory === value ? null : value)}
+                                />
                             </div>
-                        ) : (
-                            <div className="text-center py-16 bg-amber-50/20 dark:bg-zinc-800/50 rounded-xl border border-amber-100 dark:border-zinc-700">
-                                <BookOpen className="w-16 h-16 mx-auto text-stone-300 dark:text-stone-600 mb-4" />
-                                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                        )}
+
+                        <p className="text-center font-body text-xs text-stone-400 dark:text-stone-500 italic mt-4">
+                            There is no right balance. This is simply a snapshot of your heart in time.
+                        </p>
+                    </section>
+
+                    {/* Stories Archive Grid */}
+                    <section className="space-y-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h2 className="font-stories text-2xl sm:text-3xl text-stone-900 dark:text-stone-100 font-normal">
                                     {selectedCategory
-                                        ? `No ${storyTypes.find(t => t.value === selectedCategory)?.label || ''} stories yet`
-                                        : 'No stories yet'
+                                        ? `${storyTypes.find(t => t.value === selectedCategory)?.label || 'Filtered'} Reflections`
+                                        : isOwnProfile ? 'Your Reflections' : 'Published Reflections'
+                                    }
+                                </h2>
+                                <p className="font-body text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1">
+                                    {isOwnProfile ? 'Words you have shared with the sanctuary.' : 'Public reflections by this author.'}
+                                </p>
+                            </div>
+
+                            <span className="px-3 py-1 text-xs font-semibold rounded-full bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-700 dark:text-stone-300">
+                                {filteredStories.length}
+                            </span>
+                        </div>
+
+                        {filteredStories.length === 0 ? (
+                            <article className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-3xl p-10 sm:p-12 text-center max-w-xl mx-auto space-y-4">
+                                <div className="w-12 h-12 rounded-2xl bg-amber-100/70 dark:bg-amber-950/40 text-[#C85828] dark:text-amber-400 flex items-center justify-center mx-auto border border-amber-200/60 dark:border-amber-900/40">
+                                    <Feather className="w-6 h-6 stroke-[1.75]" />
+                                </div>
+
+                                <h3 className="font-stories text-xl sm:text-2xl text-stone-900 dark:text-stone-100 font-normal">
+                                    {selectedCategory
+                                        ? `No ${storyTypes.find(t => t.value === selectedCategory)?.label} reflections`
+                                        : 'No reflections shared yet'
                                     }
                                 </h3>
-                                <p className="text-gray-600 dark:text-gray-400 mb-4">
+
+                                <p className="font-body text-xs sm:text-sm text-stone-500 dark:text-stone-400 leading-relaxed">
                                     {selectedCategory
-                                        ? 'Try selecting a different category or clear the filter.'
+                                        ? 'Select another category or clear the filter to view all reflections.'
                                         : isOwnProfile
-                                            ? "Start sharing your stories with the world!"
-                                            : "This author hasn't published any stories yet."
+                                            ? 'When you are ready, share your first story anonymously or openly with the sanctuary.'
+                                            : 'This author has not published any reflections in this category yet.'
                                     }
                                 </p>
+
                                 {selectedCategory ? (
                                     <button
                                         onClick={() => setSelectedCategory(null)}
-                                        className="group relative inline-flex items-center gap-2 px-4 py-2 text-gray-600 dark:text-gray-300 font-medium transition-all duration-300 hover:text-gray-800 dark:hover:text-white"
+                                        className="inline-flex items-center gap-1.5 text-xs text-[#C85828] hover:underline font-medium"
                                     >
-                                        <span className="relative">
-                                            Clear Filter
-                                            <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gray-400 transition-all duration-300 group-hover:w-full" />
-                                        </span>
+                                        <span>Show all reflections</span>
                                     </button>
                                 ) : isOwnProfile && (
-                                    <Link
-                                        to="/feed/create"
-                                        className="group relative inline-flex items-center gap-2 px-4 py-2 text-amber-600 dark:text-amber-400 font-medium transition-all duration-300 hover:text-amber-700 dark:hover:text-amber-300"
-                                    >
-                                        <span className="relative">
-                                            Write Your First Story
-                                            <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-300 group-hover:w-full" />
-                                        </span>
-                                    </Link>
+                                    <div className="pt-2">
+                                        <Link
+                                            to="/feed/create"
+                                            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#C85828] hover:bg-[#B54D20] text-white rounded-xl text-xs sm:text-sm font-semibold shadow-sm transition-all"
+                                        >
+                                            <Plus className="w-4 h-4" />
+                                            <span>Begin Your Reflection</span>
+                                        </Link>
+                                    </div>
                                 )}
+                            </article>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {filteredStories.map((story, index) => (
+                                    <StoryCard key={story.id} story={story} index={index} />
+                                ))}
                             </div>
-                        );
-                    })()}
-                </div>
+                        )}
+                    </section>
+                </main>
             </div>
-        </div>
+        </>
     );
 }

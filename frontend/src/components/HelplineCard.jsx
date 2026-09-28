@@ -9,11 +9,11 @@ const helplines = [
         phone: '14416',
         tollFree: '1800-891-4416',
         availability: '24/7, Free',
-        color: 'from-blue-500 to-indigo-600',
-        bgColor: 'bg-blue-50 dark:bg-blue-900/20',
-        borderColor: 'border-blue-200 dark:border-blue-700',
+        color: 'from-amber-600 to-amber-700',
+        bgColor: 'bg-[#FFFDF9] dark:bg-[#181614]',
+        borderColor: 'border-[#EADDCF] dark:border-[#2C2723]',
         badge: 'Govt. of India',
-        badgeColor: 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
+        badgeColor: 'bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300'
     },
     {
         id: 'icall',
@@ -23,11 +23,11 @@ const helplines = [
         email: 'icall@tiss.edu',
         website: 'https://icallhelpline.org',
         availability: 'Mon-Sat, 8AM-10PM',
-        color: 'from-emerald-500 to-teal-600',
-        bgColor: 'bg-emerald-50 dark:bg-emerald-900/20',
-        borderColor: 'border-emerald-200 dark:border-emerald-700',
+        color: 'from-stone-700 to-stone-800',
+        bgColor: 'bg-[#FFFDF9] dark:bg-[#181614]',
+        borderColor: 'border-[#EADDCF] dark:border-[#2C2723]',
         badge: 'TISS',
-        badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300'
+        badgeColor: 'bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300'
     }
 ];
 
@@ -35,21 +35,27 @@ function CopyButton({ text, label }) {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = async () => {
-        await navigator.clipboard.writeText(text);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        try {
+            await navigator.clipboard.writeText(text);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (e) {
+            console.error('Clipboard copy error:', e);
+        }
     };
 
     return (
         <button
+            type="button"
             onClick={handleCopy}
-            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            className="p-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-600 dark:text-stone-300 transition-colors"
             title={`Copy ${label}`}
+            aria-label={`Copy ${label}`}
         >
             {copied ? (
-                <Check className="w-4 h-4 text-green-500" />
+                <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             ) : (
-                <Copy className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                <Copy className="w-4 h-4" />
             )}
         </button>
     );
@@ -58,71 +64,81 @@ function CopyButton({ text, label }) {
 export function HelplineCard({ helpline, compact = false }) {
     if (compact) {
         return (
-            <div className={`p-4 rounded-xl ${helpline.bgColor} ${helpline.borderColor} border`}>
-                <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-bold text-gray-900 dark:text-white">{helpline.name}</h4>
-                    <span className={`text-xs px-2 py-1 rounded-full ${helpline.badgeColor}`}>
+            <div className={`p-4 rounded-2xl bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] shadow-sm`}>
+                <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-heading font-semibold text-stone-900 dark:text-stone-100 text-sm sm:text-base">
+                        {helpline.name}
+                    </h4>
+                    <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full ${helpline.badgeColor}`}>
                         {helpline.badge}
                     </span>
                 </div>
                 <a
                     href={`tel:${helpline.phone}`}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r ${helpline.color} text-white font-medium hover:opacity-90 transition-opacity`}
+                    className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-[#C85828] hover:bg-[#B54D20] text-white text-xs sm:text-sm font-semibold shadow-sm transition-all"
                 >
-                    <Phone className="w-4 h-4" />
-                    {helpline.phone}
+                    <Phone className="w-3.5 h-3.5" />
+                    <span>Call {helpline.phone}</span>
                 </a>
             </div>
         );
     }
 
     return (
-        <div className={`p-6 rounded-2xl ${helpline.bgColor} ${helpline.borderColor} border-2 transition-[box-shadow] duration-300 hover:shadow-lg`}>
+        <article className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-3xl p-6 sm:p-7 shadow-[0_2px_14px_rgba(200,140,90,0.04)] dark:shadow-[0_2px_14px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 hover:border-[#D4832D]/70 dark:hover:border-[#D4832D]/50 hover:shadow-[0_10px_28px_rgba(200,120,60,0.08)] transition-all duration-300 flex flex-col justify-between h-full">
+            
             {/* Header */}
-            <div className="flex items-start justify-between mb-4">
-                <div>
-                    <div className="flex items-center gap-3 mb-1">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">{helpline.name}</h3>
-                        <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${helpline.badgeColor}`}>
-                            {helpline.badge}
-                        </span>
+            <div>
+                <div className="flex items-start justify-between gap-4 mb-3">
+                    <div>
+                        <div className="flex items-center gap-2.5 mb-1">
+                            <h3 className="font-heading text-lg sm:text-xl font-semibold text-stone-900 dark:text-stone-100">
+                                {helpline.name}
+                            </h3>
+                            <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full ${helpline.badgeColor}`}>
+                                {helpline.badge}
+                            </span>
+                        </div>
+                        <p className="font-body text-xs sm:text-sm text-stone-500 dark:text-stone-400">
+                            {helpline.description}
+                        </p>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{helpline.description}</p>
+
+                    <div className="w-10 h-10 rounded-xl bg-amber-100/70 dark:bg-amber-950/40 text-[#C85828] dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-200/50 dark:border-amber-900/40">
+                        <Phone className="w-4 h-4 stroke-[2]" />
+                    </div>
                 </div>
-                <div className={`p-3 rounded-xl bg-gradient-to-br ${helpline.color} shadow-lg`}>
-                    <Phone className="w-6 h-6 text-white" />
+
+                {/* Availability */}
+                <div className="flex items-center gap-2 mb-6 text-xs text-stone-500 dark:text-stone-400 font-body">
+                    <Clock className="w-3.5 h-3.5 text-stone-400" />
+                    <span>{helpline.availability}</span>
                 </div>
             </div>
 
-            {/* Availability */}
-            <div className="flex items-center gap-2 mb-4 text-sm text-gray-600 dark:text-gray-400">
-                <Clock className="w-4 h-4" />
-                <span>{helpline.availability}</span>
-            </div>
-
-            {/* Contact Options */}
-            <div className="space-y-3">
+            {/* Contact Actions */}
+            <div className="space-y-3 pt-2">
                 {/* Primary Phone */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                     <a
                         href={`tel:${helpline.phone}`}
-                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r ${helpline.color} text-white font-semibold hover:opacity-90 transition-[opacity,box-shadow] duration-200 shadow-md`}
+                        className="flex-1 inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-[#C85828] hover:bg-[#B54D20] text-white text-xs sm:text-sm font-semibold shadow-sm transition-all active:scale-[0.98]"
                     >
-                        <Phone className="w-5 h-5" />
-                        Call {helpline.phone}
+                        <Phone className="w-4 h-4" />
+                        <span>Call {helpline.phone}</span>
                     </a>
                     <CopyButton text={helpline.phone} label="phone number" />
                 </div>
 
                 {/* Toll Free */}
                 {helpline.tollFree && (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2.5">
                         <a
                             href={`tel:${helpline.tollFree.replace(/-/g, '')}`}
-                            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
+                            className="flex-1 inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-[#FFFDF9] dark:bg-[#1E1A17] border border-[#EADDCF] dark:border-[#332E29] text-stone-800 dark:text-stone-200 text-xs sm:text-sm font-medium hover:bg-stone-50 dark:hover:bg-[#25211D] transition-colors"
                         >
-                            <Phone className="w-4 h-4" />
-                            Toll Free: {helpline.tollFree}
+                            <Phone className="w-3.5 h-3.5 text-stone-500" />
+                            <span>Toll Free: {helpline.tollFree}</span>
                         </a>
                         <CopyButton text={helpline.tollFree} label="toll free number" />
                     </div>
@@ -130,13 +146,13 @@ export function HelplineCard({ helpline, compact = false }) {
 
                 {/* Email */}
                 {helpline.email && (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2.5">
                         <a
                             href={`mailto:${helpline.email}`}
-                            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
+                            className="flex-1 inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-[#FFFDF9] dark:bg-[#1E1A17] border border-[#EADDCF] dark:border-[#332E29] text-stone-800 dark:text-stone-200 text-xs sm:text-sm font-medium hover:bg-stone-50 dark:hover:bg-[#25211D] transition-colors"
                         >
-                            <Mail className="w-4 h-4" />
-                            {helpline.email}
+                            <Mail className="w-3.5 h-3.5 text-stone-500" />
+                            <span>{helpline.email}</span>
                         </a>
                         <CopyButton text={helpline.email} label="email" />
                     </div>
@@ -148,20 +164,20 @@ export function HelplineCard({ helpline, compact = false }) {
                         href={helpline.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                        className="inline-flex items-center justify-center gap-2 w-full h-11 px-4 rounded-xl bg-stone-100 hover:bg-stone-200/80 dark:bg-stone-800/60 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300 text-xs sm:text-sm font-medium transition-colors"
                     >
-                        <Globe className="w-4 h-4" />
-                        Visit Website
+                        <Globe className="w-3.5 h-3.5" />
+                        <span>Visit Official Website</span>
                     </a>
                 )}
             </div>
 
             {/* Privacy Note */}
-            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
-                <Shield className="w-3.5 h-3.5" />
-                <span>Your call is confidential and anonymous</span>
+            <div className="flex items-center gap-2 mt-5 pt-4 border-t border-[#EADDCF]/70 dark:border-[#2C2723] text-xs text-stone-500 dark:text-stone-400 font-body">
+                <Shield className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+                <span>Your call is confidential and anonymous.</span>
             </div>
-        </div>
+        </article>
     );
 }
 

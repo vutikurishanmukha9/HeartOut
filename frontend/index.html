@@ -1,10 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" style="background-color: #FAF5EF;">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
     
     <!-- Primary Meta Tags -->
     <meta name="description" content="HeartOut - A safe, empathetic storytelling platform where you can anonymously share achievements, regrets, unsent letters, sacrifices, and life stories. Where every story matters." />
@@ -13,9 +14,22 @@
     <meta name="robots" content="index, follow" />
     
     <!-- Theme Color -->
-    <meta name="theme-color" content="#f97316" />
-    <meta name="msapplication-TileColor" content="#f97316" />
+    <meta name="theme-color" content="#FAF5EF" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0F0E0C" media="(prefers-color-scheme: dark)" />
+    <meta name="msapplication-TileColor" content="#C85828" />
     
+    <!-- Immediate Canvas and Root Atmosphere Styles -->
+    <style>
+      :root, html, body {
+        background-color: #FAF5EF !important;
+        margin: 0;
+        padding: 0;
+      }
+      html.dark, html.dark body {
+        background-color: #0F0E0C !important;
+      }
+    </style>
+
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json" />
     
@@ -41,27 +55,38 @@
     
     <title>HeartOut - Personal Storytelling Platform</title>
   </head>
-  <body>
+  <body style="background-color: #FAF5EF; margin: 0; padding: 0;">
     <script>
-      // Apply theme immediately to prevent flash
+      // Apply theme and background immediately to prevent flash and eliminate white overscroll canvas
       (function() {
         try {
           const saved = localStorage.getItem('heartout-theme-preferences');
+          let isDark = false;
           if (saved) {
             const prefs = JSON.parse(saved);
             const theme = prefs.theme;
             if (theme === 'dark') {
-              document.documentElement.classList.add('dark');
+              isDark = true;
             } else if (theme === 'light') {
-              document.documentElement.classList.add('light');
+              isDark = false;
             } else {
-              // Auto - check system preference
-              if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.classList.add('dark');
-              } else {
-                document.documentElement.classList.add('light');
-              }
+              isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             }
+          } else {
+            isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          }
+          const root = document.documentElement;
+          const bg = isDark ? '#0F0E0C' : '#FAF5EF';
+          if (isDark) {
+            root.classList.add('dark');
+            root.style.colorScheme = 'dark';
+          } else {
+            root.classList.add('light');
+            root.style.colorScheme = 'light';
+          }
+          root.style.backgroundColor = bg;
+          if (document.body) {
+            document.body.style.backgroundColor = bg;
           }
         } catch (e) {}
       })();

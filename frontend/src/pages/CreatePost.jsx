@@ -1,27 +1,76 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { PenTool, Save, Send, ArrowLeft, Sparkles, Clock, Hash, Check, X, Heart, Lightbulb, AlertCircle, Shield, Maximize2, Minimize2 } from 'lucide-react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { 
+    ArrowLeft, 
+    Save, 
+    Send, 
+    Sparkles, 
+    Clock, 
+    Check, 
+    X, 
+    Heart, 
+    AlertCircle, 
+    Shield, 
+    Maximize2, 
+    Minimize2, 
+    Trash2,
+    PhoneCall,
+    SlidersHorizontal,
+    Feather
+} from 'lucide-react';
 import toast from 'react-hot-toast';
-import StoryTypeSelector from '../components/StoryTypeSelector';
-import AnonymousToggle from '../components/AnonymousToggle';
 import { getApiUrl } from '../config/api';
+import { AuthContext } from '../context/AuthContext';
+import StoryTypeSelector, { storyTypes } from '../components/StoryTypeSelector';
+import AnonymousToggle from '../components/AnonymousToggle';
+
+const WRITING_GUIDANCE = {
+    unsent_letter: {
+        tip: 'Write directly to them as if they will never read it. The weight belongs on the page, not inside your chest.',
+        prompt: 'To the person you never got to tell: say what you carried in silence.'
+    },
+    regret: {
+        tip: 'Be honest and reflective. What did this experience teach you about who you used to be and who you are now?',
+        prompt: 'What hard experience reshaped how you walk through the world?'
+    },
+    confession: {
+        tip: 'Longing is a natural human pulse. Give a name to the ambition, hope, or secret wish you have kept quiet.',
+        prompt: 'What quiet ambition or longing are you still secretly reaching for?'
+    },
+    achievement: {
+        tip: 'Focus on the inner climb, not just the summit. What quiet resistance did you have to overcome to get here?',
+        prompt: 'What did you survive, build, or overcome that you never thought you could?'
+    },
+    sacrifice: {
+        tip: 'Describe what you chose to surrender, and what made that surrender worth the weight you carried.',
+        prompt: 'What did it cost you to protect someone else or reach this moment?'
+    },
+    other: {
+        tip: 'No filters, no performance. Let your authentic reflection breathe in the quiet.',
+        prompt: 'The truths that breathe easiest in the quiet.'
+    }
+};
 
 export default function CreatePost() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const textareaRef = useRef(null);
-    const [step, setStep] = useState(1);
+    const authContext = useContext(AuthContext);
+    const currentUser = authContext?.user;
+
     const [isFocusMode, setIsFocusMode] = useState(false);
     const [draftId, setDraftId] = useState(null);
-    const [loadingDraft, setLoadingDraft] = useState(false); // Prevents flash when loading draft
+    const [loadingDraft, setLoadingDraft] = useState(false);
+    
     const [formData, setFormData] = useState({
         title: '',
         content: '',
-        story_type: '',
+        story_type: 'unsent_letter',
         is_anonymous: false,
         tags: [],
         status: 'draft'
     });
+
     const [tagInput, setTagInput] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [showPublishModal, setShowPublishModal] = useState(false);
@@ -30,15 +79,14 @@ export default function CreatePost() {
     const [autoSaved, setAutoSaved] = useState(false);
     const [lastSaved, setLastSaved] = useState(null);
 
-    // Load draft if editing existing one
+    // Load draft if editing existing one from backend or local storage
     useEffect(() => {
         const draftParam = searchParams.get('draft');
         if (draftParam) {
             setDraftId(draftParam);
-            setLoadingDraft(true); // Show loading while fetching draft
-            loadDraft(draftParam);
+            setLoadingDraft(true);
+            loadRemoteDraft(draftParam);
         } else {
-            // Restore from localStorage if not editing existing draft
             const savedDraft = localStorage.getItem('heartout_draft');
             if (savedDraft) {
                 try {
@@ -47,88 +95,88 @@ export default function CreatePost() {
                         ...prev,
                         title: parsed.title || '',
                         content: parsed.content || '',
-                        story_type: parsed.story_type || '',
+                        story_type: parsed.story_type || 'unsent_letter',
                         is_anonymous: parsed.is_anonymous ?? false,
-                        tags: parsed.tags || []
+                        tags: Array.isArray(parsed.tags) ? parsed.tags : []
                     }));
-                    if (parsed.story_type) setStep(2);
+                    if (parsed.savedAt) {
+                        setLastSaved(new Date(parsed.savedAt));
+                    }
                     setAutoSaved(true);
-                    setTimeout(() => setAutoSaved(false), 2000);
+                    const timer = setTimeout(() => setAutoSaved(false), 2000);
+                    return () => clearTimeout(timer);
                 } catch (e) {
-                    console.error('Failed to restore draft:', e);
+                    console.error('Failed to parse cached draft:', e);
                 }
             }
         }
     }, [searchParams]);
 
-    const loadDraft = async (id) => {
+    const loadRemoteDraft = async (id) => {
         try {
-            console.log('Loading draft:', id);
             const response = await fetch(getApiUrl(`/api/posts/${id}`), {
                 credentials: 'include',
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log('Draft loaded:', data);
                 const story = data.story;
                 setFormData({
                     title: story.title || '',
                     content: story.content || '',
-                    story_type: story.story_type || '',
+                    story_type: story.story_type || 'unsent_letter',
                     is_anonymous: story.is_anonymous ?? true,
-                    tags: story.tags || [],
+                    tags: Array.isArray(story.tags) ? story.tags : [],
                     status: story.status || 'draft'
                 });
-                // Skip to step 2 if story type is set
-                if (story.story_type) setStep(2);
+                setLastSaved(story.updated_at ? new Date(story.updated_at) : new Date());
             } else {
-                console.error('Failed to load draft, status:', response.status);
-                toast.error('Failed to load draft');
+                toast.error('Unable to load requested draft');
             }
         } catch (error) {
-            console.error('Failed to load draft:', error);
-            toast.error('Failed to load draft');
+            console.error('Failed to fetch remote draft:', error);
+            toast.error('Network issue loading draft');
         } finally {
-            setLoadingDraft(false); // Done loading
+            setLoadingDraft(false);
         }
     };
 
-    // Clear localStorage draft helper
     const clearLocalDraft = () => {
         localStorage.removeItem('heartout_draft');
     };
 
-    const handleDiscardLocalDraft = () => {
+    const handleDiscard = () => {
         clearLocalDraft();
         setFormData({
             title: '',
             content: '',
-            story_type: '',
+            story_type: 'unsent_letter',
             is_anonymous: false,
             tags: [],
             status: 'draft'
         });
-        setStep(1);
+        setLastSaved(null);
         setShowDiscardModal(false);
+        toast.success('Draft cleared');
     };
 
-    // Auto-save draft to localStorage every 5 seconds
+    // Auto-save draft to localStorage every 4 seconds when dirty
     useEffect(() => {
         if (!draftId) {
-            if (formData.title || formData.content) {
+            if (formData.title.trim() || formData.content.trim()) {
                 const timer = setTimeout(() => {
+                    const now = new Date();
                     localStorage.setItem('heartout_draft', JSON.stringify({
                         title: formData.title,
                         content: formData.content,
                         story_type: formData.story_type,
                         is_anonymous: formData.is_anonymous,
                         tags: formData.tags,
-                        savedAt: new Date().toISOString()
+                        savedAt: now.toISOString()
                     }));
                     setAutoSaved(true);
-                    setLastSaved(new Date());
+                    setLastSaved(now);
                     setTimeout(() => setAutoSaved(false), 2000);
-                }, 5000);
+                }, 4000);
                 return () => clearTimeout(timer);
             } else {
                 localStorage.removeItem('heartout_draft');
@@ -136,39 +184,44 @@ export default function CreatePost() {
         }
     }, [formData.title, formData.content, formData.story_type, formData.is_anonymous, formData.tags, draftId]);
 
-    // Auto-resize textarea on mobile
+    // Adaptive auto-growing textarea
     useEffect(() => {
         const textarea = textareaRef.current;
         if (textarea) {
-            // Reset height to auto to get proper scrollHeight
             textarea.style.height = 'auto';
-            // Set minimum height based on screen size
-            const isMobile = window.innerWidth < 640;
-            const minHeight = isMobile ? 120 : 400; // 4 rows mobile, 16 rows desktop
-            const maxHeight = isMobile ? 400 : 600; // Cap height
-            // Calculate new height
-            const newHeight = Math.min(Math.max(textarea.scrollHeight, minHeight), maxHeight);
+            const minHeight = window.innerWidth < 640 ? 240 : 380;
+            const newHeight = Math.max(textarea.scrollHeight, minHeight);
             textarea.style.height = `${newHeight}px`;
         }
     }, [formData.content]);
 
     const detectCrisisSignals = (text) => {
         const distressPatterns = [
-            /suicide/i, /end my life/i, /want to die/i, /kill myself/i, 
-            /no reason to live/i, /giving up on life/i, /self-harm/i
+            /suicide/i, 
+            /end my life/i, 
+            /want to die/i, 
+            /kill myself/i, 
+            /no reason to live/i, 
+            /giving up on life/i, 
+            /self-harm/i
         ];
         return distressPatterns.some(pattern => pattern.test(text));
     };
 
     const handleSubmit = async (publishNow = false, bypassCrisisCheck = false) => {
-        if (!formData.title || !formData.content || !formData.story_type) {
-            toast.error('Please fill in all required fields', {
-                duration: 4000
-            });
+        if (!formData.title.trim()) {
+            toast.error('Please give your story a title');
+            return;
+        }
+        if (!formData.content.trim()) {
+            toast.error('Please write something in your story');
+            return;
+        }
+        if (!formData.story_type) {
+            toast.error('Please select a story category');
             return;
         }
 
-        // Crisis Detection Guardrail
         if (publishNow && !bypassCrisisCheck && detectCrisisSignals(`${formData.title} ${formData.content}`)) {
             setShowPublishModal(false);
             setShowCrisisModal(true);
@@ -177,7 +230,6 @@ export default function CreatePost() {
 
         setSubmitting(true);
         try {
-            // Use PUT for editing existing draft, POST for new story
             const url = draftId
                 ? getApiUrl(`/api/posts/${draftId}`)
                 : getApiUrl('/api/posts');
@@ -190,22 +242,25 @@ export default function CreatePost() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    ...formData,
+                    title: formData.title.trim(),
+                    content: formData.content.trim(),
+                    story_type: formData.story_type,
+                    is_anonymous: Boolean(formData.is_anonymous),
+                    tags: formData.tags,
                     status: publishNow ? 'published' : 'draft'
                 })
             });
 
             if (response.ok) {
                 const data = await response.json();
-                clearLocalDraft(); // Clear localStorage after successful save
+                clearLocalDraft();
+                toast.success(publishNow ? 'Your story is out in the sanctuary' : 'Draft safely saved');
                 navigate(publishNow ? `/feed/story/${data.story.id}` : '/feed/drafts');
             } else {
                 const errorData = await response.json().catch(() => ({}));
-                // Handle FastAPI validation errors (422 format: {detail: [{loc: [], msg: '...'}]})
-                let errorMsg = 'Failed to create story';
+                let errorMsg = 'Failed to submit story';
                 if (errorData.detail) {
                     if (Array.isArray(errorData.detail)) {
-                        // FastAPI validation error format
                         errorMsg = errorData.detail.map(err => {
                             const field = err.loc?.slice(-1)[0] || 'field';
                             return `${field}: ${err.msg}`;
@@ -218,366 +273,384 @@ export default function CreatePost() {
                 } else if (errorData.message) {
                     errorMsg = errorData.message;
                 }
-                // Show styled toast with the actual validation error
                 toast.error(errorMsg, {
-                    duration: 6000,
-                    style: {
-                        maxWidth: '400px',
-                        whiteSpace: 'pre-line'
-                    }
+                    duration: 5000,
+                    style: { maxWidth: '420px', whiteSpace: 'pre-line' }
                 });
             }
         } catch (error) {
-            console.error('Error creating story:', error);
-            toast.error('Network error. Please check your connection.', {
-                duration: 5000
-            });
+            console.error('Error submitting story:', error);
+            toast.error('Network connection error. Please try again.');
         } finally {
             setSubmitting(false);
             setShowPublishModal(false);
         }
     };
 
-    const addTag = () => {
-        if (tagInput.trim() && !formData.tags.includes(tagInput.trim()) && formData.tags.length < 5) {
-            setFormData({
-                ...formData,
-                tags: [...formData.tags, tagInput.trim().toLowerCase()]
-            });
+    const addTag = (rawTag) => {
+        const clean = (rawTag || tagInput).trim().toLowerCase().replace(/^#/, '');
+        if (!clean) return;
+        if (formData.tags.includes(clean)) {
             setTagInput('');
+            return;
         }
+        if (formData.tags.length >= 5) {
+            toast.error('You can add up to 5 tags');
+            return;
+        }
+        setFormData(prev => ({
+            ...prev,
+            tags: [...prev.tags, clean]
+        }));
+        setTagInput('');
     };
 
-    const removeTag = (tag) => {
-        setFormData({
-            ...formData,
-            tags: formData.tags.filter(t => t !== tag)
-        });
+    const removeTag = (tagToRemove) => {
+        setFormData(prev => ({
+            ...prev,
+            tags: prev.tags.filter(t => t !== tagToRemove)
+        }));
     };
 
-    const wordCount = formData.content.split(/\s+/).filter(w => w.length > 0).length;
+    const wordsArray = formData.content.trim().split(/\s+/).filter(Boolean);
+    const wordCount = formData.content.trim() ? wordsArray.length : 0;
     const charCount = formData.content.length;
-    const readingTime = Math.max(1, Math.ceil(wordCount / 225));
-    const titleProgress = (formData.title.length / 200) * 100;
+    const readingTime = Math.max(1, Math.ceil(wordCount / 210));
 
-    // Writing tips based on story type
-    const writingTips = {
-        achievement: "Focus on the journey, not just the destination. What obstacles did you overcome?",
-        regret: "Be honest and reflective. What would you do differently?",
-        unsent_letter: "Write from the heart. What do you wish you had said?",
-        sacrifice: "Describe the weight of your choice. What made it worth it?",
-        life_story: "Share the moments that shaped who you are today.",
-        other: "Let your authentic voice shine through."
-    };
+    const activeTypeMeta = storyTypes.find(t => t.value === formData.story_type) || storyTypes[0];
+    const activeGuidance = WRITING_GUIDANCE[formData.story_type] || WRITING_GUIDANCE.other;
 
-    // Show loading screen while loading draft (prevents flash of step 1)
     if (loadingDraft) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-rose-50/50 via-orange-50/30 to-purple-50/50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 flex items-center justify-center">
-                <div className="text-center">
-                    <div className="w-12 h-12 border-4 border-primary-200 rounded-full animate-spin border-t-primary-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600 dark:text-gray-400">Loading your draft…</p>
+            <div className="min-h-screen heartout-auth-bg dark:bg-[#121110] flex items-center justify-center p-6">
+                <div className="flex flex-col items-center gap-4 text-center">
+                    <div className="w-10 h-10 rounded-full border-2 border-amber-600/30 border-t-amber-600 animate-spin" />
+                    <p className="font-body text-sm text-stone-600 dark:text-stone-400">Opening your draft...</p>
                 </div>
             </div>
         );
     }
 
-    // Step 1: Story Type Selection
-    if (step === 1) {
-        return (
-            <div className="min-h-screen bg-gradient-to-b from-stone-50 to-amber-50/30 dark:from-zinc-900 dark:to-zinc-900 pt-28 pb-12">
-                {/* Single subtle floating orb - morning fog feel */}
-                <div className="fixed top-40 right-20 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-
-                <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12 animate-slide-up">
-
-                        <h1 className="text-3xl sm:text-4xl font-medium text-stone-800 dark:text-stone-100 mb-4">
-                            What would you like to write today?
-                        </h1>
-                        <p className="text-lg text-stone-500 dark:text-stone-400 max-w-xl mx-auto">
-                            There's no right choice. Start where it feels easiest.
-                        </p>
-                    </div>
-
-                    <div className="animate-slide-up stagger-2">
-                        <StoryTypeSelector
-                            selected={formData.story_type}
-                            onChange={(type) => {
-                                setFormData({ ...formData, story_type: type });
-                                setStep(2);
-                            }}
-                            variant="cards"
-                        />
-
-                        {/* Permission sentence - emotional grounding */}
-                        <p className="text-center text-sm text-stone-400 dark:text-stone-500 italic mt-10">
-                            You don't have to write perfectly. You just have to write honestly.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // Step 2: Write Story
     return (
-        <div className="min-h-screen bg-gradient-to-b from-stone-50 to-amber-50/30 dark:from-zinc-900 dark:to-zinc-900 pt-8 pb-32 sm:pb-24 relative overflow-hidden">
-            {/* Single subtle floating orb */}
-            <div className="absolute top-40 right-10 w-80 h-80 bg-amber-100/20 rounded-full blur-3xl pointer-events-none" />
+        <div className={`min-h-screen transition-colors duration-300 ${isFocusMode ? 'bg-[#FAF6F0] dark:bg-[#0E0D0C]' : 'heartout-auth-bg dark:bg-[#121110]'}`}>
+            
+            {/* Top Sanctuary Control Console */}
+            <header className={`sticky top-0 z-40 transition-all duration-300 ${
+                isFocusMode 
+                    ? 'py-3 px-6 bg-transparent' 
+                    : 'py-3.5 px-4 sm:px-8 bg-[#FBEFE5]/90 dark:bg-[#121110]/90 backdrop-blur-md border-b border-[#EADDCF]/80 dark:border-[#26221E]'
+            }`}>
+                <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+                    
+                    {/* Left: Navigation & Context */}
+                    <div className="flex items-center gap-3">
+                        <Link
+                            to="/feed"
+                            className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors px-2.5 py-1.5 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            <span className="hidden sm:inline">Back to Sanctuary</span>
+                        </Link>
 
-            <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Header */}
-                <div className={`transition-all duration-500 ${isFocusMode ? 'opacity-0 h-0 overflow-hidden' : 'mb-12 animate-slide-up'}`}>
-                    <button
-                        onClick={() => setStep(1)}
-                        className="group inline-flex items-center gap-2 text-stone-500 dark:text-stone-400 hover:text-amber-600 dark:hover:text-amber-400 transition-all mb-10"
-                    >
-                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                        <span className="text-sm font-medium">Change Story Type</span>
-                    </button>
+                        {/* Subtle hairline divider */}
+                        <div className="hidden sm:block w-[1px] h-4 bg-[#EADDCF] dark:bg-[#2C2723]" />
 
-                    <div className="flex items-end justify-between flex-wrap gap-4">
-                        <div>
-                            <h1 className="text-2xl sm:text-3xl font-medium text-stone-800 dark:text-stone-100 mb-2">
-                                This space is yours
-                            </h1>
-                            <p className="text-sm text-stone-500 dark:text-stone-400">
-                                You're in control of who sees this.
+                        {/* Live auto-save telemetry badge */}
+                        <div className="flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400 font-body">
+                            {autoSaved ? (
+                                <span className="inline-flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-medium">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                                    Draft saved
+                                </span>
+                            ) : lastSaved ? (
+                                <span className="inline-flex items-center gap-1 text-stone-500 dark:text-stone-400">
+                                    <Clock className="w-3.5 h-3.5" />
+                                    Saved at {lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                            ) : (
+                                <span className="text-stone-400 dark:text-stone-500">Unsaved draft</span>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Right: Actions */}
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        {/* Focus Mode Switch */}
+                        <button
+                            type="button"
+                            onClick={() => setIsFocusMode(!isFocusMode)}
+                            title={isFocusMode ? "Exit quiet focus" : "Enter quiet focus"}
+                            className="p-2.5 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-200/50 dark:hover:bg-stone-800/60 rounded-xl transition-all"
+                            aria-label={isFocusMode ? "Exit focus mode" : "Enter focus mode"}
+                        >
+                            {isFocusMode ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                        </button>
+
+                        {/* Discard Button */}
+                        {!draftId && (formData.title || formData.content) && !isFocusMode && (
+                            <button
+                                type="button"
+                                onClick={() => setShowDiscardModal(true)}
+                                className="inline-flex items-center gap-1.5 h-10 px-3.5 text-xs sm:text-sm font-medium text-stone-500 hover:text-red-600 dark:text-stone-400 dark:hover:text-red-400 rounded-xl hover:bg-red-50/60 dark:hover:bg-red-950/20 transition-colors"
+                            >
+                                <Trash2 className="w-3.5 h-3.5" />
+                                <span>Discard</span>
+                            </button>
+                        )}
+
+                        {/* Save Draft Button */}
+                        <button
+                            type="button"
+                            onClick={() => handleSubmit(false)}
+                            disabled={submitting}
+                            className="inline-flex items-center gap-1.5 h-10 px-4 text-xs sm:text-sm font-medium text-stone-700 dark:text-stone-300 bg-[#FFFDF9] dark:bg-[#1A1816] border border-[#EADDCF] dark:border-[#2C2723] rounded-xl hover:bg-stone-50 dark:hover:bg-[#221E1A] transition-all shadow-sm disabled:opacity-50"
+                        >
+                            <Save className="w-3.5 h-3.5" />
+                            <span className="hidden sm:inline">Save Draft</span>
+                        </button>
+
+                        {/* Primary Publish Action */}
+                        <button
+                            type="button"
+                            onClick={() => setShowPublishModal(true)}
+                            disabled={submitting || !formData.title.trim() || !formData.content.trim()}
+                            className="inline-flex items-center gap-2 h-10 px-5 text-xs sm:text-sm font-semibold text-white bg-[#C85828] hover:bg-[#B54D20] active:scale-[0.98] rounded-xl shadow-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                            <Send className="w-3.5 h-3.5" />
+                            <span>Share Story</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            {/* Main Sanctuary Experience */}
+            <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-24">
+                
+                {/* SECTION 1: Story Category Cards Grid */}
+                {!isFocusMode && (
+                    <section className="mb-10">
+                        <div className="mb-5 text-left">
+                            <h2 className="font-stories text-2xl sm:text-3xl text-stone-900 dark:text-stone-100 font-normal">
+                                Choose your reflection atmosphere
+                            </h2>
+                            <p className="font-body text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1">
+                                Every story belongs somewhere. Pick the tone that gives your words room to breathe.
                             </p>
                         </div>
 
-                        {/* Auto-save indicator */}
-                        <div className="flex items-center gap-2 text-sm px-4 py-2 rounded-full bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-white/30 dark:border-gray-700/30">
-                            {autoSaved && (
-                                <span className="flex items-center gap-2 text-green-600 dark:text-green-400 animate-fade-in">
-                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                    Auto-saved
-                                </span>
-                            )}
-                            {lastSaved && !autoSaved && (
-                                <span className="text-gray-500 dark:text-gray-400">
-                                    <Clock className="w-4 h-4 inline mr-1" />
-                                    {lastSaved.toLocaleTimeString()}
-                                </span>
-                            )}
-                            {!lastSaved && !autoSaved && (
-                                <span className="text-stone-400 dark:text-stone-500 text-xs">Draft is safe</span>
-                            )}
-                        </div>
-                    </div>
-                </div>
+                        {/* The 6 Redesigned Story Tone Cards */}
+                        <StoryTypeSelector
+                            selected={formData.story_type}
+                            onChange={(type) => setFormData({ ...formData, story_type: type })}
+                            variant="cards"
+                        />
+                    </section>
+                )}
 
-                <div className={`grid gap-8 transition-all duration-500 ${isFocusMode ? 'grid-cols-1 max-w-3xl mx-auto' : 'lg:grid-cols-3'}`}>
-                    {/* Main Editor */}
-                    <div className={`${isFocusMode ? '' : 'lg:col-span-2'} space-y-6 animate-slide-up transition-all duration-500`}>
-                        <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl p-8 shadow-xl shadow-gray-200/50 dark:shadow-gray-900/50 border border-white/50 dark:border-gray-700/50 space-y-8">
+                {/* SECTION 2: Writing Canvas & Companion Cards */}
+                <div className={`transition-all duration-500 ${isFocusMode ? 'max-w-4xl mx-auto' : 'grid grid-cols-1 lg:grid-cols-12 gap-8'}`}>
+                    
+                    {/* Main Writing Canvas Parchment Card */}
+                    <div className={isFocusMode ? 'w-full' : 'lg:col-span-8'}>
+                        <article className="relative bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-3xl p-6 sm:p-8 shadow-[0_4px_30px_rgba(200,140,90,0.06)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.4)] transition-all space-y-6">
                             
-                            {/* Focus Mode Toggle */}
-                            <button 
-                                onClick={() => setIsFocusMode(!isFocusMode)}
-                                className="absolute top-6 right-6 p-2 text-stone-400 hover:text-amber-600 transition-colors rounded-lg hover:bg-amber-50 dark:hover:bg-zinc-800"
-                                aria-label={isFocusMode ? "Exit focus mode" : "Enter focus mode"}
-                            >
-                                {isFocusMode ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
-                            </button>
-
-                            {/* Title Input */}
-                            <div className="group pt-2">
-                                <label className="block text-xs font-medium text-stone-500 dark:text-stone-400 mb-2">
-                                    Title
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        value={formData.title}
-                                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                        placeholder="Story Headline (Optional)"
-                                        className="w-full px-5 py-4 text-lg font-medium border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/40 dark:bg-zinc-900/50 text-stone-800 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 transition-all duration-300"
-                                        maxLength={200}
-                                    />
+                            {/* Card Top: Selected Atmosphere Guidance */}
+                            <div className="pb-4 border-b border-[#EADDCF]/70 dark:border-[#26221E] flex items-start gap-3">
+                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${activeTypeMeta.accentBg} ${activeTypeMeta.accentText}`}>
+                                    <activeTypeMeta.icon className="w-4 h-4" />
+                                </div>
+                                <div>
+                                    <span className="font-heading text-xs font-semibold text-stone-900 dark:text-stone-100 block">
+                                        {activeTypeMeta.label}
+                                    </span>
+                                    <p className="font-stories italic text-xs sm:text-sm text-stone-600 dark:text-stone-400 mt-0.5 leading-relaxed">
+                                        "{activeGuidance.prompt}"
+                                    </p>
                                 </div>
                             </div>
 
-                            {/* Content Textarea */}
-                            <div className="relative">
-                                <label className="block text-xs font-medium text-stone-500 dark:text-stone-400 mb-2">
-                                    Your story
+                            {/* Title Input */}
+                            <div className="space-y-1.5">
+                                <label className="font-heading text-[11px] uppercase tracking-wider font-semibold text-stone-400 dark:text-stone-500 block">
+                                    Story Title
                                 </label>
-                                <div className="relative group">
-                                    <textarea
-                                        ref={textareaRef}
-                                        value={formData.content}
-                                        onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                        placeholder="Start anywhere. Even the middle is fine."
-                                        className="w-full px-8 py-6 border border-amber-100 dark:border-zinc-700 rounded-xl bg-amber-50/20 dark:bg-zinc-900/50 text-stone-700 dark:text-stone-200 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 transition-all duration-300 resize-none text-base leading-relaxed min-h-[250px] sm:min-h-[450px] overflow-y-auto"
-                                        style={{ maxHeight: '550px' }}
-                                    />
-                                </div>
-
-                                {/* Stats Bar - Hidden until 50+ words */}
-                                {wordCount >= 50 && (
-                                    <div className="flex items-center justify-end mt-3 px-1 animate-fade-in">
-                                        <span className="text-xs text-stone-400 dark:text-stone-500">
-                                            {wordCount} words · ~{readingTime} min read
-                                        </span>
+                                <input
+                                    type="text"
+                                    value={formData.title}
+                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                    placeholder="Give your story a title..."
+                                    maxLength={200}
+                                    className="w-full bg-transparent font-stories text-2xl sm:text-3xl lg:text-4xl text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-600 focus:outline-none border-b border-transparent focus:border-amber-500/40 pb-2 transition-all leading-snug"
+                                />
+                                {formData.title.length > 150 && (
+                                    <div className="text-right text-[11px] text-stone-400">
+                                        {200 - formData.title.length} characters left
                                     </div>
                                 )}
                             </div>
 
-                            {/* Tags - De-emphasized, optional feeling */}
-                            <div className="pt-4 border-t border-stone-100 dark:border-zinc-800">
-                                <label className="block text-xs font-medium text-stone-400 dark:text-stone-500 mb-2">
-                                    Tags <span className="font-normal">(optional)</span>
+                            {/* Content Body Textarea */}
+                            <div className="relative pt-2">
+                                <label className="font-heading text-[11px] uppercase tracking-wider font-semibold text-stone-400 dark:text-stone-500 block mb-2">
+                                    Your Reflection
                                 </label>
-                                <div className="flex gap-2 mb-2">
-                                    <div className="relative flex-1">
-                                        <input
-                                            type="text"
-                                            value={tagInput}
-                                            onChange={(e) => setTagInput(e.target.value)}
-                                            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                                            placeholder="Add a feeling, a theme…"
-                                            className="w-full px-4 py-2 text-sm border border-amber-100 dark:border-zinc-700 rounded-lg bg-amber-50/20 dark:bg-zinc-800/50 text-stone-700 dark:text-stone-300 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 transition-all"
-                                            disabled={formData.tags.length >= 5}
-                                        />
-                                    </div>
-                                    <button
-                                        onClick={addTag}
-                                        disabled={formData.tags.length >= 5 || !tagInput.trim()}
-                                        className="px-4 py-2 text-sm text-amber-600 dark:text-amber-500 rounded-lg font-semibold hover:bg-amber-50 dark:hover:bg-zinc-800 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                                    >
-                                        Add
-                                    </button>
+                                <textarea
+                                    ref={textareaRef}
+                                    value={formData.content}
+                                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                                    placeholder="Start anywhere. Even the middle is fine. Write what was never spoken..."
+                                    className="w-full bg-transparent font-body text-base sm:text-lg leading-[1.8] text-stone-800 dark:text-stone-200 placeholder:text-stone-400 dark:placeholder:text-stone-600 focus:outline-none resize-none overflow-y-hidden"
+                                    style={{ minHeight: '340px' }}
+                                />
+                            </div>
+
+                            {/* Tags Card Row */}
+                            <div className="pt-6 border-t border-[#EADDCF]/70 dark:border-[#26221E] space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <label className="font-heading text-[11px] uppercase tracking-wider font-semibold text-stone-400 dark:text-stone-500">
+                                        Feelings & Themes <span className="font-normal lowercase">(optional)</span>
+                                    </label>
+                                    <span className="text-xs text-stone-400">
+                                        {formData.tags.length}/5 tags
+                                    </span>
                                 </div>
-                                <div className="flex flex-wrap gap-1.5">
-                                    {formData.tags.map((tag) => (
+
+                                <div className="flex flex-wrap items-center gap-2">
+                                    {formData.tags.map(tag => (
                                         <span
                                             key={tag}
-                                            className="inline-flex items-center gap-1.5 px-3 py-1 bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-stone-400 rounded-lg text-xs"
+                                            className="inline-flex items-center gap-1.5 px-3 py-1 bg-stone-100 dark:bg-[#221F1B] border border-[#EADDCF] dark:border-[#332E29] text-stone-700 dark:text-stone-300 rounded-full text-xs font-medium"
                                         >
                                             #{tag}
                                             <button
+                                                type="button"
                                                 onClick={() => removeTag(tag)}
-                                                className="hover:text-red-500 transition-colors"
+                                                className="text-stone-400 hover:text-red-500 transition-colors"
+                                                aria-label={`Remove tag ${tag}`}
                                             >
                                                 <X className="w-3 h-3" />
                                             </button>
                                         </span>
                                     ))}
+
+                                    {formData.tags.length < 5 && (
+                                        <div className="inline-flex items-center gap-1.5">
+                                            <input
+                                                type="text"
+                                                value={tagInput}
+                                                onChange={(e) => setTagInput(e.target.value)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        e.preventDefault();
+                                                        addTag();
+                                                    }
+                                                }}
+                                                placeholder="+ Add feeling or topic..."
+                                                className="px-3 py-1 text-xs bg-transparent border border-dashed border-stone-300 dark:border-stone-700 rounded-full text-stone-800 dark:text-stone-200 placeholder:text-stone-400 focus:outline-none focus:border-amber-500 w-36 sm:w-44"
+                                            />
+                                            {tagInput.trim() && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => addTag()}
+                                                    className="px-2 py-1 text-xs bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 rounded-full font-medium"
+                                                >
+                                                    Add
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Action Buttons - Quieter */}
-                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-8">
-                            {!draftId && (formData.title || formData.content) && (
-                                <button
-                                    type="button"
-                                    onClick={() => setShowDiscardModal(true)}
-                                    className="flex-none px-6 py-3.5 text-red-500 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-xl font-medium hover:bg-red-100 dark:hover:bg-red-500/30 transition-all duration-200"
-                                >
-                                    Discard
-                                </button>
-                            )}
-                            <button
-                                onClick={() => handleSubmit(false)}
-                                disabled={submitting}
-                                className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 bg-white dark:bg-zinc-800/80 border border-amber-300 dark:border-amber-600/30 text-amber-700 dark:text-amber-500 rounded-xl font-medium hover:bg-amber-50 dark:hover:bg-zinc-800 transition-all duration-200 disabled:opacity-50"
-                            >
-                                Save as Draft
-                            </button>
-                            <button
-                                onClick={() => setShowPublishModal(true)}
-                                disabled={submitting || !formData.title || !formData.content}
-                                className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold btn-premium transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed shadow-sm shadow-amber-500/20"
-                            >
-                                Share My Story
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Sidebar */}
-                    <div className={`space-y-6 pb-28 sm:pb-24 lg:pb-0 transition-all duration-500 ${isFocusMode ? 'hidden opacity-0' : 'animate-slide-up stagger-2 opacity-100 block'}`}>
-                        {/* Privacy - Warmer framing */}
-                        <div className="bg-amber-50/30 dark:bg-zinc-800/80 backdrop-blur-sm rounded-xl p-5 border border-amber-100 dark:border-zinc-700/50">
-                            <h3 className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-3">
-                                Share when you're ready
-                            </h3>
-                            <AnonymousToggle
-                                isAnonymous={formData.is_anonymous}
-                                onChange={(value) => setFormData({ ...formData, is_anonymous: value })}
-                            />
-                            <p className="text-xs text-stone-400 dark:text-stone-500 mt-2 italic">
-                                You can stay anonymous if you choose.
-                            </p>
-                        </div>
-
-                        {/* Writing Tips - Upgraded to a Companion Note Card */}
-                        <div className="bg-amber-50/40 dark:bg-zinc-800/50 rounded-xl p-5 border border-amber-100 dark:border-zinc-700/50 border-l-[4px] border-l-amber-500">
-                            <p className="text-sm text-stone-700 dark:text-stone-300 leading-relaxed italic">
-                                "{writingTips[formData.story_type] || writingTips.other}"
-                            </p>
-                        </div>
-
-                        {/* Story Preview - Only show after 50+ words */}
-                        {wordCount >= 50 && (
-                            <div className="bg-white/60 dark:bg-zinc-800/60 rounded-xl p-5 border border-stone-100 dark:border-zinc-700/50 animate-fade-in">
-                                <div className="space-y-3 text-sm text-stone-500 dark:text-stone-400">
-                                    <div className="flex justify-between">
-                                        <span>Words</span>
-                                        <span className="text-stone-700 dark:text-stone-300">{wordCount}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span>Read time</span>
-                                        <span className="text-stone-700 dark:text-stone-300">~{readingTime} min</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span>Visibility</span>
-                                        <span className="text-stone-700 dark:text-stone-300">
-                                            {formData.is_anonymous ? 'Anonymous' : 'Public'}
-                                        </span>
-                                    </div>
+                            {/* Parchment Bottom Telemetry */}
+                            <div className="pt-4 border-t border-[#EADDCF]/70 dark:border-[#26221E] flex flex-wrap items-center justify-between gap-4 text-xs text-stone-500 dark:text-stone-400 font-body">
+                                <div className="flex items-center gap-3">
+                                    <span>{wordCount} words</span>
+                                    <span>•</span>
+                                    <span>~{readingTime} min read</span>
+                                    <span>•</span>
+                                    <span>{charCount} characters</span>
+                                </div>
+                                <div className="text-stone-400 dark:text-stone-500 italic">
+                                    Your words are held with respect here.
                                 </div>
                             </div>
-                        )}
 
-                        {/* Guideline - Single reassuring line */}
-                        <p className="text-xs text-stone-400 dark:text-stone-500 text-center italic">
-                            Be authentic. Be kind. That's all.
-                        </p>
+                        </article>
                     </div>
+
+                    {/* Companion Sidebar Cards */}
+                    {!isFocusMode && (
+                        <div className="lg:col-span-4 space-y-5">
+                            
+                            {/* Privacy & Anonymity Card */}
+                            <div className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-2xl p-5 shadow-sm space-y-3">
+                                <h3 className="font-heading text-xs uppercase tracking-wider font-semibold text-stone-500 dark:text-stone-400">
+                                    Author Identity
+                                </h3>
+                                <AnonymousToggle
+                                    isAnonymous={formData.is_anonymous}
+                                    onChange={(val) => setFormData({ ...formData, is_anonymous: val })}
+                                />
+                            </div>
+
+                            {/* Writing Companion Guidance Card */}
+                            <div className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] border-l-4 border-l-[#C85828] rounded-2xl p-5 shadow-sm space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <Feather className="w-4 h-4 text-[#C85828]" />
+                                    <h3 className="font-heading text-xs uppercase tracking-wider font-semibold text-stone-700 dark:text-stone-300">
+                                        Companion Note
+                                    </h3>
+                                </div>
+                                <p className="font-stories italic text-xs sm:text-sm text-stone-600 dark:text-stone-400 leading-relaxed">
+                                    "{activeGuidance.tip}"
+                                </p>
+                            </div>
+
+                            {/* Sanctuary Promise Card */}
+                            <div className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-2xl p-5 shadow-sm space-y-2 text-center">
+                                <p className="font-stories italic text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
+                                    "You do not have to write perfectly. You only have to write what is true."
+                                </p>
+                            </div>
+
+                        </div>
+                    )}
+
                 </div>
-            </div>
+
+            </main>
 
             {/* Discard Confirmation Modal */}
             {showDiscardModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-                    <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-2xl p-6 animate-scale-in border border-stone-200 dark:border-zinc-700 shadow-2xl">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+                    <div className="w-full max-w-md bg-[#FFFDF9] dark:bg-[#181614] rounded-2xl p-6 border border-[#EADDCF] dark:border-[#2C2723] shadow-2xl">
                         <div className="text-center mb-6">
-                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 mb-4">
-                                <AlertCircle className="w-8 h-8 text-red-600 dark:text-red-400" />
+                            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 mb-4">
+                                <Trash2 className="w-6 h-6" />
                             </div>
-                            <h3 className="text-2xl font-bold text-stone-900 dark:text-white mb-2">
-                                Discard Draft?
+                            <h3 className="font-stories text-2xl text-stone-900 dark:text-stone-100 mb-2">
+                                Discard this reflection?
                             </h3>
-                            <p className="text-stone-600 dark:text-stone-400">
-                                This will permanently delete your unsaved changes. You won't be able to recover this draft.
+                            <p className="text-sm text-stone-600 dark:text-stone-400">
+                                This will erase your unsaved changes from this device. Once removed, it cannot be recovered.
                             </p>
                         </div>
 
                         <div className="flex gap-3">
                             <button
+                                type="button"
                                 onClick={() => setShowDiscardModal(false)}
-                                className="flex-1 px-4 py-3 border-2 border-stone-200 dark:border-zinc-700 rounded-xl text-stone-700 dark:text-stone-300 font-medium hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors"
+                                className="flex-1 px-4 py-2.5 border border-stone-300 dark:border-stone-700 rounded-xl text-stone-700 dark:text-stone-300 text-sm font-medium hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
                             >
-                                Keep Editing
+                                Keep Writing
                             </button>
                             <button
-                                onClick={handleDiscardLocalDraft}
-                                className="flex-1 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 shadow-lg shadow-red-500/25 transition-all py-3"
+                                type="button"
+                                onClick={handleDiscard}
+                                className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-xl text-sm font-medium hover:bg-red-700 transition-colors shadow-sm"
                             >
-                                Discard
+                                Discard Draft
                             </button>
                         </div>
                     </div>
@@ -586,47 +659,65 @@ export default function CreatePost() {
 
             {/* Publish Confirmation Modal */}
             {showPublishModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-                    <div className="w-full max-w-md glass-card rounded-2xl p-6 animate-scale-in">
-                        <div className="text-center mb-6">
-                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 mb-4">
-                                <Heart className="w-8 h-8 text-white" />
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+                    <div className="w-full max-w-lg bg-[#FFFDF9] dark:bg-[#181614] rounded-3xl p-6 sm:p-8 border border-[#EADDCF] dark:border-[#2C2723] shadow-2xl space-y-6">
+                        <div className="text-center space-y-2">
+                            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 mb-1">
+                                <Heart className="w-6 h-6 fill-current" />
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                                Ready to Publish?
+                            <h3 className="font-stories text-2xl text-stone-900 dark:text-stone-100">
+                                Ready to share your story?
                             </h3>
-                            <p className="text-gray-600 dark:text-gray-400">
-                                Your story will be visible to everyone. Make sure you're ready to share!
+                            <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400">
+                                Your voice will join the HeartOut sanctuary. Take a gentle breath and review your choices.
                             </p>
                         </div>
 
-                        <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 mb-6">
-                            <h4 className="font-semibold text-gray-900 dark:text-white mb-1 line-clamp-1">
-                                {formData.title}
-                            </h4>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                                {wordCount} words • {readingTime} min read • {formData.is_anonymous ? 'Anonymous' : 'Public'}
-                            </p>
+                        {/* Story Summary Card */}
+                        <div className="p-4 bg-stone-100/70 dark:bg-[#201D19] rounded-2xl border border-[#EADDCF]/70 dark:border-[#2C2723] space-y-3">
+                            <div>
+                                <span className="text-[11px] font-semibold uppercase tracking-wider text-stone-400">
+                                    Headline
+                                </span>
+                                <p className="font-stories font-medium text-stone-900 dark:text-stone-100 text-base line-clamp-2 mt-0.5">
+                                    {formData.title}
+                                </p>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-stone-200/60 dark:border-stone-800 text-xs text-stone-600 dark:text-stone-400">
+                                <span className="inline-flex items-center gap-1 font-medium text-amber-800 dark:text-amber-400">
+                                    <activeTypeMeta.icon className="w-3.5 h-3.5" />
+                                    {activeTypeMeta.label}
+                                </span>
+                                <span>•</span>
+                                <span>{wordCount} words</span>
+                                <span>•</span>
+                                <span className="font-medium text-stone-800 dark:text-stone-200">
+                                    {formData.is_anonymous ? 'Anonymous Author' : 'Public Profile'}
+                                </span>
+                            </div>
                         </div>
 
                         <div className="flex gap-3">
                             <button
+                                type="button"
                                 onClick={() => setShowPublishModal(false)}
-                                className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                className="flex-1 px-4 py-3 border border-stone-300 dark:border-stone-700 rounded-xl text-stone-700 dark:text-stone-300 text-sm font-medium hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
                             >
-                                Cancel
+                                Back to Edit
                             </button>
                             <button
+                                type="button"
                                 onClick={() => handleSubmit(true)}
                                 disabled={submitting}
-                                className="flex-1 btn-premium flex items-center justify-center gap-2 py-3"
+                                className="flex-1 px-4 py-3 bg-[#C85828] hover:bg-[#B54D20] text-white rounded-xl text-sm font-semibold shadow-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                             >
                                 {submitting ? (
-                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
                                 ) : (
                                     <>
                                         <Send className="w-4 h-4" />
-                                        Publish Now
+                                        <span>Confirm & Share</span>
                                     </>
                                 )}
                             </button>
@@ -635,53 +726,62 @@ export default function CreatePost() {
                 </div>
             )}
 
-            {/* Crisis Support Safeguard Modal */}
+            {/* Crisis Support Safeguard Dialog */}
             {showCrisisModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-white dark:bg-zinc-900 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-rose-200/50 dark:border-rose-900/30 text-center animate-scale-up">
-                        <div className="w-16 h-16 bg-rose-100 dark:bg-rose-950/50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-rose-600 dark:text-rose-400">
-                            <Heart className="w-8 h-8 fill-rose-500/20" />
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-[#FFFDF9] dark:bg-[#181614] rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-rose-300/60 dark:border-rose-900/40 text-center animate-scale-up space-y-5">
+                        <div className="w-14 h-14 bg-rose-100 dark:bg-rose-950/60 rounded-2xl flex items-center justify-center mx-auto text-rose-600 dark:text-rose-400">
+                            <Heart className="w-7 h-7 fill-rose-500/20" />
                         </div>
 
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                            You don't have to carry this alone
-                        </h3>
+                        <div>
+                            <h3 className="font-stories text-2xl text-stone-900 dark:text-stone-100 mb-2">
+                                You do not have to carry this alone
+                            </h3>
+                            <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 leading-relaxed">
+                                We noticed words that carry immense weight. Please know that your life and your heart matter deeply. Free, confidential support is available right now.
+                            </p>
+                        </div>
 
-                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-                            It looks like you're going through an incredibly painful moment. Please know that your life matters, and support is available right now.
-                        </p>
-
-                        <div className="space-y-3 mb-6 text-left bg-stone-50 dark:bg-zinc-800/60 p-4 rounded-2xl border border-stone-200/50 dark:border-zinc-700/50">
-                            <a href="tel:14416" className="flex items-center justify-between p-2.5 rounded-xl hover:bg-white dark:hover:bg-zinc-700 transition-colors">
+                        {/* Helplines Card */}
+                        <div className="space-y-2 text-left bg-stone-100/70 dark:bg-[#201D19] p-4 rounded-2xl border border-stone-200/60 dark:border-stone-800">
+                            <a 
+                                href="tel:14416" 
+                                className="flex items-center justify-between p-2.5 rounded-xl hover:bg-white dark:hover:bg-[#2A2622] transition-colors group"
+                            >
                                 <div>
-                                    <p className="text-xs font-semibold uppercase text-rose-600 dark:text-rose-400">Tele MANAS Helpline</p>
-                                    <p className="text-sm font-bold text-gray-800 dark:text-gray-200">14416 or 1800 891 4416</p>
+                                    <p className="text-[11px] font-bold uppercase tracking-wider text-rose-700 dark:text-rose-400">Tele MANAS Helpline</p>
+                                    <p className="text-sm font-semibold text-stone-900 dark:text-stone-100">14416 or 1800 891 4416</p>
                                 </div>
-                                <span className="text-xs px-2.5 py-1 bg-rose-100 text-rose-700 rounded-full font-medium">Free 24/7</span>
+                                <span className="text-[11px] px-2.5 py-1 bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-300 rounded-full font-medium">Free 24/7</span>
                             </a>
-                            <a href="tel:9152987821" className="flex items-center justify-between p-2.5 rounded-xl hover:bg-white dark:hover:bg-zinc-700 transition-colors">
+                            <a 
+                                href="tel:9152987821" 
+                                className="flex items-center justify-between p-2.5 rounded-xl hover:bg-white dark:hover:bg-[#2A2622] transition-colors group"
+                            >
                                 <div>
-                                    <p className="text-xs font-semibold uppercase text-stone-500">iCall Helpline</p>
-                                    <p className="text-sm font-bold text-gray-800 dark:text-gray-200">9152987821</p>
+                                    <p className="text-[11px] font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">iCall Helpline</p>
+                                    <p className="text-sm font-semibold text-stone-900 dark:text-stone-100">9152987821</p>
                                 </div>
-                                <span className="text-xs px-2.5 py-1 bg-stone-200 text-stone-700 rounded-full font-medium">Mon-Sat</span>
+                                <span className="text-[11px] px-2.5 py-1 bg-stone-200 dark:bg-stone-800 text-stone-700 dark:text-stone-300 rounded-full font-medium">Mon-Sat</span>
                             </a>
                         </div>
 
-                        <div className="flex flex-col gap-3">
+                        <div className="flex flex-col gap-2.5 pt-1">
                             <a
                                 href="tel:14416"
-                                className="btn-premium flex items-center justify-center gap-2 py-3 bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-500/20"
+                                className="inline-flex items-center justify-center gap-2 py-3 px-4 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-semibold shadow-md transition-all"
                             >
-                                <Heart className="w-4 h-4 fill-white" />
-                                Call Helpline Now (Free)
+                                <PhoneCall className="w-4 h-4" />
+                                Call Free Helpline (14416)
                             </a>
                             <button
+                                type="button"
                                 onClick={() => {
                                     setShowCrisisModal(false);
-                                    handleSubmit(true, true); // bypass check
+                                    handleSubmit(true, true);
                                 }}
-                                className="text-xs text-stone-500 dark:text-stone-400 hover:underline pt-2"
+                                className="text-xs text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 underline pt-2"
                             >
                                 I understand, publish my story anyway
                             </button>
@@ -689,6 +789,7 @@ export default function CreatePost() {
                     </div>
                 </div>
             )}
+
         </div>
     );
 }

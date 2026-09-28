@@ -8,15 +8,17 @@ const storyTypes = [
         icon: Trophy,
         description: 'Something you survived, earned, or finally became.',
         preview: 'I didn\'t think I\'d make it. Today, I proved myself wrong.',
-        color: 'from-orange-500 to-orange-600',
-        bgColor: 'bg-orange-50 dark:bg-orange-950/20',
-        borderColor: 'border-orange-200 dark:border-orange-700',
-        hoverBorderColor: 'hover:border-orange-300 dark:hover:border-orange-500/50',
-        textColor: 'text-orange-600 dark:text-orange-400',
-        hoverTextColor: 'group-hover:text-orange-500',
-        shadowColor: 'shadow-orange-500/15',
-        chartColor: '#ea580c',
-        canonicalBg: 'bg-orange-600'
+        color: 'from-amber-600 to-amber-700',
+        bgColor: 'bg-amber-500/10 dark:bg-amber-950/20',
+        borderColor: 'border-amber-200 dark:border-amber-800/40',
+        hoverBorderColor: 'hover:border-amber-400 dark:hover:border-amber-700',
+        textColor: 'text-amber-800 dark:text-amber-300',
+        hoverTextColor: 'group-hover:text-amber-700',
+        shadowColor: 'shadow-amber-500/10',
+        chartColor: '#d97706',
+        canonicalBg: 'bg-amber-600',
+        accentBg: 'bg-amber-100/70 dark:bg-amber-950/40',
+        accentText: 'text-amber-700 dark:text-amber-300'
     },
     {
         value: 'confession',
@@ -24,15 +26,17 @@ const storyTypes = [
         icon: Sparkles,
         description: 'What you\'re still reaching for.',
         preview: 'One day, they will know my name.',
-        color: 'from-amber-500 to-amber-600',
-        bgColor: 'bg-amber-50 dark:bg-amber-950/20',
-        borderColor: 'border-amber-200 dark:border-amber-700',
-        hoverBorderColor: 'hover:border-amber-300 dark:hover:border-amber-500/50',
-        textColor: 'text-amber-600 dark:text-amber-400',
-        hoverTextColor: 'group-hover:text-amber-500',
-        shadowColor: 'shadow-amber-500/15',
-        chartColor: '#d97706',
-        canonicalBg: 'bg-amber-600'
+        color: 'from-amber-500 to-orange-500',
+        bgColor: 'bg-orange-500/10 dark:bg-orange-950/20',
+        borderColor: 'border-orange-200 dark:border-orange-800/40',
+        hoverBorderColor: 'hover:border-orange-400 dark:hover:border-orange-700',
+        textColor: 'text-orange-800 dark:text-orange-300',
+        hoverTextColor: 'group-hover:text-orange-700',
+        shadowColor: 'shadow-orange-500/10',
+        chartColor: '#ea580c',
+        canonicalBg: 'bg-orange-600',
+        accentBg: 'bg-orange-100/70 dark:bg-orange-950/40',
+        accentText: 'text-orange-700 dark:text-orange-300'
     },
     {
         value: 'regret',
@@ -40,15 +44,17 @@ const storyTypes = [
         icon: Lightbulb,
         description: 'The hard ones. The ones that changed you.',
         preview: 'It broke my heart, but it opened my eyes.',
-        color: 'from-[#c1714a]/80 to-[#c1714a]',
+        color: 'from-[#c1714a] to-[#a25936]',
         bgColor: 'bg-[#c1714a]/10 dark:bg-[#c1714a]/20',
         borderColor: 'border-[#c1714a]/30 dark:border-[#c1714a]/40',
-        hoverBorderColor: 'hover:border-[#c1714a]/50 dark:hover:border-[#c1714a]/60',
-        textColor: 'text-[#c1714a] dark:text-[#de8a60]',
-        hoverTextColor: 'group-hover:text-[#c1714a]',
-        shadowColor: 'shadow-[#c1714a]/15',
+        hoverBorderColor: 'hover:border-[#c1714a]/60 dark:hover:border-[#c1714a]/60',
+        textColor: 'text-[#9c4c26] dark:text-[#e49876]',
+        hoverTextColor: 'group-hover:text-[#9c4c26]',
+        shadowColor: 'shadow-[#c1714a]/10',
         chartColor: '#c1714a',
-        canonicalBg: 'bg-[#c1714a]'
+        canonicalBg: 'bg-[#c1714a]',
+        accentBg: 'bg-[#c1714a]/15 dark:bg-[#c1714a]/25',
+        accentText: 'text-[#9c4c26] dark:text-[#e49876]'
     },
     {
         value: 'unsent_letter',
@@ -56,15 +62,17 @@ const storyTypes = [
         icon: Mail,
         description: 'To the person you never got to tell.',
         preview: 'I still look for your car in every parking lot.',
-        color: 'from-[#9e5a5a]/80 to-[#9e5a5a]',
+        color: 'from-[#9e5a5a] to-[#7f4242]',
         bgColor: 'bg-[#9e5a5a]/10 dark:bg-[#9e5a5a]/20',
         borderColor: 'border-[#9e5a5a]/30 dark:border-[#9e5a5a]/40',
-        hoverBorderColor: 'hover:border-[#9e5a5a]/50 dark:hover:border-[#9e5a5a]/60',
-        textColor: 'text-[#9e5a5a] dark:text-[#bd7272]',
-        hoverTextColor: 'group-hover:text-[#9e5a5a]',
-        shadowColor: 'shadow-[#9e5a5a]/15',
+        hoverBorderColor: 'hover:border-[#9e5a5a]/60 dark:hover:border-[#9e5a5a]/60',
+        textColor: 'text-[#844343] dark:text-[#df9f9f]',
+        hoverTextColor: 'group-hover:text-[#844343]',
+        shadowColor: 'shadow-[#9e5a5a]/10',
         chartColor: '#9e5a5a',
-        canonicalBg: 'bg-[#9e5a5a]'
+        canonicalBg: 'bg-[#9e5a5a]',
+        accentBg: 'bg-[#9e5a5a]/15 dark:bg-[#9e5a5a]/25',
+        accentText: 'text-[#844343] dark:text-[#df9f9f]'
     },
     {
         value: 'sacrifice',
@@ -72,15 +80,17 @@ const storyTypes = [
         icon: Heart,
         description: 'What it cost you to get here.',
         preview: 'I let go of my dream so she could have hers.',
-        color: 'from-red-700 to-red-800',
-        bgColor: 'bg-red-50 dark:bg-red-950/20',
-        borderColor: 'border-red-200 dark:border-red-700',
-        hoverBorderColor: 'hover:border-red-300 dark:hover:border-red-500/50',
-        textColor: 'text-red-800 dark:text-red-400',
-        hoverTextColor: 'group-hover:text-red-700',
-        shadowColor: 'shadow-red-800/15',
+        color: 'from-rose-700 to-rose-800',
+        bgColor: 'bg-rose-500/10 dark:bg-rose-950/20',
+        borderColor: 'border-rose-200 dark:border-rose-800/40',
+        hoverBorderColor: 'hover:border-rose-400 dark:hover:border-rose-700',
+        textColor: 'text-rose-900 dark:text-rose-300',
+        hoverTextColor: 'group-hover:text-rose-800',
+        shadowColor: 'shadow-rose-700/10',
         chartColor: '#991b1b',
-        canonicalBg: 'bg-red-800'
+        canonicalBg: 'bg-rose-800',
+        accentBg: 'bg-rose-100/70 dark:bg-rose-950/40',
+        accentText: 'text-rose-800 dark:text-rose-300'
     },
     {
         value: 'other',
@@ -88,22 +98,24 @@ const storyTypes = [
         icon: BookOpen,
         description: 'The things you\'ve never said out loud.',
         preview: 'I\'m terrified they\'ll find out I\'m making it up as I go.',
-        color: 'from-amber-800 to-amber-900',
-        bgColor: 'bg-amber-100/40 dark:bg-amber-950/40',
-        borderColor: 'border-amber-200 dark:border-amber-700',
-        hoverBorderColor: 'hover:border-amber-300 dark:hover:border-amber-500/50',
-        textColor: 'text-amber-900 dark:text-amber-400',
-        hoverTextColor: 'group-hover:text-amber-800',
-        shadowColor: 'shadow-amber-900/15',
-        chartColor: '#78350f',
-        canonicalBg: 'bg-amber-900'
+        color: 'from-stone-700 to-stone-800',
+        bgColor: 'bg-stone-500/10 dark:bg-stone-900/40',
+        borderColor: 'border-stone-200 dark:border-stone-800',
+        hoverBorderColor: 'hover:border-stone-400 dark:hover:border-stone-700',
+        textColor: 'text-stone-900 dark:text-stone-200',
+        hoverTextColor: 'group-hover:text-stone-900',
+        shadowColor: 'shadow-stone-800/10',
+        chartColor: '#57534e',
+        canonicalBg: 'bg-stone-800',
+        accentBg: 'bg-stone-100 dark:bg-stone-800/60',
+        accentText: 'text-stone-800 dark:text-stone-200'
     }
 ];
 
 export default function StoryTypeSelector({ selected, onChange, variant = 'cards' }) {
     if (variant === 'tabs') {
         return (
-            <div className="flex gap-2 p-1">
+            <div className="flex gap-2 p-1 overflow-x-auto scrollbar-none">
                 {storyTypes.map((type) => {
                     const Icon = type.icon;
                     const isSelected = selected === type.value;
@@ -114,15 +126,15 @@ export default function StoryTypeSelector({ selected, onChange, variant = 'cards
                             onClick={() => onChange(type.value)}
                             title={type.label}
                             className={`
-                                group relative flex items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
+                                group relative flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 shrink-0
                                 ${isSelected
-                                    ? 'bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400 ring-1 ring-primary-500/20'
-                                    : 'text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-zinc-800/50'
+                                    ? 'bg-[#2D2621] text-white dark:bg-[#FAF6F0] dark:text-[#181614] shadow-sm'
+                                    : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-100/80 dark:hover:bg-zinc-800/60'
                                 }
                             `}
                         >
-                            <Icon strokeWidth={1.5} className={`w-4 h-4 shrink-0 transition-all duration-300 ${isSelected ? 'opacity-100 scale-110' : 'opacity-70 group-hover:scale-105'}`} />
-                            <span className="hidden sm:inline relative">
+                            <Icon strokeWidth={1.75} className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-amber-400 dark:text-[#C85828]' : 'text-stone-500 dark:text-stone-400'}`} />
+                            <span>
                                 {type.label}
                             </span>
                         </button>
@@ -132,9 +144,9 @@ export default function StoryTypeSelector({ selected, onChange, variant = 'cards
         );
     }
 
-    // Premium Cards variant for story creation
+    // High-End Sanctuary Cards variant
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {storyTypes.map((type, index) => {
                 const Icon = type.icon;
                 const isSelected = selected === type.value;
@@ -142,59 +154,59 @@ export default function StoryTypeSelector({ selected, onChange, variant = 'cards
                 return (
                     <button
                         key={type.value}
+                        type="button"
                         onClick={() => onChange(type.value)}
                         className={`
-                            group relative p-6 rounded-2xl border-2 transition-all duration-300 text-left
-                            animate-slide-up hover:-translate-y-1 flex flex-col h-full
+                            group relative p-5 sm:p-6 rounded-2xl text-left flex flex-col justify-between h-full transition-all duration-300
                             ${isSelected
-                                ? `${type.borderColor} ${type.bgColor} shadow-xl ${type.shadowColor}`
-                                : `border-gray-200/50 dark:border-gray-700/50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm ${type.hoverBorderColor} hover:shadow-xl hover:${type.shadowColor}`
+                                ? 'bg-[#FFF9F3] dark:bg-[#201B17] border-2 border-[#C85828] dark:border-[#E07A48] shadow-[0_8px_24px_rgba(200,88,40,0.12)]'
+                                : 'bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] hover:border-[#D4832D]/70 dark:hover:border-[#D4832D]/60 hover:-translate-y-1 hover:shadow-[0_10px_28px_rgba(200,140,90,0.08)]'
                             }
                         `}
-                        style={{ animationDelay: `${index * 0.1}s` }}
+                        style={{ animationDelay: `${index * 0.05}s` }}
                     >
-                        {/* Gradient Overlay on Hover */}
-                        <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${type.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
+                        {/* Top: Icon + Selection Badge */}
+                        <div className="flex items-start justify-between gap-3 w-full mb-3">
+                            <div className={`
+                                w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300
+                                ${isSelected 
+                                    ? 'bg-[#C85828] text-white shadow-sm' 
+                                    : `${type.accentBg} ${type.accentText} group-hover:scale-105`
+                                }
+                            `}>
+                                <Icon className="w-5 h-5 stroke-[1.75]" />
+                            </div>
 
-                        {/* Icon */}
-                        <div className={`
-                            relative inline-flex p-4 rounded-xl bg-gradient-to-br ${type.color} mb-4
-                            shadow-lg ${type.shadowColor}
-                            group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-[0_0_15px_rgba(255,255,255,0.3)]
-                            transition-all duration-300
-                        `}>
-                            <Icon className="w-6 h-6 text-white" />
+                            {isSelected ? (
+                                <div className="w-6 h-6 rounded-full bg-[#C85828] text-white flex items-center justify-center shadow-sm animate-scale-in">
+                                    <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                                </div>
+                            ) : (
+                                <div className="w-6 h-6 rounded-full border border-stone-200 dark:border-stone-700 group-hover:border-stone-400 dark:group-hover:border-stone-500 transition-colors" />
+                            )}
                         </div>
 
-                        {/* Content */}
-                        <h3 className={`text-lg font-bold mb-1.5 ${isSelected ? type.textColor : 'text-gray-900 dark:text-white'}`}>
-                            {type.label}
-                        </h3>
+                        {/* Title & Description */}
+                        <div className="w-full">
+                            <h3 className={`font-heading text-base sm:text-lg font-semibold mb-1.5 transition-colors ${
+                                isSelected ? 'text-stone-900 dark:text-stone-50' : 'text-stone-800 dark:text-stone-100 group-hover:text-stone-900'
+                            }`}>
+                                {type.label}
+                            </h3>
 
-                        <p className="text-sm text-stone-600 dark:text-stone-400 leading-snug mb-3">
-                            {type.description}
-                        </p>
+                            <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 leading-relaxed mb-4">
+                                {type.description}
+                            </p>
+                        </div>
 
-                        <p className="text-[11px] sm:text-xs text-stone-400 dark:text-stone-500 italic mt-auto leading-relaxed border-l-2 pl-2 border-stone-200 dark:border-stone-700">
-                            "{type.preview}"
-                        </p>
-
-                        {/* Selection Indicator */}
-                        {isSelected && (
-                            <div className="absolute top-4 right-4 animate-scale-in">
-                                <div className={`w-7 h-7 rounded-full bg-gradient-to-br ${type.color} flex items-center justify-center shadow-lg ${type.shadowColor}`}>
-                                    <Check className="w-4 h-4 text-white" />
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Hover Arrow */}
-                        <div className={`absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0 ${isSelected ? 'hidden' : ''}`}>
-                            <div className={`text-gray-400 dark:text-gray-500`}>
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </div>
+                        {/* Bottom Literary Preview Quote */}
+                        <div className={`
+                            w-full pt-3 border-t border-dashed transition-colors
+                            ${isSelected ? 'border-amber-300 dark:border-amber-900/60' : 'border-[#EADDCF] dark:border-[#2C2723]'}
+                        `}>
+                            <p className="font-stories italic text-xs text-stone-600 dark:text-stone-400 leading-relaxed pl-2.5 border-l-2 border-amber-500/40 line-clamp-2">
+                                "{type.preview}"
+                            </p>
                         </div>
                     </button>
                 );

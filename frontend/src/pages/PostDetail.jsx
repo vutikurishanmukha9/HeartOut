@@ -1,6 +1,20 @@
 import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Clock, Eye, Calendar, Share2, Bookmark, MessageCircle, ArrowLeft, Trash2, Edit } from 'lucide-react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { 
+    ArrowLeft, 
+    Clock, 
+    Share2, 
+    Bookmark, 
+    MessageSquare, 
+    Trash2, 
+    Check, 
+    Copy, 
+    Feather, 
+    AlertTriangle, 
+    Eye, 
+    MoreHorizontal 
+} from 'lucide-react';
+import toast from 'react-hot-toast';
 import { storyTypes } from '../components/StoryTypeSelector';
 import ReactionButton from '../components/SupportButton';
 import { AuthContext } from '../context/AuthContext';
@@ -13,16 +27,23 @@ export default function PostDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
+
+    // Core data states
     const [story, setStory] = useState(null);
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    // Interaction states
     const [commentText, setCommentText] = useState('');
     const [isAnonymousComment, setIsAnonymousComment] = useState(true);
+    const [submittingComment, setSubmittingComment] = useState(false);
     const [userReaction, setUserReaction] = useState(null);
     const [supportCount, setSupportCount] = useState(0);
     const [isBookmarked, setIsBookmarked] = useState(false);
-    
-    // Delete Modal State
+    const [bookmarkLoading, setBookmarkLoading] = useState(false);
+    const [copied, setCopied] = useState(false);
+
+    // Author management states
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [showAuthorMenu, setShowAuthorMenu] = useState(false);
@@ -30,38 +51,12 @@ export default function PostDetail() {
     // Read progress tracking
     const startTimeRef = useRef(Date.now());
     const maxScrollDepthRef = useRef(0);
-    const trackingIntervalRef = useRef(null);
+    const authorMenuRef = useRef(null);
 
-    useEffect(() => {
-        fetchStory();
-        fetchComments();
-        if (user) {
-            fetchUserReaction();
-            fetchBookmarkStatus();
-        }
-
-        // Start tracking time and scroll
-        startTimeRef.current = Date.now();
-
-        const handleScroll = () => {
-            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const scrolled = window.scrollY / scrollHeight;
-            maxScrollDepthRef.current = Math.max(maxScrollDepthRef.current, Math.min(1, scrolled));
-        };
-
-        window.addEventListener('scroll', handleScroll);
-
-        // Send progress on unmount or visibility change
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-            sendReadProgress();
-        };
-    }, [id, user]);
-
-    // Send read progress to backend
+    // Send read progress telemetry to backend
     const sendReadProgress = useCallback(async () => {
         const timeSpent = Math.floor((Date.now() - startTimeRef.current) / 1000);
-        if (timeSpent < 3) return; // Don't track very short visits
+        if (timeSpent < 3) return;
 
         try {
             await fetch(getApiUrl(`/api/posts/${id}/read-progress`), {
@@ -74,11 +69,37 @@ export default function PostDetail() {
                 })
             });
         } catch (error) {
-            // Silent fail for tracking
+            // Telemetry failure is intentionally non-blocking
         }
     }, [id]);
 
-    // Track on visibility change (user switches tab or closes)
+    useEffect(() => {
+        fetchStory();
+        fetchComments();
+        if (user) {
+            fetchUserReaction();
+            fetchBookmarkStatus();
+        }
+
+        startTimeRef.current = Date.now();
+
+        const handleScroll = () => {
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            if (scrollHeight > 0) {
+                const scrolled = window.scrollY / scrollHeight;
+                maxScrollDepthRef.current = Math.max(maxScrollDepthRef.current, Math.min(1, scrolled));
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            sendReadProgress();
+        };
+    }, [id, user, sendReadProgress]);
+
+    // Handle tab visibility switch
     useEffect(() => {
         const handleVisibilityChange = () => {
             if (document.hidden) {
@@ -90,45 +111,43 @@ export default function PostDetail() {
         return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
     }, [sendReadProgress]);
 
-    const fetchBookmarkStatus = async () => {
-        try {
-            const response = await fetch(getApiUrl(`/api/posts/${id}/bookmark`), {
-                credentials: 'include',
-            });
-            if (response.ok) {
-                const data = await response.json();
-                setIsBookmarked(data.is_bookmarked);
+    // Click outside author dropdown menu
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (authorMenuRef.current && !authorMenuRef.current.contains(event.target)) {
+                setShowAuthorMenu(false);
             }
-        } catch (error) {
-            // Silent fail
-        }
-    };
+        };
 
-    const handleToggleBookmark = async () => {
-        try {
-            const response = await fetch(getApiUrl(`/api/posts/${id}/bookmark`), {
-                method: 'POST',
-                credentials: 'include',
-            });
-            if (response.ok) {
-                const data = await response.json();
-                setIsBookmarked(data.is_bookmarked);
-            }
-        } catch (error) {
-            console.error('Failed to toggle bookmark:', error);
-        }
-    };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const fetchStory = async () => {
         try {
             const response = await fetch(getApiUrl(`/api/posts/${id}`));
             const data = await response.json();
-            setStory(data.story);
-            setSupportCount(data.story?.support_count || 0);
+            if (response.ok && data.story) {
+                setStory(data.story);
+                setSupportCount(data.story.support_count || 0);
+            } else {
+                setStory(null);
+            }
         } catch (error) {
             console.error('Failed to fetch story:', error);
+            setStory(null);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchComments = async () => {
+        try {
+            const response = await fetch(getApiUrl(`/api/posts/${id}/comments`));
+            const data = await response.json();
+            setComments(data.comments || []);
+        } catch (error) {
+            console.error('Failed to fetch comments:', error);
         }
     };
 
@@ -146,41 +165,76 @@ export default function PostDetail() {
         }
     };
 
-    const fetchComments = async () => {
+    const fetchBookmarkStatus = async () => {
         try {
-            const response = await fetch(getApiUrl(`/api/posts/${id}/comments`));
-            const data = await response.json();
-            setComments(data.comments || []);
+            const response = await fetch(getApiUrl(`/api/posts/${id}/bookmark`), {
+                credentials: 'include',
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setIsBookmarked(data.is_bookmarked);
+            }
         } catch (error) {
-            console.error('Failed to fetch comments:', error);
+            console.error('Failed to fetch bookmark status:', error);
+        }
+    };
+
+    const handleToggleBookmark = async () => {
+        if (!user) {
+            toast.error('Please sign in to save stories');
+            navigate('/auth/login');
+            return;
+        }
+
+        const prevBookmarked = isBookmarked;
+        setIsBookmarked(!prevBookmarked);
+        setBookmarkLoading(true);
+
+        try {
+            const response = await fetch(getApiUrl(`/api/posts/${id}/bookmark`), {
+                method: 'POST',
+                credentials: 'include',
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setIsBookmarked(data.is_bookmarked);
+                toast.success(data.is_bookmarked ? 'Saved to your sanctuary' : 'Removed from saved stories');
+            } else {
+                setIsBookmarked(prevBookmarked);
+                toast.error('Unable to update bookmark');
+            }
+        } catch (error) {
+            console.error('Failed to toggle bookmark:', error);
+            setIsBookmarked(prevBookmarked);
+            toast.error('Network error. Bookmark not updated.');
+        } finally {
+            setBookmarkLoading(false);
         }
     };
 
     const handleReact = async (type) => {
         if (!user) {
+            toast.error('Please sign in to leave a reaction');
             navigate('/auth/login');
             return;
         }
 
-        // --- Optimistic UI Update ---
+        // Optimistic UI state update
         const prevReaction = userReaction;
         const prevCount = supportCount;
-        
-        // Define what the new state should look like
+
         let newReaction = type;
         let countDiff = 1;
 
         if (prevReaction === type) {
-            newReaction = null; // Un-reacting
+            newReaction = null;
             countDiff = -1;
         } else if (prevReaction) {
-            countDiff = 0; // Changing reaction (count stays same)
+            countDiff = 0;
         }
 
-        // Apply instantly
         setUserReaction(newReaction);
         setSupportCount(Math.max(0, prevCount + countDiff));
-        // -----------------------------
 
         try {
             const response = await fetch(getApiUrl(`/api/posts/${id}/toggle-react`), {
@@ -194,23 +248,29 @@ export default function PostDetail() {
 
             if (response.ok) {
                 const data = await response.json();
-                // Ensure server truth overwrites our optimism just in case
                 setUserReaction(data.user_reaction);
                 setSupportCount(data.support_count);
             } else {
-                throw new Error('API Rejection');
+                throw new Error('Reaction failed on server');
             }
         } catch (error) {
             console.error('Failed to react:', error);
-            // Revert on failure
             setUserReaction(prevReaction);
             setSupportCount(prevCount);
+            toast.error('Unable to record reaction');
         }
     };
 
     const handleComment = async () => {
         if (!commentText.trim()) return;
 
+        if (!user) {
+            toast.error('Please sign in to leave a response');
+            navigate('/auth/login');
+            return;
+        }
+
+        setSubmittingComment(true);
         try {
             const response = await fetch(getApiUrl(`/api/posts/${id}/comments`), {
                 method: 'POST',
@@ -219,32 +279,54 @@ export default function PostDetail() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    content: commentText,
+                    content: commentText.trim(),
                     is_anonymous: isAnonymousComment
                 })
             });
 
             if (response.ok) {
                 setCommentText('');
+                toast.success('Your response has been shared');
                 fetchComments();
                 fetchStory();
+            } else {
+                const data = await response.json();
+                toast.error(data.error || 'Failed to submit response');
             }
         } catch (error) {
             console.error('Failed to comment:', error);
+            toast.error('Network error. Could not post response.');
+        } finally {
+            setSubmittingComment(false);
         }
     };
 
-    const handleShare = () => {
+    const handleShare = async () => {
+        const shareData = {
+            title: story?.title || 'HeartOut Story',
+            text: `Read this reflection on HeartOut: ${story?.title || ''}`,
+            url: window.location.href
+        };
+
         if (navigator.share) {
-            navigator.share({
-                title: story.title,
-                text: `Read this story on HeartOut: ${story.title}`,
-                url: window.location.href
-            });
+            try {
+                await navigator.share(shareData);
+            } catch (err) {
+                // If user cancels share sheet, ignore error
+                if (err.name !== 'AbortError') {
+                    fallbackCopy();
+                }
+            }
         } else {
-            navigator.clipboard.writeText(window.location.href);
-            alert('Link copied to clipboard!');
+            fallbackCopy();
         }
+    };
+
+    const fallbackCopy = () => {
+        navigator.clipboard.writeText(window.location.href);
+        setCopied(true);
+        toast.success('Story link copied to clipboard');
+        setTimeout(() => setCopied(false), 2500);
     };
 
     const handleDelete = async () => {
@@ -256,17 +338,17 @@ export default function PostDetail() {
             });
 
             if (response.ok) {
-                // Don't show alert, just navigate away
+                toast.success('Story deleted from sanctuary');
                 navigate('/feed');
             } else {
                 const data = await response.json();
-                alert(data.error || 'Failed to delete story');
+                toast.error(data.error || 'Failed to delete story');
                 setShowDeleteModal(false);
                 setIsDeleting(false);
             }
         } catch (error) {
             console.error('Failed to delete story:', error);
-            alert('Failed to delete story');
+            toast.error('Network error. Story could not be deleted.');
             setShowDeleteModal(false);
             setIsDeleting(false);
         }
@@ -276,302 +358,404 @@ export default function PostDetail() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-stone-50 dark:bg-zinc-900 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
+            <div className="min-h-screen heartout-auth-bg dark:bg-[#121110] flex items-center justify-center p-6">
+                <div className="flex flex-col items-center gap-3 text-center">
+                    <div className="w-10 h-10 rounded-full border-2 border-amber-600/30 border-t-amber-600 animate-spin" />
+                    <p className="font-body text-sm text-stone-600 dark:text-stone-400">Opening reflection...</p>
+                </div>
             </div>
         );
     }
 
     if (!story) {
         return (
-            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-                <div className="text-center">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Story not found</h2>
-                    <button
-                        onClick={() => navigate('/feed')}
-                        className="text-primary-600 dark:text-primary-400 hover:underline"
+            <div className="min-h-screen heartout-auth-bg dark:bg-[#121110] flex items-center justify-center p-6">
+                <div className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-3xl p-8 sm:p-12 text-center max-w-md w-full shadow-lg">
+                    <div className="w-12 h-12 rounded-2xl bg-amber-100/70 dark:bg-amber-950/40 text-[#C85828] dark:text-amber-400 flex items-center justify-center mx-auto mb-4 border border-amber-200/60 dark:border-amber-900/40">
+                        <Feather className="w-6 h-6 stroke-[1.75]" />
+                    </div>
+                    <h2 className="font-stories text-2xl text-stone-900 dark:text-stone-100 mb-2">
+                        Reflection not found
+                    </h2>
+                    <p className="font-body text-sm text-stone-500 dark:text-stone-400 mb-6 leading-relaxed">
+                        This story may have been removed by its author, or the link may be incomplete.
+                    </p>
+                    <Link
+                        to="/feed"
+                        className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#C85828] hover:bg-[#B54D20] text-white rounded-xl text-sm font-semibold shadow-sm transition-all"
                     >
-                        ← Back to Feed
-                    </button>
+                        <ArrowLeft className="w-4 h-4" />
+                        <span>Return to Sanctuary</span>
+                    </Link>
                 </div>
             </div>
         );
     }
 
     const storyType = storyTypes.find(t => t.value === story.story_type) || storyTypes[storyTypes.length - 1];
-    const Icon = storyType.icon;
+    const StoryTypeIcon = storyType.icon;
+    const authorDisplayName = story.is_anonymous 
+        ? 'Anonymous Soul' 
+        : (story.author?.display_name || story.author?.username || 'Anonymous Soul');
 
     return (
         <>
-            {/* Dynamic SEO for social sharing */}
             <StorySEO story={story} />
 
-            <div className="min-h-screen bg-[#faf7f4] dark:bg-[#121214] pb-24 md:pb-16 font-body">
-                {/* Minimal Top Navigation with Reading Telemetry */}
-                <div className="bg-[#faf7f4]/90 dark:bg-[#121214]/90 backdrop-blur-md border-b border-stone-200/80 dark:border-zinc-800 sticky top-0 z-20 w-full transition-all">
-                    <div className="max-w-[720px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+            <div className="min-h-screen heartout-auth-bg dark:bg-[#121110] pb-24 sm:pb-20 transition-colors duration-300">
+                {/* Top Sanctuary Control Bar */}
+                <header className="sticky top-0 z-40 py-3 px-4 sm:px-8 bg-[#FBEFE5]/90 dark:bg-[#121110]/90 backdrop-blur-md border-b border-[#EADDCF]/80 dark:border-[#26221E]">
+                    <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
+                        {/* Left: Back to Feed */}
                         <button
                             onClick={() => navigate('/feed')}
-                            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors"
+                            className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors px-2.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                            aria-label="Return to feed"
                         >
                             <ArrowLeft className="w-4 h-4" />
                             <span>Return to Feed</span>
                         </button>
 
-                        {/* Telemetry Strip: Readers & Read Time */}
-                        <div className="flex items-center gap-3 font-mono text-[11px] uppercase text-stone-500 dark:text-stone-400">
-                            <span className="inline-flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                <data value={liveReaders}>{liveReaders || 1} reading now</data>
-                            </span>
-                            <span>·</span>
-                            <span>{story.reading_time || 1} min read</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Story Content Column (Swiss Editorial Discipline) */}
-                <article className="max-w-[680px] mx-auto px-4 sm:px-6 py-12 pb-24 md:pb-16">
-                    {/* Category Eyebrow Pill */}
-                    <div className="mb-6">
-                        <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] font-semibold tracking-[0.16em] uppercase ${storyType.borderColor} ${storyType.canonicalBg} ${storyType.textColor}`}>
-                            <Icon className="w-3 h-3" strokeWidth={1.5} />
-                            <span>{storyType.label}</span>
-                        </div>
-                    </div>
-
-                    {/* Title - Editorial Serif Focus */}
-                    <h1 className="font-editorial text-3xl sm:text-4xl md:text-5xl font-normal text-stone-900 dark:text-stone-100 mb-6 leading-[1.14] tracking-tight">
-                        {story.title}
-                    </h1>
-
-                    {/* Metadata Telemetry */}
-                    <div className="flex flex-wrap items-center gap-2 text-xs font-mono uppercase text-stone-500 dark:text-stone-400 mb-10 pb-4 border-b border-stone-200/80 dark:border-zinc-800">
-                        <span className="font-semibold text-stone-800 dark:text-stone-200">{story.author?.display_name || story.author?.username || 'Anonymous Author'}</span>
-                        <span>·</span>
-                        <time dateTime={story.created_at}>{formatFullDate(story.created_at)}</time>
-                    </div>
-
-                    {/* Tags */}
-                    {story.tags && story.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mb-8">
-                            {story.tags.map((tag, index) => (
-                                <span
-                                    key={index}
-                                    className="px-3 py-1 text-xs font-medium bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-stone-400 rounded-full"
-                                >
-                                    #{tag}
-                                </span>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Story Content - Maximum breathing room */}
-                    <div className="w-full mb-12">
-                        <p className="text-stone-800 dark:text-stone-300 text-lg leading-[1.75] whitespace-pre-wrap font-medium">
-                            {sanitizeText(story.content)}
-                        </p>
-                    </div>
-
-                    {/* Visual Breath / Pause */}
-                    <div className="w-full h-px bg-amber-100 dark:bg-zinc-800/80 my-10"></div>
-
-                    {/* Actions - Unified Row */}
-                    <div className="flex flex-col mb-12">
-                        <div className="flex flex-wrap items-start justify-between gap-4 py-2 border-b border-stone-200/80 dark:border-zinc-700/60 pb-6">
-                            {/* Left side actions */}
-                            <div className="flex items-start gap-3">
-                                {/* React Button with bound microcopy */}
-                                <div className="flex flex-col gap-1.5">
-                                    <ReactionButton
-                                        storyId={story.id}
-                                        currentReaction={userReaction}
-                                        onReact={handleReact}
-                                        supportCount={supportCount}
-                                    />
-                                    <span className="text-[11px] text-stone-400 dark:text-stone-500 italic pl-1 leading-none">
-                                        A quiet way to say "I read this."
-                                    </span>
-                                </div>
-                                
-                                {/* Save Button */}
-                                {user && (
-                                    <button
-                                        onClick={handleToggleBookmark}
-                                        aria-label={isBookmarked ? 'Remove from saved' : 'Save this story'}
-                                        className={`group flex items-center h-[42px] px-5 gap-2 rounded-xl font-semibold text-[15px] transition-all duration-200 ${isBookmarked
-                                            ? 'border-amber-400 border-[1.5px] bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 shadow-sm shadow-amber-500/10'
-                                            : 'border border-amber-200 bg-white dark:border-zinc-700 dark:bg-zinc-800 text-stone-600 dark:text-stone-400 hover:border-amber-400 hover:shadow-sm'
-                                            }`}
-                                    >
-                                        <Bookmark className={`w-5 h-5 transition-colors duration-200 ${isBookmarked ? 'fill-current' : 'fill-transparent stroke-current group-hover:stroke-amber-500 group-hover:fill-amber-100'}`} aria-hidden="true" />
-                                        <span>{isBookmarked ? 'Saved' : 'Save'}</span>
-                                    </button>
-                                )}
+                        {/* Center / Right: Telemetry & Actions */}
+                        <div className="flex items-center gap-2.5 sm:gap-4">
+                            {/* Reading duration */}
+                            <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400 font-body">
+                                <Clock className="w-3.5 h-3.5" />
+                                <span>{story.reading_time || 1} min read</span>
                             </div>
 
-                            {/* Right side actions - Grouped closely */}
-                            <div className="flex items-center gap-1.5 text-stone-500 dark:text-stone-400 text-sm mt-1">
-                                <span className="font-medium mr-1.5 hidden sm:inline-block">
-                                    {story.comment_count} responses
+                            <div className="hidden sm:block w-[1px] h-3.5 bg-[#EADDCF] dark:bg-[#2C2723]" />
+
+                            {/* Bookmark Action */}
+                            <button
+                                onClick={handleToggleBookmark}
+                                disabled={bookmarkLoading}
+                                aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark reflection'}
+                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${isBookmarked
+                                    ? 'bg-amber-100/80 dark:bg-amber-950/40 text-[#C85828] dark:text-amber-300 border border-amber-300/80 dark:border-amber-800/60'
+                                    : 'bg-[#FFFDF9] dark:bg-[#181614] text-stone-600 dark:text-stone-400 border border-[#EADDCF] dark:border-[#2C2723] hover:border-amber-400/60 hover:text-stone-900 dark:hover:text-stone-100'
+                                }`}
+                            >
+                                <Bookmark className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-current' : ''}`} />
+                                <span className="hidden sm:inline">{isBookmarked ? 'Saved' : 'Save'}</span>
+                            </button>
+
+                            {/* Share Action */}
+                            <button
+                                onClick={handleShare}
+                                aria-label="Share story"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:border-amber-400/60 rounded-xl text-xs font-medium transition-all"
+                            >
+                                {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5" />}
+                                <span className="hidden sm:inline">{copied ? 'Copied' : 'Share'}</span>
+                            </button>
+
+                            {/* Author dropdown if owner */}
+                            {isAuthor && (
+                                <div className="relative" ref={authorMenuRef}>
+                                    <button
+                                        onClick={() => setShowAuthorMenu(!showAuthorMenu)}
+                                        aria-label="Story author actions"
+                                        className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+                                    >
+                                        <MoreHorizontal className="w-4 h-4" />
+                                    </button>
+
+                                    {showAuthorMenu && (
+                                        <div className="absolute right-0 mt-2 w-48 bg-[#FFFDF9] dark:bg-[#181614] rounded-2xl shadow-xl border border-[#EADDCF] dark:border-[#2C2723] py-1.5 z-50">
+                                            <button
+                                                onClick={() => {
+                                                    setShowAuthorMenu(false);
+                                                    setShowDeleteModal(true);
+                                                }}
+                                                className="flex items-center gap-2.5 w-full text-left px-4 py-2 text-xs sm:text-sm text-red-600 dark:text-red-400 hover:bg-red-50/70 dark:hover:bg-red-950/20 font-medium transition-colors"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                                <span>Delete Reflection</span>
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </header>
+
+                {/* Main Reading Container */}
+                <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12">
+                    
+                    {/* Story Header & Byline */}
+                    <div className="mb-6 sm:mb-8 text-left">
+                        
+                        {/* Category Capsule */}
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-[11px] font-semibold tracking-wide uppercase mb-4 bg-[#FFFDF9] dark:bg-[#181614] border-[#EADDCF] dark:border-[#2C2723] text-stone-700 dark:text-stone-300">
+                            <StoryTypeIcon className="w-3.5 h-3.5 text-[#C85828] dark:text-amber-400" strokeWidth={1.75} />
+                            <span>{storyType.label}</span>
+                        </div>
+
+                        {/* Title in Literary Serif */}
+                        <h1 className="font-stories text-3xl sm:text-4xl lg:text-5xl text-stone-900 dark:text-stone-100 font-normal leading-[1.18] tracking-tight mb-5">
+                            {story.title}
+                        </h1>
+
+                        {/* Byline & Metadata Strip */}
+                        <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-body text-stone-500 dark:text-stone-400 pb-4 border-b border-[#EADDCF]/80 dark:border-[#2C2723]">
+                            <div className="flex items-center gap-2">
+                                <div className="w-7 h-7 rounded-full bg-amber-100/70 dark:bg-amber-950/40 text-[#C85828] dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/40 flex items-center justify-center font-medium text-xs">
+                                    {story.is_anonymous ? (
+                                        <Feather className="w-3.5 h-3.5 stroke-[1.75]" />
+                                    ) : (
+                                        authorDisplayName.charAt(0).toUpperCase()
+                                    )}
+                                </div>
+                                <span className="font-semibold text-stone-800 dark:text-stone-200">
+                                    {authorDisplayName}
                                 </span>
-                                <span className="hidden sm:inline-block text-stone-300 dark:text-zinc-700 mx-0.5">·</span>
+                            </div>
+
+                            <span className="text-stone-300 dark:text-stone-700">·</span>
+
+                            <time dateTime={story.created_at} className="text-stone-500 dark:text-stone-400">
+                                {formatFullDate(story.created_at)}
+                            </time>
+
+                            <span className="text-stone-300 dark:text-stone-700">·</span>
+
+                            <div className="flex items-center gap-1.5">
+                                <Clock className="w-3.5 h-3.5" />
+                                <span>{story.reading_time || 1} min read</span>
+                            </div>
+
+                            {story.views_count !== undefined && story.views_count > 0 && (
+                                <>
+                                    <span className="text-stone-300 dark:text-stone-700">·</span>
+                                    <div className="flex items-center gap-1.5">
+                                        <Eye className="w-3.5 h-3.5" />
+                                        <span>{story.views_count} {story.views_count === 1 ? 'read' : 'reads'}</span>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+
+                        {/* Tags */}
+                        {story.tags && story.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-4">
+                                {story.tags.map((tag, idx) => (
+                                    <span
+                                        key={idx}
+                                        className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#FFFDF9] dark:bg-[#181614] text-stone-600 dark:text-stone-400 border border-[#EADDCF] dark:border-[#2C2723]"
+                                    >
+                                        #{tag}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Story Parchment Card */}
+                    <article className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-3xl p-6 sm:p-10 lg:p-12 shadow-[0_4px_30px_rgba(200,140,90,0.06)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.4)] mb-10 transition-colors">
+                        
+                        {/* Main Body Prose */}
+                        <div className="prose-sanctuary">
+                            <p className="font-body text-base sm:text-lg lg:text-[19px] text-stone-800 dark:text-stone-200 leading-[1.85] whitespace-pre-wrap font-normal selection:bg-amber-200/60 dark:selection:bg-amber-900/50">
+                                {sanitizeText(story.content)}
+                            </p>
+                        </div>
+
+                        {/* Visual Breath / Literary Ending Mark */}
+                        <div className="my-10 flex items-center justify-center gap-3">
+                            <div className="h-[1px] w-16 bg-[#EADDCF] dark:bg-[#2C2723]" />
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#C85828] opacity-75" />
+                            <div className="h-[1px] w-16 bg-[#EADDCF] dark:bg-[#2C2723]" />
+                        </div>
+
+                        <p className="text-center font-body text-xs text-stone-400 dark:text-stone-500 italic">
+                            Thank you for reading with patience and care.
+                        </p>
+
+                        {/* Interactive Sanctuary Action Row */}
+                        <div className="mt-8 pt-6 border-t border-[#EADDCF]/80 dark:border-[#2C2723] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+                            
+                            {/* Left: Reaction gesture with quiet microcopy */}
+                            <div className="flex flex-col gap-1.5">
+                                <ReactionButton
+                                    storyId={story.id}
+                                    currentReaction={userReaction}
+                                    onReact={handleReact}
+                                    supportCount={supportCount}
+                                />
+                                <span className="text-[11px] text-stone-400 dark:text-stone-500 italic pl-1">
+                                    A quiet gesture: "I hear you."
+                                </span>
+                            </div>
+
+                            {/* Right: Response count and share button */}
+                            <div className="flex items-center gap-3 self-end sm:self-center">
+                                <div className="inline-flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400">
+                                    <MessageSquare className="w-3.5 h-3.5" />
+                                    <span>{comments.length} {comments.length === 1 ? 'response' : 'responses'}</span>
+                                </div>
+
                                 <button
                                     onClick={handleShare}
                                     aria-label="Share this story"
-                                    className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-stone-100 dark:hover:bg-zinc-800 hover:text-stone-800 dark:hover:text-stone-200 transition-colors"
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-stone-100/70 dark:bg-zinc-800/60 hover:bg-stone-200/70 dark:hover:bg-zinc-700/60 text-stone-700 dark:text-stone-300 rounded-xl text-xs font-medium transition-colors"
                                 >
-                                    <Share2 className="w-4 h-4" aria-hidden="true" />
+                                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5" />}
+                                    <span>{copied ? 'Copied' : 'Share'}</span>
                                 </button>
-
-                                {/* Author Actions Menu */}
-                                {isAuthor && (
-                                    <>
-                                        <span className="text-stone-300 dark:text-zinc-700 mx-0.5">·</span>
-                                        <div className="relative">
-                                            <button
-                                                onClick={() => setShowAuthorMenu(!showAuthorMenu)}
-                                                className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-stone-100 dark:hover:bg-zinc-800 hover:text-stone-800 dark:hover:text-stone-200 transition-colors"
-                                            >
-                                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                                                </svg>
-                                            </button>
-                                            {showAuthorMenu && (
-                                                <>
-                                                    <div className="fixed inset-0 z-10" onClick={() => setShowAuthorMenu(false)}></div>
-                                                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-zinc-800 rounded-xl shadow-xl border border-stone-200 dark:border-zinc-700 py-1 z-20 animate-scale-in origin-top-right">
-                                                        <button
-                                                            onClick={() => {
-                                                                setShowAuthorMenu(false);
-                                                                setShowDeleteModal(true);
-                                                            }}
-                                                            className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors font-medium"
-                                                        >
-                                                            <Trash2 className="w-4 h-4" />
-                                                            Delete Story
-                                                        </button>
-                                                    </div>
-                                                </>
-                                            )}
-                                        </div>
-                                    </>
-                                )}
                             </div>
+
                         </div>
-                    </div>
+                    </article>
 
-                    {/* Comments Section */}
-                    <div className="w-full space-y-6">
-                        <h2 className="text-lg font-semibold text-stone-700 dark:text-stone-200">
-                            Responses <span className="text-stone-400 font-normal">({comments.length})</span>
-                        </h2>
+                    {/* Community Responses Section */}
+                    <section className="space-y-6">
+                        
+                        {/* Section Header */}
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h2 className="font-stories text-2xl sm:text-3xl text-stone-900 dark:text-stone-100 font-normal">
+                                    Community Responses
+                                </h2>
+                                <p className="font-body text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1">
+                                    This is a quiet space for support and presence, not debate or judgment.
+                                </p>
+                            </div>
 
-                        {/* Emotional guardrail */}
-                        <p className="text-xs text-stone-500 dark:text-stone-400 italic border-l-2 border-stone-200 dark:border-zinc-700 pl-3">
-                            Responses here are meant to support, not judge.
-                        </p>
+                            <span className="px-3 py-1 text-xs font-semibold rounded-full bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-700 dark:text-stone-300">
+                                {comments.length}
+                            </span>
+                        </div>
 
-                        {/* Add Comment - Warm Field Treatment */}
-                        <div className="bg-amber-50/50 dark:bg-amber-900/10 rounded-xl border border-amber-100 dark:border-amber-900/30 p-5 transition-colors group focus-within:border-amber-400 focus-within:bg-amber-50 dark:focus-within:bg-amber-900/20">
+                        {/* Response Composer Card */}
+                        <div className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-3xl p-5 sm:p-6 shadow-[0_4px_30px_rgba(200,140,90,0.06)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                             <textarea
                                 value={commentText}
                                 onChange={(e) => setCommentText(e.target.value)}
-                                placeholder="Write something kind, or simply be present."
+                                placeholder="Leave a gentle reflection or supportive thought..."
                                 rows={3}
-                                className="w-full px-2 py-1 bg-transparent border-none text-stone-800 dark:text-stone-100 placeholder-stone-400 focus:ring-0 resize-none mb-3 text-base"
+                                className="w-full bg-stone-50/70 dark:bg-[#121110] border border-[#EADDCF] dark:border-[#2C2723] rounded-2xl p-3.5 sm:p-4 text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 text-sm sm:text-base focus:outline-none focus:border-[#C85828] focus:ring-1 focus:ring-[#C85828]/30 resize-none transition-all"
                             />
-                            <div className="flex items-center justify-between border-t border-amber-200/50 dark:border-amber-900/50 pt-3">
-                                <label className="flex items-center gap-2 text-sm text-stone-600 dark:text-stone-400 cursor-pointer">
+
+                            <div className="flex flex-wrap items-center justify-between gap-3 mt-3 pt-3 border-t border-[#EADDCF]/60 dark:border-[#2C2723]">
+                                <label className="flex items-center gap-2 text-xs sm:text-sm text-stone-600 dark:text-stone-400 cursor-pointer select-none">
                                     <input
                                         type="checkbox"
                                         checked={isAnonymousComment}
                                         onChange={(e) => setIsAnonymousComment(e.target.checked)}
-                                        className="rounded border-amber-300 text-amber-600 focus:ring-amber-500 bg-white"
+                                        className="rounded border-[#EADDCF] dark:border-[#2C2723] text-[#C85828] focus:ring-[#C85828] bg-white dark:bg-[#181614]"
                                     />
-                                    Share anonymously
+                                    <span>Share anonymously</span>
                                 </label>
+
                                 <button
                                     onClick={handleComment}
-                                    disabled={!commentText.trim()}
-                                    className="btn-premium px-6 py-2.5 text-sm font-semibold rounded-lg shadow-sm disabled:opacity-75 disabled:cursor-not-allowed"
+                                    disabled={!commentText.trim() || submittingComment}
+                                    className="inline-flex items-center justify-center px-5 py-2 text-xs sm:text-sm font-semibold text-white bg-[#C85828] hover:bg-[#B54D20] active:scale-[0.98] rounded-xl shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed min-w-[100px]"
                                 >
-                                    Respond
+                                    {submittingComment ? 'Sending...' : 'Respond'}
                                 </button>
                             </div>
                         </div>
 
-                        {/* Comments List - Softer styling */}
-                        <div className="space-y-4">
-                            {comments.map((comment) => (
-                                <div
-                                    key={comment.id}
-                                    className="bg-white/60 dark:bg-zinc-800/60 rounded-lg border border-stone-100 dark:border-zinc-700/50 p-4"
-                                >
-                                    <div className="flex items-start gap-3">
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
-                                                    {comment.author?.display_name || comment.author?.username || 'Anonymous'}
-                                                </span>
-                                                <span className="text-xs text-stone-400 dark:text-stone-500">
-                                                    {formatCommentDate(comment.created_at)}
-                                                </span>
+                        {/* Responses List */}
+                        {comments.length === 0 ? (
+                            <div className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-2xl p-8 text-center">
+                                <p className="font-body text-xs sm:text-sm text-stone-500 dark:text-stone-400 italic">
+                                    No responses yet. Your gentle words can be the first comfort here.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="space-y-3.5">
+                                {comments.map((comment) => {
+                                    const commentAuthor = comment.is_anonymous
+                                        ? 'Anonymous Voice'
+                                        : (comment.author?.display_name || comment.author?.username || 'Anonymous Voice');
+
+                                    return (
+                                        <div
+                                            key={comment.id}
+                                            className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-2xl p-4 sm:p-5 shadow-sm transition-colors"
+                                        >
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-7 h-7 rounded-full bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-stone-300 border border-stone-200/70 dark:border-zinc-700/60 flex items-center justify-center font-medium text-xs flex-shrink-0 mt-0.5">
+                                                    {comment.is_anonymous ? (
+                                                        <Feather className="w-3.5 h-3.5 stroke-[1.75]" />
+                                                    ) : (
+                                                        commentAuthor.charAt(0).toUpperCase()
+                                                    )}
+                                                </div>
+
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                                                        <span className="text-xs sm:text-sm font-semibold text-stone-800 dark:text-stone-200 truncate">
+                                                            {commentAuthor}
+                                                        </span>
+                                                        <span className="text-[11px] text-stone-400 dark:text-stone-500 flex-shrink-0">
+                                                            {formatCommentDate(comment.created_at)}
+                                                        </span>
+                                                    </div>
+
+                                                    <p className="font-body text-xs sm:text-sm text-stone-700 dark:text-stone-300 leading-relaxed whitespace-pre-wrap">
+                                                        {comment.content}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed">
-                                                {comment.content}
-                                            </p>
                                         </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </article>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                    </section>
+                </main>
             </div>
 
-            {/* Delete Confirmation Modal */}
+            {/* Author Delete Confirmation Modal */}
             {showDeleteModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0">
-                    <div className="fixed inset-0 bg-stone-900/40 dark:bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => !isDeleting && setShowDeleteModal(false)}></div>
-                    
-                    <div className="relative bg-white dark:bg-zinc-900 rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all animate-scale-in border border-stone-200 dark:border-zinc-800">
-                        <div className="p-6">
-                            <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-4 border border-red-200 dark:border-red-800">
-                                <Trash2 className="w-6 h-6 text-red-600 dark:text-red-400" />
-                            </div>
-                            
-                            <h3 className="text-xl font-medium text-stone-900 dark:text-white mb-2">
-                                Delete this story?
-                            </h3>
-                            
-                            <p className="text-stone-500 dark:text-stone-400 text-sm leading-relaxed mb-8">
-                                Are you sure you want to delete <span className="font-medium text-stone-700 dark:text-stone-300">"{story.title}"</span>? This action cannot be undone and will remove all reactions and comments.
-                            </p>
-                            
-                            <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
-                                <button 
-                                    onClick={() => setShowDeleteModal(false)}
-                                    disabled={isDeleting}
-                                    className="px-5 py-2.5 text-sm font-medium rounded-xl text-stone-600 dark:text-stone-400 bg-stone-100 dark:bg-zinc-800 hover:bg-stone-200 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"
-                                >
-                                    Cancel
-                                </button>
-                                <button 
-                                    onClick={handleDelete}
-                                    disabled={isDeleting}
-                                    className="flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium rounded-xl text-white bg-red-600 hover:bg-red-700 transition-colors disabled:opacity-50 min-w-[100px]"
-                                >
-                                    {isDeleting ? (
-                                        <>
-                                            <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin"></div>
-                                            Deleting...
-                                        </>
-                                    ) : (
-                                        'Delete Story'
-                                    )}
-                                </button>
-                            </div>
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div 
+                        className="fixed inset-0 bg-stone-900/50 dark:bg-black/70 backdrop-blur-sm transition-opacity" 
+                        onClick={() => !isDeleting && setShowDeleteModal(false)}
+                    />
+
+                    <div className="relative bg-[#FFFDF9] dark:bg-[#181614] rounded-3xl border border-[#EADDCF] dark:border-[#2C2723] p-6 sm:p-8 max-w-md w-full shadow-2xl z-10 animate-scale-in">
+                        <div className="w-12 h-12 rounded-2xl bg-red-100/80 dark:bg-red-950/40 text-red-600 dark:text-red-400 flex items-center justify-center mb-4 border border-red-200/70 dark:border-red-900/50">
+                            <Trash2 className="w-6 h-6 stroke-[1.75]" />
+                        </div>
+
+                        <h3 className="font-stories text-xl sm:text-2xl text-stone-900 dark:text-stone-100 mb-2 font-normal">
+                            Delete this reflection?
+                        </h3>
+
+                        <p className="font-body text-xs sm:text-sm text-stone-600 dark:text-stone-400 leading-relaxed mb-6">
+                            Are you sure you want to remove <span className="font-medium text-stone-800 dark:text-stone-200">"{story.title}"</span>? This action is permanent and will remove all reactions and community responses.
+                        </p>
+
+                        <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
+                            <button
+                                onClick={() => setShowDeleteModal(false)}
+                                disabled={isDeleting}
+                                className="px-5 py-2.5 text-xs sm:text-sm font-medium rounded-xl text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
+                            >
+                                Keep Story
+                            </button>
+
+                            <button
+                                onClick={handleDelete}
+                                disabled={isDeleting}
+                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-semibold rounded-xl text-white bg-red-600 hover:bg-red-700 transition-colors disabled:opacity-50 min-w-[120px]"
+                            >
+                                {isDeleting ? (
+                                    <>
+                                        <div className="w-3.5 h-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                                        <span>Deleting...</span>
+                                    </>
+                                ) : (
+                                    'Delete Story'
+                                )}
+                            </button>
                         </div>
                     </div>
                 </div>

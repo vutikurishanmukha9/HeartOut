@@ -1,152 +1,238 @@
 import React from 'react';
-import { Heart, Phone, Shield, ExternalLink, ArrowLeft, MessageCircle } from 'lucide-react';
+import { 
+    Heart, 
+    Phone, 
+    Shield, 
+    ExternalLink, 
+    ArrowLeft, 
+    PhoneCall, 
+    Clock, 
+    AlertCircle,
+    Building2,
+    LifeBuoy,
+    HelpCircle,
+    CheckCircle2
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { HelplineCard, helplines } from '../components/HelplineCard';
 
 export default function Support() {
     return (
-        <div className="min-h-screen bg-stone-50 dark:bg-zinc-950 font-body">
-            {/* Top Bar - Subtle Navigation & Framing Quote */}
-            <div className="max-w-4xl mx-auto px-4 pt-6 pb-4 flex items-center justify-between">
-                <Link
-                    to="/"
-                    className="inline-flex items-center gap-1.5 text-sm text-stone-400 dark:text-stone-500 hover:text-stone-600 dark:hover:text-stone-300 transition-colors"
-                >
-                    <ArrowLeft className="w-4 h-4" />
-                    Back to Home
-                </Link>
-                <p className="hidden sm:block text-xs font-medium text-stone-400 dark:text-stone-500 italic">
-                    “Your feelings are valid. You deserve support.”
-                </p>
-            </div>
+        <div className="min-h-screen heartout-auth-bg dark:bg-[#121110] font-body transition-colors duration-300 pb-24 sm:pb-20">
+            
+            {/* Top Sanctuary Control Bar */}
+            <header className="sticky top-0 z-40 py-3.5 px-4 sm:px-8 bg-[#FBEFE5]/90 dark:bg-[#121110]/90 backdrop-blur-md border-b border-[#EADDCF]/80 dark:border-[#26221E]">
+                <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
+                    <Link
+                        to="/"
+                        className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors px-2.5 py-1.5 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        <span>Back to Home</span>
+                    </Link>
 
-            <div className="max-w-3xl mx-auto px-4 pb-20">
-                {/* Header Section */}
-                <div className="text-center mb-10 pt-8 animate-slide-up">
-                    <div className="inline-flex p-3 rounded-2xl bg-rose-100 dark:bg-rose-900/30 mb-6">
-                        <Heart className="w-8 h-8 text-rose-500 fill-rose-500/20" />
+                    <p className="hidden sm:block font-stories text-xs text-stone-500 dark:text-stone-400 italic">
+                        "Your feelings are valid. You deserve a safe space to breathe."
+                    </p>
+                </div>
+            </header>
+
+            {/* Main Sanctuary Support Content */}
+            <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12">
+                
+                {/* Masthead */}
+                <div className="text-center mb-10 sm:mb-12 space-y-3">
+                    <div className="w-12 h-12 rounded-2xl bg-amber-100/70 dark:bg-amber-950/40 text-[#C85828] dark:text-amber-400 flex items-center justify-center mx-auto border border-amber-200/60 dark:border-amber-900/40">
+                        <Heart className="w-6 h-6 stroke-[1.75]" />
                     </div>
-                    <h1 className="text-3xl md:text-4xl font-heading font-bold text-stone-800 dark:text-stone-100 mb-3">
-                        You’re Not Alone
+
+                    <h1 className="font-stories text-3xl sm:text-4xl lg:text-5xl text-stone-900 dark:text-stone-100 font-normal leading-tight">
+                        You do not have to carry this alone
                     </h1>
-                    <p className="text-base text-stone-500 dark:text-stone-400 max-w-lg mx-auto leading-relaxed">
-                        All helplines listed here are free, confidential, and anonymous.
+
+                    <p className="font-body text-sm sm:text-base text-stone-600 dark:text-stone-400 max-w-lg mx-auto leading-relaxed">
+                        Free, confidential, and anonymous listening spaces. Verified mental health resources available at any hour of the day or night.
                     </p>
                 </div>
 
-                {/* Grounding & Immediate Action */}
-                <div className="animate-slide-up stagger-1 mb-12">
-                    <p className="text-center text-stone-400 dark:text-stone-500 italic mb-6">
-                        You don’t have to decide everything right now.
-                    </p>
+                {/* Acute Crisis Lifeline Card */}
+                <section className="mb-10">
+                    <article className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-3xl p-6 sm:p-10 shadow-[0_4px_30px_rgba(200,140,90,0.06)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.4)] text-center space-y-6">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 text-xs font-semibold">
+                            <span className="w-2 h-2 rounded-full bg-[#C85828] animate-pulse" />
+                            <span>National 24/7 Crisis Lifeline</span>
+                        </div>
 
-                    {/* Immediate CTA - Warm, Urgent but Safe */}
-                    <div className="bg-white dark:bg-zinc-900 rounded-3xl border-2 border-amber-100 dark:border-amber-900/30 p-6 sm:p-8 shadow-xl shadow-amber-100/30 dark:shadow-none text-center">
-                        <h2 className="text-xl font-bold text-amber-800 dark:text-amber-400 mb-6">
-                            Need help right now?
+                        <div className="space-y-2">
+                            <h2 className="font-stories text-2xl sm:text-3xl text-stone-900 dark:text-stone-100 font-normal">
+                                Need someone to talk to right now?
+                            </h2>
+                            <p className="font-body text-xs sm:text-sm text-stone-600 dark:text-stone-400 max-w-md mx-auto leading-relaxed">
+                                Tele MANAS offers free, confidential tele-counseling by trained mental health professionals across India.
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                            <a
+                                href="tel:14416"
+                                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 h-12 px-8 rounded-xl bg-[#C85828] hover:bg-[#B54D20] text-white text-sm sm:text-base font-semibold shadow-sm transition-all active:scale-[0.98]"
+                            >
+                                <PhoneCall className="w-4 h-4" />
+                                <span>Call Lifeline 14416</span>
+                            </a>
+
+                            <a
+                                href="tel:18008914416"
+                                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-[#FFFDF9] dark:bg-[#1E1A17] border border-[#EADDCF] dark:border-[#332E29] text-stone-800 dark:text-stone-200 text-xs sm:text-sm font-medium hover:bg-stone-50 dark:hover:bg-[#25211D] transition-colors"
+                            >
+                                <span>Toll-Free: 1800-891-4416</span>
+                            </a>
+                        </div>
+
+                        <p className="text-[11px] text-stone-400 dark:text-stone-500 font-body">
+                            Government of India • Toll-free from any mobile operator • Zero charge
+                        </p>
+                    </article>
+                </section>
+
+                {/* Pillars of Sanctuary Listening */}
+                <section className="mb-12">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        
+                        <article className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-2xl p-5 shadow-[0_2px_12px_rgba(200,140,90,0.03)] text-left space-y-2">
+                            <div className="w-9 h-9 rounded-xl bg-stone-100 dark:bg-stone-800/80 text-stone-700 dark:text-stone-300 flex items-center justify-center">
+                                <Clock className="w-4 h-4" />
+                            </div>
+                            <h3 className="font-heading text-sm font-semibold text-stone-900 dark:text-stone-100">
+                                Continuous Support
+                            </h3>
+                            <p className="font-body text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
+                                Mental health crises do not follow a schedule. Help is available 24 hours a day, every day of the year.
+                            </p>
+                        </article>
+
+                        <article className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-2xl p-5 shadow-[0_2px_12px_rgba(200,140,90,0.03)] text-left space-y-2">
+                            <div className="w-9 h-9 rounded-xl bg-stone-100 dark:bg-stone-800/80 text-stone-700 dark:text-stone-300 flex items-center justify-center">
+                                <Shield className="w-4 h-4" />
+                            </div>
+                            <h3 className="font-heading text-sm font-semibold text-stone-900 dark:text-stone-100">
+                                100% Confidential
+                            </h3>
+                            <p className="font-body text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
+                                You do not have to provide your name or identity. Your conversation stays private between you and the listener.
+                            </p>
+                        </article>
+
+                        <article className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-2xl p-5 shadow-[0_2px_12px_rgba(200,140,90,0.03)] text-left space-y-2">
+                            <div className="w-9 h-9 rounded-xl bg-stone-100 dark:bg-stone-800/80 text-stone-700 dark:text-stone-300 flex items-center justify-center">
+                                <Heart className="w-4 h-4" />
+                            </div>
+                            <h3 className="font-heading text-sm font-semibold text-stone-900 dark:text-stone-100">
+                                Zero Cost
+                            </h3>
+                            <p className="font-body text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
+                                Every helpline listed on this page is free. You will never be asked for billing details or subscription fees.
+                            </p>
+                        </article>
+
+                    </div>
+                </section>
+
+                {/* Verified Helplines Section */}
+                <section className="mb-12 space-y-6">
+                    <div className="text-left">
+                        <h2 className="font-stories text-2xl sm:text-3xl text-stone-900 dark:text-stone-100 font-normal">
+                            Verified Helplines & Listening Spaces
                         </h2>
-                        <a
-                            href="tel:14416"
-                            className="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-rose-500 to-amber-500 text-white text-lg font-bold rounded-xl hover:from-rose-600 hover:to-amber-600 hover:-translate-y-0.5 transition-[transform,box-shadow] duration-200 shadow-lg shadow-rose-500/20"
-                        >
-                            <Phone className="w-6 h-6" />
-                            Call 14416
-                        </a>
-                        <p className="mt-4 text-xs text-stone-400 dark:text-stone-600">
-                            Tele MANAS • 24/7 • Free • Govt. of India
+                        <p className="font-body text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1">
+                            Choose the helpline that suits your preferred language, schedule, and comfort.
                         </p>
                     </div>
-                </div>
 
-                {/* Quick Stats - Reassurance */}
-                <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto mb-16 animate-slide-up stagger-2">
-                    <div className="text-center">
-                        <div className="w-10 h-10 mx-auto rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mb-2">
-                            <Phone className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                        </div>
-                        <p className="text-sm font-semibold text-stone-700 dark:text-stone-300">24/7</p>
-                        <p className="text-[10px] text-stone-400">Available</p>
-                    </div>
-                    <div className="text-center">
-                        <div className="w-10 h-10 mx-auto rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mb-2">
-                            <Shield className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                        </div>
-                        <p className="text-sm font-semibold text-stone-700 dark:text-stone-300">100%</p>
-                        <p className="text-[10px] text-stone-400">Confidential</p>
-                    </div>
-                    <div className="text-center">
-                        <div className="w-10 h-10 mx-auto rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mb-2">
-                            <MessageCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                        </div>
-                        <p className="text-sm font-semibold text-stone-700 dark:text-stone-300">Free</p>
-                        <p className="text-[10px] text-stone-400">No Cost</p>
-                    </div>
-                </div>
-
-                {/* Helplines List */}
-                <div className="space-y-8 animate-slide-up stagger-3">
-                    <h3 className="text-lg font-bold text-stone-800 dark:text-stone-200 text-center mb-6">
-                        Mental Health Helplines
-                    </h3>
-
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         {helplines.map((helpline) => (
                             <HelplineCard key={helpline.id} helpline={helpline} />
                         ))}
                     </div>
-                </div>
+                </section>
 
-                {/* Additional Resources - Secondary Hierarchy */}
-                <div className="mt-12 pt-12 border-t border-stone-100 dark:border-zinc-800 animate-slide-up stagger-4">
-                    <h3 className="text-sm font-semibold text-stone-500 dark:text-stone-400 mb-6 uppercase tracking-wider text-center">
-                        Additional Resources
-                    </h3>
-                    <div className="grid sm:grid-cols-2 gap-4">
+                {/* Academic & Foundation Resources */}
+                <section className="mb-12 space-y-4">
+                    <div className="text-left">
+                        <h3 className="font-heading text-xs uppercase tracking-wider font-semibold text-stone-500 dark:text-stone-400">
+                            Recognized Institutes & Foundations
+                        </h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <a
                             href="https://www.nimhans.ac.in"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-3 p-5 rounded-xl bg-amber-50/30 dark:bg-zinc-800/60 border border-amber-100 dark:border-zinc-700 hover:bg-amber-50/60 dark:hover:bg-zinc-800 transition-colors group"
+                            className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-2xl p-5 shadow-sm hover:border-[#D4832D]/70 dark:hover:border-[#D4832D]/50 hover:-translate-y-0.5 transition-all flex items-center justify-between gap-4 group"
                         >
-                            <div className="p-2 rounded-lg bg-amber-100/50 dark:bg-amber-900/20 group-hover:bg-amber-100 dark:group-hover:bg-amber-900/30 transition-colors">
-                                <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 flex items-center justify-center shrink-0">
+                                    <Building2 className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h4 className="font-heading text-sm font-semibold text-stone-900 dark:text-stone-100 group-hover:text-[#C85828] transition-colors">
+                                        NIMHANS
+                                    </h4>
+                                    <p className="font-body text-xs text-stone-500 dark:text-stone-400">
+                                        National Institute of Mental Health and Neurosciences
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <p className="font-semibold text-stone-800 dark:text-stone-200 text-sm">NIMHANS</p>
-                                <p className="text-xs text-stone-500 dark:text-stone-400">National Institute of Mental Health</p>
-                            </div>
+                            <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-stone-700 dark:group-hover:text-stone-200 transition-colors shrink-0" />
                         </a>
+
                         <a
                             href="https://www.vandrevalafoundation.com"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-3 p-5 rounded-xl bg-amber-50/30 dark:bg-zinc-800/60 border border-amber-100 dark:border-zinc-700 hover:bg-amber-50/60 dark:hover:bg-zinc-800 transition-colors group"
+                            className="bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] rounded-2xl p-5 shadow-sm hover:border-[#D4832D]/70 dark:hover:border-[#D4832D]/50 hover:-translate-y-0.5 transition-all flex items-center justify-between gap-4 group"
                         >
-                            <div className="p-2 rounded-lg bg-amber-100/50 dark:bg-amber-900/20 group-hover:bg-amber-100 dark:group-hover:bg-amber-900/30 transition-colors">
-                                <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 flex items-center justify-center shrink-0">
+                                    <LifeBuoy className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h4 className="font-heading text-sm font-semibold text-stone-900 dark:text-stone-100 group-hover:text-[#C85828] transition-colors">
+                                        Vandrevala Foundation
+                                    </h4>
+                                    <p className="font-body text-xs text-stone-500 dark:text-stone-400">
+                                        24/7 Mental Health and Crisis Counseling
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <p className="font-semibold text-stone-800 dark:text-stone-200 text-sm">Vandrevala Foundation</p>
-                                <p className="text-xs text-stone-500 dark:text-stone-400">Mental Health Support</p>
-                            </div>
+                            <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-stone-700 dark:group-hover:text-stone-200 transition-colors shrink-0" />
                         </a>
                     </div>
-                </div>
+                </section>
 
-                {/* Emergency Disclaimer - Separate & Serious */}
-                <div className="mt-12 bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 rounded-xl p-5 text-center">
-                    <p className="text-xs text-amber-800 dark:text-amber-500 leading-relaxed">
-                        <span className="font-bold block mb-1">Emergency Situations</span>
-                        If you or someone you know is in immediate danger, please call emergency services (112)
-                        or go to your nearest hospital emergency room immediately.
+                {/* Emergency Situation Advisory */}
+                <section className="mb-12">
+                    <article className="bg-[#FFFDF9] dark:bg-[#181614] border border-red-200/80 dark:border-red-900/40 rounded-2xl p-5 sm:p-6 text-center space-y-2">
+                        <div className="inline-flex items-center gap-1.5 text-red-700 dark:text-red-400 text-xs font-semibold uppercase tracking-wider">
+                            <AlertCircle className="w-4 h-4" />
+                            <span>Immediate Medical Emergency</span>
+                        </div>
+                        <p className="font-body text-xs sm:text-sm text-stone-600 dark:text-stone-400 leading-relaxed max-w-xl mx-auto">
+                            If you or someone around you is in immediate physical danger or facing a medical crisis, please call emergency services immediately at <span className="font-semibold text-stone-900 dark:text-stone-100">112</span> (National Emergency Number) or proceed to the nearest hospital casualty department.
+                        </p>
+                    </article>
+                </section>
+
+                {/* Closing Literary Grounding */}
+                <div className="text-center pt-4">
+                    <p className="font-stories italic text-sm text-stone-500 dark:text-stone-400 leading-relaxed max-w-md mx-auto">
+                        "Whatever you are experiencing in this moment, you are allowed to feel it. Reaching out for help is an act of quiet courage."
                     </p>
                 </div>
 
-                {/* Final Grounding Sentence */}
-                <p className="mt-16 mb-8 text-center text-sm text-stone-400 dark:text-stone-500 italic leading-relaxed max-w-md mx-auto">
-                    Whatever you are feeling right now — it is okay to feel it. You reached out. That took courage.
-                </p>
-            </div>
+            </main>
+
         </div>
     );
 }
