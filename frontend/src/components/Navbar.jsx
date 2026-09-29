@@ -145,15 +145,15 @@ const Navbar = () => {
             : 'border-[#E8DDD0]/80 dark:border-[#26211C]/80'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16 gap-3">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16 gap-2 sm:gap-3">
 
             {/* Left Masthead: Brand Emblem & Editorial Navigation */}
-            <div className="flex items-center gap-6 sm:gap-8">
+            <div className="flex items-center gap-4 sm:gap-8">
               {/* Brand Logo */}
               <Link
                 to="/feed"
-                className="flex items-center gap-2.5 group shrink-0 focus:outline-none"
+                className="flex items-center gap-2 group shrink-0 focus:outline-none"
                 aria-label="HeartOut Sanctuary Feed"
               >
                 <img
@@ -164,7 +164,7 @@ const Navbar = () => {
                 <img
                   src="/text-logo.png"
                   alt="HeartOut"
-                  className="h-5 sm:h-5.5 w-auto max-w-[105px] sm:max-w-[125px] object-contain drop-shadow-2xs select-none transition-opacity duration-200 group-hover:opacity-90"
+                  className="h-4.5 sm:h-5.5 w-auto max-w-[90px] xs:max-w-[105px] sm:max-w-[125px] object-contain drop-shadow-2xs select-none transition-opacity duration-200 group-hover:opacity-90"
                 />
                 <span className="hidden xl:inline-block pl-3 border-l border-[#E8DDD0] dark:border-[#26211C] text-[10px] font-mono uppercase tracking-widest text-stone-400 dark:text-stone-500 select-none">
                   Sanctuary
@@ -243,7 +243,7 @@ const Navbar = () => {
             </div>
 
             {/* Right Action Dock */}
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
 
               {/* Mobile Search Trigger */}
               <button

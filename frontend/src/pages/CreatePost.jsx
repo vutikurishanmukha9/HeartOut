@@ -356,31 +356,33 @@ export default function CreatePost() {
                         <div className="hidden sm:block w-[1px] h-4 bg-[#EADDCF] dark:bg-[#2C2723]" />
 
                         {/* Live auto-save telemetry badge */}
-                        <div className="flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400 font-body">
+                        <div className="hidden xs:flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400 font-body">
                             {autoSaved ? (
                                 <span className="inline-flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-medium">
                                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                                    Draft saved
+                                    <span className="hidden sm:inline">Draft saved</span>
+                                    <span className="sm:hidden">Saved</span>
                                 </span>
                             ) : lastSaved ? (
                                 <span className="inline-flex items-center gap-1 text-stone-500 dark:text-stone-400">
                                     <Clock className="w-3.5 h-3.5" />
-                                    Saved at {lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    <span className="hidden sm:inline">Saved at {lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                    <span className="sm:hidden">{lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                 </span>
                             ) : (
-                                <span className="text-stone-400 dark:text-stone-500">Unsaved draft</span>
+                                <span className="text-stone-400 dark:text-stone-500 hidden sm:inline">Unsaved draft</span>
                             )}
                         </div>
                     </div>
 
                     {/* Right: Actions */}
-                    <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="flex items-center gap-1.5 sm:gap-3">
                         {/* Focus Mode Switch */}
                         <button
                             type="button"
                             onClick={() => setIsFocusMode(!isFocusMode)}
                             title={isFocusMode ? "Exit quiet focus" : "Enter quiet focus"}
-                            className="p-2.5 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-200/50 dark:hover:bg-stone-800/60 rounded-xl transition-all"
+                            className="p-2 sm:p-2.5 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-200/50 dark:hover:bg-stone-800/60 rounded-xl transition-all"
                             aria-label={isFocusMode ? "Exit focus mode" : "Enter focus mode"}
                         >
                             {isFocusMode ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -391,10 +393,12 @@ export default function CreatePost() {
                             <button
                                 type="button"
                                 onClick={() => setShowDiscardModal(true)}
-                                className="inline-flex items-center gap-1.5 h-10 px-3.5 text-xs sm:text-sm font-medium text-stone-500 hover:text-red-600 dark:text-stone-400 dark:hover:text-red-400 rounded-xl hover:bg-red-50/60 dark:hover:bg-red-950/20 transition-colors"
+                                title="Discard reflection"
+                                aria-label="Discard reflection"
+                                className="inline-flex items-center justify-center gap-1.5 h-10 px-2.5 sm:px-3.5 text-xs sm:text-sm font-medium text-stone-500 hover:text-red-600 dark:text-stone-400 dark:hover:text-red-400 rounded-xl hover:bg-red-50/60 dark:hover:bg-red-950/20 transition-colors"
                             >
                                 <Trash2 className="w-3.5 h-3.5" />
-                                <span>Discard</span>
+                                <span className="hidden sm:inline">Discard</span>
                             </button>
                         )}
 
@@ -403,7 +407,9 @@ export default function CreatePost() {
                             type="button"
                             onClick={() => handleSubmit(false)}
                             disabled={submitting}
-                            className="inline-flex items-center gap-1.5 h-10 px-4 text-xs sm:text-sm font-medium text-stone-700 dark:text-stone-300 bg-[#FFFDF9] dark:bg-[#1A1816] border border-[#EADDCF] dark:border-[#2C2723] rounded-xl hover:bg-stone-50 dark:hover:bg-[#221E1A] transition-all shadow-sm disabled:opacity-50"
+                            title="Save draft"
+                            aria-label="Save draft"
+                            className="inline-flex items-center justify-center gap-1.5 h-10 px-2.5 sm:px-4 text-xs sm:text-sm font-medium text-stone-700 dark:text-stone-300 bg-[#FFFDF9] dark:bg-[#1A1816] border border-[#EADDCF] dark:border-[#2C2723] rounded-xl hover:bg-stone-50 dark:hover:bg-[#221E1A] transition-all shadow-sm disabled:opacity-50"
                         >
                             <Save className="w-3.5 h-3.5" />
                             <span className="hidden sm:inline">Save Draft</span>
@@ -414,10 +420,11 @@ export default function CreatePost() {
                             type="button"
                             onClick={() => setShowPublishModal(true)}
                             disabled={submitting || !formData.title.trim() || !formData.content.trim()}
-                            className="inline-flex items-center gap-2 h-10 px-5 text-xs sm:text-sm font-semibold text-white bg-[#C85828] hover:bg-[#B54D20] active:scale-[0.98] rounded-xl shadow-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="inline-flex items-center justify-center gap-1.5 sm:gap-2 h-10 px-3.5 sm:px-5 text-xs sm:text-sm font-semibold text-white bg-[#C85828] hover:bg-[#B54D20] active:scale-[0.98] rounded-xl shadow-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
                         >
                             <Send className="w-3.5 h-3.5" />
-                            <span>Share Story</span>
+                            <span className="hidden sm:inline">Share Story</span>
+                            <span className="sm:hidden">Share</span>
                         </button>
                     </div>
                 </div>

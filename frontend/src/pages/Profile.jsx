@@ -208,21 +208,22 @@ export default function Profile() {
                         {/* Left: Return to Feed */}
                         <button
                             onClick={() => navigate('/feed')}
-                            className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors px-2.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                            className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors px-2 py-1.5 rounded-xl text-xs sm:text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 shrink-0"
                             aria-label="Return to feed"
                         >
                             <ArrowLeft className="w-4 h-4" />
-                            <span>Return to Sanctuary</span>
+                            <span className="hidden sm:inline">Return to Sanctuary</span>
+                            <span className="sm:hidden">Sanctuary</span>
                         </button>
 
                         {/* Right: Quick Actions */}
-                        <div className="flex items-center gap-2.5 sm:gap-3">
+                        <div className="flex items-center gap-1.5 sm:gap-3">
                             {isOwnProfile && (
                                 <>
                                     <Link
                                         to="/feed/saved"
                                         aria-label="Saved reflections"
-                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+                                        className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-medium bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
                                     >
                                         <Bookmark className="w-3.5 h-3.5" />
                                         <span className="hidden sm:inline">Saved</span>
@@ -231,7 +232,7 @@ export default function Profile() {
                                     <Link
                                         to="/profile/settings"
                                         aria-label="Sanctuary settings"
-                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+                                        className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-medium bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
                                     >
                                         <Settings className="w-3.5 h-3.5" />
                                         <span className="hidden sm:inline">Settings</span>
@@ -239,10 +240,11 @@ export default function Profile() {
 
                                     <Link
                                         to="/feed/create"
-                                        className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-semibold text-white bg-[#C85828] hover:bg-[#B54D20] active:scale-[0.98] shadow-sm transition-all"
+                                        className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-xl text-xs font-semibold text-white bg-[#C85828] hover:bg-[#B54D20] active:scale-[0.98] shadow-sm transition-all whitespace-nowrap"
                                     >
                                         <Plus className="w-3.5 h-3.5" />
-                                        <span>New Story</span>
+                                        <span className="hidden sm:inline">New Story</span>
+                                        <span className="sm:hidden">New</span>
                                     </Link>
                                 </>
                             )}

@@ -275,18 +275,20 @@ export default function AdminPanel() {
                     {/* Left: Return */}
                     <button
                         onClick={() => navigate('/feed')}
-                        className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors px-2.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                        className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors px-2 py-1.5 rounded-xl text-xs sm:text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 shrink-0"
                         aria-label="Return to feed"
                     >
                         <ArrowLeft className="w-4 h-4" />
-                        <span>Return to Sanctuary</span>
+                        <span className="hidden sm:inline">Return to Sanctuary</span>
+                        <span className="sm:hidden">Sanctuary</span>
                     </button>
 
                     {/* Right: Badge & Refresh */}
-                    <div className="flex items-center gap-3">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-700 dark:text-stone-300 text-xs font-medium">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-700 dark:text-stone-300 text-xs font-medium">
                             <Shield className="w-3.5 h-3.5 text-[#C85828] dark:text-amber-400" />
-                            <span>Steward Console</span>
+                            <span className="hidden sm:inline">Steward Console</span>
+                            <span className="sm:hidden">Steward</span>
                         </div>
 
                         <button
@@ -576,14 +578,15 @@ export default function AdminPanel() {
                                             {item.content}
                                         </p>
 
-                                        <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-[#EADDCF]/60 dark:border-[#2C2723]">
+                                        <div className="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-[#EADDCF]/60 dark:border-[#2C2723]">
                                             <button
                                                 onClick={() => handleModerateStory(item.id || item.public_id, 'approve')}
                                                 disabled={actionLoadingId === (item.id || item.public_id)}
                                                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 hover:bg-emerald-100 transition-colors disabled:opacity-50"
                                             >
                                                 <Check className="w-3.5 h-3.5" />
-                                                <span>Approve & Keep</span>
+                                                <span className="hidden sm:inline">Approve & Keep</span>
+                                                <span className="sm:hidden">Approve</span>
                                             </button>
 
                                             <button
@@ -592,7 +595,8 @@ export default function AdminPanel() {
                                                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 hover:bg-red-100 transition-colors disabled:opacity-50"
                                             >
                                                 <Trash2 className="w-3.5 h-3.5" />
-                                                <span>Remove from Sanctuary</span>
+                                                <span className="hidden sm:inline">Remove from Sanctuary</span>
+                                                <span className="sm:hidden">Remove</span>
                                             </button>
                                         </div>
                                     </div>

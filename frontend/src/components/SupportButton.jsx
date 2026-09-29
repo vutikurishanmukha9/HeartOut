@@ -143,7 +143,11 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside, { passive: true });
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
   }, []);
 
   // Handle reaction submission seamlessly with PostDetail.jsx
@@ -155,28 +159,44 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
     if (onReact) onReact(key);
   };
 
+  const handleMouseEnter = () => {
+    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(hover: hover)').matches) {
+      setOpen(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(hover: hover)').matches) {
+      setOpen(false);
+    }
+  };
+
   const current = reactions.find((r) => r.key === currentReaction);
 
   return (
     <div 
       ref={dropdownRef} 
       className="relative inline-flex select-none z-10"
-      onMouseLeave={() => setOpen(false)}
+      onMouseLeave={handleMouseLeave}
     >
  
       {/* Popup reaction picker wrapper to bridge the hover gap */}
       {open && (
-        <div className="absolute bottom-full pb-2.5 left-0 z-50">
+        <div className="absolute bottom-full pb-2.5 left-0 sm:left-0 max-w-[calc(100vw-2rem)] z-50">
           {/* Actual popup box */}
-          <div className="bg-stone-50 dark:bg-zinc-800 border border-stone-200/60 dark:border-zinc-700 rounded-[20px] px-3.5 py-2.5 flex gap-1.5 items-center shadow-lg shadow-stone-200/50 dark:shadow-none whitespace-nowrap">
+          <div className="bg-stone-50 dark:bg-zinc-800 border border-stone-200/60 dark:border-zinc-700 rounded-[20px] px-2.5 sm:px-3.5 py-2 sm:py-2.5 flex gap-1 sm:gap-1.5 items-center shadow-lg shadow-stone-200/50 dark:shadow-none whitespace-nowrap overflow-x-auto">
             {reactions.map((r) => (
               <div key={r.key} className="relative group flex justify-center">
                 <button
+                  type="button"
                   aria-label={r.label}
-                  onClick={() => handleReact(r.key)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleReact(r.key);
+                  }}
                   className={`
-                    w-11 h-11 rounded-full flex items-center justify-center p-0 border-2 cursor-pointer
-                    transition-transform duration-200 hover:scale-110 hover:-translate-y-0.5
+                    w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center p-0 border-2 cursor-pointer
+                    transition-transform duration-200 active:scale-95 sm:hover:scale-110 sm:hover:-translate-y-0.5
                     ${currentReaction === r.key 
                       ? `${r.activeBgClass} ${r.activeBorderColor}` 
                       : `${r.bgClass} border-transparent hover:${r.borderColor}`
@@ -186,11 +206,13 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
                     transform: animating === r.key ? "scale(1.35)" : "scale(1)",
                   }}
                 >
-                  {r.icon}
+                  <div className="scale-85 sm:scale-100 flex items-center justify-center">
+                    {r.icon}
+                  </div>
                 </button>
                 
                 {/* Individual floating tooltip - visible only on hover of this specific icon */}
-                <span className={`absolute -bottom-6 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none text-[10px] font-semibold tracking-wider whitespace-nowrap ${r.textColor}`}>
+                <span className={`hidden sm:inline-block absolute -bottom-6 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none text-[10px] font-semibold tracking-wider whitespace-nowrap ${r.textColor}`}>
                   {r.label}
                 </span>
               </div>
@@ -201,9 +223,13 @@ export default function ReactionButton({ storyId, currentReaction, onReact, supp
  
       {/* Main React button */}
       <button
-        onClick={() => setOpen((o) => !o)}
-        onMouseEnter={() => setOpen(true)}
-        className={`group flex items-center h-[42px] px-5 gap-2 rounded-xl font-semibold text-[15px] transition-colors duration-200
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((o) => !o);
+        }}
+        onMouseEnter={handleMouseEnter}
+        className={`group flex items-center h-[42px] px-4 sm:px-5 gap-2 rounded-xl font-semibold text-xs sm:text-[15px] transition-colors duration-200 active:scale-98
           ${currentReaction 
             ? `${current?.textColor} ${current?.activeBgClass} border ${current?.borderColor}` 
             : 'border border-amber-200 bg-white dark:border-zinc-700 dark:bg-zinc-800 text-stone-600 dark:text-stone-400 hover:border-amber-400 hover:shadow-sm'

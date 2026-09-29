@@ -198,7 +198,7 @@ export function StoryCard({
                 data-testid="bookmark-button"
                 onClick={handleBookmarkClick}
                 aria-pressed={isBookmarked}
-                className="p-1 rounded text-stone-400 hover:text-[#C85828] dark:hover:text-amber-400 transition-colors focus:outline-none"
+                className="p-2 -m-1 rounded-lg text-stone-400 hover:text-[#C85828] dark:hover:text-amber-400 active:scale-95 transition-all focus:outline-none flex items-center justify-center min-w-[34px] min-h-[34px]"
                 title={isBookmarked ? 'Remove bookmark' : 'Bookmark reflection'}
               >
                 <Bookmark
@@ -214,7 +214,7 @@ export function StoryCard({
                 type="button"
                 data-testid="react-button"
                 onClick={handleReactClick}
-                className="p-1 rounded text-stone-400 hover:text-rose-500 transition-colors focus:outline-none"
+                className="p-2 -m-1 rounded-lg text-stone-400 hover:text-rose-500 active:scale-95 transition-all focus:outline-none flex items-center justify-center min-w-[34px] min-h-[34px]"
                 title="Support reflection"
               >
                 <Heart className="w-3.5 h-3.5" />

@@ -28,7 +28,8 @@ export default function Support() {
                         className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors px-2.5 py-1.5 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                     >
                         <ArrowLeft className="w-4 h-4" />
-                        <span>Back to Home</span>
+                        <span className="hidden sm:inline">Back to Home</span>
+                        <span className="sm:hidden">Home</span>
                     </Link>
 
                     <p className="hidden sm:block font-stories text-xs text-stone-500 dark:text-stone-400 italic">

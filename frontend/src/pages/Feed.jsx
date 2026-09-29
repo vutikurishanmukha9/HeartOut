@@ -133,6 +133,7 @@ export default function Feed() {
                                     className="inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100 hover:border-amber-400/50 text-xs sm:text-sm font-medium transition-all"
                                 >
                                     <Bookmark className="w-4 h-4" />
+                                    <span className="sm:hidden">Saved</span>
                                     <span className="hidden sm:inline">Saved Stories</span>
                                 </Link>
                             </div>

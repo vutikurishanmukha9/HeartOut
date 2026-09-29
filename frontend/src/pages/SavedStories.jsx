@@ -100,14 +100,15 @@ export default function SavedStories() {
             <header className="sticky top-0 z-40 py-3.5 px-4 sm:px-8 bg-[#FBEFE5]/90 dark:bg-[#121110]/90 backdrop-blur-md border-b border-[#EADDCF]/80 dark:border-[#26221E]">
                 <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
                     {/* Left: Navigation */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
                         <button
                             onClick={() => navigate('/feed')}
-                            className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors px-2.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                            className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors px-2 py-1.5 rounded-xl text-xs sm:text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 shrink-0"
                             aria-label="Return to feed"
                         >
                             <ArrowLeft className="w-4 h-4" />
-                            <span>Return to Sanctuary</span>
+                            <span className="hidden sm:inline">Return to Sanctuary</span>
+                            <span className="sm:hidden">Sanctuary</span>
                         </button>
 
                         <div className="hidden sm:block w-[1px] h-4 bg-[#EADDCF] dark:bg-[#2C2723]" />
@@ -118,13 +119,14 @@ export default function SavedStories() {
                     </div>
 
                     {/* Right: Quick Explore Action */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
                         <Link
                             to="/feed"
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:border-amber-400/50 rounded-xl text-xs font-medium transition-all"
+                            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:border-amber-400/50 rounded-xl text-xs font-medium transition-all"
                         >
                             <Compass className="w-3.5 h-3.5 text-[#C85828] dark:text-amber-400" />
-                            <span>Explore Feed</span>
+                            <span className="hidden sm:inline">Explore Feed</span>
+                            <span className="sm:hidden">Explore</span>
                         </Link>
                     </div>
                 </div>

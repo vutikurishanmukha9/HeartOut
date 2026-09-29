@@ -180,7 +180,8 @@ export default function Settings() {
                         aria-label="Back to profile"
                     >
                         <ArrowLeft className="w-4 h-4" />
-                        <span>Back to Profile</span>
+                        <span className="hidden sm:inline">Back to Profile</span>
+                        <span className="sm:hidden">Profile</span>
                     </button>
 
                     {/* Right: Sanctuary Badge */}

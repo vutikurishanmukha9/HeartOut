@@ -405,11 +405,12 @@ export default function PostDetail() {
                         {/* Left: Back to Feed */}
                         <button
                             onClick={() => navigate('/feed')}
-                            className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors px-2.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                            className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors px-2 py-1.5 rounded-xl text-xs sm:text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 shrink-0"
                             aria-label="Return to feed"
                         >
                             <ArrowLeft className="w-4 h-4" />
-                            <span>Return to Feed</span>
+                            <span className="hidden sm:inline">Return to Feed</span>
+                            <span className="sm:hidden">Feed</span>
                         </button>
 
                         {/* Center / Right: Telemetry & Actions */}
@@ -586,7 +587,7 @@ export default function PostDetail() {
                             </div>
 
                             {/* Right: Response count and share button */}
-                            <div className="flex items-center gap-3 self-end sm:self-center">
+                            <div className="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#EADDCF]/40 dark:border-[#2C2723]/40">
                                 <div className="inline-flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400">
                                     <MessageSquare className="w-3.5 h-3.5" />
                                     <span>{comments.length} {comments.length === 1 ? 'response' : 'responses'}</span>

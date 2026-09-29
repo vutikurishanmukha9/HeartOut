@@ -81,3 +81,6 @@ skills-lock.json
 .gemini/
 *.tmp
 *.bak
+
+
+design-highlights.md

@@ -125,32 +125,34 @@ export default function Drafts() {
                 <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
                     
                     {/* Left: Navigation & Context */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
                         <Link
                             to="/feed"
-                            className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors px-2.5 py-1.5 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                            className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors px-2 py-1.5 rounded-xl text-xs sm:text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 shrink-0"
                         >
                             <ArrowLeft className="w-4 h-4" />
                             <span className="hidden sm:inline">Back to Sanctuary</span>
+                            <span className="sm:hidden">Back</span>
                         </Link>
 
                         {/* Hairline Divider */}
                         <div className="hidden sm:block w-[1px] h-4 bg-[#EADDCF] dark:bg-[#2C2723]" />
 
                         {/* Draft count badge */}
-                        <span className="text-xs text-stone-500 dark:text-stone-400 font-body">
+                        <span className="hidden xs:inline text-xs text-stone-500 dark:text-stone-400 font-body">
                             {drafts.length} {drafts.length === 1 ? 'saved reflection' : 'saved reflections'}
                         </span>
                     </div>
 
                     {/* Right: New Story Action */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
                         <Link
                             to="/feed/create"
-                            className="inline-flex items-center gap-2 h-10 px-4 sm:px-5 text-xs sm:text-sm font-semibold text-white bg-[#C85828] hover:bg-[#B54D20] active:scale-[0.98] rounded-xl shadow-sm transition-all"
+                            className="inline-flex items-center gap-1.5 sm:gap-2 h-10 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-white bg-[#C85828] hover:bg-[#B54D20] active:scale-[0.98] rounded-xl shadow-sm transition-all whitespace-nowrap"
                         >
                             <Plus className="w-4 h-4" />
-                            <span>New Reflection</span>
+                            <span className="hidden sm:inline">New Reflection</span>
+                            <span className="sm:hidden">New</span>
                         </Link>
                     </div>
 
@@ -258,10 +260,10 @@ export default function Drafts() {
                                         </div>
 
                                         {/* Action Buttons */}
-                                        <div className="flex items-center gap-2 sm:gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#EADDCF]/60 dark:border-[#2C2723]">
+                                        <div className="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-2 sm:gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#EADDCF]/60 dark:border-[#2C2723]">
                                             <Link
                                                 to={draft.id === 'local' ? `/feed/create` : `/feed/create?draft=${draft.id}`}
-                                                className="inline-flex items-center justify-center gap-1.5 h-10 px-4 sm:px-5 bg-[#C85828] hover:bg-[#B54D20] text-white rounded-xl text-xs sm:text-sm font-semibold shadow-sm transition-all active:scale-[0.98]"
+                                                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 h-10 px-4 sm:px-5 bg-[#C85828] hover:bg-[#B54D20] text-white rounded-xl text-xs sm:text-sm font-semibold shadow-sm transition-all active:scale-[0.98]"
                                             >
                                                 <PenSquare className="w-3.5 h-3.5" />
                                                 <span>Continue</span>
@@ -270,7 +272,7 @@ export default function Drafts() {
                                             <button
                                                 type="button"
                                                 onClick={() => confirmDelete(draft.id, draft.title)}
-                                                className="inline-flex items-center justify-center h-10 w-10 text-stone-400 hover:text-red-600 dark:hover:text-red-400 rounded-xl hover:bg-red-50/70 dark:hover:bg-red-950/20 border border-transparent hover:border-red-200 dark:hover:border-red-900/40 transition-colors"
+                                                className="inline-flex items-center justify-center h-10 w-10 text-stone-400 hover:text-red-600 dark:hover:text-red-400 rounded-xl hover:bg-red-50/70 dark:hover:bg-red-950/20 border border-transparent hover:border-red-200 dark:hover:border-red-900/40 transition-colors shrink-0"
                                                 title="Delete draft"
                                                 aria-label={`Delete ${draft.title || 'draft'}`}
                                             >

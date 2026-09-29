@@ -59,7 +59,7 @@ export default function SupportFloatingButton() {
   };
 
   return (
-    <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-[90]">
+    <div className="fixed bottom-[calc(5.25rem+env(safe-area-inset-bottom,0px))] right-3.5 sm:bottom-6 sm:right-6 z-[90]">
       {/* Expanded Support Drawer */}
       {isOpen && (
         <div
