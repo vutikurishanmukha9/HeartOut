@@ -2,7 +2,7 @@
  * Authentication Context Tests
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor, act } from '@testing-library/react';
+import { render, screen, waitFor, act, fireEvent } from '@testing-library/react';
 import { AuthProvider, AuthContext } from '../context/AuthContext';
 import { useContext } from 'react';
 
@@ -15,7 +15,23 @@ const localStorageMock = {
     clear: vi.fn(() => { localStorageMock.store = {}; })
 };
 
-Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+// Mock sessionStorage
+const sessionStorageMock = {
+    store: {},
+    getItem: vi.fn((key) => sessionStorageMock.store[key] || null),
+    setItem: vi.fn((key, value) => { sessionStorageMock.store[key] = value; }),
+    removeItem: vi.fn((key) => { delete sessionStorageMock.store[key]; }),
+    clear: vi.fn(() => { sessionStorageMock.store = {}; })
+};
+
+Object.defineProperty(window, 'localStorage', { value: localStorageMock, configurable: true, writable: true });
+Object.defineProperty(window, 'sessionStorage', { value: sessionStorageMock, configurable: true, writable: true });
+try {
+    globalThis.localStorage = localStorageMock;
+    globalThis.sessionStorage = sessionStorageMock;
+} catch {
+    // Ignore in environments where globalThis storage is read-only
+}
 
 // Mock fetch
 global.fetch = vi.fn();
@@ -36,6 +52,18 @@ function TestConsumer() {
             <span data-testid="has-login">{typeof auth.login === 'function' ? 'yes' : 'no'}</span>
             <span data-testid="has-logout">{typeof auth.logout === 'function' ? 'yes' : 'no'}</span>
             <span data-testid="has-register">{typeof auth.register === 'function' ? 'yes' : 'no'}</span>
+            <button
+                data-testid="login-remember"
+                onClick={async () => { await auth.login('test@example.com', 'pass123', true); }}
+            >
+                Login Remember
+            </button>
+            <button
+                data-testid="login-session-only"
+                onClick={async () => { await auth.login('test@example.com', 'pass123', false); }}
+            >
+                Login Session Only
+            </button>
         </div>
     );
 }
@@ -43,7 +71,8 @@ function TestConsumer() {
 describe('AuthContext', () => {
     beforeEach(() => {
         localStorageMock.clear();
-        global.fetch.mockClear();
+        sessionStorageMock.clear();
+        global.fetch.mockReset();
         vi.clearAllMocks();
     });
 
@@ -170,6 +199,58 @@ describe('AuthContext', () => {
 
             await waitFor(() => {
                 expect(screen.getByTestId('username').textContent).toBe('none');
+            });
+        });
+    });
+
+    describe('Remember Device Session Persistence', () => {
+        it('persists session in localStorage when rememberDevice is true', async () => {
+            global.fetch.mockResolvedValueOnce({
+                ok: true,
+                json: () => Promise.resolve({
+                    message: 'Login successful',
+                    access_token: 'fake-jwt-token-remember',
+                    user: { username: 'testuser' }
+                })
+            });
+
+            render(
+                <AuthProvider>
+                    <TestConsumer />
+                </AuthProvider>
+            );
+
+            fireEvent.click(screen.getByTestId('login-remember'));
+
+            await waitFor(() => {
+                expect(localStorageMock.setItem).toHaveBeenCalledWith('has_session', 'true');
+                expect(localStorageMock.setItem).toHaveBeenCalledWith('access_token', 'fake-jwt-token-remember');
+                expect(sessionStorageMock.removeItem).toHaveBeenCalledWith('has_session');
+            });
+        });
+
+        it('stores session in sessionStorage when rememberDevice is false', async () => {
+            global.fetch.mockResolvedValueOnce({
+                ok: true,
+                json: () => Promise.resolve({
+                    message: 'Login successful',
+                    access_token: 'fake-jwt-token-session',
+                    user: { username: 'sessionuser' }
+                })
+            });
+
+            render(
+                <AuthProvider>
+                    <TestConsumer />
+                </AuthProvider>
+            );
+
+            fireEvent.click(screen.getByTestId('login-session-only'));
+
+            await waitFor(() => {
+                expect(sessionStorageMock.setItem).toHaveBeenCalledWith('has_session', 'true');
+                expect(sessionStorageMock.setItem).toHaveBeenCalledWith('access_token', 'fake-jwt-token-session');
+                expect(localStorageMock.removeItem).toHaveBeenCalledWith('has_session');
             });
         });
     });

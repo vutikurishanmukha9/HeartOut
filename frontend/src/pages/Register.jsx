@@ -289,7 +289,7 @@ export default function Register() {
                     </div>
 
                     {/* Right Column: Symmetrically Expanded 500px Community Story Showcase */}
-                    <div className="w-full max-w-[500px] flex flex-col justify-center">
+                    <div className="hidden lg:flex w-full max-w-[500px] flex-col justify-center">
                         {/* Warm Linen Sanctuary Card */}
                         <div className="w-full h-full rounded-[22px] sm:rounded-[26px] bg-[#FFFDF9]/95 sm:bg-[#FFFDF9] border border-[#EADDCF] p-4 sm:p-6 lg:p-5 shadow-[0_20px_50px_-12px_rgba(180,80,20,0.09),0_4px_16px_-2px_rgba(0,0,0,0.03)] ring-1 ring-[#C85828]/10 flex flex-col justify-between">
                             

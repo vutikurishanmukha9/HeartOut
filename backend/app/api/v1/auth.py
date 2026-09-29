@@ -38,12 +38,14 @@ ACCESS_TOKEN_MAX_AGE = 60 * 60  # 1 hour in seconds
 REFRESH_TOKEN_MAX_AGE = 30 * 24 * 60 * 60  # 30 days in seconds
 
 
-def set_auth_cookies(response: Response, access_token: str, refresh_token: str = None):
-    """Set HttpOnly authentication cookies on a response."""
+def set_auth_cookies(response: Response, access_token: str, refresh_token: str = None, remember_me: bool = True):
+    """Set HttpOnly authentication cookies on a response. Supports persistent device cookies or session-only cookies."""
+    access_max_age = ACCESS_TOKEN_MAX_AGE if remember_me else None
+    refresh_max_age = REFRESH_TOKEN_MAX_AGE if remember_me else None
     response.set_cookie(
         key="access_token",
         value=access_token,
-        max_age=ACCESS_TOKEN_MAX_AGE,
+        max_age=access_max_age,
         httponly=COOKIE_HTTPONLY,
         secure=COOKIE_SECURE,
         samesite=COOKIE_SAMESITE,
@@ -53,7 +55,7 @@ def set_auth_cookies(response: Response, access_token: str, refresh_token: str =
         response.set_cookie(
             key="refresh_token",
             value=refresh_token,
-            max_age=REFRESH_TOKEN_MAX_AGE,
+            max_age=refresh_max_age,
             httponly=COOKIE_HTTPONLY,
             secure=COOKIE_SECURE,
             samesite=COOKIE_SAMESITE,
@@ -189,7 +191,12 @@ async def login(
     refresh_token = create_refresh_token(data={"sub": user.public_id})
     
     # Set HttpOnly cookies
-    set_auth_cookies(response, access_token, refresh_token)
+    set_auth_cookies(
+        response,
+        access_token,
+        refresh_token,
+        remember_me=True if credentials.remember_me is None else bool(credentials.remember_me)
+    )
     
     return {
         "message": "Login successful",

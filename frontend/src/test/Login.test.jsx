@@ -39,6 +39,19 @@ const MockLogin = ({ onSubmit = vi.fn(), loading = false, error = null }) => (
                 <button type="button" data-testid="toggle-password">Show</button>
             </div>
 
+            <div className="flex items-center gap-2">
+                <button
+                    type="button"
+                    data-testid="remember-device-checkbox"
+                    role="checkbox"
+                    aria-checked="false"
+                    aria-label="Remember this device"
+                >
+                    Check
+                </button>
+                <span>Remember this device</span>
+            </div>
+
             <button
                 type="submit"
                 data-testid="submit-button"
@@ -173,6 +186,21 @@ describe('Login Page', () => {
         it('register link has correct href', () => {
             render(<BrowserRouter><MockLogin /></BrowserRouter>);
             expect(screen.getByTestId('register-link')).toHaveAttribute('href', '/auth/register');
+        });
+    });
+
+    describe('Remember This Device', () => {
+        it('renders remember this device option and label', () => {
+            render(<BrowserRouter><MockLogin /></BrowserRouter>);
+            expect(screen.getByTestId('remember-device-checkbox')).toBeInTheDocument();
+            expect(screen.getByText('Remember this device')).toBeInTheDocument();
+        });
+
+        it('has accessible checkbox role and label', () => {
+            render(<BrowserRouter><MockLogin /></BrowserRouter>);
+            const checkbox = screen.getByTestId('remember-device-checkbox');
+            expect(checkbox).toHaveAttribute('role', 'checkbox');
+            expect(checkbox).toHaveAttribute('aria-label', 'Remember this device');
         });
     });
 });

@@ -583,6 +583,46 @@ export default function CreatePost() {
                                 </div>
                             </div>
 
+                            {/* Under-Post Action Dock */}
+                            <div className="pt-6 border-t border-[#EADDCF]/70 dark:border-[#26221E] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleSubmit(false)}
+                                        disabled={submitting}
+                                        title="Save draft"
+                                        aria-label="Save draft"
+                                        className="inline-flex items-center justify-center gap-1.5 h-11 px-4 sm:px-5 text-xs sm:text-sm font-medium text-stone-700 dark:text-stone-300 bg-[#FFFDF9] dark:bg-[#1A1816] border border-[#EADDCF] dark:border-[#2C2723] rounded-xl hover:bg-stone-50 dark:hover:bg-[#221E1A] transition-all shadow-sm disabled:opacity-50"
+                                    >
+                                        <Save className="w-4 h-4" />
+                                        <span>Save Draft</span>
+                                    </button>
+
+                                    {!draftId && (formData.title || formData.content) && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowDiscardModal(true)}
+                                            title="Discard reflection"
+                                            aria-label="Discard reflection"
+                                            className="inline-flex items-center justify-center gap-1.5 h-11 px-3.5 text-xs sm:text-sm font-medium text-stone-500 hover:text-red-600 dark:text-stone-400 dark:hover:text-red-400 rounded-xl hover:bg-red-50/60 dark:hover:bg-red-950/20 transition-colors"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                            <span className="hidden sm:inline">Discard</span>
+                                        </button>
+                                    )}
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPublishModal(true)}
+                                    disabled={submitting || !formData.title.trim() || !formData.content.trim()}
+                                    className="inline-flex items-center justify-center gap-2 h-11 px-6 sm:px-8 text-xs sm:text-sm font-semibold text-white bg-[#C85828] hover:bg-[#B54D20] active:scale-[0.98] rounded-xl shadow-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                                >
+                                    <Send className="w-4 h-4" />
+                                    <span>Share Story</span>
+                                </button>
+                            </div>
+
                         </article>
                     </div>
 

@@ -8,7 +8,7 @@ A modern, premium storytelling platform for authentic personal expression.
 
 [![GitHub](https://img.shields.io/badge/GitHub-vutikurishanmukha9%2FHeartOut-blue)](https://github.com/vutikurishanmukha9/HeartOut)
 [![CI](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml/badge.svg)](https://github.com/vutikurishanmukha9/HeartOut/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/Tests-541+-brightgreen)](https://github.com/vutikurishanmukha9/HeartOut/actions)
+[![Tests](https://img.shields.io/badge/Tests-649-brightgreen)](https://github.com/vutikurishanmukha9/HeartOut/actions)
 [![Coverage](https://img.shields.io/badge/Coverage-70%25-yellow)](https://github.com/vutikurishanmukha9/HeartOut)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
@@ -418,7 +418,7 @@ FLASK_ENV=production
 
 ### Unit Tests
 
-#### Backend (pytest - 327 tests)
+#### Backend (pytest - 334 tests)
 ```bash
 cd backend
 .\venv\Scripts\activate
@@ -432,18 +432,19 @@ pytest app/tests -v
 | Schemas | 35 | Pydantic schema validation |
 | Config | 15 | Settings, JWT config |
 | Utils | 15 | Reading time, utilities |
-| Health & Root | 3 | API endpoints |
-| Authentication | 25 | Login, Register, Tokens, Profile |
+| Health & Root | 6 | API endpoints and health probes |
+| Authentication | 25 | Login, Register, Remember Device, Profile |
 | Stories CRUD | 40 | Create, Read, Update, Delete |
 | Comments | 15 | Add, Get, Nested comments |
 | Reactions | 25 | Toggle, Get reactions |
 | Bookmarks | 15 | Toggle, Get bookmarks |
 | Security | 25 | JWT blocklist, auth flows |
-| Ranking | 20 | Smart ranking algorithm |
-| WebSocket | 20 | Connection manager, readers |
+| Ranking | 35 | Smart ranking algorithm and decay |
+| WebSocket | 15 | Connection manager, readers |
 | Integration | 10 | End-to-end API flows |
+| Strict & Admin | 33 | Permission matrix, edge boundaries |
 
-#### Frontend (Vitest - 214 tests)
+#### Frontend (Vitest - 315 tests across 25 suites)
 ```bash
 cd frontend
 npm run test:run
@@ -452,19 +453,30 @@ npm run test:run
 | Test Suite | Tests | Description |
 |------------|-------|-------------|
 | Feed | 20 | Feed page, sorting, filtering |
-| Login | 21 | Form validation, loading, errors |
+| Login | 23 | Form validation, remember device, errors |
 | Register | 24 | Registration, password strength |
-| PostCard | 23 | Story cards, bookmarks, reactions |
-| Toast | 21 | Notifications, types, close |
-| ThemeContext | 15 | Theme provider, dark mode |
-| API Utils | 24 | URL construction, fetch |
+| PostCard | 23 | Story cards, bookmarks, in-feed share |
+| Toast | 24 | Notifications, types, auto-dismiss |
+| ThemeContext | 15 | Theme provider, dark mode persistence |
+| API Utils | 22 | URL construction, auth headers |
 | Utils | 17 | Validation, Dates, Errors |
-| HelplineCard | 13 | Rendering, Links, Data |
-| StoryTypeSelector | 10 | Selection, Rendering |
-| SupportButton | 9 | Reactions, Dropdown |
-| AuthContext | 7 | Provider, State |
-| StoryCard | 7 | Card rendering, Anonymous |
-| Navbar | 5 | Navigation, Links |
+| HelplineCard | 13 | Rendering, click-to-call, resources |
+| Accessibility | 12 | Skip links, aria-labels, screen readers |
+| SEO | 11 | Meta tags, OpenGraph, title hierarchy |
+| StoryTypeSelector | 10 | Category selection, tactile controls |
+| SupportButton | 9 | Reactions, mental health dropdown |
+| AuthContext | 9 | Dual-tier storage, tokens, sessions |
+| LiveReaderBadge | 9 | Active reading indicator, counters |
+| ErrorBoundary | 8 | Crash isolation, route boundaries |
+| StoryConstellation | 7 | Category visualization, cosmos map |
+| FeatureHighlights | 7 | Auth highlights, value propositions |
+| StoryCard | 7 | Anonymous attribution, excerpts |
+| ScrollToTop | 7 | Viewport restoration, threshold visibility |
+| StoryTypeShowcase | 6 | 3D perspective cards, interactive tilt |
+| Navbar | 5 | Navigation links, responsive collapse |
+| SupportFloatingButton | 5 | Quick helpline launcher, responsive positioning |
+| HeartOutBackground | 3 | Ambient sanctuary warmth, SVG contours |
+| Haptics | 19 | Sensory touch feedback, vibration triggers |
 
 ### Test Coverage
 
@@ -576,6 +588,21 @@ pytest tests/test_security.py -v
 ---
 
 ## Recent Updates
+
+### v3.2.0 - Mobile WebKit Crash Optimization, Remember Device & Feed Story Sharing
+- **iOS WebKit Crash Prevention**:
+  - Eliminated continuous CSS blur animations and `willChange: filter` in `AuthDemoStoryCards` that caused GPU memory exhaustion and Safari reload crashes on iOS WebKit.
+  - Replaced animated blur filters with hardware-composited `transform` and `opacity` transitions.
+  - Replaced heavy blur filters in `HeartOutBackground` with naturally feathered radial gradients.
+  - Added responsive display guard (`hidden lg:flex`) to the story showcase in `Login` and `Register` pages, keeping mobile phone viewports clean and fast.
+- **Remember This Device Authentication**:
+  - Added `remember_me` option to login schemas and authentication endpoints with 30-day longevity.
+  - Implemented dual-tier storage strategy (`localStorage` for remembered sessions vs `sessionStorage` for ephemeral visits).
+  - Added device preference restoration and saved email autofill.
+- **In-Feed Story Sharing**:
+  - Added dedicated secondary share button on feed story cards (`PostCard`) with native Web Share API and clipboard copy fallbacks.
+- **Comprehensive Test Suite**:
+  - 649 passing automated tests (334 backend tests with pytest, 315 frontend tests with Vitest across 25 suites).
 
 ### v3.1.0 - HttpOnly Cookie Security Migration
 - **Security Architecture Overhaul** — Complete migration from `localStorage` JWT storage to `HttpOnly` Secure Cookies:

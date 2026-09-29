@@ -27,9 +27,19 @@ export function getApiUrl(endpoint) {
  */
 export async function apiFetch(endpoint, options = {}) {
     const url = getApiUrl(endpoint);
-    const token = typeof localStorage !== 'undefined' 
-        ? (localStorage.getItem('access_token') || localStorage.getItem('token')) 
-        : null;
+    let token = null;
+    try {
+        const local = typeof window !== 'undefined' && window.localStorage ? window.localStorage : (typeof localStorage !== 'undefined' ? localStorage : null);
+        const session = typeof window !== 'undefined' && window.sessionStorage ? window.sessionStorage : (typeof sessionStorage !== 'undefined' ? sessionStorage : null);
+        if (local) {
+            token = local.getItem('access_token') || local.getItem('token');
+        }
+        if (!token && session) {
+            token = session.getItem('access_token') || session.getItem('token');
+        }
+    } catch {
+        // Storage might be restricted
+    }
 
     // Add default headers including anti-CSRF identifier and Bearer token if available
     const headers = {

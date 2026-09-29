@@ -596,10 +596,10 @@ export default function PostDetail() {
                                 <button
                                     onClick={handleShare}
                                     aria-label="Share this story"
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-stone-100/70 dark:bg-zinc-800/60 hover:bg-stone-200/70 dark:hover:bg-zinc-700/60 text-stone-700 dark:text-stone-300 rounded-xl text-xs font-medium transition-colors"
+                                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#FFFDF9] dark:bg-[#181614] border border-[#EADDCF] dark:border-[#2C2723] hover:border-[#C85828]/60 dark:hover:border-amber-400/50 hover:text-[#C85828] dark:hover:text-amber-400 text-stone-700 dark:text-stone-300 rounded-xl text-xs font-semibold shadow-xs transition-all active:scale-95"
                                 >
-                                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5" />}
-                                    <span>{copied ? 'Copied' : 'Share'}</span>
+                                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5 text-[#C85828] dark:text-amber-400" />}
+                                    <span>{copied ? 'Link Copied' : 'Share Story'}</span>
                                 </button>
                             </div>
 

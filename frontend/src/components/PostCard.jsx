@@ -1,6 +1,7 @@
 import React from 'react';
-import { Heart, MessageCircle, Clock, Feather, Bookmark, Sparkles } from 'lucide-react';
+import { Heart, MessageCircle, Clock, Feather, Bookmark, Sparkles, Share2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { storyTypes } from './StoryTypeSelector';
 import { sanitizeText } from '../utils/sanitize';
 import { formatRelativeDate } from '../utils/dateFormat';
@@ -83,6 +84,39 @@ export function StoryCard({
     haptic.medium();
     if (onReact) {
       onReact(storyId);
+    }
+  };
+
+  const handleShareClick = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    haptic.selection();
+
+    const storyUrl = typeof window !== 'undefined'
+      ? `${window.location.origin}/feed/story/${storyId}`
+      : `/feed/story/${storyId}`;
+    const shareData = {
+      title: currentStory.title || 'HeartOut Story',
+      text: `Read this reflection on HeartOut: ${currentStory.title || ''}`,
+      url: storyUrl,
+    };
+
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+      }
+    }
+
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(storyUrl);
+        toast.success('Story link copied to clipboard');
+      }
+    } catch {
+      toast.error('Unable to copy link');
     }
   };
 
@@ -220,6 +254,16 @@ export function StoryCard({
                 <Heart className="w-3.5 h-3.5" />
               </button>
             )}
+
+            <button
+              type="button"
+              data-testid="card-share-button"
+              onClick={handleShareClick}
+              className="p-2 -m-1 rounded-lg text-stone-400 hover:text-[#C85828] dark:hover:text-amber-400 active:scale-95 transition-all focus:outline-none flex items-center justify-center min-w-[34px] min-h-[34px]"
+              title="Share reflection"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
       </article>

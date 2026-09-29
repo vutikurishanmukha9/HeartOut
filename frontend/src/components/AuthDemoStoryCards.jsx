@@ -268,8 +268,7 @@ export default function AuthDemoStoryCards({ showHeader = true, showFooter = fal
                                           y: SLOT_Y[2],
                                           scale: 0.96,
                                           rotate: item.entrySide === 'RIGHT' ? 1.6 : -1.6,
-                                          opacity: 0,
-                                          filter: 'blur(6px)'
+                                          opacity: 0
                                       }
                                     : false
                             }
@@ -278,8 +277,7 @@ export default function AuthDemoStoryCards({ showHeader = true, showFooter = fal
                                 y: SLOT_Y[item.slot] ?? SLOT_Y.exit,
                                 scale: isExiting ? 0.94 : 1,
                                 rotate: 0,
-                                opacity: isExiting ? 0 : 1,
-                                filter: isExiting ? 'blur(10px)' : 'blur(0px)'
+                                opacity: isExiting ? 0 : 1
                             }}
                             transition={{
                                 type: 'spring',
@@ -289,10 +287,6 @@ export default function AuthDemoStoryCards({ showHeader = true, showFooter = fal
                                 opacity: {
                                     duration: isExiting ? 0.12 : 0.28,
                                     ease: 'easeOut'
-                                },
-                                filter: {
-                                    duration: isExiting ? 0.12 : 0.26,
-                                    ease: 'easeOut'
                                 }
                             }}
                             style={{
@@ -301,7 +295,7 @@ export default function AuthDemoStoryCards({ showHeader = true, showFooter = fal
                                 left: 0,
                                 width: '100%',
                                 height: `${CARD_HEIGHT}px`,
-                                willChange: 'transform, opacity, filter',
+                                willChange: 'transform, opacity',
                                 zIndex: isExiting ? 0 : item.slot === 0 ? 30 : item.slot === 1 ? 20 : 15,
                                 pointerEvents: isExiting ? 'none' : 'auto'
                             }}

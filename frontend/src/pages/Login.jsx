@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import {
@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import AuthDemoStoryCards from '../components/AuthDemoStoryCards';
 import HeartOutBackground from '../components/HeartOutBackground';
+import { haptic } from '../utils/haptics';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -25,6 +26,25 @@ export default function Login() {
 
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
+
+    // Restore remembered device preferences and prefill saved email
+    useEffect(() => {
+        try {
+            const rememberedEmail = localStorage.getItem('heartout_remember_email');
+            const isRememberDevice = localStorage.getItem('heartout_remember_device') === 'true';
+            if (rememberedEmail) {
+                setEmail(rememberedEmail);
+                if (emailRef.current) {
+                    emailRef.current.value = rememberedEmail;
+                }
+            }
+            if (isRememberDevice || Boolean(rememberedEmail)) {
+                setRememberMe(true);
+            }
+        } catch {
+            // LocalStorage might be restricted
+        }
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -41,8 +61,19 @@ export default function Login() {
         }
 
         try {
-            const result = await login(emailValue, passwordValue);
+            const result = await login(emailValue, passwordValue, rememberMe);
             if (result.success) {
+                try {
+                    if (rememberMe) {
+                        localStorage.setItem('heartout_remember_email', emailValue);
+                        localStorage.setItem('heartout_remember_device', 'true');
+                    } else {
+                        localStorage.removeItem('heartout_remember_email');
+                        localStorage.removeItem('heartout_remember_device');
+                    }
+                } catch {
+                    // LocalStorage storage quota / restriction catch
+                }
                 navigate('/feed');
             } else {
                 setError(result.error || 'Authentication failed. Please verify your credentials.');
@@ -202,24 +233,33 @@ export default function Login() {
                                     </div>
                                 </div>
 
-                                {/* Keep me signed in Checkbox */}
+                                {/* Remember This Device Checkbox */}
                                 <div className="flex items-center gap-2 pt-0.5">
                                     <button
                                         type="button"
-                                        onClick={() => setRememberMe(!rememberMe)}
+                                        data-testid="remember-device-checkbox"
+                                        role="checkbox"
+                                        aria-checked={rememberMe}
+                                        aria-label="Remember this device"
+                                        onClick={() => {
+                                            haptic?.selection?.();
+                                            setRememberMe(!rememberMe);
+                                        }}
                                         className={`w-4 h-4 rounded-md flex items-center justify-center border transition-all ${rememberMe
                                                 ? 'bg-[#C85828] border-[#C85828] text-white shadow-xs'
                                                 : 'bg-white dark:bg-[#201D1A] border-[#DDD1BF] dark:border-stone-700 hover:border-orange-400'
                                             }`}
-                                        aria-label="Keep me signed in"
                                     >
                                         {rememberMe && <Check className="w-3 h-3 stroke-[3]" />}
                                     </button>
                                     <span
-                                        onClick={() => setRememberMe(!rememberMe)}
+                                        onClick={() => {
+                                            haptic?.selection?.();
+                                            setRememberMe(!rememberMe);
+                                        }}
                                         className="text-xs text-stone-600 dark:text-stone-400 cursor-pointer select-none font-medium hover:text-stone-900 dark:hover:text-stone-200"
                                     >
-                                        Keep me signed in
+                                        Remember this device
                                     </span>
                                 </div>
 
@@ -260,7 +300,7 @@ export default function Login() {
                     </div>
 
                     {/* Right Column: Symmetrically Expanded 500px Community Story Showcase */}
-                    <div className="w-full max-w-[500px] flex flex-col justify-center">
+                    <div className="hidden lg:flex w-full max-w-[500px] flex-col justify-center">
                         {/* Warm Linen Sanctuary Card */}
                         <div className="w-full h-full rounded-[22px] sm:rounded-[26px] bg-[#FFFDF9]/95 sm:bg-[#FFFDF9] border border-[#EADDCF] p-4 sm:p-6 lg:p-5 shadow-[0_20px_50px_-12px_rgba(180,80,20,0.09),0_4px_16px_-2px_rgba(0,0,0,0.03)] ring-1 ring-[#C85828]/10 flex flex-col justify-between">
 

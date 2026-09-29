@@ -23,8 +23,7 @@ export default function HeartOutBackground() {
         className="absolute -top-32 -right-32 w-[580px] h-[580px] rounded-full opacity-60 dark:opacity-35 pointer-events-none"
         style={{
           background:
-            'radial-gradient(circle, rgba(245, 185, 120, 0.35) 0%, rgba(200, 88, 40, 0.12) 40%, transparent 70%)',
-          filter: 'blur(50px)',
+            'radial-gradient(circle, rgba(245, 185, 120, 0.35) 0%, rgba(200, 88, 40, 0.12) 35%, rgba(200, 88, 40, 0.04) 55%, transparent 70%)',
         }}
       />
 
@@ -33,8 +32,7 @@ export default function HeartOutBackground() {
         className="absolute -bottom-36 -left-36 w-[620px] h-[620px] rounded-full opacity-55 dark:opacity-30 pointer-events-none"
         style={{
           background:
-            'radial-gradient(circle, rgba(232, 168, 124, 0.3) 0%, rgba(180, 70, 30, 0.1) 45%, transparent 70%)',
-          filter: 'blur(60px)',
+            'radial-gradient(circle, rgba(232, 168, 124, 0.3) 0%, rgba(180, 70, 30, 0.1) 40%, rgba(180, 70, 30, 0.03) 58%, transparent 70%)',
         }}
       />
 
@@ -43,8 +41,7 @@ export default function HeartOutBackground() {
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-4xl h-[70vh] rounded-full opacity-40 dark:opacity-20 pointer-events-none"
         style={{
           background:
-            'radial-gradient(ellipse at center, rgba(255, 235, 210, 0.4) 0%, rgba(200, 88, 40, 0.04) 50%, transparent 75%)',
-          filter: 'blur(40px)',
+            'radial-gradient(ellipse at center, rgba(255, 235, 210, 0.4) 0%, rgba(200, 88, 40, 0.04) 45%, rgba(200, 88, 40, 0.01) 62%, transparent 75%)',
         }}
       />
 

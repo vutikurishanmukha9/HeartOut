@@ -53,6 +53,7 @@ class UserLogin(BaseModel):
     """Schema for user login"""
     email: EmailStr
     password: str
+    remember_me: Optional[bool] = True
 
 
 class TokenResponse(BaseModel):
